@@ -1,0 +1,6 @@
+config/riot-api-key.txt
+data/stats-db.json
+data/replays/
+tmp/
+.env
+dist/

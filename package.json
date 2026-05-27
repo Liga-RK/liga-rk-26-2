@@ -1,0 +1,15 @@
+{
+  "name": "liga-rk-26-2",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Liga RK 26.2 - site, editor e painel de estatisticas",
+  "main": "stats-server.js",
+  "scripts": {
+    "start": "node ./stats-server.js",
+    "build:public": "node ./scripts/build-public-site.js",
+    "check": "node --check ./stats-server.js && node --check ./assets/stats-admin.js && node --check ./assets/app.js && node --check ./assets/editor.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
