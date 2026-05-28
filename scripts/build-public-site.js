@@ -4,7 +4,7 @@ const path = require("node:path");
 const ROOT = path.resolve(__dirname, "..");
 const DIST = path.join(ROOT, "dist");
 
-const publicFiles = ["index.html", "elite.html", "ascensao.html"];
+const publicFiles = ["index.html", "elite.html", "ascensao.html", "riot.txt"];
 const excludedAssetFiles = new Set(["editor.js", "stats-admin.js", "replay-db.js"]);
 
 function copyFile(source, target) {
