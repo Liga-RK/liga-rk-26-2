@@ -15,6 +15,7 @@
   const groupLetters = ["A", "B", "C", "D"];
   const laneOrder = ["TOP", "JG", "MID", "ADC", "SUP", "SUB", "SUB", "SUB"];
   const slotOrder = groupLetters.flatMap((group) => [1, 2, 3, 4].map((seed) => `${group}${seed}`));
+  const rulesPdfUrl = "assets/docs/regulamento-liga-rk-26-2.pdf";
   const teamsBySlot = normalizeTeams();
   const standingsByGroup = computeStandings();
   const playoffState = computePlayoffState();
@@ -644,15 +645,28 @@
   }
 
   function renderRules() {
-    const rules = String(content.rules || "").trim();
-    const body = rules
-      ? `<div class="rules-content">${escapeHtml(rules).replace(/\n/g, "<br />")}</div>`
-      : "";
-
     return `
-      <section class="visual-section rules-section blank-section" id="regras">
+      <section class="visual-section rules-section" id="regras">
         ${sectionHeader("REGRAS")}
-        ${body}
+        <article class="rules-reader" aria-label="Regulamento oficial da Liga RK 26.2">
+          <header class="rules-reader-header">
+            <div>
+              <strong>Regulamento Oficial</strong>
+              <span>Liga RK 26.2</span>
+            </div>
+            <a href="${rulesPdfUrl}" target="_blank" rel="noopener">Abrir PDF</a>
+          </header>
+          <div class="rules-pdf-shell">
+            <iframe
+              class="rules-pdf"
+              title="Regulamento Oficial - Liga RK 26.2"
+              src="${rulesPdfUrl}#toolbar=0&navpanes=0&view=FitH"
+              loading="lazy"
+            >
+              Abra o regulamento em PDF: ${rulesPdfUrl}
+            </iframe>
+          </div>
+        </article>
       </section>
     `;
   }
