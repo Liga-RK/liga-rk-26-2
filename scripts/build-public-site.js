@@ -5,28 +5,81 @@ const ROOT = path.resolve(__dirname, "..");
 const DIST = path.join(ROOT, "dist");
 
 const publicFiles = ["index.html", "elite.html", "ascensao.html", "riot.txt"];
-const excludedAssetFiles = new Set(["editor.js", "stats-admin.js", "replay-db.js"]);
+const excludedAssetFiles = new Set([
+  "editor.js",
+  "stats-admin.js",
+  "replay-db.js",
+  "fundo_elite.png",
+  "fundo_ascensao.png",
+  "fundo_home.png",
+  "logo_liga_rk.png",
+  "logo_liga_rk_nobg.png"
+]);
+const publicSourceFiles = [
+  ...publicFiles,
+  "assets/app.js",
+  "assets/data.js",
+  "assets/content.js",
+  "assets/stats-content.js",
+  "assets/styles.css"
+];
+const referencedChampionFiles = collectReferencedChampionFiles();
 
 function copyFile(source, target) {
   fs.mkdirSync(path.dirname(target), { recursive: true });
   fs.copyFileSync(source, target);
 }
 
-function copyDirectory(source, target) {
+function copyDirectory(source, target, relative = "") {
   fs.mkdirSync(target, { recursive: true });
   for (const entry of fs.readdirSync(source, { withFileTypes: true })) {
     const sourcePath = path.join(source, entry.name);
     const targetPath = path.join(target, entry.name);
+    const relativePath = path.join(relative, entry.name);
 
     if (entry.isDirectory()) {
-      copyDirectory(sourcePath, targetPath);
+      copyDirectory(sourcePath, targetPath, relativePath);
       continue;
     }
 
-    if (entry.isFile() && !excludedAssetFiles.has(entry.name)) {
+    if (entry.isFile() && shouldCopyAsset(entry.name, relativePath)) {
       copyFile(sourcePath, targetPath);
     }
   }
+}
+
+function shouldCopyAsset(fileName, relativePath) {
+  const normalizedPath = relativePath.replace(/\\/g, "/");
+
+  if (excludedAssetFiles.has(fileName)) {
+    return false;
+  }
+
+  if (normalizedPath.startsWith("champions/")) {
+    return referencedChampionFiles.has(fileName);
+  }
+
+  return true;
+}
+
+function collectReferencedChampionFiles() {
+  const files = new Set(["Aatrox.jpg"]);
+  const pattern = /assets\/champions\/([^"'`)\s]+)/g;
+
+  for (const sourceFile of publicSourceFiles) {
+    const fullPath = path.join(ROOT, sourceFile);
+    if (!fs.existsSync(fullPath)) {
+      continue;
+    }
+
+    const text = fs.readFileSync(fullPath, "utf8").replace(/\\/g, "/");
+    let match;
+    while ((match = pattern.exec(text))) {
+      files.add(path.basename(match[1]));
+    }
+  }
+
+  return files;
 }
 
 function ensureInsideWorkspace(target) {

@@ -205,7 +205,7 @@
     app.innerHTML = `
       <header class="editor-header">
         <a class="brand" href="index.html">
-          <img class="brand-logo logo-white" src="assets/logo_liga_rk_nobg.png" alt="LIGA RK 26.2" />
+          <img class="brand-logo logo-white" src="assets/logo_liga_rk_nobg_512.png" alt="LIGA RK 26.2" />
           <span>Editor LIGA RK 26.2</span>
         </a>
         <div class="editor-actions">

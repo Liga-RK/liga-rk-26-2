@@ -20,6 +20,7 @@ const GROUPS = ["A", "B", "C", "D"];
 const LANES = ["TOP", "JG", "MID", "ADC", "SUP", "SUB", "SUB", "SUB"];
 const PLATFORM_DEFAULT = process.env.RIOT_PLATFORM || "BR1";
 const REGIONAL_ROUTE = process.env.RIOT_REGIONAL_ROUTE || "americas";
+const TOURNAMENT_API_MODE = normalizeTournamentApiMode(process.env.RIOT_TOURNAMENT_MODE || "stub");
 
 ensureDirectories();
 ensureDatabase();
@@ -60,6 +61,8 @@ async function handleApi(request, response) {
     sendJson(response, 200, {
       ok: true,
       hasApiKey: Boolean(readApiKey()),
+      riotApiMode: TOURNAMENT_API_MODE,
+      tournamentApiPath: tournamentApiPath(),
       fixedData,
       content,
       db,
@@ -743,8 +746,25 @@ function writePublicFiles(existingDb, existingContent, existingFixedData) {
   const fixedData = existingFixedData || loadWindowScript(path.join(ASSETS, "data.js"), "LIGA_RK_DATA");
   const content = existingContent || loadWindowScript(path.join(ASSETS, "content.js"), "LIGA_RK_CONTENT");
   const computed = computeAll(db, content, fixedData);
-  fs.writeFileSync(STATS_CONTENT_PATH, `window.LIGA_RK_STATS = ${JSON.stringify(computed, null, 2)};\n`, "utf8");
+  fs.writeFileSync(STATS_CONTENT_PATH, `window.LIGA_RK_STATS = ${JSON.stringify(toPublicStatsPayload(computed), null, 2)};\n`, "utf8");
   fs.writeFileSync(REPLAY_DB_PATH, `window.LIGA_RK_REPLAY_DB = ${JSON.stringify(db, null, 2)};\n`, "utf8");
+}
+
+function toPublicStatsPayload(computed) {
+  return {
+    version: computed.version,
+    generatedAt: computed.generatedAt,
+    divisions: Object.fromEntries(
+      Object.entries(computed.divisions || {}).map(([division, value]) => [
+        division,
+        {
+          hasData: Boolean(value.hasData),
+          statistics: value.statistics || null,
+          teamSummaries: value.teamSummaries || {}
+        }
+      ])
+    )
+  };
 }
 
 function buildAllSeries(fixedData) {
@@ -933,6 +953,14 @@ function sendJson(response, status, payload) {
 function normalizeDivision(value) {
   const division = String(value || "").trim();
   return DIVISIONS.includes(division) ? division : "";
+}
+
+function normalizeTournamentApiMode(value) {
+  return String(value || "").toLowerCase() === "real" ? "real" : "stub";
+}
+
+function tournamentApiPath() {
+  return TOURNAMENT_API_MODE === "real" ? "/lol/tournament/v5" : "/lol/tournament-stub/v5";
 }
 
 function normalizeMatchId(value) {

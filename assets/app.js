@@ -43,7 +43,7 @@
   app.innerHTML = `
     <header class="site-header">
       <a class="brand" href="index.html" aria-label="Voltar para seleção de divisão">
-        <img class="brand-logo logo-white" src="assets/logo_liga_rk_nobg.png" alt="LIGA RK 26.2" />
+        <img class="brand-logo logo-white" src="assets/logo_liga_rk_nobg_512.png" alt="LIGA RK 26.2" />
         <span>LIGA RK 26.2</span>
       </a>
       <div class="header-actions">
@@ -73,7 +73,6 @@
   `;
   restoreDivisionScrollPosition();
   setupDivisionNavScrollTransfer();
-  setupSmoothPageScroll();
   setupVodCarousels();
   hydrateVodTitles();
 
@@ -220,7 +219,7 @@
   function renderFooter() {
     return `
       <footer class="site-footer">
-        <img class="footer-logo logo-white" src="assets/logo_liga_rk_nobg.png" alt="LIGA RK 26.2" />
+        <img class="footer-logo logo-white" src="assets/logo_liga_rk_nobg_512.png" alt="LIGA RK 26.2" />
         <div class="footer-copy">
           <strong>LIGA RK 26.2</strong>
           <span>${escapeHtml(division.label)}</span>
@@ -233,9 +232,9 @@
   function sectionHeader(title) {
     return `
       <div class="section-titlebar">
-        <img class="section-logo logo-white" src="assets/logo_liga_rk_nobg.png" alt="" />
+        <img class="section-logo logo-white" src="assets/logo_liga_rk_nobg_512.png" alt="" />
         <h2>${escapeHtml(title)}</h2>
-        <img class="section-logo logo-white" src="assets/logo_liga_rk_nobg.png" alt="" />
+        <img class="section-logo logo-white" src="assets/logo_liga_rk_nobg_512.png" alt="" />
       </div>
     `;
   }
@@ -680,86 +679,6 @@
     requestAnimationFrame(() => {
       const top = Math.min(Number(saved) || 0, document.documentElement.scrollHeight - window.innerHeight);
       window.scrollTo({ top: Math.max(0, top), behavior: "auto" });
-    });
-  }
-
-  function setupSmoothPageScroll() {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
-    }
-
-    let targetY = window.scrollY;
-    let frame = 0;
-    const clamp = (value) => Math.max(0, Math.min(value, document.documentElement.scrollHeight - window.innerHeight));
-
-    const animate = () => {
-      const delta = targetY - window.scrollY;
-      if (Math.abs(delta) < 0.7) {
-        window.scrollTo(0, targetY);
-        frame = 0;
-        return;
-      }
-
-      window.scrollTo(0, window.scrollY + delta * 0.22);
-      frame = requestAnimationFrame(animate);
-    };
-
-    const requestScroll = (nextY) => {
-      targetY = clamp(nextY);
-      if (!frame) {
-        frame = requestAnimationFrame(animate);
-      }
-    };
-
-    window.addEventListener(
-      "wheel",
-      (event) => {
-        if (event.ctrlKey) {
-          return;
-        }
-
-        event.preventDefault();
-        requestScroll(targetY + event.deltaY);
-      },
-      { passive: false }
-    );
-
-    window.addEventListener("keydown", (event) => {
-      const step = window.innerHeight * 0.78;
-      const keys = {
-        ArrowDown: 90,
-        ArrowUp: -90,
-        PageDown: step,
-        PageUp: -step,
-        Home: -Infinity,
-        End: Infinity
-      };
-
-      if (!(event.key in keys) || event.altKey || event.ctrlKey || event.metaKey) {
-        return;
-      }
-
-      event.preventDefault();
-      const next = event.key === "Home" ? 0 : event.key === "End" ? document.documentElement.scrollHeight : targetY + keys[event.key];
-      requestScroll(next);
-    });
-
-    document.querySelectorAll(".section-nav a[href^='#']").forEach((link) => {
-      link.addEventListener("click", (event) => {
-        const target = document.querySelector(link.getAttribute("href"));
-        if (!target) {
-          return;
-        }
-
-        event.preventDefault();
-        requestScroll(window.scrollY + target.getBoundingClientRect().top - 72);
-      });
-    });
-
-    window.addEventListener("scroll", () => {
-      if (!frame) {
-        targetY = window.scrollY;
-      }
     });
   }
 

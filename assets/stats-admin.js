@@ -30,7 +30,7 @@
       }
       state.bootstrap = data;
       state.status = data.hasApiKey
-        ? "Pronto. Escolha a serie, os lados e envie o .rofl."
+        ? "Pronto. Escolha a serie, os lados e informe o Match ID oficial."
         : "Salve sua Riot API Key uma vez para automatizar a leitura dos jogos.";
       render();
     } catch (error) {
@@ -52,7 +52,8 @@
       <main class="editor-shell stats-admin-shell">
         <section class="editor-intro">
           <h1>Liga RK 26.2</h1>
-          <p>Fluxo rapido: salve a API key uma vez, escolha a divisao e serie, selecione azul/vermelho, envie o .rofl e clique em salvar.</p>
+          <p>Fluxo rapido: salve a API key uma vez, escolha a divisao e serie, selecione azul/vermelho, informe o Match ID oficial quando houver callback e clique em salvar.</p>
+          <p class="api-mode-note">Modo Tournament API: ${escapeHtml(apiModeLabel(state.bootstrap.riotApiMode))} | rota ${escapeHtml(state.bootstrap.tournamentApiPath || "")}</p>
           <form class="api-key-form" data-api-key-form>
             <label class="editor-field">
               <span>Riot API Key ${state.bootstrap.hasApiKey ? "(salva)" : ""}</span>
@@ -77,7 +78,7 @@
 
         <section class="stats-admin-grid">
           <details class="editor-section stats-admin-section" open>
-            <summary>Partidas e uploads</summary>
+            <summary>Partidas</summary>
             <div class="series-list">
               ${(state.bootstrap.series[division] || []).map((series) => renderSeries(division, series, gamesById)).join("")}
             </div>
@@ -88,17 +89,17 @@
             ${renderPublicStatistics(computed.statistics)}
           </details>
 
-          <details class="editor-section stats-admin-section" open>
+          <details class="editor-section stats-admin-section">
             <summary>Dashboard partidas</summary>
             ${renderMatchesDashboard(division, computed.matches || [])}
           </details>
 
-          <details class="editor-section stats-admin-section" open>
+          <details class="editor-section stats-admin-section">
             <summary>Dashboard equipes</summary>
             ${renderTeamsDashboard(computed.teams || [])}
           </details>
 
-          <details class="editor-section stats-admin-section" open>
+          <details class="editor-section stats-admin-section">
             <summary>Dashboard jogadores</summary>
             ${renderPlayersDashboard(computed.players || [])}
           </details>
@@ -111,7 +112,7 @@
     return `
       <header class="editor-header">
         <a class="brand" href="index.html">
-          <img class="brand-logo logo-white" src="assets/logo_liga_rk_nobg.png" alt="LIGA RK 26.2" />
+          <img class="brand-logo logo-white" src="assets/logo_liga_rk_nobg_512.png" alt="LIGA RK 26.2" />
           <span>Liga RK 26.2</span>
         </a>
       </header>
@@ -140,7 +141,7 @@
         <header class="series-card-header">
           <div>
             <h3>${escapeHtml(title)}</h3>
-            <span>${escapeHtml(series.subtitle)} | ${escapeHtml(series.stage)} | ${series.maxGames} jogos</span>
+          <span>${escapeHtml(series.subtitle)} | ${escapeHtml(series.stage)} | ate ${series.maxGames} jogos</span>
           </div>
           <span>${escapeHtml(versus)}</span>
         </header>
@@ -177,18 +178,21 @@
             </select>
           </label>
           <label>
-            <span>Match ID se precisar</span>
+            <span>Match ID oficial</span>
             <input name="matchId" value="${escapeAttribute(matchId)}" placeholder="BR1_1234567890" />
           </label>
-          <label class="file-button inline-file-button">
-            Replay .rofl
-            <input type="file" name="rofl" accept=".rofl" />
-          </label>
+          <details class="advanced-replay">
+            <summary>Replay opcional</summary>
+            <label class="file-button inline-file-button">
+              Arquivo .rofl
+              <input type="file" name="rofl" accept=".rofl" />
+            </label>
+          </details>
           <button type="submit">Salvar jogo</button>
           ${game ? `<button class="danger-button" type="button" data-action="delete-game" data-game-id="${escapeAttribute(game.id)}" data-division="${escapeAttribute(division)}">Remover</button>` : ""}
         </div>
         <div class="game-slot-status">
-          ${game ? renderGameStatus(game, summary) : "<span>Nenhum replay registrado.</span>"}
+          ${game ? renderGameStatus(game, summary) : "<span>Nenhum jogo registrado.</span>"}
         </div>
       </form>
     `;
@@ -454,7 +458,7 @@
 
     setStatus("Salvando API key...");
     const result = await postJson("/api/admin/api-key", { apiKey });
-    state.status = result.ok ? "API key salva. Agora os uploads podem ser processados automaticamente." : result.error || "Nao foi possivel salvar.";
+    state.status = result.ok ? "API key salva. Agora os jogos podem ser processados automaticamente." : result.error || "Nao foi possivel salvar.";
     await load();
   }
 
@@ -603,6 +607,10 @@
   function signed(value) {
     const number = Number(value) || 0;
     return number > 0 ? `+${number}` : String(number);
+  }
+
+  function apiModeLabel(mode) {
+    return String(mode || "stub") === "real" ? "Real / tournament-v5" : "Teste / tournament-stub-v5";
   }
 
   function escapeHtml(value) {
