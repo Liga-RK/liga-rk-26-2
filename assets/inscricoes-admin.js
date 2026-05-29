@@ -106,7 +106,8 @@
         </section>
 
         <section class="registrations-list">
-          ${state.registrations.length ? state.registrations.map(renderRegistrationCard).join("") : renderEmptyState()}
+          ${renderDivisionGroup("elite")}
+          ${renderDivisionGroup("ascension")}
         </section>
       </main>
     `;
@@ -117,6 +118,23 @@
       <article class="empty-dashboard">
         Nenhuma inscrição carregada ainda.
       </article>
+    `;
+  }
+
+  function renderDivisionGroup(divisionKey) {
+    const items = state.registrations.filter((registration) => registrationDivision(registration) === divisionKey);
+    const title = divisionKey === "elite" ? "Divisão Elite" : "Divisão Ascensão";
+    const modifier = divisionKey === "elite" ? "elite" : "ascension";
+
+    return `
+      <section class="registration-admin-group ${modifier}">
+        <header class="registration-admin-group-header">
+          <h2>${escapeHtml(title)} <span>${items.length}</span></h2>
+        </header>
+        <div class="registration-admin-group-list">
+          ${items.length ? items.map(renderRegistrationCard).join("") : renderEmptyState()}
+        </div>
+      </section>
     `;
   }
 
@@ -195,6 +213,11 @@
 
   function isPlayerFilled(player) {
     return player && (player.name || player.riotId || player.discord || player.opgg);
+  }
+
+  function registrationDivision(registration) {
+    const payload = registration.payload || {};
+    return payload.division || registration.division || "";
   }
 
   function divisionLabel(value) {

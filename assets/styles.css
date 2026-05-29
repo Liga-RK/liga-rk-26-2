@@ -1360,6 +1360,12 @@ a {
   gap: 1rem;
 }
 
+.home-registration-action {
+  display: grid;
+  width: min(100%, 32rem);
+  margin: 0 0 1rem;
+}
+
 .home-socials {
   margin-top: 1.4rem;
 }
@@ -1395,6 +1401,20 @@ a {
 
 .division-link.registration {
   --accent: #e71921;
+}
+
+.primary-registration {
+  width: 100%;
+  min-height: 5rem;
+  color: #fff;
+  background: linear-gradient(90deg, #421116, #e71921);
+  border-color: transparent;
+  font-size: clamp(1.55rem, 4vw, 2.35rem);
+}
+
+.primary-registration:hover,
+.primary-registration:focus {
+  background: #e71921;
 }
 
 .registration-shell {
@@ -1711,6 +1731,59 @@ a {
 }
 
 .registrations-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.registration-admin-group {
+  display: grid;
+  gap: 0.85rem;
+  --accent: var(--group-accent);
+  --accent-dark: var(--group-accent-dark);
+}
+
+.registration-admin-group-header {
+  padding: 0.85rem 1rem 0.7rem;
+  color: var(--muted);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--group-accent-dark) 88%, #000), var(--group-accent));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.registration-admin-group.elite {
+  --group-accent: var(--elite);
+  --group-accent-dark: var(--elite-dark);
+}
+
+.registration-admin-group.ascension {
+  --group-accent: var(--ascension);
+  --group-accent-dark: var(--ascension-dark);
+}
+
+.registration-admin-group-header h2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.registration-admin-group-header span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 3.1rem;
+  min-height: 3.1rem;
+  padding: 0.25rem 0.65rem 0.15rem;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 0.25rem;
+  font-size: 2rem;
+}
+
+.registration-admin-group-list {
   display: grid;
   gap: 1rem;
 }
