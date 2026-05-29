@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node ./stats-server.js",
     "build:public": "node ./scripts/build-public-site.js",
-    "check": "node --check ./stats-server.js && node --check ./assets/stats-admin.js && node --check ./assets/app.js && node --check ./assets/editor.js && node --check ./assets/inscricao.js"
+    "check": "node --check ./stats-server.js && node --check ./assets/stats-admin.js && node --check ./assets/app.js && node --check ./assets/editor.js && node --check ./assets/inscricao.js && node --check ./assets/inscricoes-admin.js"
   },
   "engines": {
     "node": ">=18"

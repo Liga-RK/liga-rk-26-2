@@ -195,19 +195,19 @@ async function readJson(request) {
 
 function validateRegistration(payload) {
   if (!payload || typeof payload !== "object") {
-    return "Inscricao invalida.";
+    return "Inscrição inválida.";
   }
   if (!["elite", "ascension"].includes(payload.division)) {
-    return "Divisao invalida.";
+    return "Divisão inválida.";
   }
   if (!payload.team || !String(payload.team.name || "").trim()) {
-    return "Nome do time obrigatorio.";
+    return "Nome do time obrigatório.";
   }
   if (!/^[A-Z0-9]{2,4}$/.test(String(payload.team.tag || ""))) {
-    return "TAG invalida.";
+    return "TAG inválida.";
   }
   if (!String(payload.team.logoDataUrl || "").startsWith("data:image/")) {
-    return "Logo obrigatoria.";
+    return "Logo obrigatória.";
   }
 
   const players = Array.isArray(payload.players) ? payload.players : [];
@@ -223,15 +223,15 @@ function validateRegistration(payload) {
     return "Preencha pelo menos 5 jogadores completos.";
   }
   if (!captain || !captain.name || !captain.riotId || !captain.discord || !captain.opgg) {
-    return "Capitao invalido.";
+    return "Capitão inválido.";
   }
   if (payload.acceptedRules !== true) {
-    return "Regulamento nao aceito.";
+    return "Regulamento não aceito.";
   }
 
   const serialized = JSON.stringify(payload);
   if (serialized.length > 1500000) {
-    return "Inscricao muito grande. Reduza a logo e tente novamente.";
+    return "Inscrição muito grande. Reduza a logo e tente novamente.";
   }
 
   return "";

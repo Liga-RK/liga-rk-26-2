@@ -60,7 +60,7 @@
             </label>
             <label class="captain-pick">
               <input name="captain" type="radio" value="${index}" />
-              <span>Capitao</span>
+              <span>Capitão</span>
             </label>
           </div>
         `;
@@ -91,7 +91,7 @@
     }
 
     if (file.size > 8 * 1024 * 1024) {
-      setStatus("A logo esta muito grande. Use uma imagem de ate 8 MB.", true);
+      setStatus("A logo está muito grande. Use uma imagem de até 8 MB.", true);
       logoInput.value = "";
       updateLogoPreview("");
       return;
@@ -102,7 +102,7 @@
       updateLogoPreview(logoDataUrl);
       setStatus("");
     } catch (error) {
-      setStatus("Nao consegui carregar essa logo. Tente outro arquivo.", true);
+      setStatus("Não consegui carregar essa logo. Tente outro arquivo.", true);
       logoInput.value = "";
       updateLogoPreview("");
     }
@@ -128,7 +128,7 @@
     }
 
     setSubmitting(true);
-    setStatus("Enviando inscricao...");
+    setStatus("Enviando inscrição...");
 
     try {
       const response = await fetch(`${apiBase}/api/registrations`, {
@@ -145,9 +145,9 @@
       form.reset();
       logoDataUrl = "";
       updateLogoPreview("");
-      setStatus(`Inscricao enviada com sucesso. Protocolo #${data.id || "RK"}.`);
+      setStatus("Inscrição enviada com sucesso. Aguarde a organização validar sua inscrição e adicionar à página oficial da sua divisão.");
     } catch (error) {
-      setStatus(error.message || "Nao foi possivel enviar a inscricao agora.", true);
+      setStatus(error.message || "Não foi possível enviar a inscrição agora.", true);
     } finally {
       setSubmitting(false);
     }
@@ -187,13 +187,13 @@
     const requiredPlayers = payload.players.slice(0, 5);
 
     if (!["elite", "ascension"].includes(payload.division)) {
-      errors.push("Escolha a divisao da equipe.");
+      errors.push("Escolha a divisão da equipe.");
     }
     if (!payload.team.name) {
       errors.push("Informe o nome do time.");
     }
     if (!/^[A-Z0-9]{2,4}$/.test(payload.team.tag)) {
-      errors.push("A TAG deve ter de 2 a 4 caracteres, usando letras ou numeros.");
+      errors.push("A TAG deve ter de 2 a 4 caracteres, usando letras ou números.");
     }
     if (!payload.team.logoDataUrl) {
       errors.push("Envie a logo do time.");
@@ -207,7 +207,7 @@
       errors.push("Quando preencher um reserva, complete nome, nick#tag, Discord e OP.GG.");
     }
     if (payload.captainIndex === null || !isPlayerComplete(payload.players[payload.captainIndex])) {
-      errors.push("Escolha um capitao entre os jogadores preenchidos.");
+      errors.push("Escolha um capitão entre os jogadores preenchidos.");
     }
     if (!payload.acceptedRules) {
       errors.push("Confirme que leu e concorda com o regulamento.");
@@ -255,7 +255,7 @@
   function setSubmitting(isSubmitting) {
     if (submitButton) {
       submitButton.disabled = isSubmitting;
-      submitButton.textContent = isSubmitting ? "Enviando..." : "Finalizar inscricao";
+      submitButton.textContent = isSubmitting ? "Enviando..." : "Finalizar inscrição";
     }
   }
 

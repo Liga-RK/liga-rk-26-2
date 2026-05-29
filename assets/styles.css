@@ -1427,8 +1427,9 @@ a {
 }
 
 .registration-hero h1 {
-  max-width: 18ch;
-  font-size: clamp(3.2rem, 8vw, 6.8rem);
+  max-width: none;
+  font-size: clamp(3rem, 5.2vw, 4.6rem);
+  white-space: nowrap;
 }
 
 .registration-copy {
@@ -1449,6 +1450,7 @@ a {
 
 .registration-signature {
   color: #fff;
+  font-style: italic;
 }
 
 .registration-section {
@@ -1505,17 +1507,20 @@ a {
   color: var(--muted);
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .division-choice strong {
-  font-size: clamp(2rem, 4.5vw, 3.8rem);
+  font-size: clamp(1.75rem, 3.5vw, 3rem);
   line-height: 0.95;
 }
 
 .division-choice small {
   color: rgba(255, 255, 255, 0.78);
-  font-size: 1.2rem;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.25;
 }
 
 .elite-choice input:checked + span,
@@ -1699,6 +1704,155 @@ a {
 
 .registration-status.error {
   color: #ffb6b6;
+}
+
+.registrations-admin-shell {
+  width: min(96%, 100rem);
+}
+
+.registrations-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.registration-admin-card {
+  overflow: hidden;
+  background: rgba(8, 8, 11, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.registration-admin-card > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 9rem;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  color: var(--muted);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent-dark) 82%, #000), var(--accent));
+}
+
+.registration-admin-card header div:first-child {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.registration-admin-card header span,
+.registration-admin-card header small {
+  color: rgba(255, 255, 255, 0.78);
+  font-family: Arial, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.registration-admin-card header strong {
+  overflow: hidden;
+  color: #fff;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 0.95;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.registration-admin-logo {
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+}
+
+.registration-admin-logo img,
+.registration-admin-logo span {
+  display: grid;
+  place-items: center;
+  width: 5.8rem;
+  height: 5.8rem;
+  object-fit: contain;
+  background: rgba(0, 0, 0, 0.36);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.registration-admin-logo a,
+.registration-admin-actions button {
+  padding: 0.45rem 0.6rem 0.35rem;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.36);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 0.22rem;
+  font-size: 0.95rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.registration-admin-meta {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.65rem;
+  padding: 1rem;
+}
+
+.registration-admin-meta div {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.65rem;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.registration-admin-meta span {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.registration-admin-meta strong {
+  overflow: hidden;
+  color: #fff;
+  font-size: 1.25rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.registration-admin-table-wrap {
+  max-width: 100%;
+  overflow: auto;
+  padding: 0 1rem 1rem;
+}
+
+.registration-admin-table {
+  width: 100%;
+  min-width: 58rem;
+  border-collapse: collapse;
+}
+
+.registration-admin-table th,
+.registration-admin-table td {
+  padding: 0.55rem 0.65rem 0.42rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: left;
+}
+
+.registration-admin-table th {
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.08);
+  text-transform: uppercase;
+}
+
+.registration-admin-table td {
+  color: rgba(255, 255, 255, 0.88);
+  font-family: Arial, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.registration-admin-table a {
+  color: #fff;
+}
+
+.registration-admin-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 1rem 1rem;
 }
 
 .editor-page {
@@ -2707,6 +2861,7 @@ a {
   .registration-choice-grid,
   .registration-team-grid,
   .registration-player-row,
+  .registration-admin-meta,
   .team-analytics-grid,
   .public-stats-preview {
     grid-template-columns: 1fr;
@@ -2905,7 +3060,8 @@ a {
   }
 
   .registration-hero h1 {
-    font-size: 2.7rem;
+    font-size: 2.45rem;
+    white-space: normal;
   }
 
   .registration-copy {
@@ -2935,5 +3091,13 @@ a {
 
   .registration-submit {
     justify-self: stretch;
+  }
+
+  .registration-admin-card > header {
+    grid-template-columns: 1fr;
+  }
+
+  .registration-admin-card header strong {
+    white-space: normal;
   }
 }

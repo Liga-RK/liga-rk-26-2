@@ -7,6 +7,7 @@ const DIST = path.join(ROOT, "dist");
 const publicFiles = ["index.html", "elite.html", "ascensao.html", "inscricao.html", "riot.txt"];
 const excludedAssetFiles = new Set([
   "editor.js",
+  "inscricoes-admin.js",
   "stats-admin.js",
   "replay-db.js",
   "fundo_elite.png",
