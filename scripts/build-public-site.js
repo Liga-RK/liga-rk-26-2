@@ -4,7 +4,7 @@ const path = require("node:path");
 const ROOT = path.resolve(__dirname, "..");
 const DIST = path.join(ROOT, "dist");
 
-const publicFiles = ["index.html", "elite.html", "ascensao.html", "riot.txt"];
+const publicFiles = ["index.html", "elite.html", "ascensao.html", "inscricao.html", "riot.txt"];
 const excludedAssetFiles = new Set([
   "editor.js",
   "stats-admin.js",
@@ -18,6 +18,7 @@ const excludedAssetFiles = new Set([
 const publicSourceFiles = [
   ...publicFiles,
   "assets/app.js",
+  "assets/inscricao.js",
   "assets/data.js",
   "assets/content.js",
   "assets/stats-content.js",

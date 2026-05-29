@@ -111,6 +111,13 @@ body::after {
   --social-hover: #e71921;
 }
 
+.theme-registration {
+  --accent: #e71921;
+  --accent-dark: #391014;
+  --division-bg-image: url("fundo_home.jpg");
+  --social-hover: #e71921;
+}
+
 a {
   color: inherit;
 }
@@ -1386,6 +1393,314 @@ a {
   --accent: #e71921;
 }
 
+.division-link.registration {
+  --accent: #e71921;
+}
+
+.registration-shell {
+  display: grid;
+  gap: 1.2rem;
+  width: min(94%, 88rem);
+  margin: 0 auto;
+  padding: 2rem 0 4rem;
+}
+
+.registration-hero,
+.registration-section {
+  min-width: 0;
+  background: rgba(8, 8, 11, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.registration-hero {
+  display: grid;
+  gap: 0.9rem;
+  padding: clamp(1.25rem, 3vw, 2.4rem);
+}
+
+.registration-hero h1,
+.registration-section h2 {
+  margin: 0;
+  color: var(--muted);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.registration-hero h1 {
+  max-width: 18ch;
+  font-size: clamp(3.2rem, 8vw, 6.8rem);
+}
+
+.registration-copy {
+  display: grid;
+  gap: 0.8rem;
+  width: min(100%, 68rem);
+  color: rgba(255, 255, 255, 0.86);
+  font-family: Arial, sans-serif;
+  font-size: 1.03rem;
+  line-height: 1.55;
+}
+
+.registration-copy p {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  font-weight: 700;
+}
+
+.registration-signature {
+  color: #fff;
+}
+
+.registration-section {
+  display: grid;
+  gap: 1rem;
+  padding: 1.2rem;
+}
+
+.registration-section h2 {
+  font-size: clamp(2.1rem, 4vw, 3.2rem);
+}
+
+.registration-rules-section {
+  background: rgba(0, 0, 0, 0.54);
+}
+
+.registration-rules-reader {
+  width: 100%;
+  margin: 0;
+}
+
+.registration-rules-reader .rules-pdf-shell {
+  height: clamp(28rem, 62vh, 42rem);
+}
+
+.registration-form {
+  display: grid;
+  gap: 1.2rem;
+}
+
+.registration-choice-grid,
+.registration-team-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.division-choice {
+  cursor: pointer;
+}
+
+.division-choice input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.division-choice span {
+  display: grid;
+  min-height: 8rem;
+  align-content: center;
+  gap: 0.25rem;
+  padding: 1rem;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  text-transform: uppercase;
+}
+
+.division-choice strong {
+  font-size: clamp(2rem, 4.5vw, 3.8rem);
+  line-height: 0.95;
+}
+
+.division-choice small {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 1.2rem;
+}
+
+.elite-choice input:checked + span,
+.elite-choice:hover span {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--elite-dark) 84%, #000), var(--elite));
+  border-color: transparent;
+}
+
+.ascension-choice input:checked + span,
+.ascension-choice:hover span {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--ascension-dark) 84%, #000), var(--ascension));
+  border-color: transparent;
+}
+
+.registration-field,
+.registration-player-row label {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.registration-field span,
+.registration-player-row label span {
+  font-size: 0.95rem;
+}
+
+.registration-field input,
+.registration-player-row input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.65rem 0.7rem 0.5rem;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 0.2rem;
+  font-size: 1.05rem;
+}
+
+.registration-tag-field {
+  max-width: 12rem;
+}
+
+.logo-upload-box {
+  display: grid;
+  justify-items: center;
+  gap: 0.8rem;
+  padding: 1.3rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+}
+
+.logo-upload-box input {
+  display: none;
+}
+
+.logo-upload-preview {
+  display: grid;
+  place-items: center;
+  width: min(100%, 16rem);
+  aspect-ratio: 1;
+  color: var(--muted);
+  background: rgba(0, 0, 0, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: 2rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.logo-upload-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 0.6rem;
+}
+
+.logo-upload-box small,
+.registration-help,
+.registration-deadline {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.74);
+  font-family: Arial, sans-serif;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.registration-players {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.registration-player-row {
+  display: grid;
+  grid-template-columns: 6.2rem repeat(4, minmax(0, 1fr)) 7.2rem;
+  align-items: end;
+  gap: 0.55rem;
+  padding: 0.65rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.registration-player-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.095);
+}
+
+.registration-player-lane {
+  display: grid;
+  grid-template-columns: 2.1rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.95rem;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.registration-player-lane .lane-icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.captain-pick {
+  align-self: stretch;
+  place-content: center;
+  padding: 0.45rem;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  text-align: center;
+  cursor: pointer;
+}
+
+.captain-pick input {
+  width: auto;
+  justify-self: center;
+  accent-color: var(--accent);
+}
+
+.registration-agreement {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--muted);
+  font-size: 1.35rem;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.registration-agreement input {
+  width: 1.3rem;
+  height: 1.3rem;
+  accent-color: var(--accent);
+}
+
+.registration-submit {
+  justify-self: start;
+  min-height: 3rem;
+  padding: 0.65rem 1rem 0.5rem;
+  color: #fff;
+  background: var(--accent);
+  border: 0;
+  border-radius: 0.25rem;
+  font-size: 1.45rem;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.registration-submit:disabled {
+  cursor: wait;
+  opacity: 0.68;
+}
+
+.registration-status {
+  min-height: 1.4rem;
+  margin: 0;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-weight: 800;
+}
+
+.registration-status.error {
+  color: #ffb6b6;
+}
+
 .editor-page {
   --accent: #e71921;
   --accent-dark: #391014;
@@ -2236,6 +2551,10 @@ a {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .registration-player-row {
+    grid-template-columns: 6rem repeat(2, minmax(0, 1fr));
+  }
+
   .team-analytics-grid {
     grid-template-columns: repeat(2, minmax(13rem, 1fr));
   }
@@ -2385,9 +2704,16 @@ a {
   .playoff-editor,
   .playoff-editor-row,
   .game-slot-main,
+  .registration-choice-grid,
+  .registration-team-grid,
+  .registration-player-row,
   .team-analytics-grid,
   .public-stats-preview {
     grid-template-columns: 1fr;
+  }
+
+  .registration-tag-field {
+    max-width: none;
   }
 }
 
@@ -2566,5 +2892,48 @@ a {
 
   .home-panel h1 {
     font-size: 2.6rem;
+  }
+
+  .registration-shell {
+    width: min(100% - 1rem, 88rem);
+    padding-top: 1rem;
+  }
+
+  .registration-hero,
+  .registration-section {
+    padding: 0.9rem;
+  }
+
+  .registration-hero h1 {
+    font-size: 2.7rem;
+  }
+
+  .registration-copy {
+    font-size: 0.95rem;
+  }
+
+  .division-choice span {
+    min-height: 6rem;
+  }
+
+  .division-choice strong {
+    font-size: 2rem;
+  }
+
+  .registration-player-row {
+    align-items: stretch;
+  }
+
+  .registration-player-lane {
+    grid-template-columns: 2rem minmax(0, 1fr);
+  }
+
+  .registration-agreement {
+    align-items: flex-start;
+    font-size: 1rem;
+  }
+
+  .registration-submit {
+    justify-self: stretch;
   }
 }

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Inscricao | LIGA RK 26.2</title>
+    <link rel="icon" type="image/png" href="assets/logo_liga_rk_icon.png" />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body class="theme-registration">
+    <header class="site-header registration-header">
+      <a class="brand" href="index.html" aria-label="Voltar para a pagina inicial">
+        <img class="brand-logo logo-white" src="assets/logo_liga_rk_nobg_512.png" alt="LIGA RK 26.2" />
+        <span>LIGA RK 26.2</span>
+      </a>
+      <div class="header-actions">
+        <nav class="social-links header-socials" aria-label="Comunidade">
+          <a href="https://discord.gg/m9C7dbQUSV" target="_blank" rel="noreferrer" aria-label="Discord">
+            <img src="assets/social/discord.svg" alt="" />
+          </a>
+          <a href="https://chat.whatsapp.com/JvqkNB8e9KyK8I8adHoKZq" target="_blank" rel="noreferrer" aria-label="WhatsApp">
+            <img src="assets/social/whatsapp.svg" alt="" />
+          </a>
+          <a href="https://kick.com/rk-inhouse" target="_blank" rel="noreferrer" aria-label="Kick">
+            <img src="assets/social/kick.svg" alt="" />
+          </a>
+          <a href="https://www.youtube.com/@rk-inhouse" target="_blank" rel="noreferrer" aria-label="YouTube">
+            <img src="assets/social/youtube.svg" alt="" />
+          </a>
+          <a href="https://www.instagram.com/inhouserk/" target="_blank" rel="noreferrer" aria-label="Instagram">
+            <img src="assets/social/instagram.svg" alt="" />
+          </a>
+          <a href="https://www.tiktok.com/@inhouse_rk" target="_blank" rel="noreferrer" aria-label="TikTok">
+            <img src="assets/social/tiktok.svg" alt="" />
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="registration-shell">
+      <section class="registration-hero">
+        <p class="kicker">Inscricoes abertas</p>
+        <h1>Boas vindas a Liga RK 26.2!</h1>
+        <div class="registration-copy">
+          <p>
+            A primeira edicao da Liga RK aconteceu em marco e abril de 2026 e marcou o inicio do nosso circuito competitivo.
+            Na Divisao Elite, o Favelao foi campeao com grande destaque para o toplaner Melare. Na Divisao Ascensao, a
+            SkyLine levantou o titulo com uma campanha muito forte do cacador Theo.
+          </p>
+          <p>
+            Agora a Liga RK volta para sua segunda edicao, de 4 de julho a 16 de agosto, com o dobro de equipes,
+            premiacoes maiores e o mesmo foco: criar uma experiencia competitiva organizada, bonita e justa para a
+            comunidade. A Elite tera premio de R$ 800 para o campeao e R$ 200 para o vice. A Ascensao tera R$ 600 para o
+            campeao e R$ 150 para o vice. Cada divisao tambem tera R$ 50 para o MVP do campeonato.
+          </p>
+          <p>
+            As inscricoes seguem com os mesmos valores: R$ 75 para equipes da Divisao Ascensao e R$ 100 para equipes da
+            Divisao Elite. Leia o regulamento abaixo antes de enviar sua inscricao e garanta que sua equipe esta pronta
+            para jogar com a gente. Desejamos um excelente campeonato para todos.
+          </p>
+          <p class="registration-signature">Henrique Marques, CEO da Liga RK</p>
+        </div>
+      </section>
+
+      <section class="registration-section registration-rules-section" aria-labelledby="registration-rules-title">
+        <h2 id="registration-rules-title">Regulamento oficial</h2>
+        <article class="rules-reader registration-rules-reader" aria-label="Regulamento oficial da Liga RK 26.2">
+          <header class="rules-reader-header">
+            <div>
+              <strong>Regulamento Oficial</strong>
+              <span>Liga RK 26.2</span>
+            </div>
+            <a href="assets/docs/regulamento-liga-rk-26-2.pdf" target="_blank" rel="noopener">Abrir PDF</a>
+          </header>
+          <div class="rules-pdf-shell">
+            <iframe
+              class="rules-pdf"
+              title="Regulamento Oficial - Liga RK 26.2"
+              src="assets/docs/regulamento-liga-rk-26-2.pdf#toolbar=0&navpanes=0&view=FitH"
+              loading="lazy"
+            >
+              Abra o regulamento em PDF: assets/docs/regulamento-liga-rk-26-2.pdf
+            </iframe>
+          </div>
+        </article>
+      </section>
+
+      <form class="registration-form" id="registration-form" novalidate>
+        <section class="registration-section" aria-labelledby="division-title">
+          <h2 id="division-title">Divisao</h2>
+          <div class="registration-choice-grid">
+            <label class="division-choice elite-choice">
+              <input type="radio" name="division" value="elite" />
+              <span>
+                <strong>Divisao Elite</strong>
+                <small>GM-</small>
+              </span>
+            </label>
+            <label class="division-choice ascension-choice">
+              <input type="radio" name="division" value="ascension" />
+              <span>
+                <strong>Divisao Ascensao</strong>
+                <small>D4-</small>
+              </span>
+            </label>
+          </div>
+        </section>
+
+        <section class="registration-section" aria-labelledby="team-title">
+          <h2 id="team-title">Equipe</h2>
+          <div class="registration-team-grid">
+            <label class="registration-field">
+              <span>Nome do time</span>
+              <input name="teamName" type="text" maxlength="48" autocomplete="organization" />
+            </label>
+            <label class="registration-field registration-tag-field">
+              <span>TAG</span>
+              <input name="teamTag" type="text" minlength="2" maxlength="4" autocomplete="off" />
+            </label>
+          </div>
+        </section>
+
+        <section class="registration-section" aria-labelledby="logo-title">
+          <h2 id="logo-title">Logo do time</h2>
+          <label class="logo-upload-box">
+            <input id="team-logo" name="teamLogo" type="file" accept="image/png,image/jpeg,image/webp" />
+            <span class="logo-upload-preview" id="logo-preview">Enviar logo</span>
+            <small>PNG, JPG ou WEBP. A imagem sera otimizada antes do envio.</small>
+          </label>
+        </section>
+
+        <section class="registration-section" aria-labelledby="players-title">
+          <h2 id="players-title">Jogadores</h2>
+          <p class="registration-help">Preencha pelo menos os 5 titulares. Escolha apenas um capitao.</p>
+          <div class="registration-players" id="registration-players"></div>
+        </section>
+
+        <section class="registration-section registration-submit-section" aria-labelledby="finish-title">
+          <h2 id="finish-title">Finalizar inscricao</h2>
+          <label class="registration-agreement">
+            <input name="acceptedRules" type="checkbox" />
+            <span>Li e concordo com todo o regulamento oficial da Liga RK 26.2.</span>
+          </label>
+          <p class="registration-deadline">Os times poderao fazer alteracoes ate 3 de julho, as 23:59.</p>
+          <button class="registration-submit" type="submit">Finalizar inscricao</button>
+          <p class="registration-status" id="registration-status" aria-live="polite"></p>
+        </section>
+      </form>
+    </main>
+
+    <script src="assets/inscricao.js"></script>
+  </body>
+</html>
