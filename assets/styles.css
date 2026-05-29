@@ -1346,9 +1346,9 @@ a {
 }
 
 .home-panel h1 {
-  margin: 0.4rem 0 1.8rem;
+  margin: 0.35rem 0 1.45rem;
   color: #fff;
-  font-size: 4rem;
+  font-size: clamp(2.9rem, 6vw, 3.55rem);
   line-height: 0.95;
   text-transform: uppercase;
 }
@@ -1362,8 +1362,8 @@ a {
 
 .home-registration-action {
   display: grid;
-  width: min(100%, 32rem);
-  margin: 0 0 1rem;
+  width: min(100%, 28rem);
+  margin: 0 0 0.95rem;
 }
 
 .home-socials {
@@ -1405,11 +1405,11 @@ a {
 
 .primary-registration {
   width: 100%;
-  min-height: 5rem;
+  min-height: 4.35rem;
   color: #fff;
   background: linear-gradient(90deg, #421116, #e71921);
   border-color: transparent;
-  font-size: clamp(1.55rem, 4vw, 2.35rem);
+  font-size: clamp(1.35rem, 3.25vw, 1.95rem);
 }
 
 .primary-registration:hover,
