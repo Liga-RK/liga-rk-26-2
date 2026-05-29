@@ -18,10 +18,16 @@
   const groupLetters = ["A", "B", "C", "D"];
   const laneOrder = ["TOP", "JG", "MID", "ADC", "SUP", "SUB", "SUB", "SUB"];
   const slotOrder = groupLetters.flatMap((group) => [1, 2, 3, 4].map((seed) => `${group}${seed}`));
+  const defaultApiBase = "https://liga-rk-api.suporteinhouserk.workers.dev";
+  const editorConfig = {
+    apiBase: localStorage.getItem("liga-rk-editor-api-base") || defaultApiBase,
+    adminToken: localStorage.getItem("liga-rk-editor-admin-token") || ""
+  };
   let currentDivision = "elite";
   let state = normalizeContent(sourceContent);
 
   render();
+  loadOnlineContent({ silent: true });
 
   app.addEventListener("input", handleInput);
   app.addEventListener("change", handleInput);
@@ -209,11 +215,11 @@
           <span>Editor LIGA RK 26.2</span>
         </a>
         <div class="editor-actions">
-          <button type="button" data-action="save-file">Salvar content.js</button>
-          <button type="button" data-action="download">Baixar content.js</button>
-          <button type="button" data-action="copy">Copiar</button>
+          <button type="button" data-action="publish-online">Publicar online</button>
+          <button type="button" data-action="load-online">Carregar online</button>
+          <button type="button" data-action="download">Baixar backup</button>
           <label class="file-button">
-            Importar
+            Importar backup
             <input type="file" accept=".js,.json" data-action="import" />
           </label>
         </div>
@@ -221,6 +227,16 @@
 
       <main class="editor-shell">
         <section class="editor-intro">
+          <div class="editor-grid-2 editor-config-grid">
+            <label class="editor-field">
+              <span>API da Liga RK</span>
+              <input data-config="apiBase" value="${escapeAttribute(editorConfig.apiBase)}" placeholder="https://liga-rk-api...workers.dev" />
+            </label>
+            <label class="editor-field">
+              <span>Token de administrador</span>
+              <input data-config="adminToken" type="password" value="${escapeAttribute(editorConfig.adminToken)}" placeholder="cole o token do Worker" autocomplete="off" />
+            </label>
+          </div>
           <h1>Dados editáveis</h1>
           <p>Preencha os campos, salve o arquivo <strong>assets/content.js</strong> e recarregue as páginas da divisão.</p>
           <nav class="editor-tabs" aria-label="Divisões">
@@ -245,6 +261,19 @@
         </form>
       </main>
     `;
+    hydrateEditorIntro();
+  }
+
+  function hydrateEditorIntro() {
+    const title = app.querySelector(".editor-intro h1");
+    const copy = app.querySelector(".editor-intro p");
+
+    if (title) {
+      title.textContent = "Painel de conteudo";
+    }
+    if (copy) {
+      copy.innerHTML = 'Preencha os campos e clique em <strong>Publicar online</strong>. As paginas das divisoes buscam esses dados na API automaticamente.';
+    }
   }
 
   function rerenderPreservingOpenSections() {
@@ -272,8 +301,6 @@
       ${renderCalendarSection(key)}
       ${renderPlayoffsSection(key)}
       ${renderVodsSection(key)}
-      ${renderStatisticsSection(key)}
-      ${renderRulesSection(key)}
     `;
   }
 
@@ -540,6 +567,12 @@
   function handleInput(event) {
     const target = event.target;
 
+    if (target.dataset.config) {
+      editorConfig[target.dataset.config] = target.value.trim();
+      localStorage.setItem(`liga-rk-editor-${target.dataset.config === "apiBase" ? "api-base" : "admin-token"}`, editorConfig[target.dataset.config]);
+      return;
+    }
+
     if (target.matches("[data-captain-slot]")) {
       const key = target.dataset.captainDivision;
       const slot = target.dataset.captainSlot;
@@ -606,6 +639,12 @@
     }
     if (action === "copy") {
       copyFile();
+    }
+    if (action === "publish-online") {
+      publishOnline();
+    }
+    if (action === "load-online") {
+      loadOnlineContent({ silent: false });
     }
     if (action === "save-file") {
       saveFile();
@@ -706,6 +745,76 @@
     state.divisions[key].vod = normalizeVod((state.divisions[key].vods || [])[0] || createVod());
   }
 
+  async function loadOnlineContent(options = {}) {
+    const apiBase = normalizeApiBase(editorConfig.apiBase);
+    if (!apiBase) {
+      if (!options.silent) {
+        setStatus("Informe a URL da API da Liga RK.");
+      }
+      return;
+    }
+
+    try {
+      if (!options.silent) {
+        setStatus("Carregando dados online...");
+      }
+      const response = await fetch(`${apiBase}/api/content?v=${Date.now()}`, { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error(`API retornou ${response.status}.`);
+      }
+
+      const payload = await response.json();
+      const nextContent = payload.content && payload.content.divisions ? payload.content : payload;
+      if (!nextContent || !nextContent.divisions) {
+        throw new Error("A API ainda nao tem conteudo publicado.");
+      }
+
+      state = normalizeContent(nextContent);
+      render();
+      setStatus("Dados online carregados.");
+    } catch (error) {
+      if (!options.silent) {
+        setStatus(error.message || "Nao consegui carregar os dados online.");
+      }
+    }
+  }
+
+  async function publishOnline() {
+    const apiBase = normalizeApiBase(editorConfig.apiBase);
+    const adminToken = String(editorConfig.adminToken || "").trim();
+
+    if (!apiBase) {
+      setStatus("Informe a URL da API da Liga RK.");
+      return;
+    }
+    if (!adminToken) {
+      setStatus("Informe o token de administrador do Worker.");
+      return;
+    }
+
+    Object.keys(state.divisions).forEach(syncLegacyVod);
+    setStatus("Publicando dados online...");
+
+    try {
+      const response = await fetch(`${apiBase}/api/admin/content`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${adminToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ content: state })
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || !payload.ok) {
+        throw new Error(payload.error || `API retornou ${response.status}.`);
+      }
+
+      setStatus("Publicado online. Recarregue Elite/Ascensao para ver as alteracoes.");
+    } catch (error) {
+      setStatus(error.message || "Nao consegui publicar online.");
+    }
+  }
+
   async function saveFile() {
     const content = buildFileContent();
 
@@ -740,10 +849,10 @@
     const blob = new Blob([buildFileContent()], { type: "text/javascript" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "content.js";
+    link.download = "liga-rk-content-backup.js";
     link.click();
     URL.revokeObjectURL(link.href);
-    setStatus("content.js baixado. Coloque/substitua o arquivo em assets/content.js.");
+    setStatus("Backup baixado. Use apenas se quiser guardar uma copia local dos dados.");
   }
 
   async function copyFile() {
@@ -784,6 +893,10 @@
   function buildFileContent() {
     Object.keys(state.divisions).forEach(syncLegacyVod);
     return `window.LIGA_RK_CONTENT = ${JSON.stringify(state, null, 2)};\n`;
+  }
+
+  function normalizeApiBase(value) {
+    return String(value || "").trim().replace(/\/+$/, "");
   }
 
   function field(label, path, value, placeholder, type = "text", min = "", max = "", maxlength = "") {
@@ -1052,6 +1165,9 @@
   }
 
   function setStatus(message) {
+    if (String(message).includes("content.js") && String(message).toLowerCase().includes("salv")) {
+      message = "Alteracoes ainda nao publicadas online.";
+    }
     const status = document.getElementById("editor-status");
     if (status) {
       status.textContent = message;

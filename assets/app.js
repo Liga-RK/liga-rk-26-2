@@ -4,7 +4,9 @@
   const replayStatsData = window.LIGA_RK_STATS || {};
   const divisionKey = document.body.dataset.division;
   const division = fixedData && fixedData[divisionKey];
-  const content = (contentData.divisions && contentData.divisions[divisionKey]) || {};
+  const contentApiUrl = window.LIGA_RK_CONTENT_API || "https://liga-rk-api.suporteinhouserk.workers.dev/api/content";
+  let contentSource = contentData;
+  let content = (contentSource.divisions && contentSource.divisions[divisionKey]) || {};
   const replayStats = (replayStatsData.divisions && replayStatsData.divisions[divisionKey]) || {};
   const app = document.getElementById("app");
 
@@ -16,9 +18,9 @@
   const laneOrder = ["TOP", "JG", "MID", "ADC", "SUP", "SUB", "SUB", "SUB"];
   const slotOrder = groupLetters.flatMap((group) => [1, 2, 3, 4].map((seed) => `${group}${seed}`));
   const rulesPdfUrl = "assets/docs/regulamento-liga-rk-26-2.pdf";
-  const teamsBySlot = normalizeTeams();
-  const standingsByGroup = computeStandings();
-  const playoffState = computePlayoffState();
+  let teamsBySlot = {};
+  let standingsByGroup = {};
+  let playoffState = {};
 
   const sectionLinks = [
     ["selecao", "Seleção"],
@@ -39,43 +41,86 @@
     { label: "TikTok", url: "https://www.tiktok.com/@inhouse_rk", icon: "tiktok.svg" }
   ];
 
-  document.title = `${division.label} | LIGA RK 26.2`;
+  loadContentAndRender();
 
-  app.innerHTML = `
-    <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Voltar para seleção de divisão">
-        <img class="brand-logo logo-white" src="assets/logo_liga_rk_nobg_512.png" alt="LIGA RK 26.2" />
-        <span>LIGA RK 26.2</span>
-      </a>
-      <div class="header-actions">
-        ${renderSocialLinks("header-socials")}
-        <nav class="division-nav" aria-label="Divisões">
-          <a class="${divisionKey === "elite" ? "active" : ""}" href="elite.html">Elite</a>
-          <a class="${divisionKey === "ascension" ? "active" : ""}" href="ascensao.html">Ascensão</a>
-        </nav>
-      </div>
-    </header>
+  async function loadContentAndRender() {
+    const remoteContent = await fetchRemoteContent();
+    if (remoteContent && remoteContent.divisions) {
+      contentSource = remoteContent;
+      content = (contentSource.divisions && contentSource.divisions[divisionKey]) || content;
+    }
+    renderApp();
+  }
 
-    <nav class="section-nav" aria-label="Seções da divisão">
-      ${sectionLinks.map(([id, label]) => `<a href="#${id}">${label}</a>`).join("")}
-    </nav>
+  async function fetchRemoteContent() {
+    if (!contentApiUrl || window.location.protocol === "file:") {
+      return null;
+    }
 
-    <main class="division-page">
-      ${renderWeekly()}
-      ${renderCalendar()}
-      ${renderGroups()}
-      ${renderPlayoffs()}
-      ${renderTeams()}
-      ${renderVods()}
-      ${renderStatistics()}
-      ${renderRules()}
-    </main>
-    ${renderFooter()}
-  `;
-  restoreDivisionScrollPosition();
-  setupDivisionNavScrollTransfer();
-  setupVodCarousels();
-  hydrateVodTitles();
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2500);
+
+    try {
+      const response = await fetch(`${contentApiUrl}?v=${Date.now()}`, {
+        cache: "no-store",
+        signal: controller.signal
+      });
+      if (!response.ok) {
+        return null;
+      }
+
+      const payload = await response.json();
+      return payload.content && payload.content.divisions ? payload.content : payload;
+    } catch (error) {
+      return null;
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  function renderApp() {
+    teamsBySlot = normalizeTeams();
+    standingsByGroup = computeStandings();
+    playoffState = computePlayoffState();
+
+    document.title = `${division.label} | LIGA RK 26.2`;
+
+    app.innerHTML = `
+      <header class="site-header">
+        <a class="brand" href="index.html" aria-label="Voltar para seleção de divisão">
+          <img class="brand-logo logo-white" src="assets/logo_liga_rk_nobg_512.png" alt="LIGA RK 26.2" />
+          <span>LIGA RK 26.2</span>
+        </a>
+        <div class="header-actions">
+          ${renderSocialLinks("header-socials")}
+          <nav class="division-nav" aria-label="Divisões">
+            <a class="${divisionKey === "elite" ? "active" : ""}" href="elite.html">Elite</a>
+            <a class="${divisionKey === "ascension" ? "active" : ""}" href="ascensao.html">Ascensão</a>
+          </nav>
+        </div>
+      </header>
+
+      <nav class="section-nav" aria-label="Seções da divisão">
+        ${sectionLinks.map(([id, label]) => `<a href="#${id}">${label}</a>`).join("")}
+      </nav>
+
+      <main class="division-page">
+        ${renderWeekly()}
+        ${renderCalendar()}
+        ${renderGroups()}
+        ${renderPlayoffs()}
+        ${renderTeams()}
+        ${renderVods()}
+        ${renderStatistics()}
+        ${renderRules()}
+      </main>
+      ${renderFooter()}
+    `;
+    restoreDivisionScrollPosition();
+    setupDivisionNavScrollTransfer();
+    setupVodCarousels();
+    hydrateVodTitles();
+  }
 
   function normalizeTeams() {
     return slotOrder.reduce((teams, slot, index) => {
