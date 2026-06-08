@@ -176,7 +176,7 @@
       players,
       captainIndex,
       acceptedRules: data.get("acceptedRules") === "on",
-      editDeadline: "2026-07-03T23:59:00-03:00",
+      editDeadline: "2026-07-24T23:59:00-03:00",
       submittedPage: "inscricao.html"
     };
   }

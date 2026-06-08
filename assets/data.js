@@ -72,7 +72,7 @@ window.LIGA_RK_DATA = {
     rounds: [
       {
         name: "RODADA 1",
-        date: "05/07",
+        date: "26/07",
         games: [
           ["16:00", "A1", "A2"],
           ["16:00", "A3", "A4"],
@@ -86,7 +86,7 @@ window.LIGA_RK_DATA = {
       },
       {
         name: "RODADA 2",
-        date: "12/07",
+        date: "02/08",
         games: [
           ["16:00", "A1", "A3"],
           ["16:00", "A2", "A4"],
@@ -100,7 +100,7 @@ window.LIGA_RK_DATA = {
       },
       {
         name: "RODADA 3",
-        date: "19/07",
+        date: "09/08",
         games: [
           ["16:00", "A2", "A3"],
           ["16:00", "A4", "A1"],
@@ -153,23 +153,23 @@ window.LIGA_RK_DATA = {
     ],
     playoffs: [
       [
-        { title: "OITAVAS 1", date: "26/07", time: "14:00", format: "MD3", teamA: "C2", teamB: "D3" },
-        { title: "OITAVAS 2", date: "26/07", time: "16:30", format: "MD3", teamA: "D2", teamB: "C3" },
-        { title: "OITAVAS 3", date: "26/07", time: "19:00", format: "MD3", teamA: "A2", teamB: "B3" },
-        { title: "OITAVAS 4", date: "26/07", time: "21:30", format: "MD3", teamA: "B2", teamB: "A3" }
+        { title: "OITAVAS 1", date: "16/08", time: "14:00", format: "MD3", teamA: "C2", teamB: "D3" },
+        { title: "OITAVAS 2", date: "16/08", time: "16:30", format: "MD3", teamA: "D2", teamB: "C3" },
+        { title: "OITAVAS 3", date: "16/08", time: "19:00", format: "MD3", teamA: "A2", teamB: "B3" },
+        { title: "OITAVAS 4", date: "16/08", time: "21:30", format: "MD3", teamA: "B2", teamB: "A3" }
       ],
       [
-        { title: "QUARTAS 1", date: "02/08", time: "14:00", format: "MD3", teamA: "A1", teamB: "VENCEDOR OITAVAS 1" },
-        { title: "QUARTAS 2", date: "02/08", time: "16:30", format: "MD3", teamA: "B1", teamB: "VENCEDOR OITAVAS 2" },
-        { title: "QUARTAS 3", date: "02/08", time: "19:00", format: "MD3", teamA: "C1", teamB: "VENCEDOR OITAVAS 3" },
-        { title: "QUARTAS 4", date: "02/08", time: "21:30", format: "MD3", teamA: "D1", teamB: "VENCEDOR OITAVAS 4" }
+        { title: "QUARTAS 1", date: "23/08", time: "14:00", format: "MD3", teamA: "A1", teamB: "VENCEDOR OITAVAS 1" },
+        { title: "QUARTAS 2", date: "23/08", time: "16:30", format: "MD3", teamA: "B1", teamB: "VENCEDOR OITAVAS 2" },
+        { title: "QUARTAS 3", date: "23/08", time: "19:00", format: "MD3", teamA: "C1", teamB: "VENCEDOR OITAVAS 3" },
+        { title: "QUARTAS 4", date: "23/08", time: "21:30", format: "MD3", teamA: "D1", teamB: "VENCEDOR OITAVAS 4" }
       ],
       [
-        { title: "SEMIS 1", date: "09/08", time: "15:00", format: "MD5", teamA: "VENCEDOR QUARTAS 1", teamB: "VENCEDOR QUARTAS 2" },
-        { title: "SEMIS 2", date: "09/08", time: "19:00", format: "MD5", teamA: "VENCEDOR QUARTAS 3", teamB: "VENCEDOR QUARTAS 4" }
+        { title: "SEMIS 1", date: "30/08", time: "15:00", format: "MD5", teamA: "VENCEDOR QUARTAS 1", teamB: "VENCEDOR QUARTAS 2" },
+        { title: "SEMIS 2", date: "30/08", time: "19:00", format: "MD5", teamA: "VENCEDOR QUARTAS 3", teamB: "VENCEDOR QUARTAS 4" }
       ],
       [
-        { title: "GRANDE FINAL", date: "16/08", time: "17:30", format: "MD5", teamA: "VENCEDOR SEMI 1", teamB: "VENCEDOR SEMI 2" }
+        { title: "GRANDE FINAL", date: "06/09", time: "17:30", format: "MD5", teamA: "VENCEDOR SEMI 1", teamB: "VENCEDOR SEMI 2" }
       ]
     ],
     teams: createPlaceholderTeams(16, 1),
@@ -208,7 +208,7 @@ window.LIGA_RK_DATA = {
     rounds: [
       {
         name: "RODADA 1",
-        date: "04/07",
+        date: "25/07",
         games: [
           ["16:00", "A1", "A2"],
           ["16:00", "A3", "A4"],
@@ -222,7 +222,7 @@ window.LIGA_RK_DATA = {
       },
       {
         name: "RODADA 2",
-        date: "11/07",
+        date: "01/08",
         games: [
           ["16:00", "A1", "A3"],
           ["16:00", "A2", "A4"],
@@ -236,7 +236,7 @@ window.LIGA_RK_DATA = {
       },
       {
         name: "RODADA 3",
-        date: "18/07",
+        date: "08/08",
         games: [
           ["16:00", "A2", "A3"],
           ["16:00", "A4", "A1"],
@@ -289,23 +289,23 @@ window.LIGA_RK_DATA = {
     ],
     playoffs: [
       [
-        { title: "OITAVAS 1", date: "25/07", time: "14:00", format: "MD3", teamA: "C2", teamB: "D3" },
-        { title: "OITAVAS 2", date: "25/07", time: "16:30", format: "MD3", teamA: "D2", teamB: "C3" },
-        { title: "OITAVAS 3", date: "25/07", time: "19:00", format: "MD3", teamA: "A2", teamB: "B3" },
-        { title: "OITAVAS 4", date: "25/07", time: "21:30", format: "MD3", teamA: "B2", teamB: "A3" }
+        { title: "OITAVAS 1", date: "15/08", time: "14:00", format: "MD3", teamA: "C2", teamB: "D3" },
+        { title: "OITAVAS 2", date: "15/08", time: "16:30", format: "MD3", teamA: "D2", teamB: "C3" },
+        { title: "OITAVAS 3", date: "15/08", time: "19:00", format: "MD3", teamA: "A2", teamB: "B3" },
+        { title: "OITAVAS 4", date: "15/08", time: "21:30", format: "MD3", teamA: "B2", teamB: "A3" }
       ],
       [
-        { title: "QUARTAS 1", date: "01/08", time: "14:00", format: "MD3", teamA: "A1", teamB: "VENCEDOR OITAVAS 1" },
-        { title: "QUARTAS 2", date: "01/08", time: "16:30", format: "MD3", teamA: "B1", teamB: "VENCEDOR OITAVAS 2" },
-        { title: "QUARTAS 3", date: "01/08", time: "19:00", format: "MD3", teamA: "C1", teamB: "VENCEDOR OITAVAS 3" },
-        { title: "QUARTAS 4", date: "01/08", time: "21:30", format: "MD3", teamA: "D1", teamB: "VENCEDOR OITAVAS 4" }
+        { title: "QUARTAS 1", date: "22/08", time: "14:00", format: "MD3", teamA: "A1", teamB: "VENCEDOR OITAVAS 1" },
+        { title: "QUARTAS 2", date: "22/08", time: "16:30", format: "MD3", teamA: "B1", teamB: "VENCEDOR OITAVAS 2" },
+        { title: "QUARTAS 3", date: "22/08", time: "19:00", format: "MD3", teamA: "C1", teamB: "VENCEDOR OITAVAS 3" },
+        { title: "QUARTAS 4", date: "22/08", time: "21:30", format: "MD3", teamA: "D1", teamB: "VENCEDOR OITAVAS 4" }
       ],
       [
-        { title: "SEMIS 1", date: "08/08", time: "15:00", format: "MD5", teamA: "VENCEDOR QUARTAS 1", teamB: "VENCEDOR QUARTAS 2" },
-        { title: "SEMIS 2", date: "08/08", time: "19:00", format: "MD5", teamA: "VENCEDOR QUARTAS 3", teamB: "VENCEDOR QUARTAS 4" }
+        { title: "SEMIS 1", date: "29/08", time: "15:00", format: "MD5", teamA: "VENCEDOR QUARTAS 1", teamB: "VENCEDOR QUARTAS 2" },
+        { title: "SEMIS 2", date: "29/08", time: "19:00", format: "MD5", teamA: "VENCEDOR QUARTAS 3", teamB: "VENCEDOR QUARTAS 4" }
       ],
       [
-        { title: "GRANDE FINAL", date: "15/08", time: "17:30", format: "MD5", teamA: "VENCEDOR SEMI 1", teamB: "VENCEDOR SEMI 2" }
+        { title: "GRANDE FINAL", date: "05/09", time: "17:30", format: "MD5", teamA: "VENCEDOR SEMI 1", teamB: "VENCEDOR SEMI 2" }
       ]
     ],
     teams: createPlaceholderTeams(16, 3),
