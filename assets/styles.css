@@ -1732,6 +1732,221 @@ a {
   color: #ffb6b6;
 }
 
+.payment-shell {
+  width: min(94%, 78rem);
+}
+
+.payment-hero h1 {
+  white-space: normal;
+}
+
+.payment-section {
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+
+.payment-card {
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(8, 8, 11, 0.92), rgba(8, 8, 11, 0.82));
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, rgba(255, 255, 255, 0.12));
+}
+
+.payment-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  color: var(--muted);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent-dark) 86%, #000), var(--accent));
+  text-transform: uppercase;
+}
+
+.payment-card-header span {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 1.15rem;
+}
+
+.payment-card-header h2 {
+  margin: 0;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  line-height: 0.95;
+}
+
+.payment-card-header strong {
+  color: #fff;
+  font-size: clamp(2rem, 5vw, 3.7rem);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.payment-grid {
+  display: grid;
+  grid-template-columns: minmax(17rem, 24rem) minmax(0, 1fr);
+  gap: 1.2rem;
+  align-items: start;
+  padding: 1.2rem;
+}
+
+.payment-qr {
+  display: grid;
+  gap: 0.65rem;
+  justify-items: center;
+  margin: 0;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.payment-qr img {
+  width: min(100%, 21rem);
+  aspect-ratio: 1;
+  object-fit: contain;
+  padding: 0.45rem;
+  background: #fff;
+}
+
+.payment-qr figcaption {
+  color: var(--muted);
+  font-size: 1.2rem;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.payment-details {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.payment-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin: 0;
+}
+
+.payment-summary div {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.payment-summary dt,
+.payment-copy-field span {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+}
+
+.payment-summary dd {
+  margin: 0;
+  color: #fff;
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.payment-copy-field {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.payment-copy-field textarea {
+  width: 100%;
+  min-height: 7.2rem;
+  resize: vertical;
+  padding: 0.75rem;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 0.25rem;
+  font-family: Arial, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.payment-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.payment-actions button,
+.payment-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.9rem;
+  padding: 0.65rem 0.9rem 0.5rem;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 0.25rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.payment-actions button:hover,
+.payment-actions button:focus,
+.payment-actions a:hover,
+.payment-actions a:focus {
+  background: var(--accent);
+  border-color: transparent;
+}
+
+.payment-note,
+.payment-confirmation span,
+.payment-card-empty p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.76);
+  font-family: Arial, sans-serif;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.payment-confirmation {
+  display: grid;
+  gap: 0.65rem;
+  padding: 1rem 1.2rem 1.2rem;
+  background: rgba(0, 0, 0, 0.32);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.payment-confirmation strong {
+  color: #fff;
+  font-size: 1.55rem;
+  text-transform: uppercase;
+}
+
+.payment-confirmation .division-link {
+  justify-self: start;
+  min-height: 3rem;
+  min-width: 12rem;
+  margin-top: 0.2rem;
+}
+
+.payment-card-empty {
+  display: grid;
+  gap: 1rem;
+  padding: 1.2rem;
+}
+
+.payment-card-empty h2 {
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(2.3rem, 5vw, 4rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
 .registrations-admin-shell {
   width: min(96%, 100rem);
 }
@@ -2937,6 +3152,8 @@ a {
   .playoff-editor,
   .playoff-editor-row,
   .game-slot-main,
+  .payment-grid,
+  .payment-summary,
   .registration-choice-grid,
   .registration-team-grid,
   .registration-player-row,
@@ -2948,6 +3165,11 @@ a {
 
   .registration-tag-field {
     max-width: none;
+  }
+
+  .payment-card-header {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 
@@ -3170,6 +3392,28 @@ a {
 
   .registration-submit {
     justify-self: stretch;
+  }
+
+  .payment-grid {
+    padding: 0.9rem;
+  }
+
+  .payment-qr {
+    padding: 0.75rem;
+  }
+
+  .payment-qr img {
+    width: min(100%, 18rem);
+  }
+
+  .payment-actions {
+    display: grid;
+  }
+
+  .payment-actions button,
+  .payment-actions a,
+  .payment-confirmation .division-link {
+    width: 100%;
   }
 
   .registration-admin-card > header {

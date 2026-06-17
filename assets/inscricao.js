@@ -145,7 +145,9 @@
       form.reset();
       logoDataUrl = "";
       updateLogoPreview("");
-      setStatus("Inscrição enviada com sucesso. Aguarde a organização validar sua inscrição e adicionar à página oficial da sua divisão.");
+      setStatus("Inscrição enviada. Abrindo pagamento...");
+      const paymentDivision = payload.division === "elite" ? "elite" : "ascensao";
+      window.location.assign(`pagamento.html?divisao=${paymentDivision}`);
     } catch (error) {
       setStatus(error.message || "Não foi possível enviar a inscrição agora.", true);
     } finally {
