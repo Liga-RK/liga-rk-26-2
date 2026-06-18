@@ -17,7 +17,16 @@
   const groupLetters = ["A", "B", "C", "D"];
   const laneOrder = ["TOP", "JG", "MID", "ADC", "SUP", "SUB", "SUB", "SUB"];
   const slotOrder = groupLetters.flatMap((group) => [1, 2, 3, 4].map((seed) => `${group}${seed}`));
-  const rulesPdfUrl = "assets/docs/regulamento-liga-rk-26-2.pdf";
+  const assetVersion = "20260618";
+  const rulesPdfUrl = `assets/docs/regulamento-liga-rk-26-2.pdf?v=${assetVersion}`;
+  const rkPlaceholderUrl = "assets/logo_rk_placeholder.png";
+  const publicSectionLocks = {
+    calendar: "Disponibilizado após o sorteio de grupos dia 20/07 as 20:00.",
+    groups: "Disponibilizado após o sorteio de grupos dia 20/07 as 20:00.",
+    playoffs: "Disponibilizado após o final da fase de grupos grupos dia 08/09.",
+    vods: "Disponibilizado após o início das rodadas.",
+    statistics: "Disponibilizado após o início das rodadas."
+  };
   let teamsBySlot = {};
   let standingsByGroup = {};
   let playoffState = {};
@@ -285,6 +294,23 @@
     `;
   }
 
+  function renderLockedContent(lockKey, body) {
+    const message = publicSectionLocks[lockKey];
+
+    if (!message) {
+      return body;
+    }
+
+    return `
+      <div class="locked-content" aria-label="${escapeAttribute(message)}">
+        <div class="locked-content-body" aria-hidden="true">
+          ${body}
+        </div>
+        <div class="locked-ribbon" role="note">${escapeHtml(message)}</div>
+      </div>
+    `;
+  }
+
   function renderWeekly() {
     const weeklySelection = content.weeklySelection || division.weeklySelection || [];
     const highlightIndex = weeklyHighlightIndex(weeklySelection);
@@ -303,7 +329,7 @@
   function renderPlayer(player, index, highlighted) {
     const image = player.image
       ? `<img src="${escapeAttribute(player.image)}" alt="${escapeAttribute(player.player || "JOGADOR")}" />`
-      : `<span class="portrait-placeholder" aria-hidden="true"><span></span></span>`;
+      : `<img class="placeholder-logo-img" src="${escapeAttribute(rkPlaceholderUrl)}" alt="" loading="lazy" />`;
     const role = player.role || "";
     const teamText = resolveTeamText(player.team || "EQUIPE");
     const laneIcon = getLaneIcon(normalizeLane(role), role);
@@ -311,7 +337,7 @@
     return `
       <article class="player-card player-${index + 1} ${highlighted ? "weekly-highlight" : ""}">
         ${highlighted ? `<div class="weekly-highlight-badge">DESTAQUE DA SEMANA</div>` : ""}
-        <div class="player-photo">${image}</div>
+        <div class="player-photo ${player.image ? "" : "player-photo-placeholder"}">${image}</div>
         <div class="player-name">${escapeHtml(player.player || "JOGADOR")}</div>
         <div class="player-meta">
           ${renderWeeklyTeamLogo(player)}
@@ -329,7 +355,7 @@
       return `<span class="weekly-team-logo"><img src="${escapeAttribute(teamLogo)}" alt="${escapeAttribute(resolveTeamText(player.team || "EQUIPE"))}" /></span>`;
     }
 
-    return `<span class="weekly-team-logo"><span class="team-mark" aria-hidden="true"></span></span>`;
+    return `<span class="weekly-team-logo rk-logo-placeholder"><img src="${escapeAttribute(rkPlaceholderUrl)}" alt="" loading="lazy" /></span>`;
   }
 
   function weeklyHighlightIndex(weeklySelection) {
@@ -355,9 +381,11 @@
     return `
       <section class="visual-section calendar-section" id="calendario">
         ${sectionHeader(division.calendarTitle)}
-        <div class="round-grid">
-          ${(division.rounds || []).map((round, roundIndex) => renderRound(round, roundIndex)).join("")}
-        </div>
+        ${renderLockedContent("calendar", `
+          <div class="round-grid">
+            ${(division.rounds || []).map((round, roundIndex) => renderRound(round, roundIndex)).join("")}
+          </div>
+        `)}
       </section>
     `;
   }
@@ -400,16 +428,18 @@
       return `<span class="calendar-logo"><img src="${escapeAttribute(team.logo)}" alt="${escapeAttribute(teamName(slot))}" /></span>`;
     }
 
-    return `<span class="calendar-logo"><span class="team-mark" aria-hidden="true"></span></span>`;
+    return `<span class="calendar-logo rk-logo-placeholder"><img src="${escapeAttribute(rkPlaceholderUrl)}" alt="" loading="lazy" /></span>`;
   }
 
   function renderGroups() {
     return `
       <section class="visual-section groups-section" id="grupos">
         ${sectionHeader(division.groupsTitle)}
-        <div class="groups-grid">
-          ${groupLetters.map((group, index) => renderGroup(group, index)).join("")}
-        </div>
+        ${renderLockedContent("groups", `
+          <div class="groups-grid">
+            ${groupLetters.map((group, index) => renderGroup(group, index)).join("")}
+          </div>
+        `)}
       </section>
     `;
   }
@@ -454,16 +484,18 @@
       return `<span class="standing-logo"><img src="${escapeAttribute(team.logo)}" alt="${escapeAttribute(teamName(slot))}" /></span>`;
     }
 
-    return `<span class="standing-logo"><span class="team-mark" aria-hidden="true"></span></span>`;
+    return `<span class="standing-logo rk-logo-placeholder"><img src="${escapeAttribute(rkPlaceholderUrl)}" alt="" loading="lazy" /></span>`;
   }
 
   function renderPlayoffs() {
     return `
       <section class="visual-section playoffs-section" id="playoffs">
         ${sectionHeader(division.playoffsTitle)}
-        <div class="bracket-grid">
-          ${(division.playoffs || []).map(renderBracketColumn).join("")}
-        </div>
+        ${renderLockedContent("playoffs", `
+          <div class="bracket-grid">
+            ${(division.playoffs || []).map(renderBracketColumn).join("")}
+          </div>
+        `)}
       </section>
     `;
   }
@@ -516,7 +548,7 @@
       return `<span class="match-logo"><img src="${escapeAttribute(team.logo)}" alt="${escapeAttribute(teamName(slot))}" /></span>`;
     }
 
-    return `<span class="match-logo"><span class="team-mark" aria-hidden="true"></span></span>`;
+    return `<span class="match-logo rk-logo-placeholder"><img src="${escapeAttribute(rkPlaceholderUrl)}" alt="" loading="lazy" /></span>`;
   }
 
   function renderTeams() {
@@ -533,7 +565,7 @@
   function renderTeam(team) {
     const logo = team.logo
       ? `<img class="team-logo" src="${escapeAttribute(team.logo)}" alt="${escapeAttribute(teamName(team.slot))}" />`
-      : `<span class="team-crest-placeholder" aria-hidden="true"></span>`;
+      : `<img class="team-logo team-logo-placeholder" src="${escapeAttribute(rkPlaceholderUrl)}" alt="" loading="lazy" />`;
 
     return `
       <article class="team-card" tabindex="0" aria-label="${escapeAttribute(teamName(team.slot))}">
@@ -597,12 +629,14 @@
     return `
       <section class="visual-section vods-section" id="vods">
         ${sectionHeader(division.vodsTitle)}
-        <div class="vod-feature" data-vod-carousel>
-          <div class="vod-slides">
-            ${vods.map(renderVodSlide).join("")}
+        ${renderLockedContent("vods", `
+          <div class="vod-feature" data-vod-carousel>
+            <div class="vod-slides">
+              ${vods.map(renderVodSlide).join("")}
+            </div>
+            ${navigation}
           </div>
-          ${navigation}
-        </div>
+        `)}
       </section>
     `;
   }
@@ -647,13 +681,15 @@
     return `
       <section class="visual-section statistics-section" id="estatisticas">
         ${sectionHeader("ESTATÍSTICAS")}
-        <div class="statistics-layout">
+        ${renderLockedContent("statistics", `
+          <div class="statistics-layout">
           ${renderChampionStat(stats.mostPicked, "MAIS ESCOLHAS")}
           <div class="player-stat-list">
             ${(stats.playerStats || []).map(renderPlayerStat).join("")}
           </div>
           ${renderChampionStat(stats.mostWins, "MAIS VITÓRIAS")}
-        </div>
+          </div>
+        `)}
       </section>
     `;
   }
@@ -705,7 +741,7 @@
             <iframe
               class="rules-pdf"
               title="Regulamento Oficial - Liga RK 26.2"
-              src="${rulesPdfUrl}#toolbar=0&navpanes=0&view=FitH"
+              src="${rulesPdfUrl}#toolbar=0&navpanes=0&zoom=80"
               loading="lazy"
             >
               Abra o regulamento em PDF: ${rulesPdfUrl}

@@ -316,6 +316,57 @@ a {
   content: none;
 }
 
+.locked-content {
+  position: relative;
+  width: var(--section-frame-width);
+  margin: 0 auto;
+  isolation: isolate;
+}
+
+.locked-content-body {
+  opacity: 0.14;
+  filter: blur(0.14rem);
+  pointer-events: none;
+  user-select: none;
+}
+
+.locked-content::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.82), color-mix(in srgb, var(--accent-dark) 46%, rgba(0, 0, 0, 0.68)), rgba(0, 0, 0, 0.82));
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, rgba(255, 255, 255, 0.1));
+}
+
+.locked-ribbon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  width: min(92%, 58rem);
+  transform: translate(-50%, -50%);
+  padding: 1rem 1.3rem 0.82rem;
+  color: #fff;
+  background:
+    linear-gradient(90deg, rgba(5, 5, 7, 0.94), color-mix(in srgb, var(--accent) 42%, rgba(5, 5, 7, 0.94)), rgba(5, 5, 7, 0.94));
+  border: 1px solid color-mix(in srgb, var(--accent) 48%, rgba(255, 255, 255, 0.18));
+  box-shadow: 0 1rem 2.4rem rgba(0, 0, 0, 0.34);
+  font-size: clamp(1.15rem, 2.2vw, 2rem);
+  line-height: 1.05;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.locked-content .round-grid,
+.locked-content .groups-grid,
+.locked-content .bracket-grid,
+.locked-content .vod-feature,
+.locked-content .statistics-layout {
+  width: 100%;
+}
+
 .section-titlebar {
   display: grid;
   grid-template-columns: 8rem 1fr 8rem;
@@ -394,6 +445,16 @@ a {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.player-photo-placeholder {
+  background: rgba(3, 3, 5, 0.88);
+}
+
+.player-photo-placeholder .placeholder-logo-img {
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
 }
 
 .portrait-placeholder {
@@ -586,6 +647,17 @@ a {
   height: 2rem;
   background: #fff;
   clip-path: polygon(50% 0, 88% 12%, 88% 58%, 50% 100%, 12% 58%, 12% 12%);
+}
+
+.rk-logo-placeholder {
+  overflow: hidden;
+  background: rgba(3, 3, 5, 0.78);
+}
+
+.rk-logo-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .groups-grid {
@@ -818,6 +890,11 @@ a {
   width: 72%;
   max-height: 14rem;
   object-fit: contain;
+}
+
+.team-logo-placeholder {
+  width: 78%;
+  max-height: 14rem;
 }
 
 .team-crest-placeholder {
@@ -3269,6 +3346,16 @@ a {
 
   .groups-grid {
     width: 100%;
+  }
+
+  .locked-content {
+    width: 100%;
+  }
+
+  .locked-ribbon {
+    width: min(94%, 28rem);
+    padding: 0.85rem 0.8rem 0.68rem;
+    font-size: 1.08rem;
   }
 
   .group-card header,
