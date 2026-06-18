@@ -23,7 +23,7 @@
   const publicSectionLocks = {
     calendar: "Disponibilizado após o sorteio de grupos dia 20/07 as 20:00.",
     groups: "Disponibilizado após o sorteio de grupos dia 20/07 as 20:00.",
-    playoffs: "Disponibilizado após o final da fase de grupos grupos dia 08/09.",
+    playoffs: "Disponibilizado após o final da fase de grupos grupos.",
     vods: "Disponibilizado após o início das rodadas.",
     statistics: "Disponibilizado após o início das rodadas."
   };
