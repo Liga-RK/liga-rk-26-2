@@ -913,19 +913,23 @@ a {
   pointer-events: none;
 }
 
-.team-card:hover .team-logo-stage,
-.team-card:focus-within .team-logo-stage,
-.team-card:focus .team-logo-stage {
+.team-card.has-roster:hover .team-logo-stage,
+.team-card.has-roster:focus-within .team-logo-stage,
+.team-card.has-roster:focus .team-logo-stage {
   opacity: 0;
   transform: scale(1.02);
 }
 
-.team-card:hover .team-roster,
-.team-card:focus-within .team-roster,
-.team-card:focus .team-roster {
+.team-card.has-roster:hover .team-roster,
+.team-card.has-roster:focus-within .team-roster,
+.team-card.has-roster:focus .team-roster {
   opacity: 1;
   transform: scale(1);
   pointer-events: auto;
+}
+
+.team-card-vacant {
+  cursor: default;
 }
 
 .roster-row {

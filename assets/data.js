@@ -41,7 +41,7 @@ function createPlaceholderStatistics() {
 
 function createPlaceholderTeams(count, captainIndex) {
   return Array.from({ length: count }, () => ({
-    name: "NOME DO TIME",
+    name: "VAGA DISPONÍVEL",
     logo: "",
     players: LIGA_RK_ROSTER_TEMPLATE.map((player, index) => ({
       ...player,

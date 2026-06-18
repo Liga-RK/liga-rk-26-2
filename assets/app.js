@@ -563,21 +563,36 @@
   }
 
   function renderTeam(team) {
+    const hasRoster = hasRegisteredRoster(team);
+    const displayName = hasRoster ? team.name : "VAGA DISPONÍVEL";
     const logo = team.logo
       ? `<img class="team-logo" src="${escapeAttribute(team.logo)}" alt="${escapeAttribute(teamName(team.slot))}" />`
       : `<img class="team-logo team-logo-placeholder" src="${escapeAttribute(rkPlaceholderUrl)}" alt="" loading="lazy" />`;
 
     return `
-      <article class="team-card" tabindex="0" aria-label="${escapeAttribute(teamName(team.slot))}">
-        <header>${escapeHtml(team.name || "NOME DO TIME")}</header>
+      <article class="team-card ${hasRoster ? "has-roster" : "team-card-vacant"}" ${hasRoster ? 'tabindex="0"' : ""} aria-label="${escapeAttribute(displayName)}">
+        <header>${escapeHtml(displayName)}</header>
         <div class="team-card-body">
           <div class="team-logo-stage">${logo}</div>
-          <div class="team-roster" aria-label="Jogadores">
-            ${(team.players || []).map(renderTeamPlayer).join("")}
-          </div>
+          ${
+            hasRoster
+              ? `<div class="team-roster" aria-label="Jogadores">${(team.players || []).map(renderTeamPlayer).join("")}</div>`
+              : ""
+          }
         </div>
       </article>
     `;
+  }
+
+  function hasRegisteredRoster(team) {
+    const teamNameValue = String(team.name || "").trim().toUpperCase();
+    const hasTeamName = teamNameValue && teamNameValue !== "NOME DO TIME" && teamNameValue !== "VAGA DISPONÍVEL";
+    const hasPlayer = (team.players || []).some((player) => {
+      const playerName = String(player.player || "").trim().toUpperCase();
+      return playerName && playerName !== "JOGADOR";
+    });
+
+    return Boolean(hasTeamName && hasPlayer);
   }
 
   function renderTeamPlayer(player) {
