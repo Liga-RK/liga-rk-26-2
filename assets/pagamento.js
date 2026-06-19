@@ -5,17 +5,17 @@
       label: "Divisão Elite",
       shortLabel: "Elite",
       amount: "R$ 100,00",
-      qr: "assets/payment/qr_elite.jpeg",
+      qr: "assets/payment/qr_elite.png",
       pix:
-        "00020101021226940014BR.GOV.BCB.PIX2572pix-qr.mercadopago.com/instore/o/v2/56cfd82b-4bd8-488c-8ffb-d0a0dd40522a5204000053039865802BR5902F26009SAO PAULO62070503***6304C956"
+        "00020126580014BR.GOV.BCB.PIX01360470fc0d-e885-4e6a-a7f8-6ee79422f54d5204000053039865406100.005802BR5918Vitor Lemos Caland6009SAO PAULO62140510WvNAauUBj363043B05"
     },
     ascensao: {
       label: "Divisão Ascensão",
       shortLabel: "Ascensão",
       amount: "R$ 75,00",
-      qr: "assets/payment/qr_ascensao.jpeg",
+      qr: "assets/payment/qr_ascensao.png",
       pix:
-        "00020101021226940014BR.GOV.BCB.PIX2572pix-qr.mercadopago.com/instore/o/v2/d30579e3-bd62-4c24-8bf6-c52e3f490ee15204000053039865802BR5902F26009SAO PAULO62070503***630442E1"
+        "00020126580014BR.GOV.BCB.PIX01360470fc0d-e885-4e6a-a7f8-6ee79422f54d520400005303986540575.005802BR5918Vitor Lemos Caland6009SAO PAULO62140510VlviJFjOeM63045FF4"
     }
   };
 
