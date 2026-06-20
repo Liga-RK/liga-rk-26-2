@@ -61,7 +61,7 @@
           <dl class="payment-summary">
             <div>
               <dt>Recebedor</dt>
-              <dd>Victor Lemos Caland</dd>
+              <dd>Vitor Lemos Caland</dd>
             </div>
             <div>
               <dt>Valor</dt>
