@@ -32,11 +32,11 @@
   let playoffState = {};
 
   const sectionLinks = [
+    ["equipes", "Equipes"],
     ["selecao", "Seleção"],
     ["calendario", "Calendário"],
     ["grupos", "Grupos"],
     ["playoffs", "Playoffs"],
-    ["equipes", "Equipes"],
     ["vods", "VODs"],
     ["estatisticas", "Estatísticas"],
     ["regras", "Regras"]
@@ -114,11 +114,11 @@
       </nav>
 
       <main class="division-page">
+        ${renderTeams()}
         ${renderWeekly()}
         ${renderCalendar()}
         ${renderGroups()}
         ${renderPlayoffs()}
-        ${renderTeams()}
         ${renderVods()}
         ${renderStatistics()}
         ${renderRules()}
