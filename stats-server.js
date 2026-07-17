@@ -650,7 +650,10 @@ function serveStatic(request, response) {
   const url = new URL(request.url, `http://localhost:${PORT}`);
   let pathname = decodeURIComponent(url.pathname);
   if (pathname === "/") pathname = "/index.html";
-  if ((pathname === "/editor.html" || pathname === "/stats-admin.html") && !requireAdminAuth(request, response)) return;
+  if (
+    (pathname === "/editor.html" || pathname === "/stats-admin.html" || pathname === "/bolao-admin.html")
+    && !requireAdminAuth(request, response)
+  ) return;
   const filePath = path.resolve(ROOT, `.${pathname}`);
   const privateRoots = [DATA_DIR, CONFIG_DIR, PREVIEW_DIR, path.join(ROOT, "backups"), path.join(ROOT, "src")];
   if (!filePath.startsWith(`${ROOT}${path.sep}`) || privateRoots.some((privateRoot) => filePath === privateRoot || filePath.startsWith(`${privateRoot}${path.sep}`))) {

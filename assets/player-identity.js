@@ -1,7 +1,7 @@
 (function (global) {
   "use strict";
 
-  const EMPTY_NAMES = new Set(["", "JOGADOR", "PLAYER"]);
+  const EMPTY_NAMES = new Set(["", "JOGADOR", "PLAYER", "-", "--", "SUB", "VAGA DISPONIVEL", "VAGA DISPONÍVEL"]);
 
   function normalizePart(value) {
     return String(value || "")
@@ -81,7 +81,7 @@
 
   function isRegisteredPlayer(player) {
     const displayName = String(player && (player.player || player.name) || "").trim().toUpperCase();
-    return !EMPTY_NAMES.has(displayName) || Boolean(String(player && player.opgg || "").trim()) || Boolean(String(player && player.riotId || "").trim());
+    return !EMPTY_NAMES.has(displayName);
   }
 
   function normalizeAlias(alias) {
@@ -109,7 +109,13 @@
     migrated.riotIdAliases = Array.isArray(migrated.riotIdAliases)
       ? migrated.riotIdAliases.map(normalizeAlias)
       : [];
-    if (!migrated.playerId && isRegisteredPlayer(migrated)) {
+    if (!isRegisteredPlayer(migrated)) {
+      migrated.playerId = "";
+      migrated.riotId = "";
+      migrated.gameName = "";
+      migrated.tagLine = "";
+      migrated.riotIdAliases = [];
+    } else if (!migrated.playerId) {
       migrated.playerId = createPlayerId();
     }
     return migrated;
@@ -123,6 +129,9 @@
     Object.entries(divisions).forEach(([division, divisionData]) => {
       Object.entries(divisionData.teams || {}).forEach(([slot, team]) => {
         (team.players || []).forEach((player, playerIndex) => {
+          if (!isRegisteredPlayer(player)) {
+            return;
+          }
           const owner = { division, slot, playerIndex, playerId: player.playerId || "", name: player.player || player.name || "JOGADOR" };
           const identities = [
             { type: "principal", riotId: player.riotId },

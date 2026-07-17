@@ -115,3 +115,5 @@ Quando um patch novo quebrar o parser:
 5. execute todos os testes antes de reprocessar jogos oficiais.
 
 Mais detalhes estao em `docs/rofl-format.md`, `docs/player-identity.md`, `docs/public-statistics-schema.md` e `docs/replay-statistics-architecture.md`.
+
+O [tutorial completo do site](docs/tutorial-completo-do-site.md) explica as paginas, o fluxo administrativo, as formulas estatisticas, o MVP e a Selecao da Semana.

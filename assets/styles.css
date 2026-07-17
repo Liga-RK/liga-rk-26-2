@@ -865,6 +865,580 @@ a {
   text-overflow: ellipsis;
 }
 
+/* Bolao oficial */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.editor-actions button:disabled,
+.pool-submit:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.pool-page {
+  --pool-red: #e00014;
+  --pool-elite: #9b45ff;
+  --pool-ascension: #25dac2;
+  min-height: 100vh;
+}
+
+.pool-header {
+  position: relative;
+}
+
+.pool-shell {
+  width: min(100% - 2rem, 82rem);
+  margin: 0 auto;
+  padding: 2rem 0 4rem;
+}
+
+.pool-hero,
+.pool-identity,
+.pool-pick-card,
+.pool-submit-panel,
+.pool-admin-summary,
+.pool-admin-entries {
+  background: rgba(3, 3, 5, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.22);
+}
+
+.pool-hero {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr) 8rem;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 13rem;
+  padding: 1.35rem 2rem;
+  text-align: center;
+}
+
+.pool-hero > img {
+  width: 100%;
+  max-height: 9.5rem;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.pool-hero .kicker {
+  margin: 0 0 0.25rem;
+  color: var(--pool-red);
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.pool-hero h1 {
+  margin: 0;
+  color: #eee;
+  font-size: clamp(4rem, 8vw, 7rem);
+  font-weight: 400;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.pool-hero p:last-child {
+  margin: 0.65rem 0 0;
+  color: #d2d2d2;
+  font-size: clamp(1.05rem, 2vw, 1.65rem);
+}
+
+.pool-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.pool-identity {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.75rem;
+  padding: 1.5rem 2rem;
+}
+
+.pool-identity label {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.pool-identity label > span,
+.pool-pick-card h2,
+.pool-pick-card h3 {
+  color: #d4d4d4;
+  font-size: clamp(1.7rem, 3vw, 2.7rem);
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.pool-identity input,
+.pool-select-shell select {
+  width: 100%;
+  min-width: 0;
+  height: 3.8rem;
+  padding: 0.6rem 0.9rem 0.45rem;
+  color: #08080a;
+  background: #f4f4f4;
+  border: 0;
+  border-radius: 0;
+  font: inherit;
+  font-size: 1.35rem;
+}
+
+.pool-select-shell {
+  display: block;
+  position: relative;
+}
+
+.pool-select-shell select {
+  padding-right: 2.8rem;
+  cursor: pointer;
+}
+
+.pool-select-shell select:focus,
+.pool-identity input:focus {
+  outline: 3px solid var(--pool-red);
+  outline-offset: 2px;
+}
+
+.pool-champion-picks,
+.pool-divisions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.pool-pick-card {
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+.pool-pick-card h2,
+.pool-pick-card h3,
+.pool-pick-card p {
+  margin: 0 0 0.8rem;
+}
+
+.pool-pick-card h2 span,
+.pool-division-column.elite .pool-pick-card h3 span {
+  color: var(--pool-elite);
+}
+
+.pool-division-column.ascension .pool-pick-card h3 span {
+  color: var(--pool-ascension);
+}
+
+.pool-pick-card > p {
+  color: #b7b7b7;
+  font-size: 1.05rem;
+  text-transform: uppercase;
+}
+
+.pool-pick-preview {
+  display: grid;
+  place-items: center;
+  margin-top: 1rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.pool-pick-preview.champion {
+  aspect-ratio: 1215 / 717;
+}
+
+.pool-pick-preview.team {
+  width: min(100%, 15rem);
+  aspect-ratio: 1;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.pool-pick-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pool-pick-preview.team img {
+  object-fit: contain;
+  padding: 0.75rem;
+}
+
+.pool-division-column {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+}
+
+.pool-division-title {
+  display: grid;
+  place-items: center;
+  min-height: 6.5rem;
+  margin: 0;
+  padding: 0.75rem 1rem 0.45rem;
+  color: #ddd;
+  font-size: clamp(2.8rem, 5vw, 4.6rem);
+  font-weight: 400;
+  line-height: 0.95;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.pool-division-column.elite .pool-division-title {
+  background: linear-gradient(110deg, #572199, #8e39d4);
+}
+
+.pool-division-column.ascension .pool-division-title {
+  background: linear-gradient(110deg, #1d665c, #3d8f7e);
+}
+
+.pool-division-column.elite .pool-select-shell select:focus {
+  outline-color: var(--pool-elite);
+}
+
+.pool-division-column.ascension .pool-select-shell select:focus {
+  outline-color: var(--pool-ascension);
+}
+
+.pool-player-card {
+  min-height: 10rem;
+}
+
+.pool-submit-panel {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  padding: 1.4rem 1.75rem;
+}
+
+.pool-submit-panel > p:first-child {
+  width: 100%;
+  margin: 0;
+  color: #d8d8d8;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.pool-submit {
+  min-height: 4.5rem;
+  padding: 0.75rem 1.5rem 0.45rem;
+  color: #fff;
+  background: var(--pool-red);
+  border: 0;
+  border-radius: 0;
+  font: inherit;
+  font-size: clamp(2rem, 4vw, 3.3rem);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.pool-submit:hover,
+.pool-submit:focus-visible {
+  background: #ff1b2e;
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.pool-return-home {
+  display: inline-flex;
+  min-height: 3.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem 0.45rem;
+  color: #fff;
+  background: var(--pool-red);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.pool-return-home:hover,
+.pool-return-home:focus-visible {
+  background: #ff1b2e;
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.pool-return-home[hidden] {
+  display: none;
+}
+
+.pool-status {
+  min-height: 1.5rem;
+  margin: 0;
+  color: #ddd;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.pool-status.error,
+.editor-status.error {
+  color: #ff8c95;
+}
+
+.pool-status.success {
+  width: 100%;
+  padding: 1rem;
+  color: #dffff4;
+  background: rgba(10, 135, 86, 0.34);
+  border: 1px solid rgba(104, 255, 195, 0.45);
+  font-size: 1.15rem;
+}
+
+/* Painel privado do Bolao */
+.pool-admin-shell {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.pool-admin-summary,
+.pool-admin-entries {
+  padding: 1.4rem;
+}
+
+.pool-admin-summary header h2,
+.pool-admin-entries header h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 400;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.pool-admin-summary header .kicker,
+.pool-admin-entries header .kicker {
+  margin: 0 0 0.25rem;
+  color: var(--home-red);
+  text-transform: uppercase;
+}
+
+.pool-admin-summary-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.pool-admin-summary-group {
+  min-width: 0;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.035);
+  border-top: 4px solid var(--home-red);
+}
+
+.pool-admin-summary-group.elite {
+  border-color: var(--pool-elite);
+}
+
+.pool-admin-summary-group.ascension {
+  border-color: var(--pool-ascension);
+}
+
+.pool-admin-summary-group h3 {
+  margin: 0 0 1rem;
+  font-size: 2.25rem;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.pool-admin-question {
+  margin-bottom: 1rem;
+}
+
+.pool-admin-question h4 {
+  margin: 0 0 0.35rem;
+  color: #bfbfbf;
+  font-size: 1.1rem;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.pool-admin-result-row {
+  display: grid;
+  grid-template-columns: 1.5rem 2rem minmax(0, 1fr) 2rem;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.5rem;
+  padding: 0.35rem;
+  background: rgba(0, 0, 0, 0.28);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pool-admin-result-row img {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+}
+
+.pool-admin-result-row strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pool-admin-result-row b {
+  color: #fff;
+  text-align: right;
+}
+
+.pool-admin-entry-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.pool-admin-entry {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pool-admin-entry summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+}
+
+.pool-admin-entry summary span,
+.pool-admin-entry summary small {
+  color: #aaa;
+}
+
+.pool-admin-entry-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pool-admin-entry-grid > div {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+  padding: 0.65rem;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.pool-admin-entry-grid span {
+  color: #aaa;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+}
+
+.pool-admin-entry-grid strong {
+  overflow-wrap: anywhere;
+}
+
+.pool-admin-entry > button {
+  margin: 0 1rem 1rem;
+  padding: 0.55rem 0.8rem 0.4rem;
+  color: #fff;
+  background: var(--home-red);
+  border: 0;
+  font: inherit;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+@media (max-width: 920px) {
+  .pool-hero {
+    grid-template-columns: 5rem minmax(0, 1fr) 5rem;
+  }
+
+  .pool-identity,
+  .pool-champion-picks,
+  .pool-divisions,
+  .pool-admin-summary-columns,
+  .pool-admin-entry-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pool-division-title {
+    min-height: 5rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .pool-header {
+    align-items: flex-start;
+  }
+
+  .pool-header .social-links {
+    display: none;
+  }
+
+  .pool-shell {
+    width: min(100% - 1rem, 82rem);
+    padding-top: 0.75rem;
+  }
+
+  .pool-hero {
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+    gap: 0.7rem;
+    min-height: 9rem;
+    padding: 1rem;
+    text-align: left;
+  }
+
+  .pool-hero > img:last-child {
+    display: none;
+  }
+
+  .pool-hero h1 {
+    font-size: clamp(2.8rem, 15vw, 4rem);
+  }
+
+  .pool-hero p:last-child {
+    font-size: 1rem;
+  }
+
+  .pool-identity,
+  .pool-pick-card,
+  .pool-submit-panel,
+  .pool-admin-summary,
+  .pool-admin-entries {
+    padding: 1rem;
+  }
+
+  .pool-identity label > span,
+  .pool-pick-card h2,
+  .pool-pick-card h3 {
+    font-size: 1.75rem;
+  }
+
+  .pool-identity input,
+  .pool-select-shell select {
+    height: 3.2rem;
+    font-size: 1rem;
+  }
+
+  .pool-division-title {
+    min-height: 4.2rem;
+    font-size: 2.55rem;
+  }
+
+  .pool-admin-entry summary {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+}
+
 .team-card-link {
   display: flex;
   align-items: baseline;

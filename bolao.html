@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Bolão da Liga RK 26.2" />
+    <title>Bolão Liga RK | LIGA RK 26.2</title>
+    <link rel="icon" type="image/png" href="assets/logo_liga_rk_icon.png" />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body class="theme-home pool-page">
+    <header class="site-header pool-header">
+      <a class="brand" href="index.html" aria-label="Voltar para a página inicial">
+        <img class="brand-logo logo-white" src="assets/logo_liga_rk_nobg_512.png" alt="LIGA RK 26.2" />
+        <span>LIGA RK 26.2</span>
+      </a>
+      <nav class="social-links header-socials" aria-label="Comunidade">
+        <a href="https://discord.gg/m9C7dbQUSV" target="_blank" rel="noreferrer" aria-label="Discord"><img src="assets/social/discord.svg" alt="" /></a>
+        <a href="https://chat.whatsapp.com/JvqkNB8e9KyK8I8adHoKZq" target="_blank" rel="noreferrer" aria-label="WhatsApp"><img src="assets/social/whatsapp.svg" alt="" /></a>
+        <a href="https://kick.com/rk-inhouse" target="_blank" rel="noreferrer" aria-label="Kick"><img src="assets/social/kick.svg" alt="" /></a>
+        <a href="https://www.youtube.com/@rk-inhouse" target="_blank" rel="noreferrer" aria-label="YouTube"><img src="assets/social/youtube.svg" alt="" /></a>
+        <a href="https://www.instagram.com/inhouserk/" target="_blank" rel="noreferrer" aria-label="Instagram"><img src="assets/social/instagram.svg" alt="" /></a>
+        <a href="https://www.tiktok.com/@inhouse_rk" target="_blank" rel="noreferrer" aria-label="TikTok"><img src="assets/social/tiktok.svg" alt="" /></a>
+      </nav>
+    </header>
+
+    <main class="pool-shell">
+      <section class="pool-hero" aria-labelledby="pool-title">
+        <img src="assets/logo_liga_rk_nobg_512.png" alt="" />
+        <div>
+          <h1 id="pool-title">Bolão Liga RK</h1>
+          <p>Faça suas previsões para o campeonato até o dia 24 de julho, às 23:59!</p>
+        </div>
+        <img src="assets/logo_liga_rk_nobg_512.png" alt="" />
+      </section>
+
+      <form class="pool-form" id="pool-form" novalidate>
+        <section class="pool-identity" aria-label="Identificação do participante">
+          <label>
+            <span>Seu nick na comunidade</span>
+            <input name="communityNick" type="text" minlength="2" maxlength="40" autocomplete="nickname" placeholder="Seu apelido" required />
+          </label>
+          <label>
+            <span>Seu ID do Discord (@)</span>
+            <input name="discordId" type="text" minlength="2" maxlength="64" autocomplete="off" placeholder="@seu_usuario" required />
+          </label>
+        </section>
+
+        <section class="pool-champion-picks" aria-label="Palpites de campeões">
+          <div id="pool-champion-most-picked"></div>
+          <div id="pool-champion-most-wins"></div>
+        </section>
+
+        <section class="pool-divisions" aria-label="Palpites por divisão">
+          <div class="pool-division-column elite" id="pool-elite-column"></div>
+          <div class="pool-division-column ascension" id="pool-ascension-column"></div>
+        </section>
+
+        <section class="pool-submit-panel">
+          <p><strong>Atenção:</strong> suas escolhas só serão computadas uma única vez. Depois do envio, não será possível alterá-las nem consultá-las até o final do campeonato. Salve uma captura desta tela antes de finalizar caso queira lembrar seus palpites.</p>
+          <button type="submit" class="pool-submit">Finalizar escolhas</button>
+          <p class="pool-status" id="pool-status" aria-live="polite"></p>
+          <a class="pool-return-home" id="pool-return-home" href="index.html" hidden>Voltar ao início</a>
+        </section>
+      </form>
+    </main>
+
+    <script src="assets/champion-list.js"></script>
+    <script src="assets/bolao.js"></script>
+  </body>
+</html>

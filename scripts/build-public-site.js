@@ -10,6 +10,7 @@ const publicFiles = [
   "ascensao.html",
   "inscricao.html",
   "pagamento.html",
+  "bolao.html",
   "estatisticas.html",
   "partida.html",
   "jogador.html",
@@ -19,6 +20,7 @@ const publicFiles = [
 const excludedAssetFiles = new Set([
   "editor.js",
   "inscricoes-admin.js",
+  "bolao-admin.js",
   "stats-admin.js",
   "replay-db.js",
   "fundo_elite.png",
@@ -32,6 +34,8 @@ const publicSourceFiles = [
   "assets/app.js",
   "assets/inscricao.js",
   "assets/pagamento.js",
+  "assets/bolao.js",
+  "assets/champion-list.js",
   "assets/data.js",
   "assets/content.js",
   "assets/player-identity.js",
@@ -72,6 +76,9 @@ function shouldCopyAsset(fileName, relativePath) {
   }
 
   if (normalizedPath.startsWith("champions/")) {
+    if (publicFiles.includes("bolao.html")) {
+      return true;
+    }
     return referencedChampionFiles.has(fileName);
   }
 

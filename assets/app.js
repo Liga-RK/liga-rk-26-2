@@ -149,7 +149,7 @@
           const legacyPlayer = (legacy.players && legacy.players[playerIndex]) || {};
           return {
             lane,
-            player: rawPlayer.player || legacyPlayer.player || "JOGADOR",
+            player: normalizeRosterPlayerName(rawPlayer.player || legacyPlayer.player),
             opgg: rawPlayer.opgg || legacyPlayer.opgg || "",
             riotId: rawPlayer.riotId || legacyPlayer.riotId || "",
             playerId: rawPlayer.playerId || legacyPlayer.playerId || "",
@@ -544,7 +544,7 @@
           <div class="team-logo-stage">${logo}</div>
           ${
             hasRoster
-              ? `<div class="team-roster" aria-label="Jogadores">${(team.players || []).map(renderTeamPlayer).join("")}</div>`
+              ? `<div class="team-roster" aria-label="Jogadores">${(team.players || []).filter(isFilledRosterPlayer).map(renderTeamPlayer).join("")}</div>`
               : ""
           }
         </div>
@@ -556,11 +556,19 @@
     const teamNameValue = String(team.name || "").trim().toUpperCase();
     const hasTeamName = teamNameValue && teamNameValue !== "NOME DO TIME" && teamNameValue !== "VAGA DISPONÍVEL";
     const hasPlayer = (team.players || []).some((player) => {
-      const playerName = String(player.player || "").trim().toUpperCase();
-      return playerName && playerName !== "JOGADOR";
+      return isFilledRosterPlayer(player);
     });
 
     return Boolean(hasTeamName && hasPlayer);
+  }
+
+  function normalizeRosterPlayerName(value) {
+    const name = String(value || "").trim();
+    return /^(?:jogador|player|-|--|sub|vaga dispon[ií]vel)$/i.test(name) ? "" : name;
+  }
+
+  function isFilledRosterPlayer(player) {
+    return Boolean(normalizeRosterPlayerName(player && (player.player || player.name)));
   }
 
   function renderTeamPlayer(player) {
@@ -574,7 +582,7 @@
       : `<span class="captain-crown captain-empty" aria-hidden="true"></span>`;
 
     const playerId = resolveRosterPlayerId(player);
-    const playerName = escapeHtml(player.player || "JOGADOR");
+    const playerName = escapeHtml(normalizeRosterPlayerName(player.player));
     const playerLabel = playerId
       ? `<a class="roster-player" href="jogador.html?division=${divisionKey}&id=${encodeURIComponent(playerId)}">${playerName}</a>`
       : `<span class="roster-player">${playerName}</span>`;
@@ -590,8 +598,8 @@
   }
 
   function resolveRosterPlayerId(player) {
-    const playerName = String(player.player || "").trim().toUpperCase();
-    const isPlaceholder = !playerName || playerName === "JOGADOR" || playerName === "-";
+    const playerName = normalizeRosterPlayerName(player.player).toUpperCase();
+    const isPlaceholder = !playerName;
     if (isPlaceholder && !player.opgg && !player.riotId) return "";
     if (player.playerId) return player.playerId;
     const normalizedName = normalizeLookup(player.player);

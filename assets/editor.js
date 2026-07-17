@@ -114,7 +114,7 @@
         avgWinTime: "00:00",
         players: laneOrder.map((lane, index) => ({
           lane,
-          player: "JOGADOR",
+          player: "",
           opgg: "",
           captain: index === captainIndex,
           playerId: "",
@@ -144,7 +144,7 @@
         const existingPlayer = division.teams[slot].players[index] || {};
         const defaults = {
           lane,
-          player: existingPlayer.player || "JOGADOR",
+          player: normalizeRosterPlayerName(existingPlayer.player || existingPlayer.name),
           opgg: existingPlayer.opgg || "",
           captain: Boolean(existingPlayer.captain)
         };
@@ -230,6 +230,7 @@
           <span>Editor LIGA RK 26.2</span>
         </a>
         <div class="editor-actions">
+          <button type="button" data-action="check-online">Testar acesso</button>
           <button type="button" data-action="publish-online">Publicar online</button>
           <button type="button" data-action="load-online">Carregar online</button>
           <button type="button" data-action="download">Baixar backup</button>
@@ -292,6 +293,7 @@
   }
 
   function rerenderPreservingOpenSections() {
+    const statusMessage = document.getElementById("editor-status")?.textContent || "";
     const openSections = Array.from(document.querySelectorAll(".editor-section"))
       .map((section, index) => ({
         index,
@@ -306,6 +308,9 @@
     document.querySelectorAll(".editor-section").forEach((section, index) => {
       section.open = openSections.includes(index);
     });
+    if (statusMessage) {
+      setStatus(statusMessage);
+    }
     window.scrollTo({ top: scrollTop, behavior: "auto" });
   }
 
@@ -361,7 +366,7 @@
     return `
       <div class="editor-player-row">
         <strong>${escapeHtml(player.lane)}</strong>
-        ${input(`${basePath}.player`, player.player, "JOGADOR")}
+        ${input(`${basePath}.player`, player.player, "Nome do jogador")}
         ${input(`${basePath}.opgg`, player.opgg, "Link OP.GG")}
         <label class="captain-toggle">
           <input type="radio" name="captain-${key}-${slot}" data-captain-slot="${slot}" data-captain-division="${key}" value="${index}" ${player.captain ? "checked" : ""} />
@@ -730,6 +735,9 @@
     if (action === "publish-online") {
       publishOnline();
     }
+    if (action === "check-online") {
+      checkOnlineAccess();
+    }
     if (action === "load-online") {
       loadOnlineContent({ silent: false });
     }
@@ -927,7 +935,8 @@
   async function publishOnline() {
     const apiBase = normalizeApiBase(editorConfig.apiBase);
     const adminToken = String(editorConfig.adminToken || "").trim();
-    const identityValidation = preparePlayerIdentities();
+    const identityValidation = preparePlayerIdentitiesSafely();
+    const publishButton = app.querySelector('[data-action="publish-online"]');
 
     if (!apiBase) {
       setStatus("Informe a URL da API da Liga RK.");
@@ -943,12 +952,22 @@
       return;
     }
 
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 30000);
+
     Object.keys(state.divisions).forEach(syncLegacyVod);
     setStatus("Publicando dados online...");
+    if (publishButton) {
+      publishButton.disabled = true;
+      publishButton.textContent = "Publicando...";
+    }
 
     try {
       const response = await fetch(`${apiBase}/api/admin/content`, {
         method: "PUT",
+        mode: "cors",
+        cache: "no-store",
+        signal: controller.signal,
         headers: {
           "Authorization": `Bearer ${adminToken}`,
           "Content-Type": "application/json"
@@ -957,17 +976,73 @@
       });
       const payload = await response.json().catch(() => ({}));
       if (!response.ok || !payload.ok) {
-        throw new Error(payload.error || `API retornou ${response.status}.`);
+        if (response.status === 401 || response.status === 403) {
+          throw new Error("O token não confere com o segredo ADMIN_TOKEN do Worker. Cole novamente o token correto e tente publicar.");
+        }
+        if (response.status === 404) {
+          throw new Error("A rota de publicação não existe no Worker implantado. Atualize o código do Worker e faça o deploy.");
+        }
+        throw new Error(payload.error || `A API recusou a publicação com o código ${response.status}.`);
       }
 
-      setStatus("Publicado online. Recarregue Elite/Ascensao para ver as alteracoes.");
+      const confirmation = payload.updatedAt ? ` Atualização: ${formatPublishTime(payload.updatedAt)}.` : "";
+      setStatus(`Publicado online com sucesso.${confirmation} Recarregue Elite/Ascensão para conferir.`);
     } catch (error) {
-      setStatus(error.message || "Nao consegui publicar online.");
+      if (error && error.name === "AbortError") {
+        setStatus("A publicação demorou mais de 30 segundos e foi cancelada. Confira a conexão e tente novamente.");
+      } else if (/failed to fetch|networkerror|load failed/i.test(String(error && error.message || ""))) {
+        setStatus("Não foi possível alcançar o Worker. Confira a URL da API, a conexão e se o Worker está implantado.");
+      } else {
+        setStatus(error.message || "Não consegui publicar online.");
+      }
+    } finally {
+      window.clearTimeout(timeout);
+      if (publishButton) {
+        publishButton.disabled = false;
+        publishButton.textContent = "Publicar online";
+      }
+    }
+  }
+
+  function formatPublishTime(value) {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime())
+      ? String(value || "")
+      : date.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "medium" });
+  }
+
+  async function checkOnlineAccess() {
+    const apiBase = normalizeApiBase(editorConfig.apiBase);
+    const adminToken = String(editorConfig.adminToken || "").trim();
+    if (!apiBase || !adminToken) {
+      setStatus("Informe a URL da API e o token de administrador antes de testar.");
+      return;
+    }
+
+    setStatus("Testando o acesso administrativo...");
+    try {
+      const response = await fetch(`${apiBase}/api/admin/check?v=${Date.now()}`, {
+        headers: { Authorization: `Bearer ${adminToken}` },
+        cache: "no-store"
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || !payload.ok) {
+        if (response.status === 401 || response.status === 403) {
+          throw new Error("Token inv\u00e1lido. Ele precisa ser exatamente o mesmo valor do segredo ADMIN_TOKEN configurado no Worker.");
+        }
+        if (response.status === 404) {
+          throw new Error("O Worker online ainda n\u00e3o possui a rota de teste. Implante a vers\u00e3o atualizada do Worker.");
+        }
+        throw new Error(payload.error || `A API retornou ${response.status}.`);
+      }
+      setStatus("Acesso confirmado. O editor est\u00e1 autorizado a publicar online.");
+    } catch (error) {
+      setStatus(error.message || "N\u00e3o foi poss\u00edvel testar o acesso ao Worker.");
     }
   }
 
   async function saveFile() {
-    const identityValidation = preparePlayerIdentities();
+    const identityValidation = preparePlayerIdentitiesSafely();
     if (!identityValidation.ok) {
       setStatus(identityValidation.error);
       rerenderPreservingOpenSections();
@@ -1003,12 +1078,6 @@
   }
 
   function downloadFile() {
-    const identityValidation = preparePlayerIdentities();
-    if (!identityValidation.ok) {
-      setStatus(identityValidation.error);
-      rerenderPreservingOpenSections();
-      return;
-    }
     const blob = new Blob([buildFileContent()], { type: "text/javascript" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -1019,7 +1088,7 @@
   }
 
   async function copyFile() {
-    const identityValidation = preparePlayerIdentities();
+    const identityValidation = preparePlayerIdentitiesSafely();
     if (!identityValidation.ok) {
       setStatus(identityValidation.error);
       rerenderPreservingOpenSections();
@@ -1061,9 +1130,19 @@
   }
 
   function buildFileContent() {
-    preparePlayerIdentities();
     Object.keys(state.divisions).forEach(syncLegacyVod);
     return `window.LIGA_RK_CONTENT = ${JSON.stringify(state, null, 2)};\n`;
+  }
+
+  function preparePlayerIdentitiesSafely() {
+    try {
+      return preparePlayerIdentities();
+    } catch (error) {
+      return {
+        ok: false,
+        error: `Não foi possível validar os jogadores: ${error && error.message ? error.message : "erro desconhecido"}.`
+      };
+    }
   }
 
   function preparePlayerIdentities() {
@@ -1077,6 +1156,24 @@
     Object.entries(state.divisions).forEach(([divisionKey, division]) => {
       Object.entries(division.teams || {}).forEach(([slot, team]) => {
         (team.players || []).forEach((player, index) => {
+          const registeredName = normalizeRosterPlayerName(player && (player.player || player.name));
+          if (!registeredName) {
+            team.players[index] = {
+              ...player,
+              lane: laneOrder[index] || player.lane || "SUB",
+              player: "",
+              opgg: "",
+              captain: false,
+              playerId: "",
+              riotId: "",
+              gameName: "",
+              tagLine: "",
+              riotIdAliases: []
+            };
+            return;
+          }
+
+          player.player = registeredName;
           const migrated = playerIdentity.migratePlayer(player, { lane: laneOrder[index] || player.lane });
           team.players[index] = migrated;
           const label = `${divisionLabels[divisionKey]} ${slot} ${migrated.player || migrated.name || `jogador ${index + 1}`}`;
@@ -1104,12 +1201,29 @@
       return { ok: false, error: `Corrija o formato gameName#tagLine em: ${invalid.slice(0, 3).join(", ")}.` };
     }
     if (identityConflicts.length) {
-      return { ok: false, error: `Existem ${identityConflicts.length} Riot IDs duplicados. Corrija os campos marcados antes de publicar.` };
+      const examples = identityConflicts.slice(0, 3).map(formatIdentityConflict).join("; ");
+      return {
+        ok: false,
+        error: `Publicação bloqueada por ${identityConflicts.length} Riot IDs duplicados: ${examples}. Remova o jogador repetido ou corrija o link do OP.GG marcado.`
+      };
     }
     if (duplicatePlayerIds.length) {
       return { ok: false, error: "Existem identificadores internos duplicados. Nao publique antes de corrigir o cadastro." };
     }
     return { ok: true };
+  }
+
+  function normalizeRosterPlayerName(value) {
+    const name = String(value || "").trim();
+    return /^(?:jogador|player|-|--|sub|vaga dispon[ií]vel)$/i.test(name) ? "" : name;
+  }
+
+  function formatIdentityConflict(conflict) {
+    const first = conflict && conflict.first || {};
+    const second = conflict && conflict.second || {};
+    const firstLabel = `${divisionLabels[first.division] || first.division || "Divisão"} ${first.slot || "?"} ${first.name || "jogador"}`;
+    const secondLabel = `${divisionLabels[second.division] || second.division || "Divisão"} ${second.slot || "?"} ${second.name || "jogador"}`;
+    return `${firstLabel} × ${secondLabel} (${conflict.riotId || conflict.normalizedRiotId || "Riot ID"})`;
   }
 
   function normalizeApiBase(value) {

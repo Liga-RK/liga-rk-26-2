@@ -82,7 +82,7 @@ function identitySnapshot(entry, context) {
 
 function isRegistered(player) {
   const name = String(player && (player.player || player.name) || "").trim().toUpperCase();
-  return Boolean((name && !["JOGADOR", "PLAYER", "--", "-", "SUB", "VAGA DISPONIVEL", "VAGA DISPONÍVEL"].includes(name)) || String(player && player.opgg || "").trim());
+  return Boolean(name && !["JOGADOR", "PLAYER", "--", "-", "SUB", "VAGA DISPONIVEL", "VAGA DISPONÍVEL"].includes(name));
 }
 
 function isMeaningfulRegistryEntry(entry) {

@@ -12,6 +12,19 @@ test("migra jogador sem perder propriedades antigas", () => {
   assert.deepEqual(migrated.riotIdAliases, []);
 });
 
+test("nao cria identidade para slot de jogador vazio", () => {
+  const migrated = migratePlayer({
+    player: "",
+    playerId: "id-antigo",
+    riotId: "Antigo#BR1",
+    opgg: "https://op.gg/pt/lol/summoners/br/Antigo-BR1"
+  }, { idFactory: () => { throw new Error("nao deve criar id"); } });
+
+  assert.equal(migrated.playerId, "");
+  assert.equal(migrated.riotId, "");
+  assert.deepEqual(migrated.riotIdAliases, []);
+});
+
 test("preserva Riot ID e normaliza apenas para comparacao", () => {
   const parsed = parseRiotId("  Zähir  #KeRiA ");
   assert.equal(parsed.riotId, "Zähir#KeRiA");

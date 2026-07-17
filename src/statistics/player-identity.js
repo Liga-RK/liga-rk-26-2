@@ -50,23 +50,23 @@ function normalizeRiotId(value) {
 }
 
 function isRegisteredPlayer(player) {
-  const name = String((player && (player.player || player.name)) || "").trim();
-  return Boolean(name && name.toLocaleUpperCase("pt-BR") !== "JOGADOR") || Boolean(String((player && player.opgg) || "").trim());
+  const name = String((player && (player.player || player.name)) || "").trim().toLocaleUpperCase("pt-BR");
+  return Boolean(name && !["JOGADOR", "PLAYER", "-", "--", "SUB", "VAGA DISPONIVEL", "VAGA DISPONÍVEL"].includes(name));
 }
 
 function migratePlayer(player, options = {}) {
   const source = player && typeof player === "object" ? player : {};
   const opggIdentity = parseOpggRiotId(source.opgg);
   const primary = opggIdentity.valid ? opggIdentity : parseRiotId(source.riotId || joinRiotId(source.gameName, source.tagLine));
-  const shouldHaveId = isRegisteredPlayer(source) || primary.valid || Array.isArray(source.riotIdAliases) && source.riotIdAliases.length > 0;
+  const shouldHaveId = isRegisteredPlayer(source);
   const idFactory = options.idFactory || (() => crypto.randomUUID());
   return {
     ...source,
-    playerId: String(source.playerId || (shouldHaveId ? idFactory() : "")),
-    riotId: primary.valid ? primary.riotId : String(source.riotId || ""),
-    gameName: primary.valid ? primary.gameName : String(source.gameName || ""),
-    tagLine: primary.valid ? primary.tagLine : String(source.tagLine || ""),
-    riotIdAliases: normalizeAliases(source.riotIdAliases)
+    playerId: shouldHaveId ? String(source.playerId || idFactory()) : "",
+    riotId: shouldHaveId && primary.valid ? primary.riotId : shouldHaveId ? String(source.riotId || "") : "",
+    gameName: shouldHaveId && primary.valid ? primary.gameName : shouldHaveId ? String(source.gameName || "") : "",
+    tagLine: shouldHaveId && primary.valid ? primary.tagLine : shouldHaveId ? String(source.tagLine || "") : "",
+    riotIdAliases: shouldHaveId ? normalizeAliases(source.riotIdAliases) : []
   };
 }
 
