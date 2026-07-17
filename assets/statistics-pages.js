@@ -200,7 +200,7 @@
             <div class="stats-player-profile-logo">${teamLogo(primary)}</div>
             <div class="stats-player-profile-name">
               <h1>${text(player.displayName || player.riotId || "JOGADOR")}</h1>
-              <p>${text(player.riotId || "Riot ID n&atilde;o informado")}</p>
+              <p>${text(player.riotId || "Riot ID não informado")}</p>
             </div>
             <div class="stats-player-profile-lane">${profileLaneIcon(player.mainPosition)}</div>
           </article>
@@ -627,7 +627,11 @@
   function findAcrossDivisions(collection, id, preferredDivision) {
     const order = [preferredDivision, preferredDivision === "elite" ? "ascension" : "elite"];
     for (const division of order) {
-      const item = (divisionData(division)[collection] || []).find((entry) => String(entry.id) === id || String(entry.playerId) === id);
+      const item = (divisionData(division)[collection] || []).find((entry) => (
+        String(entry.id) === id ||
+        String(entry.playerId) === id ||
+        String(entry.rosterPlayerId || "") === id
+      ));
       if (item) return { division, item };
     }
     return { division: preferredDivision, item: null };
@@ -660,14 +664,17 @@
         logo: team.logo || savedTeam.logo || ""
       });
       (team.players || []).filter(isRegisteredContentPlayer).forEach((player) => {
-        const id = String(player.playerId || "").trim();
-        if (!id) return;
-        currentRosterIds.add(id);
-        const savedPlayer = playersById.get(id) || zeroPlayer(player, slot);
-        playersById.set(id, {
+        const rosterPlayerId = String(player.playerId || "").trim();
+        if (!rosterPlayerId) return;
+        const matchedPlayer = findSavedPlayer(playersById, player, slot);
+        const canonicalId = String(matchedPlayer && (matchedPlayer.playerId || matchedPlayer.id) || rosterPlayerId);
+        currentRosterIds.add(canonicalId);
+        const savedPlayer = matchedPlayer || zeroPlayer(player, canonicalId, slot);
+        playersById.set(canonicalId, {
           ...savedPlayer,
-          id,
-          playerId: id,
+          id: canonicalId,
+          playerId: canonicalId,
+          rosterPlayerId,
           displayName: player.player || player.name || savedPlayer.displayName || "JOGADOR",
           riotId: player.riotId || savedPlayer.riotId || "",
           opgg: player.opgg || savedPlayer.opgg || "",
@@ -694,13 +701,50 @@
     };
   }
 
-  function zeroPlayer(player, slot) {
+  function zeroPlayer(player, playerId, slot) {
     return {
-      id: player.playerId, playerId: player.playerId, displayName: player.player || player.name || "JOGADOR",
+      id: playerId, playerId, displayName: player.player || player.name || "JOGADOR",
       riotId: player.riotId || "", opgg: player.opgg || "", games: 0, wins: 0, losses: 0, winRate: 0,
       kills: 0, deaths: 0, assists: 0, kda: 0, kp: 0, gpm: 0, dpm: 0, visionScoreAvg: 0,
       mvps: 0, mainPosition: player.lane || "", positions: [], teams: [{ slot, count: 0 }], champions: [], matches: []
     };
+  }
+
+  function findSavedPlayer(playersById, player, slot) {
+    const directId = String(player.playerId || "").trim();
+    if (directId && playersById.has(directId)) return playersById.get(directId);
+
+    const opgg = normalizeIdentityValue(player.opgg);
+    const riotId = normalizeIdentityValue(player.riotId);
+    const displayName = normalizeIdentityValue(player.player || player.name);
+    const candidates = Array.from(playersById.values());
+
+    if (opgg) {
+      const matches = candidates.filter((candidate) => normalizeIdentityValue(candidate.opgg) === opgg);
+      if (matches.length === 1) return matches[0];
+    }
+    if (riotId) {
+      const matches = candidates.filter((candidate) => normalizeIdentityValue(candidate.riotId) === riotId);
+      if (matches.length === 1) return matches[0];
+    }
+    if (displayName) {
+      const matches = candidates.filter((candidate) => (
+        normalizeIdentityValue(candidate.displayName) === displayName &&
+        (candidate.teams || []).some((team) => String(team.slot) === String(slot))
+      ));
+      if (matches.length === 1) return matches[0];
+    }
+    return null;
+  }
+
+  function normalizeIdentityValue(value) {
+    const source = String(value || "").trim().replace(/\/+$/, "");
+    if (!source) return "";
+    try {
+      return decodeURIComponent(source).normalize("NFKC").toLocaleLowerCase("pt-BR");
+    } catch (error) {
+      return source.normalize("NFKC").toLocaleLowerCase("pt-BR");
+    }
   }
 
   function mergePlayerTeams(teams, slot) {
