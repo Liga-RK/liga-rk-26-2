@@ -1,6 +1,9 @@
 config/riot-api-key.txt
 data/stats-db.json
 data/replays/
+data/official-content-cache.json
+backups/
+samples/*.rofl
 tmp/
 .env
 dist/

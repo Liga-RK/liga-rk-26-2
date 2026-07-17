@@ -6,6 +6,7 @@
   const logoPreview = document.getElementById("logo-preview");
   const status = document.getElementById("registration-status");
   const submitButton = form && form.querySelector(".registration-submit");
+  const playerIdentity = window.LIGA_RK_PLAYER_IDENTITY;
   const lanes = [
     { id: "TOP", label: "TOP", icon: "assets/lane-icons/top-white.png" },
     { id: "JG", label: "JG", icon: "assets/lane-icons/jg-white.png" },
@@ -46,9 +47,9 @@
               <span>Nome</span>
               <input name="playerName${index}" type="text" maxlength="32" autocomplete="off" />
             </label>
-            <label>
-              <span>Nick#tag</span>
-              <input name="riotId${index}" type="text" maxlength="48" autocomplete="off" />
+            <label class="registration-auto-riot">
+              <span>Riot ID autom&aacute;tico</span>
+              <output data-riot-id-preview="${index}">Aguardando OP.GG</output>
             </label>
             <label>
               <span>Discord</span>
@@ -72,6 +73,18 @@
     if (event.target.name === "teamTag") {
       event.target.value = event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
     }
+    const opggMatch = /^opgg(\d+)$/.exec(event.target.name || "");
+    if (opggMatch) {
+      updateRiotIdPreview(Number(opggMatch[1]), event.target.value);
+    }
+  }
+
+  function updateRiotIdPreview(index, opgg) {
+    const output = playersRoot.querySelector(`[data-riot-id-preview="${index}"]`);
+    if (!output) return;
+    const parsed = playerIdentity ? playerIdentity.parseOpggRiotId(opgg) : { valid: false };
+    output.textContent = parsed.valid ? parsed.riotId : "Aguardando OP.GG valido";
+    output.classList.toggle("valid", Boolean(parsed.valid));
   }
 
   async function handleLogoUpload(event) {
@@ -158,15 +171,19 @@
   function collectPayload() {
     const data = new FormData(form);
     const captainIndex = data.get("captain") === null ? null : Number(data.get("captain"));
-    const players = lanes.map((lane, index) => ({
-      lane: lane.id,
-      roleLabel: lane.label,
-      name: clean(data.get(`playerName${index}`)),
-      riotId: clean(data.get(`riotId${index}`)),
-      discord: clean(data.get(`discord${index}`)),
-      opgg: clean(data.get(`opgg${index}`)),
-      captain: captainIndex === index
-    }));
+    const players = lanes.map((lane, index) => {
+      const opgg = clean(data.get(`opgg${index}`));
+      const identity = playerIdentity ? playerIdentity.parseOpggRiotId(opgg) : { valid: false, riotId: "" };
+      return {
+        lane: lane.id,
+        roleLabel: lane.label,
+        name: clean(data.get(`playerName${index}`)),
+        riotId: identity.valid ? identity.riotId : "",
+        discord: clean(data.get(`discord${index}`)),
+        opgg,
+        captain: captainIndex === index
+      };
+    });
 
     return {
       division: clean(data.get("division")),
@@ -206,7 +223,7 @@
 
     const incomplete = payload.players.some((player) => isPlayerFilled(player) && !isPlayerComplete(player));
     if (incomplete) {
-      errors.push("Quando preencher um reserva, complete nome, nick#tag, Discord e OP.GG.");
+      errors.push("Quando preencher um reserva, complete nome, Discord e um link OP.GG valido.");
     }
     if (payload.captainIndex === null || !isPlayerComplete(payload.players[payload.captainIndex])) {
       errors.push("Escolha um capitão entre os jogadores preenchidos.");
@@ -219,7 +236,7 @@
   }
 
   function isPlayerFilled(player) {
-    return Boolean(player.name || player.riotId || player.discord || player.opgg);
+    return Boolean(player.name || player.discord || player.opgg);
   }
 
   function isPlayerComplete(player) {
