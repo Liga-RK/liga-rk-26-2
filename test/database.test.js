@@ -26,3 +26,17 @@ test("escreve banco atomicamente e cria backup", () => {
   assert.equal(database.read().divisions.elite.games.length, 1);
   assert.ok(fs.readdirSync(path.join(directory, "backups")).length >= 1);
 });
+
+test("mantem somente a quantidade configurada de backups", () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "liga-rk-db-retention-"));
+  const filePath = path.join(directory, "data", "stats-db.json");
+  const backupDirectory = path.join(directory, "backups");
+  const database = new StatsDatabase({ filePath, backupDirectory, maxBackups: 3 });
+  database.ensure();
+  const value = database.read();
+  for (let index = 0; index < 7; index += 1) {
+    value.sequence = index;
+    database.write(value, { reason: `retention-${index}` });
+  }
+  assert.equal(fs.readdirSync(backupDirectory).filter((name) => name.endsWith(".json")).length, 3);
+});

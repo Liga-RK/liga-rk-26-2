@@ -26,6 +26,17 @@ function aggregateDivision(divisionDatabase, content, fixedData, division) {
   const championAggregates = new Map();
   const matches = [];
 
+  for (const registered of roster.values()) {
+    const player = createPlayerAggregate(registered.playerId, {
+      playerId: registered.playerId,
+      riotId: registered.riotId,
+      gameName: registered.displayName
+    }, registered);
+    if (registered.lane) player.positions.set(registered.lane, 0);
+    if (registered.teamSlot) player.teams.set(registered.teamSlot, 0);
+    playerAggregates.set(registered.playerId, player);
+  }
+
   for (const game of parsedGames) {
     const match = game.match;
     const durationSeconds = Number(match.durationSeconds || 0);
@@ -175,7 +186,7 @@ function rosterByPlayerId(teams) {
   const roster = new Map();
   for (const [slot, team] of Object.entries(teams)) {
     for (const player of team.players || []) {
-      if (!player || !player.playerId) continue;
+      if (!player || !player.playerId || !isRegisteredRosterPlayer(player)) continue;
       roster.set(player.playerId, {
         playerId: player.playerId,
         displayName: player.player || player.name || player.riotId || "JOGADOR",
@@ -187,6 +198,12 @@ function rosterByPlayerId(teams) {
     }
   }
   return roster;
+}
+
+function isRegisteredRosterPlayer(player) {
+  const name = String(player && (player.player || player.name) || "").trim().toLocaleUpperCase("pt-BR");
+  const placeholders = new Set(["", "-", "--", "SUB", "JOGADOR", "PLAYER", "VAGA DISPONIVEL", "VAGA DISPONÍVEL"]);
+  return !placeholders.has(name) || Boolean(String(player && (player.opgg || player.riotId) || "").trim());
 }
 
 function teamStats(match, teamNumber) {

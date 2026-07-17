@@ -63,8 +63,9 @@ Aliases salvos podem ser desativados depois em `Riot IDs alternativos`, sem apag
 
 - `Reprocessar todas` recalcula as agregacoes a partir dos jogos administrativos salvos.
 - `Reprocessar este replay` atualiza somente a partida escolhida e reconstrui as estatisticas.
-- `Excluir` remove a partida do banco depois da confirmacao e regenera o payload publico.
+- `Excluir` remove a partida do banco, apaga com seguranca o arquivo `.rofl` correspondente e regenera o payload publico.
 - Toda escrita cria backup e usa substituicao atomica para evitar banco parcial.
+- O servidor conserva os 100 backups mais recentes por padrao. Esse limite pode ser alterado por `STATS_BACKUP_LIMIT` no `.env`.
 
 ## Gerar e revisar os arquivos publicos
 

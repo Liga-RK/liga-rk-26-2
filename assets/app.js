@@ -151,6 +151,9 @@
             lane,
             player: rawPlayer.player || legacyPlayer.player || "JOGADOR",
             opgg: rawPlayer.opgg || legacyPlayer.opgg || "",
+            riotId: rawPlayer.riotId || legacyPlayer.riotId || "",
+            playerId: rawPlayer.playerId || legacyPlayer.playerId || "",
+            teamSlot: slot,
             captain: Boolean(rawPlayer.captain)
           };
         })
@@ -529,9 +532,14 @@
       ? `<img class="team-logo" src="${escapeAttribute(team.logo)}" alt="${escapeAttribute(teamName(team.slot))}" />`
       : `<img class="team-logo team-logo-placeholder" src="${escapeAttribute(rkPlaceholderUrl)}" alt="" loading="lazy" />`;
 
+    const teamUrl = `time.html?division=${divisionKey}&id=${encodeURIComponent(team.slot)}`;
+    const heading = hasRoster
+      ? `<a class="team-card-link" href="${teamUrl}"><span>${escapeHtml(displayName)}</span><small>${escapeHtml(team.tag || team.slot)}</small></a>`
+      : escapeHtml(displayName);
+
     return `
       <article class="team-card ${hasRoster ? "has-roster" : "team-card-vacant"}" ${hasRoster ? 'tabindex="0"' : ""} aria-label="${escapeAttribute(displayName)}">
-        <header>${escapeHtml(displayName)}</header>
+        <header>${heading}</header>
         <div class="team-card-body">
           <div class="team-logo-stage">${logo}</div>
           ${
@@ -565,14 +573,41 @@
       ? `<span class="captain-crown" title="Capitão" aria-label="Capitão">♛</span>`
       : `<span class="captain-crown captain-empty" aria-hidden="true"></span>`;
 
+    const playerId = resolveRosterPlayerId(player);
+    const playerName = escapeHtml(player.player || "JOGADOR");
+    const playerLabel = playerId
+      ? `<a class="roster-player" href="jogador.html?division=${divisionKey}&id=${encodeURIComponent(playerId)}">${playerName}</a>`
+      : `<span class="roster-player">${playerName}</span>`;
+
     return `
       <div class="roster-row">
         ${laneIcon}
-        <span class="roster-player">${escapeHtml(player.player || "JOGADOR")}</span>
+        ${playerLabel}
         ${captain}
         ${opgg}
       </div>
     `;
+  }
+
+  function resolveRosterPlayerId(player) {
+    const playerName = String(player.player || "").trim().toUpperCase();
+    const isPlaceholder = !playerName || playerName === "JOGADOR" || playerName === "-";
+    if (isPlaceholder && !player.opgg && !player.riotId) return "";
+    if (player.playerId) return player.playerId;
+    const normalizedName = normalizeLookup(player.player);
+    const normalizedRiotId = normalizeLookup(player.riotId);
+    const match = (replayStats.players || []).find((candidate) => {
+      const belongsToTeam = (candidate.teams || []).some((team) => team.slot === player.teamSlot);
+      return belongsToTeam && (
+        (normalizedName && normalizeLookup(candidate.displayName) === normalizedName) ||
+        (normalizedRiotId && normalizeLookup(candidate.riotId) === normalizedRiotId)
+      );
+    });
+    return match && (match.playerId || match.id) || "";
+  }
+
+  function normalizeLookup(value) {
+    return String(value || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase().replace(/\s+/g, "");
   }
 
   function getLaneIcon(lane, label) {

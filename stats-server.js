@@ -16,6 +16,7 @@ const {
 const { assertPublicPayloadSafe, createPublicPayload } = require("./src/statistics/public-payload");
 const { hydrateRosterIdentities } = require("./src/statistics/roster-identities");
 const { atomicWriteFile, atomicWriteJson } = require("./src/storage/atomic-write");
+const { deleteStoredReplay, resolveStoredReplay } = require("./src/storage/replay-files");
 const { StatsDatabase } = require("./src/storage/stats-database");
 
 const ROOT = __dirname;
@@ -35,7 +36,8 @@ const GROUPS = ["A", "B", "C", "D"];
 
 const databaseStore = new StatsDatabase({
   filePath: DB_PATH,
-  backupDirectory: path.join(ROOT, "backups", "stats-db")
+  backupDirectory: path.join(ROOT, "backups", "stats-db"),
+  maxBackups: Number(process.env.STATS_BACKUP_LIMIT || 100)
 });
 const fixedData = loadWindowScript(path.join(ASSETS, "data.js"), "LIGA_RK_DATA");
 let officialState = null;
@@ -241,10 +243,12 @@ async function confirmReplay(payload) {
 
   const divisionGames = database.divisions[preview.selection.division].games;
   const replacedIds = new Set(preview.duplicates.map((item) => item.gameId));
+  const replacedGames = divisionGames.filter((existing) => replacedIds.has(existing.id) || existing.id === game.id);
   database.divisions[preview.selection.division].games = divisionGames.filter((existing) => !replacedIds.has(existing.id) && existing.id !== game.id);
   database.divisions[preview.selection.division].games.push(game);
   saveRequestedAliases(database, mappings, game, teams);
   databaseStore.write(database, { reason: "confirm-replay" });
+  cleanupReplayFiles(replacedGames, new Set([game.replay.storagePath]));
   await rebuildPublicStatistics(database);
   removePreview(previewId);
   return { ok: true, game: adminGameView(game), message: "Replay confirmado e estatisticas recalculadas." };
@@ -377,12 +381,28 @@ async function deleteGame(payload) {
   if (!division || !gameId) throw badRequest("Divisao ou partida invalida.");
   const database = databaseStore.read();
   const games = database.divisions[division].games;
-  const next = games.filter((game) => game.id !== gameId);
+  const game = games.find((item) => item.id === gameId);
+  const next = games.filter((item) => item.id !== gameId);
   if (next.length === games.length) throw badRequest("Partida nao encontrada.");
   database.divisions[division].games = next;
   databaseStore.write(database, { reason: "delete-game" });
+  const replayDeletion = cleanupReplayFiles([game]);
   await rebuildPublicStatistics(database);
-  return { ok: true };
+  return { ok: true, replayDeletion };
+}
+
+function cleanupReplayFiles(games, preservedPaths = new Set()) {
+  const results = [];
+  for (const game of games || []) {
+    const storagePath = game && game.replay && game.replay.storagePath;
+    if (!storagePath || preservedPaths.has(storagePath)) continue;
+    try {
+      results.push({ storagePath, ...deleteStoredReplay({ rootDirectory: ROOT, replayDirectory: REPLAY_DIR, storagePath }) });
+    } catch (error) {
+      results.push({ storagePath, deleted: false, reason: "delete-error", error: messageOf(error) });
+    }
+  }
+  return results;
 }
 
 async function reprocessAll() {
@@ -414,8 +434,8 @@ async function reprocessGame(payload) {
 }
 
 function reprocessGameRecord(game) {
-  const replayPath = game.replay && path.resolve(ROOT, game.replay.storagePath || "");
-  if (!replayPath || !replayPath.startsWith(REPLAY_DIR) || !fs.existsSync(replayPath)) {
+  const replayPath = game.replay && resolveStoredReplay(ROOT, REPLAY_DIR, game.replay.storagePath);
+  if (!replayPath || !fs.existsSync(replayPath)) {
     game.parserStatus = "missing_replay";
     game.parserError = "O arquivo de replay salvo nao foi encontrado.";
     game.updatedAt = new Date().toISOString();

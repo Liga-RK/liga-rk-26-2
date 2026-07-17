@@ -1,6 +1,7 @@
 (function () {
   const root = document.getElementById("statistics-app");
   const payload = window.LIGA_RK_STATS || { divisions: {} };
+  const contentApiUrl = window.LIGA_RK_CONTENT_API || "https://liga-rk-api.suporteinhouserk.workers.dev/api/content";
   const params = new URLSearchParams(window.location.search);
   const page = document.body.dataset.statisticsPage || "hub";
   const requestedDivision = normalizeDivision(params.get("division"));
@@ -14,12 +15,36 @@
     ["TikTok", "https://www.tiktok.com/@inhouse_rk", "tiktok.svg"]
   ];
   const laneOrder = ["TOP", "JG", "MID", "ADC", "SUP"];
+  const divisionCache = new Map();
+  let officialContent = null;
 
   if (!root) return;
 
-  const context = resolveContext(page, requestedDivision, requestedId);
-  applyDivisionTheme(context.division);
-  render(context);
+  bootstrap();
+
+  async function bootstrap() {
+    officialContent = await fetchOfficialContent();
+    divisionCache.clear();
+    const context = resolveContext(page, requestedDivision, requestedId);
+    applyDivisionTheme(context.division);
+    render(context);
+  }
+
+  async function fetchOfficialContent() {
+    if (!contentApiUrl || window.location.protocol === "file:") return null;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2500);
+    try {
+      const response = await fetch(`${contentApiUrl}?v=${Date.now()}`, { cache: "no-store", signal: controller.signal });
+      if (!response.ok) return null;
+      const result = await response.json();
+      return result.content && result.content.divisions ? result.content : result;
+    } catch (error) {
+      return null;
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
 
   function render(current) {
     const division = current.division;
@@ -618,7 +643,75 @@
   }
 
   function divisionData(division) {
-    return payload.divisions && payload.divisions[division] || { hasData: false, overview: {}, teams: [], players: [], champions: [], matches: [] };
+    if (divisionCache.has(division)) return divisionCache.get(division);
+    const base = payload.divisions && payload.divisions[division] || { hasData: false, overview: {}, teams: [], players: [], champions: [], matches: [] };
+    const current = officialContent && officialContent.divisions && officialContent.divisions[division] || {};
+    const teamsBySlot = new Map((base.teams || []).map((team) => [String(team.slot), { ...team }]));
+    const playersById = new Map((base.players || []).map((player) => [String(player.playerId || player.id), { ...player }]));
+    const currentRosterIds = new Set();
+
+    Object.entries(current.teams || {}).forEach(([slot, team]) => {
+      const savedTeam = teamsBySlot.get(slot) || zeroTeam(slot);
+      teamsBySlot.set(slot, {
+        ...savedTeam,
+        slot,
+        name: team.name || savedTeam.name || slot,
+        tag: team.tag || savedTeam.tag || slot,
+        logo: team.logo || savedTeam.logo || ""
+      });
+      (team.players || []).filter(isRegisteredContentPlayer).forEach((player) => {
+        const id = String(player.playerId || "").trim();
+        if (!id) return;
+        currentRosterIds.add(id);
+        const savedPlayer = playersById.get(id) || zeroPlayer(player, slot);
+        playersById.set(id, {
+          ...savedPlayer,
+          id,
+          playerId: id,
+          displayName: player.player || player.name || savedPlayer.displayName || "JOGADOR",
+          riotId: player.riotId || savedPlayer.riotId || "",
+          opgg: player.opgg || savedPlayer.opgg || "",
+          mainPosition: player.lane || savedPlayer.mainPosition || "",
+          teams: mergePlayerTeams(savedPlayer.teams, slot)
+        });
+      });
+    });
+
+    const players = Array.from(playersById.values()).filter((player) => {
+      const id = String(player.playerId || player.id || "");
+      const hasHistoricalData = Number(player.games || 0) > 0 || (player.matches || []).length > 0;
+      return !officialContent || currentRosterIds.has(id) || hasHistoricalData;
+    });
+    const merged = { ...base, teams: Array.from(teamsBySlot.values()), players };
+    divisionCache.set(division, merged);
+    return merged;
+  }
+
+  function zeroTeam(slot) {
+    return {
+      slot, name: slot, tag: slot, logo: "", games: 0, wins: 0, losses: 0, winRate: 0,
+      kills: 0, deaths: 0, assists: 0, kda: 0, gpmAvg: 0, dpmAvg: 0, avgWinTime: "00:00"
+    };
+  }
+
+  function zeroPlayer(player, slot) {
+    return {
+      id: player.playerId, playerId: player.playerId, displayName: player.player || player.name || "JOGADOR",
+      riotId: player.riotId || "", opgg: player.opgg || "", games: 0, wins: 0, losses: 0, winRate: 0,
+      kills: 0, deaths: 0, assists: 0, kda: 0, kp: 0, gpm: 0, dpm: 0, visionScoreAvg: 0,
+      mvps: 0, mainPosition: player.lane || "", positions: [], teams: [{ slot, count: 0 }], champions: [], matches: []
+    };
+  }
+
+  function mergePlayerTeams(teams, slot) {
+    const list = Array.isArray(teams) ? teams.slice() : [];
+    return list.some((entry) => entry.slot === slot) ? list : [{ slot, count: 0 }, ...list];
+  }
+
+  function isRegisteredContentPlayer(player) {
+    const name = String(player && (player.player || player.name) || "").trim().toLocaleUpperCase("pt-BR");
+    const hasIdentity = Boolean(String(player && (player.opgg || player.riotId) || "").trim());
+    return Boolean(player && player.playerId) && (hasIdentity || !["", "-", "--", "SUB", "JOGADOR", "PLAYER", "VAGA DISPONIVEL", "VAGA DISPONÍVEL"].includes(name));
   }
 
   function normalizeDivision(value) {

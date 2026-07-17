@@ -65,6 +65,24 @@ test("gera estado publico vazio sem inventar estatisticas", () => {
   assert.deepEqual(publicPayload.divisions.elite.matches, []);
 });
 
+test("publica jogadores inscritos sem partidas com estatisticas zeradas", () => {
+  const content = {
+    divisions: {
+      elite: { teams: { A1: { name: "Time Teste", tag: "TT", players: [{ playerId: "player-zero", player: "Zero", riotId: "Zero#BR1", lane: "TOP", opgg: "https://op.gg/lol/summoners/br/Zero-BR1" }] } } },
+      ascension: { teams: {} }
+    }
+  };
+  const database = { version: 2, divisions: { elite: { games: [] }, ascension: { games: [] } } };
+  const player = createPublicPayload(aggregateDatabase(database, content, {})).divisions.elite.players.find((entry) => entry.id === "player-zero");
+
+  assert.ok(player);
+  assert.equal(player.displayName, "Zero");
+  assert.equal(player.games, 0);
+  assert.equal(player.kda, 0);
+  assert.equal(player.mainPosition, "TOP");
+  assert.equal(player.teams[0].slot, "A1");
+});
+
 test("ordena equipes por winrate e usa o menor TMV como desempate", { skip: !fs.existsSync(replayPath) }, () => {
   const first = parseReplay(fs.readFileSync(replayPath), { fileName: path.basename(replayPath) });
   first.durationSeconds = 1200;
