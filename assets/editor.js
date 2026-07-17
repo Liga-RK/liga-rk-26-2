@@ -1,6 +1,9 @@
 (function () {
   const fixedData = window.LIGA_RK_DATA || {};
   const sourceContent = window.LIGA_RK_CONTENT || {};
+  const replayStatsData = window.LIGA_RK_STATS || { divisions: {} };
+  const playerIdentity = window.LIGA_RK_PLAYER_IDENTITY;
+  const groupStandings = window.LIGA_RK_GROUP_STANDINGS;
   const app = document.getElementById("editor-app");
 
   if (!app) {
@@ -25,7 +28,9 @@
   };
   let currentDivision = "elite";
   let state = normalizeContent(sourceContent);
+  let identityConflicts = [];
 
+  synchronizeAllReplayResults();
   render();
   loadOnlineContent({ silent: true });
 
@@ -111,7 +116,12 @@
           lane,
           player: "JOGADOR",
           opgg: "",
-          captain: index === captainIndex
+          captain: index === captainIndex,
+          playerId: "",
+          riotId: "",
+          gameName: "",
+          tagLine: "",
+          riotIdAliases: []
         }))
       };
       return teams;
@@ -131,12 +141,16 @@
         division.teams[slot].players = [];
       }
       laneOrder.forEach((lane, index) => {
-        division.teams[slot].players[index] = {
+        const existingPlayer = division.teams[slot].players[index] || {};
+        const defaults = {
           lane,
-          player: (division.teams[slot].players[index] && division.teams[slot].players[index].player) || "JOGADOR",
-          opgg: (division.teams[slot].players[index] && division.teams[slot].players[index].opgg) || "",
-          captain: Boolean(division.teams[slot].players[index] && division.teams[slot].players[index].captain)
+          player: existingPlayer.player || "JOGADOR",
+          opgg: existingPlayer.opgg || "",
+          captain: Boolean(existingPlayer.captain)
         };
+        division.teams[slot].players[index] = playerIdentity
+          ? playerIdentity.migratePlayer(existingPlayer, defaults)
+          : { ...existingPlayer, ...defaults };
       });
     });
 
@@ -208,6 +222,7 @@
   }
 
   function render() {
+    identityConflicts = playerIdentity ? playerIdentity.collectConflicts(state) : [];
     app.innerHTML = `
       <header class="editor-header">
         <a class="brand" href="index.html">
@@ -334,15 +349,40 @@
   }
 
   function renderPlayerRow(key, slot, player, index) {
+    const parsedRiotId = playerIdentity ? playerIdentity.parseRiotId(player.riotId) : { valid: false };
+    const conflict = identityConflicts.find((item) => (
+      (item.first.division === key && item.first.slot === slot && item.first.playerIndex === index) ||
+      (item.second.division === key && item.second.slot === slot && item.second.playerIndex === index)
+    ));
+    const statusClass = conflict ? "duplicate" : player.riotId ? (parsedRiotId.valid ? "valid" : "invalid") : "empty";
+    const statusText = conflict ? "Riot ID duplicado" : player.riotId ? (parsedRiotId.valid ? "Gerado pelo OP.GG" : "OP.GG sem Riot ID valido") : "Aguardando link OP.GG";
+    const basePath = `divisions.${key}.teams.${slot}.players.${index}`;
+
     return `
       <div class="editor-player-row">
         <strong>${escapeHtml(player.lane)}</strong>
-        ${input(`divisions.${key}.teams.${slot}.players.${index}.player`, player.player, "JOGADOR")}
-        ${input(`divisions.${key}.teams.${slot}.players.${index}.opgg`, player.opgg, "Link OP.GG")}
+        ${input(`${basePath}.player`, player.player, "JOGADOR")}
+        ${input(`${basePath}.opgg`, player.opgg, "Link OP.GG")}
         <label class="captain-toggle">
           <input type="radio" name="captain-${key}-${slot}" data-captain-slot="${slot}" data-captain-division="${key}" value="${index}" ${player.captain ? "checked" : ""} />
           Capitão
         </label>
+        <div class="editor-riot-identity">
+          <div class="editor-field editor-riot-primary editor-riot-readonly">
+            <span>Riot ID principal</span>
+            <strong>${escapeHtml(player.riotId || "Preenchido automaticamente pelo OP.GG")}</strong>
+          </div>
+          <span class="riot-id-status ${statusClass}">${escapeHtml(statusText)}</span>
+          <div class="editor-alias-list">
+            ${(player.riotIdAliases || []).map((alias, aliasIndex) => `
+              <div class="editor-alias-row">
+                ${input(`${basePath}.riotIdAliases.${aliasIndex}.riotId`, alias.riotId || "", "Riot ID alternativo#BR1")}
+                <button type="button" class="icon-text-button danger-button" data-alias-action="remove" data-alias-division="${key}" data-alias-slot="${slot}" data-player-index="${index}" data-alias-index="${aliasIndex}">Remover</button>
+              </div>
+            `).join("")}
+            <button type="button" class="icon-text-button" data-alias-action="add" data-alias-division="${key}" data-alias-slot="${slot}" data-player-index="${index}">Adicionar Riot ID alternativo</button>
+          </div>
+        </div>
       </div>
     `;
   }
@@ -406,6 +446,7 @@
     const result = state.divisions[key].results[resultKey];
     const homeTeam = state.divisions[key].teams[normalized.home];
     const awayTeam = state.divisions[key].teams[normalized.away];
+    const automatic = replaySeriesScore(key, `groups-${resultKey}`, normalized.home, normalized.away, 2);
 
     return `
       <div class="calendar-editor-row">
@@ -417,6 +458,7 @@
         ${input(`divisions.${key}.results.${resultKey}.awayScore`, result.awayScore, "0-2", "number", "0", "2")}
         <strong>${escapeHtml(editorCalendarTeamName(awayTeam, normalized.away))}</strong>
         ${renderEditorTeamLogo(awayTeam.logo)}
+        ${renderScoreSource(key, "calendar", resultKey, result, automatic)}
       </div>
     `;
   }
@@ -448,6 +490,13 @@
     const result = state.divisions[key].playoffResults[resultKey];
     const resolved = playoffState.matches[resultKey] || {};
     const maxScore = String(match.format).toUpperCase() === "MD5" ? 3 : 2;
+    const automatic = replaySeriesScore(
+      key,
+      `playoffs-${resultKey}`,
+      resolved.teamA && resolved.teamA.slot,
+      resolved.teamB && resolved.teamB.slot,
+      maxScore
+    );
 
     return `
       <article class="editor-card playoff-match-editor">
@@ -462,8 +511,19 @@
           <strong>${escapeHtml((resolved.teamB && resolved.teamB.text) || match.teamB)}</strong>
           ${input(`divisions.${key}.playoffResults.${resultKey}.teamBScore`, result.teamBScore, `0-${maxScore}`, "number", "0", String(maxScore))}
         </div>
+        ${renderScoreSource(key, "playoffs", resultKey, result, automatic)}
       </article>
     `;
+  }
+
+  function renderScoreSource(key, type, resultKey, result, automatic) {
+    if (!automatic) {
+      return `<span class="editor-score-source empty">Sem replay confirmado</span>`;
+    }
+    const label = `Replays: ${automatic.scoreA} x ${automatic.scoreB}`;
+    return result.manualOverride
+      ? `<span class="editor-score-source manual">${escapeHtml(label)} <button type="button" data-score-reset="${type}" data-score-division="${key}" data-score-key="${resultKey}">Usar replays</button></span>`
+      : `<span class="editor-score-source automatic">${escapeHtml(label)} &middot; autom&aacute;tico</span>`;
   }
 
   function renderEditorTeamLogo(path) {
@@ -603,6 +663,21 @@
       target.value = nextValue;
     }
     setPath(target.dataset.path, nextValue);
+    if (target.dataset.path.includes(".results.") || target.dataset.path.includes(".playoffResults.")) {
+      markScoreManualOverride(target.dataset.path);
+    }
+    if (/\.players\.\d+\.opgg$/.test(target.dataset.path)) {
+      synchronizeRiotIdentityFromOpgg(target.dataset.path);
+      if (event.type === "change") {
+        rerenderPreservingOpenSections();
+      }
+    }
+    if (/\.riotIdAliases\.\d+\.riotId$/.test(target.dataset.path)) {
+      synchronizeRiotIdentity(target.dataset.path);
+      if (event.type === "change") {
+        rerenderPreservingOpenSections();
+      }
+    }
     if (/\.vods\.\d+\.url$/.test(target.dataset.path)) {
       syncVodFromUrl(target.dataset.path, nextValue, target.closest(".vod-editor-card"), event.type === "change");
     }
@@ -615,6 +690,8 @@
   function handleClick(event) {
     const divisionButton = event.target.closest("[data-division]");
     const vodButton = event.target.closest("[data-vod-action]");
+    const aliasButton = event.target.closest("[data-alias-action]");
+    const scoreResetButton = event.target.closest("[data-score-reset]");
     const actionButton = event.target.closest("[data-action]");
 
     if (divisionButton) {
@@ -625,6 +702,16 @@
 
     if (vodButton) {
       handleVodAction(vodButton);
+      return;
+    }
+
+    if (aliasButton) {
+      handleAliasAction(aliasButton);
+      return;
+    }
+
+    if (scoreResetButton) {
+      resetScoreToReplay(scoreResetButton);
       return;
     }
 
@@ -685,6 +772,63 @@
       render();
       markDirty();
     }
+  }
+
+  function handleAliasAction(button) {
+    const division = state.divisions[button.dataset.aliasDivision];
+    const team = division && division.teams[button.dataset.aliasSlot];
+    const player = team && team.players[Number(button.dataset.playerIndex)];
+    if (!player) {
+      return;
+    }
+
+    if (!Array.isArray(player.riotIdAliases)) {
+      player.riotIdAliases = [];
+    }
+    if (button.dataset.aliasAction === "add") {
+      player.riotIdAliases.push({ riotId: "", gameName: "", tagLine: "", normalizedRiotId: "" });
+    } else {
+      player.riotIdAliases.splice(Number(button.dataset.aliasIndex), 1);
+    }
+    rerenderPreservingOpenSections();
+    markDirty();
+  }
+
+  function synchronizeRiotIdentity(path) {
+    if (!playerIdentity) {
+      return;
+    }
+    const primaryMatch = /^divisions\.([^.]+)\.teams\.([^.]+)\.players\.(\d+)\.riotId$/.exec(path);
+    const aliasMatch = /^divisions\.([^.]+)\.teams\.([^.]+)\.players\.(\d+)\.riotIdAliases\.(\d+)\.riotId$/.exec(path);
+    const match = primaryMatch || aliasMatch;
+    if (!match) {
+      return;
+    }
+    const player = state.divisions[match[1]].teams[match[2]].players[Number(match[3])];
+    if (primaryMatch) {
+      const parsed = playerIdentity.parseRiotId(player.riotId);
+      player.riotId = parsed.riotId;
+      player.gameName = parsed.gameName;
+      player.tagLine = parsed.tagLine;
+      if (!player.playerId && playerIdentity.isRegisteredPlayer(player)) {
+        player.playerId = playerIdentity.createPlayerId();
+      }
+      return;
+    }
+    player.riotIdAliases[Number(match[4])] = playerIdentity.normalizeAlias(player.riotIdAliases[Number(match[4])]);
+  }
+
+  function synchronizeRiotIdentityFromOpgg(path) {
+    if (!playerIdentity) {
+      return;
+    }
+    const match = /^divisions\.([^.]+)\.teams\.([^.]+)\.players\.(\d+)\.opgg$/.exec(path);
+    if (!match) {
+      return;
+    }
+    const player = state.divisions[match[1]].teams[match[2]].players[Number(match[3])];
+    const migrated = playerIdentity.migratePlayer(player);
+    Object.assign(player, migrated);
   }
 
   function syncVodFromUrl(path, url, card, shouldFetchTitle) {
@@ -770,6 +914,7 @@
       }
 
       state = normalizeContent(nextContent);
+      synchronizeAllReplayResults();
       render();
       setStatus("Dados online carregados.");
     } catch (error) {
@@ -782,6 +927,7 @@
   async function publishOnline() {
     const apiBase = normalizeApiBase(editorConfig.apiBase);
     const adminToken = String(editorConfig.adminToken || "").trim();
+    const identityValidation = preparePlayerIdentities();
 
     if (!apiBase) {
       setStatus("Informe a URL da API da Liga RK.");
@@ -789,6 +935,11 @@
     }
     if (!adminToken) {
       setStatus("Informe o token de administrador do Worker.");
+      return;
+    }
+    if (!identityValidation.ok) {
+      setStatus(identityValidation.error);
+      rerenderPreservingOpenSections();
       return;
     }
 
@@ -816,6 +967,12 @@
   }
 
   async function saveFile() {
+    const identityValidation = preparePlayerIdentities();
+    if (!identityValidation.ok) {
+      setStatus(identityValidation.error);
+      rerenderPreservingOpenSections();
+      return;
+    }
     const content = buildFileContent();
 
     if (!window.showSaveFilePicker) {
@@ -846,6 +1003,12 @@
   }
 
   function downloadFile() {
+    const identityValidation = preparePlayerIdentities();
+    if (!identityValidation.ok) {
+      setStatus(identityValidation.error);
+      rerenderPreservingOpenSections();
+      return;
+    }
     const blob = new Blob([buildFileContent()], { type: "text/javascript" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -856,6 +1019,12 @@
   }
 
   async function copyFile() {
+    const identityValidation = preparePlayerIdentities();
+    if (!identityValidation.ok) {
+      setStatus(identityValidation.error);
+      rerenderPreservingOpenSections();
+      return;
+    }
     try {
       await navigator.clipboard.writeText(buildFileContent());
       setStatus("Conteúdo copiado.");
@@ -873,6 +1042,7 @@
     try {
       const imported = parseContent(text);
       state = normalizeContent(imported);
+      synchronizeAllReplayResults();
       render();
       setStatus("Arquivo importado.");
     } catch (error) {
@@ -891,8 +1061,55 @@
   }
 
   function buildFileContent() {
+    preparePlayerIdentities();
     Object.keys(state.divisions).forEach(syncLegacyVod);
     return `window.LIGA_RK_CONTENT = ${JSON.stringify(state, null, 2)};\n`;
+  }
+
+  function preparePlayerIdentities() {
+    if (!playerIdentity) {
+      return { ok: false, error: "O modulo de identidade dos jogadores nao foi carregado." };
+    }
+
+    const invalid = [];
+    const playerIdOwners = new Map();
+    const duplicatePlayerIds = [];
+    Object.entries(state.divisions).forEach(([divisionKey, division]) => {
+      Object.entries(division.teams || {}).forEach(([slot, team]) => {
+        (team.players || []).forEach((player, index) => {
+          const migrated = playerIdentity.migratePlayer(player, { lane: laneOrder[index] || player.lane });
+          team.players[index] = migrated;
+          const label = `${divisionLabels[divisionKey]} ${slot} ${migrated.player || migrated.name || `jogador ${index + 1}`}`;
+          if (migrated.riotId && !playerIdentity.parseRiotId(migrated.riotId).valid) {
+            invalid.push(label);
+          }
+          (migrated.riotIdAliases || []).forEach((alias) => {
+            if (alias.riotId && !playerIdentity.parseRiotId(alias.riotId).valid) {
+              invalid.push(`${label} (alternativo)`);
+            }
+          });
+          if (migrated.playerId) {
+            if (playerIdOwners.has(migrated.playerId)) {
+              duplicatePlayerIds.push(label);
+            } else {
+              playerIdOwners.set(migrated.playerId, label);
+            }
+          }
+        });
+      });
+    });
+
+    identityConflicts = playerIdentity.collectConflicts(state);
+    if (invalid.length) {
+      return { ok: false, error: `Corrija o formato gameName#tagLine em: ${invalid.slice(0, 3).join(", ")}.` };
+    }
+    if (identityConflicts.length) {
+      return { ok: false, error: `Existem ${identityConflicts.length} Riot IDs duplicados. Corrija os campos marcados antes de publicar.` };
+    }
+    if (duplicatePlayerIds.length) {
+      return { ok: false, error: "Existem identificadores internos duplicados. Nao publique antes de corrigir o cadastro." };
+    }
+    return { ok: true };
   }
 
   function normalizeApiBase(value) {
@@ -937,6 +1154,107 @@
     return `r${roundIndex + 1}g${gameIndex + 1}`;
   }
 
+  function synchronizeAllReplayResults() {
+    Object.keys(state.divisions || {}).forEach((key) => synchronizeReplayResults(key));
+  }
+
+  function synchronizeReplayResults(key) {
+    const fixed = fixedData[key] || {};
+    const division = state.divisions[key];
+    const automaticTeams = replayDivision(key).teamSummaries || {};
+
+    Object.entries(automaticTeams).forEach(([slot, team]) => {
+      if (division.teams[slot] && team && team.avgWinTime && numeric(team.wins) > 0) {
+        division.teams[slot].avgWinTime = team.avgWinTime;
+      }
+    });
+
+    (fixed.rounds || []).forEach((round, roundIndex) => {
+      (round.games || []).forEach((game, gameIndex) => {
+        const normalized = normalizeGame(game);
+        const resultKey = gameKey(roundIndex, gameIndex);
+        const result = division.results[resultKey];
+        const automatic = replaySeriesScore(key, `groups-${resultKey}`, normalized.home, normalized.away, 2);
+        applyAutomaticScore(result, automatic, "homeScore", "awayScore");
+      });
+    });
+
+    (fixed.playoffs || []).forEach((column, columnIndex) => {
+      (column || []).forEach((match, matchIndex) => {
+        const resultKey = playoffKey(columnIndex, matchIndex);
+        const result = division.playoffResults[resultKey];
+        const playoffState = computeEditorPlayoffState(key);
+        const resolved = playoffState.matches[resultKey] || {};
+        const maxScore = String(match.format).toUpperCase() === "MD5" ? 3 : 2;
+        const automatic = replaySeriesScore(
+          key,
+          `playoffs-${resultKey}`,
+          resolved.teamA && resolved.teamA.slot,
+          resolved.teamB && resolved.teamB.slot,
+          maxScore
+        );
+        applyAutomaticScore(result, automatic, "teamAScore", "teamBScore");
+      });
+    });
+  }
+
+  function replayDivision(key) {
+    return replayStatsData.divisions && replayStatsData.divisions[key] || { matches: [], teamSummaries: {} };
+  }
+
+  function replaySeriesScore(key, seriesId, preferredTeamA, preferredTeamB, maxScore) {
+    const matches = (replayDivision(key).matches || [])
+      .filter((match) => match && match.seriesId === seriesId)
+      .sort((left, right) => numeric(left.gameNumber) - numeric(right.gameNumber));
+    if (!matches.length) {
+      return null;
+    }
+
+    const first = matches[0];
+    const teamA = preferredTeamA || first.blueTeamSlot || first.redTeamSlot;
+    const teamB = preferredTeamB || [first.blueTeamSlot, first.redTeamSlot].find((slot) => slot && slot !== teamA);
+    if (!teamA || !teamB || teamA === teamB) {
+      return null;
+    }
+
+    const scoreA = Math.min(maxScore, matches.filter((match) => match.winnerSlot === teamA).length);
+    const scoreB = Math.min(maxScore, matches.filter((match) => match.winnerSlot === teamB).length);
+    return { scoreA, scoreB, teamA, teamB, games: matches.length };
+  }
+
+  function applyAutomaticScore(result, automatic, scoreAKey, scoreBKey) {
+    if (!result || !automatic || result.manualOverride) {
+      return;
+    }
+    result[scoreAKey] = automatic.scoreA;
+    result[scoreBKey] = automatic.scoreB;
+  }
+
+  function markScoreManualOverride(path) {
+    const calendar = /^divisions\.([^.]+)\.results\.([^.]+)\.(?:homeScore|awayScore)$/.exec(path);
+    const playoffs = /^divisions\.([^.]+)\.playoffResults\.([^.]+)\.(?:teamAScore|teamBScore)$/.exec(path);
+    const match = calendar || playoffs;
+    if (!match) return;
+    const collection = calendar ? "results" : "playoffResults";
+    state.divisions[match[1]][collection][match[2]].manualOverride = true;
+  }
+
+  function resetScoreToReplay(button) {
+    const key = button.dataset.scoreDivision;
+    const collection = button.dataset.scoreReset === "calendar" ? "results" : "playoffResults";
+    const result = state.divisions[key] && state.divisions[key][collection] && state.divisions[key][collection][button.dataset.scoreKey];
+    if (!result) return;
+    result.manualOverride = false;
+    synchronizeReplayResults(key);
+    rerenderPreservingOpenSections();
+    markDirty();
+  }
+
+  function numeric(value) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number : 0;
+  }
+
   function playoffKey(columnIndex, matchIndex) {
     return `p${columnIndex + 1}m${matchIndex + 1}`;
   }
@@ -951,52 +1269,12 @@
   function computeEditorStandings(key) {
     const fixed = fixedData[key] || {};
     const division = state.divisions[key];
-    const standings = groupLetters.reduce((groups, group) => {
-      groups[group] = [1, 2, 3, 4].map((seed, index) => {
-        const slot = `${group}${seed}`;
-        return {
-          slot,
-          seed: index,
-          wins: 0,
-          losses: 0,
-          games: 0,
-          team: division.teams[slot]
-        };
-      });
-      return groups;
-    }, {});
-    const entriesBySlot = Object.fromEntries(
-      Object.values(standings)
-        .flat()
-        .map((entry) => [entry.slot, entry])
-    );
-
-    (fixed.rounds || []).forEach((round, roundIndex) => {
-      (round.games || []).forEach((game, gameIndex) => {
-        const normalized = normalizeGame(game);
-        const result = division.results[gameKey(roundIndex, gameIndex)] || {};
-        const homeScore = parseScore(result.homeScore);
-        const awayScore = parseScore(result.awayScore);
-
-        if (homeScore === null && awayScore === null) {
-          return;
-        }
-
-        applyEditorGroupScore(entriesBySlot[normalized.home], homeScore ?? 0);
-        applyEditorGroupScore(entriesBySlot[normalized.away], awayScore ?? 0);
-      });
+    if (!groupStandings) return {};
+    return groupStandings.compute({
+      rounds: fixed.rounds || [],
+      resolveResult: (roundIndex, gameIndex) => division.results[gameKey(roundIndex, gameIndex)] || {},
+      resolveTeam: (slot) => division.teams[slot]
     });
-
-    Object.keys(standings).forEach((group) => {
-      standings[group].sort((a, b) => (
-        b.wins - a.wins ||
-        timeToSeconds(a.team.avgWinTime) - timeToSeconds(b.team.avgWinTime) ||
-        a.losses - b.losses ||
-        a.seed - b.seed
-      ));
-    });
-
-    return standings;
   }
 
   function computeEditorPlayoffState(key) {
@@ -1056,16 +1334,6 @@
   function editorCalendarTeamName(team, slot) {
     const tag = team && String(team.tag || "").trim();
     return tag ? tag.slice(0, 4).toUpperCase() : slot;
-  }
-
-  function applyEditorGroupScore(entry, score) {
-    if (!entry) {
-      return;
-    }
-
-    entry.wins += score;
-    entry.losses += Math.max(0, 2 - score);
-    entry.games += 2;
   }
 
   function parseScore(value) {

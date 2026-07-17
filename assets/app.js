@@ -2,6 +2,7 @@
   const fixedData = window.LIGA_RK_DATA;
   const contentData = window.LIGA_RK_CONTENT || {};
   const replayStatsData = window.LIGA_RK_STATS || {};
+  const groupStandings = window.LIGA_RK_GROUP_STANDINGS;
   const divisionKey = document.body.dataset.division;
   const division = fixedData && fixedData[divisionKey];
   const contentApiUrl = window.LIGA_RK_CONTENT_API || "https://liga-rk-api.suporteinhouserk.workers.dev/api/content";
@@ -159,60 +160,12 @@
   }
 
   function computeStandings() {
-    const standings = groupLetters.reduce((groups, group) => {
-      groups[group] = [1, 2, 3, 4].map((seed, index) => {
-        const slot = `${group}${seed}`;
-        return {
-          slot,
-          seed: index,
-          team: teamsBySlot[slot],
-          wins: 0,
-          losses: 0,
-          games: 0
-        };
-      });
-      return groups;
-    }, {});
-    const entriesBySlot = Object.fromEntries(
-      Object.values(standings)
-        .flat()
-        .map((entry) => [entry.slot, entry])
-    );
-
-    (division.rounds || []).forEach((round, roundIndex) => {
-      (round.games || []).forEach((game, gameIndex) => {
-        const normalized = normalizeGame(game);
-        const result = getResult(roundIndex, gameIndex);
-        const homeScore = parseScore(result.homeScore);
-        const awayScore = parseScore(result.awayScore);
-
-        if (homeScore === null || awayScore === null || !entriesBySlot[normalized.home] || !entriesBySlot[normalized.away]) {
-          return;
-        }
-
-        applyGroupScore(entriesBySlot[normalized.home], homeScore);
-        applyGroupScore(entriesBySlot[normalized.away], awayScore);
-      });
+    if (!groupStandings) return {};
+    return groupStandings.compute({
+      rounds: division.rounds || [],
+      resolveResult: (roundIndex, gameIndex) => getResult(roundIndex, gameIndex),
+      resolveTeam: (slot) => teamsBySlot[slot]
     });
-
-    Object.keys(standings).forEach((group) => {
-      standings[group].sort((a, b) => {
-        return (
-          b.wins - a.wins ||
-          timeToSeconds(a.team.avgWinTime) - timeToSeconds(b.team.avgWinTime) ||
-          a.losses - b.losses ||
-          a.seed - b.seed
-        );
-      });
-    });
-
-    return standings;
-  }
-
-  function applyGroupScore(entry, score) {
-    entry.wins += score;
-    entry.losses += Math.max(0, 2 - score);
-    entry.games += 2;
   }
 
   function computePlayoffState() {
@@ -453,6 +406,7 @@
           <span class="group-title">${escapeHtml(groupName)}</span>
           <span class="stat-label">V</span>
           <span class="stat-label">D</span>
+          <span class="stat-label">SJ</span>
           <span class="stat-label">J</span>
           <span class="stat-label stat-label-tmv">TMV</span>
         </header>
@@ -468,9 +422,10 @@
       <div class="standing-row">
         <span class="standing-position">${index + 1}</span>
         ${renderStandingLogo(entry.slot)}
-        <span class="standing-team">${escapeHtml(teamName(entry.slot))}</span>
+        <span class="standing-team">${escapeHtml(calendarTeamName(entry.slot))}</span>
         <span class="standing-stat">${escapeHtml(entry.wins)}</span>
         <span class="standing-stat">${escapeHtml(entry.losses)}</span>
+        <span class="standing-stat standing-game-diff">${escapeHtml(formatGameDiff(entry.gameDiff))}</span>
         <span class="standing-stat">${escapeHtml(entry.games)}</span>
         <span class="standing-time">${escapeHtml(entry.team.avgWinTime || "00:00")}</span>
       </div>
@@ -485,6 +440,11 @@
     }
 
     return `<span class="standing-logo rk-logo-placeholder"><img src="${escapeAttribute(rkPlaceholderUrl)}" alt="" loading="lazy" /></span>`;
+  }
+
+  function formatGameDiff(value) {
+    const number = Number(value) || 0;
+    return number > 0 ? `+${number}` : String(number);
   }
 
   function renderPlayoffs() {
@@ -705,6 +665,7 @@
           ${renderChampionStat(stats.mostWins, "MAIS VITÓRIAS")}
           </div>
         `)}
+        <a class="statistics-more-link" href="estatisticas.html?division=${divisionKey}">Ver todas as estat&iacute;sticas</a>
       </section>
     `;
   }
@@ -729,11 +690,16 @@
   }
 
   function renderPlayerStat(stat = {}) {
+    const playerName = escapeHtml(stat.player || "JOGADOR");
+    const player = stat.playerId
+      ? `<a href="jogador.html?division=${divisionKey}&id=${encodeURIComponent(stat.playerId)}">${playerName}</a>`
+      : `<span>${playerName}</span>`;
+
     return `
       <article class="player-stat-card">
         <header>${escapeHtml(stat.label || "MELHOR")}</header>
         <div>
-          <span>${escapeHtml(stat.player || "JOGADOR")}</span>
+          ${player}
           <strong>${escapeHtml(stat.value || "00.00")}</strong>
         </div>
       </article>

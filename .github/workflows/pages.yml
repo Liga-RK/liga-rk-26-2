@@ -28,8 +28,16 @@ jobs:
         with:
           node-version: 20
 
+      - name: Validate source
+        run: |
+          npm test
+          npm run check
+
       - name: Build public site
-        run: node scripts/build-public-site.js
+        run: npm run build:public
+
+      - name: Verify public artifact
+        run: npm run smoke:public
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

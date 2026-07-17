@@ -7,7 +7,13 @@
   "scripts": {
     "start": "node ./stats-server.js",
     "build:public": "node ./scripts/build-public-site.js",
-    "check": "node --check ./stats-server.js && node --check ./assets/stats-admin.js && node --check ./assets/app.js && node --check ./assets/editor.js && node --check ./assets/inscricao.js && node --check ./assets/pagamento.js && node --check ./assets/inscricoes-admin.js"
+    "test": "node --test",
+    "check": "node --check ./stats-server.js && node --check ./assets/stats-admin.js && node --check ./assets/statistics-pages.js && node --check ./assets/app.js && node --check ./assets/editor.js && node --check ./assets/inscricao.js && node --check ./assets/pagamento.js && node --check ./assets/inscricoes-admin.js && node --check ./scripts/generate-public-stats.js && node --check ./scripts/validate-public-stats.js && node --check ./scripts/replay-inspect.js && node --check ./scripts/content-integrity.js && node --check ./scripts/build-public-site.js && node --check ./scripts/verify-public-build.js",
+    "stats:generate": "node ./scripts/generate-public-stats.js",
+    "stats:validate": "node ./scripts/validate-public-stats.js",
+    "replay:inspect": "node ./scripts/replay-inspect.js",
+    "content:integrity": "node ./scripts/content-integrity.js",
+    "smoke:public": "node ./scripts/verify-public-build.js"
   },
   "engines": {
     "node": ">=18"
