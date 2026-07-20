@@ -8,8 +8,6 @@ const publicFiles = [
   "index.html",
   "elite.html",
   "ascensao.html",
-  "inscricao.html",
-  "pagamento.html",
   "bolao.html",
   "estatisticas.html",
   "partida.html",
@@ -19,6 +17,8 @@ const publicFiles = [
 ];
 const excludedAssetFiles = new Set([
   "editor.js",
+  "inscricao.js",
+  "pagamento.js",
   "inscricoes-admin.js",
   "bolao-admin.js",
   "stats-admin.js",
@@ -32,8 +32,6 @@ const excludedAssetFiles = new Set([
 const publicSourceFiles = [
   ...publicFiles,
   "assets/app.js",
-  "assets/inscricao.js",
-  "assets/pagamento.js",
   "assets/bolao.js",
   "assets/champion-list.js",
   "assets/data.js",

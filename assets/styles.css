@@ -4347,6 +4347,10 @@ a.stats-postgame-team-logo:focus-visible {
   margin: 0 0 0.95rem;
 }
 
+.home-promo-slot {
+  min-height: 4.35rem;
+}
+
 .home-socials {
   margin-top: 1.4rem;
 }

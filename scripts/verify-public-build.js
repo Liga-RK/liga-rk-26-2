@@ -9,7 +9,17 @@ const files = walk(dist);
 const forbiddenNames = files.filter((file) => /\.(rofl|tmp|log)$/i.test(file) || /(^|\/)(data|config|backups|samples)(\/|$)/i.test(relative(file)));
 if (forbiddenNames.length) throw new Error(`Arquivos privados encontrados no dist: ${forbiddenNames.map(relative).join(", ")}`);
 
-const forbiddenPublicFiles = ["assets/editor.js", "assets/stats-admin.js", "assets/inscricoes-admin.js", "assets/bolao-admin.js", "assets/replay-db.js"];
+const forbiddenPublicFiles = [
+  "inscricao.html",
+  "pagamento.html",
+  "assets/editor.js",
+  "assets/inscricao.js",
+  "assets/pagamento.js",
+  "assets/stats-admin.js",
+  "assets/inscricoes-admin.js",
+  "assets/bolao-admin.js",
+  "assets/replay-db.js"
+];
 const leakedAdminFiles = forbiddenPublicFiles.filter((file) => fs.existsSync(path.join(dist, file)));
 if (leakedAdminFiles.length) throw new Error(`Ferramentas administrativas encontradas no dist: ${leakedAdminFiles.join(", ")}`);
 
