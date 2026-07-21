@@ -1,0 +1,406 @@
+{
+  "schemaVersion": 1,
+  "competition": "Liga RK 26.2",
+  "division": "elite",
+  "divisionLabel": "Divisão Elite",
+  "generatedAt": "2026-07-21T00:47:05.048Z",
+  "positionsRandomized": true,
+  "groups": {
+    "A": [
+      {
+        "position": 1,
+        "slot": "A1",
+        "name": "CUPULA DO TRIPLE T",
+        "tag": "TTT",
+        "logo": "assets/uploads/equipes_elite/ttt.png",
+        "pot": 1
+      },
+      {
+        "position": 2,
+        "slot": "A2",
+        "name": "BANDO DO ROSA",
+        "tag": "BDR",
+        "logo": "assets/uploads/equipes_elite/bdr.png",
+        "pot": 2
+      },
+      {
+        "position": 3,
+        "slot": "A3",
+        "name": "RAVENCLAW",
+        "tag": "RAVE",
+        "logo": "assets/uploads/equipes_elite/rave.png",
+        "pot": 3
+      },
+      {
+        "position": 4,
+        "slot": "A4",
+        "name": "QUANTUM RABBITS",
+        "tag": "QR",
+        "logo": "assets/uploads/equipes_elite/qr.png",
+        "pot": 4
+      }
+    ],
+    "B": [
+      {
+        "position": 1,
+        "slot": "B1",
+        "name": "NEW AGS",
+        "tag": "AGS",
+        "logo": "assets/uploads/equipes_elite/ags.png",
+        "pot": 4
+      },
+      {
+        "position": 2,
+        "slot": "B2",
+        "name": "LENDINHAS",
+        "tag": "IDL",
+        "logo": "assets/uploads/equipes_elite/idl.png",
+        "pot": 1
+      },
+      {
+        "position": 3,
+        "slot": "B3",
+        "name": "PHOENIX GAMING BLUE",
+        "tag": "PXB",
+        "logo": "assets/uploads/equipes_elite/pxb.png",
+        "pot": 2
+      },
+      {
+        "position": 4,
+        "slot": "B4",
+        "name": "TOPEIRAS DO MAU",
+        "tag": "TOP",
+        "logo": "assets/uploads/equipes_elite/top.png",
+        "pot": 3
+      }
+    ],
+    "C": [
+      {
+        "position": 1,
+        "slot": "C1",
+        "name": "NKZ REVENGERS",
+        "tag": "NKZ",
+        "logo": "assets/uploads/equipes_elite/nkz.png",
+        "pot": 1
+      },
+      {
+        "position": 2,
+        "slot": "C2",
+        "name": "BRONGUINHOS TEAM 67",
+        "tag": "BG67",
+        "logo": "assets/uploads/equipes_elite/bg67.png",
+        "pot": 3
+      },
+      {
+        "position": 3,
+        "slot": "C3",
+        "name": "TEAM LEGATI",
+        "tag": "LEGA",
+        "logo": "assets/uploads/equipes_elite/lega.png",
+        "pot": 4
+      },
+      {
+        "position": 4,
+        "slot": "C4",
+        "name": "CASHOUT & TRIMILIQUE LTDA",
+        "tag": "CASH",
+        "logo": "assets/uploads/equipes_elite/cash.png",
+        "pot": 2
+      }
+    ],
+    "D": [
+      {
+        "position": 1,
+        "slot": "D1",
+        "name": "FAVELÃO DO TECHY",
+        "tag": "FVL",
+        "logo": "assets/uploads/equipes_elite/fvl.png",
+        "pot": 1
+      },
+      {
+        "position": 2,
+        "slot": "D2",
+        "name": "BORRACHARIA FC",
+        "tag": "BOR",
+        "logo": "assets/uploads/equipes_elite/bor.png",
+        "pot": 3
+      },
+      {
+        "position": 3,
+        "slot": "D3",
+        "name": "TEAM SOLO BAHIA",
+        "tag": "TSB",
+        "logo": "assets/uploads/equipes_elite/tsb.png",
+        "pot": 4
+      },
+      {
+        "position": 4,
+        "slot": "D4",
+        "name": "M7 ESPORTS",
+        "tag": "M7",
+        "logo": "assets/uploads/equipes_elite/m7.png",
+        "pot": 2
+      }
+    ]
+  },
+  "teamsBySlot": {
+    "A1": {
+      "name": "CUPULA DO TRIPLE T",
+      "tag": "TTT",
+      "logo": "assets/uploads/equipes_elite/ttt.png",
+      "pot": 1
+    },
+    "A2": {
+      "name": "BANDO DO ROSA",
+      "tag": "BDR",
+      "logo": "assets/uploads/equipes_elite/bdr.png",
+      "pot": 2
+    },
+    "A3": {
+      "name": "RAVENCLAW",
+      "tag": "RAVE",
+      "logo": "assets/uploads/equipes_elite/rave.png",
+      "pot": 3
+    },
+    "A4": {
+      "name": "QUANTUM RABBITS",
+      "tag": "QR",
+      "logo": "assets/uploads/equipes_elite/qr.png",
+      "pot": 4
+    },
+    "B1": {
+      "name": "NEW AGS",
+      "tag": "AGS",
+      "logo": "assets/uploads/equipes_elite/ags.png",
+      "pot": 4
+    },
+    "B2": {
+      "name": "LENDINHAS",
+      "tag": "IDL",
+      "logo": "assets/uploads/equipes_elite/idl.png",
+      "pot": 1
+    },
+    "B3": {
+      "name": "PHOENIX GAMING BLUE",
+      "tag": "PXB",
+      "logo": "assets/uploads/equipes_elite/pxb.png",
+      "pot": 2
+    },
+    "B4": {
+      "name": "TOPEIRAS DO MAU",
+      "tag": "TOP",
+      "logo": "assets/uploads/equipes_elite/top.png",
+      "pot": 3
+    },
+    "C1": {
+      "name": "NKZ REVENGERS",
+      "tag": "NKZ",
+      "logo": "assets/uploads/equipes_elite/nkz.png",
+      "pot": 1
+    },
+    "C2": {
+      "name": "BRONGUINHOS TEAM 67",
+      "tag": "BG67",
+      "logo": "assets/uploads/equipes_elite/bg67.png",
+      "pot": 3
+    },
+    "C3": {
+      "name": "TEAM LEGATI",
+      "tag": "LEGA",
+      "logo": "assets/uploads/equipes_elite/lega.png",
+      "pot": 4
+    },
+    "C4": {
+      "name": "CASHOUT & TRIMILIQUE LTDA",
+      "tag": "CASH",
+      "logo": "assets/uploads/equipes_elite/cash.png",
+      "pot": 2
+    },
+    "D1": {
+      "name": "FAVELÃO DO TECHY",
+      "tag": "FVL",
+      "logo": "assets/uploads/equipes_elite/fvl.png",
+      "pot": 1
+    },
+    "D2": {
+      "name": "BORRACHARIA FC",
+      "tag": "BOR",
+      "logo": "assets/uploads/equipes_elite/bor.png",
+      "pot": 3
+    },
+    "D3": {
+      "name": "TEAM SOLO BAHIA",
+      "tag": "TSB",
+      "logo": "assets/uploads/equipes_elite/tsb.png",
+      "pot": 4
+    },
+    "D4": {
+      "name": "M7 ESPORTS",
+      "tag": "M7",
+      "logo": "assets/uploads/equipes_elite/m7.png",
+      "pot": 2
+    }
+  },
+  "drawHistory": [
+    {
+      "order": 1,
+      "method": "roleta",
+      "pot": 1,
+      "group": "A",
+      "initialPosition": 1,
+      "teamId": "ttt-1",
+      "team": "CUPULA DO TRIPLE T",
+      "tag": "TTT"
+    },
+    {
+      "order": 2,
+      "method": "roleta",
+      "pot": 1,
+      "group": "B",
+      "initialPosition": 1,
+      "teamId": "idl-1",
+      "team": "LENDINHAS",
+      "tag": "IDL"
+    },
+    {
+      "order": 3,
+      "method": "roleta",
+      "pot": 1,
+      "group": "C",
+      "initialPosition": 1,
+      "teamId": "nkz-1",
+      "team": "NKZ REVENGERS",
+      "tag": "NKZ"
+    },
+    {
+      "order": 4,
+      "method": "automatic",
+      "pot": 1,
+      "group": "D",
+      "initialPosition": 1,
+      "teamId": "fvl-1",
+      "team": "FAVELÃO DO TECHY",
+      "tag": "FVL"
+    },
+    {
+      "order": 5,
+      "method": "roleta",
+      "pot": 2,
+      "group": "A",
+      "initialPosition": 2,
+      "teamId": "bdr-2",
+      "team": "BANDO DO ROSA",
+      "tag": "BDR"
+    },
+    {
+      "order": 6,
+      "method": "roleta",
+      "pot": 2,
+      "group": "B",
+      "initialPosition": 2,
+      "teamId": "pxb-2",
+      "team": "PHOENIX GAMING BLUE",
+      "tag": "PXB"
+    },
+    {
+      "order": 7,
+      "method": "roleta",
+      "pot": 2,
+      "group": "C",
+      "initialPosition": 2,
+      "teamId": "cash-2",
+      "team": "CASHOUT & TRIMILIQUE LTDA",
+      "tag": "CASH"
+    },
+    {
+      "order": 8,
+      "method": "automatic",
+      "pot": 2,
+      "group": "D",
+      "initialPosition": 2,
+      "teamId": "m7-2",
+      "team": "M7 ESPORTS",
+      "tag": "M7"
+    },
+    {
+      "order": 9,
+      "method": "roleta",
+      "pot": 3,
+      "group": "A",
+      "initialPosition": 3,
+      "teamId": "rave-3",
+      "team": "RAVENCLAW",
+      "tag": "RAVE"
+    },
+    {
+      "order": 10,
+      "method": "roleta",
+      "pot": 3,
+      "group": "B",
+      "initialPosition": 3,
+      "teamId": "top-3",
+      "team": "TOPEIRAS DO MAU",
+      "tag": "TOP"
+    },
+    {
+      "order": 11,
+      "method": "roleta",
+      "pot": 3,
+      "group": "C",
+      "initialPosition": 3,
+      "teamId": "bg67-3",
+      "team": "BRONGUINHOS TEAM 67",
+      "tag": "BG67"
+    },
+    {
+      "order": 12,
+      "method": "automatic",
+      "pot": 3,
+      "group": "D",
+      "initialPosition": 3,
+      "teamId": "bor-3",
+      "team": "BORRACHARIA FC",
+      "tag": "BOR"
+    },
+    {
+      "order": 13,
+      "method": "roleta",
+      "pot": 4,
+      "group": "A",
+      "initialPosition": 4,
+      "teamId": "qr-4",
+      "team": "QUANTUM RABBITS",
+      "tag": "QR"
+    },
+    {
+      "order": 14,
+      "method": "roleta",
+      "pot": 4,
+      "group": "B",
+      "initialPosition": 4,
+      "teamId": "ags-4",
+      "team": "NEW AGS",
+      "tag": "AGS"
+    },
+    {
+      "order": 15,
+      "method": "roleta",
+      "pot": 4,
+      "group": "C",
+      "initialPosition": 4,
+      "teamId": "lega-4",
+      "team": "TEAM LEGATI",
+      "tag": "LEGA"
+    },
+    {
+      "order": 16,
+      "method": "automatic",
+      "pot": 4,
+      "group": "D",
+      "initialPosition": 4,
+      "teamId": "tsb-4",
+      "team": "TEAM SOLO BAHIA",
+      "tag": "TSB"
+    }
+  ]
+}

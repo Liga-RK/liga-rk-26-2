@@ -22,8 +22,6 @@
   const rulesPdfUrl = `assets/docs/regulamento-liga-rk-26-2.pdf?v=${assetVersion}`;
   const rkPlaceholderUrl = "assets/logo_rk_placeholder.png";
   const publicSectionLocks = {
-    calendar: "Disponibilizado após o sorteio de grupos dia 20/07 as 20:00.",
-    groups: "Disponibilizado após o sorteio de grupos dia 20/07 as 20:00.",
     playoffs: "Disponibilizado após o final da fase de grupos grupos.",
     vods: "Disponibilizado após o início das rodadas.",
     statistics: "Disponibilizado após o início das rodadas."
@@ -56,10 +54,57 @@
   async function loadContentAndRender() {
     const remoteContent = await fetchRemoteContent();
     if (remoteContent && remoteContent.divisions) {
-      contentSource = remoteContent;
+      contentSource = alignRemoteTeamsToOfficialDraw(remoteContent);
       content = (contentSource.divisions && contentSource.divisions[divisionKey]) || content;
     }
     renderApp();
+  }
+
+  function alignRemoteTeamsToOfficialDraw(remoteContent) {
+    const officialTeams = contentData.divisions && contentData.divisions[divisionKey] && contentData.divisions[divisionKey].teams;
+    const remoteTeams = remoteContent.divisions && remoteContent.divisions[divisionKey] && remoteContent.divisions[divisionKey].teams;
+
+    if (!officialTeams || !remoteTeams || Object.keys(officialTeams).length !== 16 || Object.keys(remoteTeams).length !== 16) {
+      return remoteContent;
+    }
+
+    const available = Object.entries(remoteTeams);
+    const usedSlots = new Set();
+    const remappedTeams = {};
+
+    for (const slot of slotOrder) {
+      const officialTeam = officialTeams[slot] || {};
+      const match = available.find(([remoteSlot, remoteTeam]) => {
+        if (usedSlots.has(remoteSlot)) return false;
+        return sameTeamIdentity(officialTeam, remoteTeam);
+      });
+
+      if (!match) {
+        return remoteContent;
+      }
+
+      usedSlots.add(match[0]);
+      remappedTeams[slot] = match[1];
+    }
+
+    remoteContent.divisions[divisionKey].teams = remappedTeams;
+    return remoteContent;
+  }
+
+  function sameTeamIdentity(first, second) {
+    const firstTag = normalizeTeamIdentity(first && first.tag);
+    const secondTag = normalizeTeamIdentity(second && second.tag);
+    const firstName = normalizeTeamIdentity(first && first.name);
+    const secondName = normalizeTeamIdentity(second && second.name);
+    return Boolean((firstTag && firstTag === secondTag) || (firstName && firstName === secondName));
+  }
+
+  function normalizeTeamIdentity(value) {
+    return String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]/gi, "")
+      .toLowerCase();
   }
 
   async function fetchRemoteContent() {

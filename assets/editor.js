@@ -921,7 +921,7 @@
         throw new Error("A API ainda nao tem conteudo publicado.");
       }
 
-      state = normalizeContent(nextContent);
+      state = normalizeContent(alignOnlineTeamsToOfficialDraw(nextContent));
       synchronizeAllReplayResults();
       render();
       setStatus("Dados online carregados.");
@@ -1002,6 +1002,62 @@
         publishButton.textContent = "Publicar online";
       }
     }
+  }
+
+  function alignOnlineTeamsToOfficialDraw(onlineContent) {
+    const aligned = clone(onlineContent);
+
+    for (const divisionKey of Object.keys(divisionLabels)) {
+      const officialTeams = sourceContent.divisions && sourceContent.divisions[divisionKey] && sourceContent.divisions[divisionKey].teams;
+      const onlineTeams = aligned.divisions && aligned.divisions[divisionKey] && aligned.divisions[divisionKey].teams;
+
+      if (!officialTeams || !onlineTeams || Object.keys(officialTeams).length !== 16 || Object.keys(onlineTeams).length !== 16) {
+        continue;
+      }
+
+      const available = Object.entries(onlineTeams);
+      const usedSlots = new Set();
+      const remappedTeams = {};
+      let complete = true;
+
+      for (const slot of slotOrder) {
+        const officialTeam = officialTeams[slot] || {};
+        const match = available.find(([onlineSlot, onlineTeam]) => {
+          if (usedSlots.has(onlineSlot)) return false;
+          return sameTeamIdentity(officialTeam, onlineTeam);
+        });
+
+        if (!match) {
+          complete = false;
+          break;
+        }
+
+        usedSlots.add(match[0]);
+        remappedTeams[slot] = match[1];
+      }
+
+      if (complete) {
+        aligned.divisions[divisionKey].teams = remappedTeams;
+      }
+    }
+
+    return aligned;
+  }
+
+  function sameTeamIdentity(first, second) {
+    const firstTag = normalizeTeamIdentity(first && first.tag);
+    const secondTag = normalizeTeamIdentity(second && second.tag);
+    const firstName = normalizeTeamIdentity(first && first.name);
+    const secondName = normalizeTeamIdentity(second && second.name);
+    return Boolean((firstTag && firstTag === secondTag) || (firstName && firstName === secondName));
+  }
+
+  function normalizeTeamIdentity(value) {
+    return String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]/gi, "")
+      .toLowerCase();
   }
 
   function formatPublishTime(value) {

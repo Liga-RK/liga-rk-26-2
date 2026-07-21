@@ -1,0 +1,406 @@
+{
+  "schemaVersion": 1,
+  "competition": "Liga RK 26.2",
+  "division": "ascension",
+  "divisionLabel": "Divisão Ascensão",
+  "generatedAt": "2026-07-21T00:38:02.543Z",
+  "positionsRandomized": true,
+  "groups": {
+    "A": [
+      {
+        "position": 1,
+        "slot": "A1",
+        "name": "FAINA",
+        "tag": "FIN",
+        "logo": "assets/uploads/equipes_ascensao/fin.png",
+        "pot": 2
+      },
+      {
+        "position": 2,
+        "slot": "A2",
+        "name": "SKYLINE",
+        "tag": "SKY",
+        "logo": "assets/uploads/equipes_ascensao/sky.png",
+        "pot": 3
+      },
+      {
+        "position": 3,
+        "slot": "A3",
+        "name": "BLACK STARS",
+        "tag": "BKS",
+        "logo": "assets/uploads/equipes_ascensao/bks.png",
+        "pot": 4
+      },
+      {
+        "position": 4,
+        "slot": "A4",
+        "name": "TENEBRA BEHEMOT",
+        "tag": "TNB",
+        "logo": "assets/uploads/equipes_ascensao/tnb.png",
+        "pot": 1
+      }
+    ],
+    "B": [
+      {
+        "position": 1,
+        "slot": "B1",
+        "name": "PHOENIX GAMING",
+        "tag": "PXG",
+        "logo": "assets/uploads/equipes_ascensao/pxg.png",
+        "pot": 1
+      },
+      {
+        "position": 2,
+        "slot": "B2",
+        "name": "GANGUE DE GOBLINS",
+        "tag": "GDG",
+        "logo": "assets/uploads/equipes_ascensao/gdg.png",
+        "pot": 3
+      },
+      {
+        "position": 3,
+        "slot": "B3",
+        "name": "FOFOLETES DO RICK",
+        "tag": "FFLT",
+        "logo": "assets/uploads/equipes_ascensao/fflt.png",
+        "pot": 2
+      },
+      {
+        "position": 4,
+        "slot": "B4",
+        "name": "TENEBRA LEVIATHAN",
+        "tag": "TNL",
+        "logo": "assets/uploads/equipes_ascensao/tnl.png",
+        "pot": 4
+      }
+    ],
+    "C": [
+      {
+        "position": 1,
+        "slot": "C1",
+        "name": "SKY KNIGHTS",
+        "tag": "SKS",
+        "logo": "assets/uploads/equipes_ascensao/sks.png",
+        "pot": 4
+      },
+      {
+        "position": 2,
+        "slot": "C2",
+        "name": "FAVELINHA REFORMED",
+        "tag": "FVLR",
+        "logo": "assets/uploads/equipes_ascensao/fvlr.png",
+        "pot": 1
+      },
+      {
+        "position": 3,
+        "slot": "C3",
+        "name": "UBERS",
+        "tag": "UBR",
+        "logo": "assets/uploads/equipes_ascensao/ubr.png",
+        "pot": 3
+      },
+      {
+        "position": 4,
+        "slot": "C4",
+        "name": "THE KILLERS T7",
+        "tag": "TKT7",
+        "logo": "assets/uploads/equipes_ascensao/tkt7.png",
+        "pot": 2
+      }
+    ],
+    "D": [
+      {
+        "position": 1,
+        "slot": "D1",
+        "name": "BASTARD",
+        "tag": "BSTD",
+        "logo": "assets/uploads/equipes_ascensao/bstd.png",
+        "pot": 4
+      },
+      {
+        "position": 2,
+        "slot": "D2",
+        "name": "RENEGADOS",
+        "tag": "RNG",
+        "logo": "assets/uploads/equipes_ascensao/rng.png",
+        "pot": 1
+      },
+      {
+        "position": 3,
+        "slot": "D3",
+        "name": "RAISING DRAGONS",
+        "tag": "RDG",
+        "logo": "assets/uploads/equipes_ascensao/rdg.png",
+        "pot": 2
+      },
+      {
+        "position": 4,
+        "slot": "D4",
+        "name": "INAZUMA V",
+        "tag": "INZ",
+        "logo": "assets/uploads/equipes_ascensao/inz.png",
+        "pot": 3
+      }
+    ]
+  },
+  "teamsBySlot": {
+    "A1": {
+      "name": "FAINA",
+      "tag": "FIN",
+      "logo": "assets/uploads/equipes_ascensao/fin.png",
+      "pot": 2
+    },
+    "A2": {
+      "name": "SKYLINE",
+      "tag": "SKY",
+      "logo": "assets/uploads/equipes_ascensao/sky.png",
+      "pot": 3
+    },
+    "A3": {
+      "name": "BLACK STARS",
+      "tag": "BKS",
+      "logo": "assets/uploads/equipes_ascensao/bks.png",
+      "pot": 4
+    },
+    "A4": {
+      "name": "TENEBRA BEHEMOT",
+      "tag": "TNB",
+      "logo": "assets/uploads/equipes_ascensao/tnb.png",
+      "pot": 1
+    },
+    "B1": {
+      "name": "PHOENIX GAMING",
+      "tag": "PXG",
+      "logo": "assets/uploads/equipes_ascensao/pxg.png",
+      "pot": 1
+    },
+    "B2": {
+      "name": "GANGUE DE GOBLINS",
+      "tag": "GDG",
+      "logo": "assets/uploads/equipes_ascensao/gdg.png",
+      "pot": 3
+    },
+    "B3": {
+      "name": "FOFOLETES DO RICK",
+      "tag": "FFLT",
+      "logo": "assets/uploads/equipes_ascensao/fflt.png",
+      "pot": 2
+    },
+    "B4": {
+      "name": "TENEBRA LEVIATHAN",
+      "tag": "TNL",
+      "logo": "assets/uploads/equipes_ascensao/tnl.png",
+      "pot": 4
+    },
+    "C1": {
+      "name": "SKY KNIGHTS",
+      "tag": "SKS",
+      "logo": "assets/uploads/equipes_ascensao/sks.png",
+      "pot": 4
+    },
+    "C2": {
+      "name": "FAVELINHA REFORMED",
+      "tag": "FVLR",
+      "logo": "assets/uploads/equipes_ascensao/fvlr.png",
+      "pot": 1
+    },
+    "C3": {
+      "name": "UBERS",
+      "tag": "UBR",
+      "logo": "assets/uploads/equipes_ascensao/ubr.png",
+      "pot": 3
+    },
+    "C4": {
+      "name": "THE KILLERS T7",
+      "tag": "TKT7",
+      "logo": "assets/uploads/equipes_ascensao/tkt7.png",
+      "pot": 2
+    },
+    "D1": {
+      "name": "BASTARD",
+      "tag": "BSTD",
+      "logo": "assets/uploads/equipes_ascensao/bstd.png",
+      "pot": 4
+    },
+    "D2": {
+      "name": "RENEGADOS",
+      "tag": "RNG",
+      "logo": "assets/uploads/equipes_ascensao/rng.png",
+      "pot": 1
+    },
+    "D3": {
+      "name": "RAISING DRAGONS",
+      "tag": "RDG",
+      "logo": "assets/uploads/equipes_ascensao/rdg.png",
+      "pot": 2
+    },
+    "D4": {
+      "name": "INAZUMA V",
+      "tag": "INZ",
+      "logo": "assets/uploads/equipes_ascensao/inz.png",
+      "pot": 3
+    }
+  },
+  "drawHistory": [
+    {
+      "order": 1,
+      "method": "roleta",
+      "pot": 1,
+      "group": "A",
+      "initialPosition": 1,
+      "teamId": "tnb-1",
+      "team": "TENEBRA BEHEMOT",
+      "tag": "TNB"
+    },
+    {
+      "order": 2,
+      "method": "roleta",
+      "pot": 1,
+      "group": "B",
+      "initialPosition": 1,
+      "teamId": "pxg-1",
+      "team": "PHOENIX GAMING",
+      "tag": "PXG"
+    },
+    {
+      "order": 3,
+      "method": "roleta",
+      "pot": 1,
+      "group": "C",
+      "initialPosition": 1,
+      "teamId": "fvlr-1",
+      "team": "FAVELINHA REFORMED",
+      "tag": "FVLR"
+    },
+    {
+      "order": 4,
+      "method": "automatic",
+      "pot": 1,
+      "group": "D",
+      "initialPosition": 1,
+      "teamId": "rng-1",
+      "team": "RENEGADOS",
+      "tag": "RNG"
+    },
+    {
+      "order": 5,
+      "method": "roleta",
+      "pot": 2,
+      "group": "A",
+      "initialPosition": 2,
+      "teamId": "fin-2",
+      "team": "FAINA",
+      "tag": "FIN"
+    },
+    {
+      "order": 6,
+      "method": "roleta",
+      "pot": 2,
+      "group": "B",
+      "initialPosition": 2,
+      "teamId": "fflt-2",
+      "team": "FOFOLETES DO RICK",
+      "tag": "FFLT"
+    },
+    {
+      "order": 7,
+      "method": "roleta",
+      "pot": 2,
+      "group": "C",
+      "initialPosition": 2,
+      "teamId": "tkt7-2",
+      "team": "THE KILLERS T7",
+      "tag": "TKT7"
+    },
+    {
+      "order": 8,
+      "method": "automatic",
+      "pot": 2,
+      "group": "D",
+      "initialPosition": 2,
+      "teamId": "rdg-2",
+      "team": "RAISING DRAGONS",
+      "tag": "RDG"
+    },
+    {
+      "order": 9,
+      "method": "roleta",
+      "pot": 3,
+      "group": "A",
+      "initialPosition": 3,
+      "teamId": "sky-3",
+      "team": "SKYLINE",
+      "tag": "SKY"
+    },
+    {
+      "order": 10,
+      "method": "roleta",
+      "pot": 3,
+      "group": "B",
+      "initialPosition": 3,
+      "teamId": "gdg-3",
+      "team": "GANGUE DE GOBLINS",
+      "tag": "GDG"
+    },
+    {
+      "order": 11,
+      "method": "roleta",
+      "pot": 3,
+      "group": "C",
+      "initialPosition": 3,
+      "teamId": "ubr-3",
+      "team": "UBERS",
+      "tag": "UBR"
+    },
+    {
+      "order": 12,
+      "method": "automatic",
+      "pot": 3,
+      "group": "D",
+      "initialPosition": 3,
+      "teamId": "inz-3",
+      "team": "INAZUMA V",
+      "tag": "INZ"
+    },
+    {
+      "order": 13,
+      "method": "roleta",
+      "pot": 4,
+      "group": "A",
+      "initialPosition": 4,
+      "teamId": "bks-4",
+      "team": "BLACK STARS",
+      "tag": "BKS"
+    },
+    {
+      "order": 14,
+      "method": "roleta",
+      "pot": 4,
+      "group": "B",
+      "initialPosition": 4,
+      "teamId": "tnl-4",
+      "team": "TENEBRA LEVIATHAN",
+      "tag": "TNL"
+    },
+    {
+      "order": 15,
+      "method": "roleta",
+      "pot": 4,
+      "group": "C",
+      "initialPosition": 4,
+      "teamId": "sks-4",
+      "team": "SKY KNIGHTS",
+      "tag": "SKS"
+    },
+    {
+      "order": 16,
+      "method": "automatic",
+      "pot": 4,
+      "group": "D",
+      "initialPosition": 4,
+      "teamId": "bstd-4",
+      "team": "BASTARD",
+      "tag": "BSTD"
+    }
+  ]
+}
