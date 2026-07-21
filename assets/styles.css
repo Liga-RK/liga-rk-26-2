@@ -743,6 +743,13 @@ a {
   width: 100%;
   overflow-wrap: anywhere;
   line-height: 0.95;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.standing-team:hover,
+.standing-team:focus-visible {
+  color: var(--accent);
 }
 
 .bracket-grid {

@@ -23,7 +23,6 @@
   const rkPlaceholderUrl = "assets/logo_rk_placeholder.png";
   const publicSectionLocks = {
     playoffs: "Disponibilizado após o final da fase de grupos grupos.",
-    vods: "Disponibilizado após o início das rodadas.",
     statistics: "Disponibilizado após o início das rodadas."
   };
   let teamsBySlot = {};
@@ -31,13 +30,13 @@
   let playoffState = {};
 
   const sectionLinks = [
-    ["equipes", "Equipes"],
     ["selecao", "Seleção"],
     ["calendario", "Calendário"],
     ["grupos", "Grupos"],
     ["playoffs", "Playoffs"],
     ["vods", "VODs"],
     ["estatisticas", "Estatísticas"],
+    ["equipes", "Equipes"],
     ["regras", "Regras"]
   ];
   const socialLinks = [
@@ -160,13 +159,13 @@
       </nav>
 
       <main class="division-page">
-        ${renderTeams()}
         ${renderWeekly()}
         ${renderCalendar()}
         ${renderGroups()}
         ${renderPlayoffs()}
         ${renderVods()}
         ${renderStatistics()}
+        ${renderTeams()}
         ${renderRules()}
       </main>
       ${renderFooter()}
@@ -466,11 +465,12 @@
   }
 
   function renderStandingRow(entry, index) {
+    const teamUrl = `time.html?division=${divisionKey}&id=${encodeURIComponent(entry.slot)}`;
     return `
       <div class="standing-row">
         <span class="standing-position">${index + 1}</span>
         ${renderStandingLogo(entry.slot)}
-        <span class="standing-team">${escapeHtml(calendarTeamName(entry.slot))}</span>
+        <a class="standing-team" href="${teamUrl}" aria-label="Ver estatísticas de ${escapeAttribute(teamName(entry.slot))}">${escapeHtml(calendarTeamName(entry.slot))}</a>
         <span class="standing-stat">${escapeHtml(entry.wins)}</span>
         <span class="standing-stat">${escapeHtml(entry.losses)}</span>
         <span class="standing-stat standing-game-diff">${escapeHtml(formatGameDiff(entry.gameDiff))}</span>
@@ -710,13 +710,15 @@
     const title = vod.title || youtubeTitleFallback(vod.url);
     const autoTitle = vod.url && !vod.title ? "true" : "false";
     const videoId = youtubeVideoId(vod.url);
+    const startSeconds = youtubeStartSeconds(vod.url);
+    const startParameter = startSeconds > 0 ? `&start=${startSeconds}` : "";
     const canEmbed = videoId && window.location.protocol !== "file:";
     const vodBody = canEmbed
       ? `
         <div class="vod-frame vod-player">
           <iframe
             class="vod-embed"
-            src="https://www.youtube.com/embed/${escapeAttribute(videoId)}?rel=0&modestbranding=1&playsinline=1"
+            src="https://www.youtube.com/embed/${escapeAttribute(videoId)}?rel=0&modestbranding=1&playsinline=1${startParameter}"
             title="${escapeAttribute(title)}"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerpolicy="strict-origin-when-cross-origin"
@@ -891,7 +893,20 @@
         : Array.isArray(division.vods)
           ? division.vods
           : [division.vod || {}];
-    const vods = rawVods.filter(Boolean).map(normalizeVod);
+    const localVods = Array.isArray(contentData.divisions && contentData.divisions[divisionKey] && contentData.divisions[divisionKey].vods)
+      ? contentData.divisions[divisionKey].vods
+      : [];
+    const uniqueUrls = new Set();
+    const vods = [...localVods, ...rawVods]
+      .filter(Boolean)
+      .map(normalizeVod)
+      .filter((vod) => {
+        if (!vod.url && !vod.title && !vod.thumbnail) return false;
+        const key = vod.url || `${vod.title}|${vod.thumbnail}`;
+        if (uniqueUrls.has(key)) return false;
+        uniqueUrls.add(key);
+        return true;
+      });
 
     return vods.length ? vods : [normalizeVod({})];
   }
@@ -942,6 +957,18 @@
     const match = patterns.map((pattern) => pattern.exec(text)).find(Boolean);
 
     return match ? match[1] : "";
+  }
+
+  function youtubeStartSeconds(url) {
+    try {
+      const parsed = new URL(String(url || ""), window.location.href);
+      const value = parsed.searchParams.get("t") || parsed.searchParams.get("start") || "";
+      if (/^\d+$/.test(value)) return Number(value);
+      const match = /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/i.exec(value);
+      return match ? Number(match[1] || 0) * 3600 + Number(match[2] || 0) * 60 + Number(match[3] || 0) : 0;
+    } catch (error) {
+      return 0;
+    }
   }
 
   function getResult(roundIndex, gameIndex) {

@@ -1,6 +1,7 @@
 (function () {
   const root = document.getElementById("statistics-app");
   const payload = window.LIGA_RK_STATS || { divisions: {} };
+  const localContent = window.LIGA_RK_CONTENT || null;
   const contentApiUrl = window.LIGA_RK_CONTENT_API || "https://liga-rk-api.suporteinhouserk.workers.dev/api/content";
   const params = new URLSearchParams(window.location.search);
   const page = document.body.dataset.statisticsPage || "hub";
@@ -23,7 +24,7 @@
   bootstrap();
 
   async function bootstrap() {
-    officialContent = await fetchOfficialContent();
+    officialContent = alignContentToOfficialDraw(await fetchOfficialContent());
     divisionCache.clear();
     const context = resolveContext(page, requestedDivision, requestedId);
     applyDivisionTheme(context.division);
@@ -648,7 +649,8 @@
 
   function divisionData(division) {
     if (divisionCache.has(division)) return divisionCache.get(division);
-    const base = payload.divisions && payload.divisions[division] || { hasData: false, overview: {}, teams: [], players: [], champions: [], matches: [] };
+    const rawBase = payload.divisions && payload.divisions[division] || { hasData: false, overview: {}, teams: [], players: [], champions: [], matches: [] };
+    const base = alignStatisticsToOfficialDraw(rawBase, division);
     const current = officialContent && officialContent.divisions && officialContent.divisions[division] || {};
     const teamsBySlot = new Map((base.teams || []).map((team) => [String(team.slot), { ...team }]));
     const playersById = new Map((base.players || []).map((player) => [String(player.playerId || player.id), { ...player }]));
@@ -692,6 +694,81 @@
     const merged = { ...base, teams: Array.from(teamsBySlot.values()), players };
     divisionCache.set(division, merged);
     return merged;
+  }
+
+  function alignContentToOfficialDraw(content) {
+    if (!content || !content.divisions || !localContent || !localContent.divisions) return content;
+    const aligned = JSON.parse(JSON.stringify(content));
+
+    ["elite", "ascension"].forEach((division) => {
+      const officialTeams = localContent.divisions[division] && localContent.divisions[division].teams;
+      const currentTeams = aligned.divisions[division] && aligned.divisions[division].teams;
+      if (!officialTeams || !currentTeams) return;
+
+      const available = Object.entries(currentTeams);
+      const used = new Set();
+      const remapped = {};
+      let complete = true;
+
+      Object.keys(officialTeams).forEach((slot) => {
+        const match = available.find(([currentSlot, team]) => !used.has(currentSlot) && sameTeamIdentity(officialTeams[slot], team));
+        if (!match) {
+          complete = false;
+          return;
+        }
+        used.add(match[0]);
+        remapped[slot] = match[1];
+      });
+
+      if (complete && Object.keys(remapped).length === Object.keys(officialTeams).length) {
+        aligned.divisions[division].teams = remapped;
+      }
+    });
+
+    return aligned;
+  }
+
+  function alignStatisticsToOfficialDraw(base, division) {
+    const officialTeams = localContent && localContent.divisions && localContent.divisions[division] && localContent.divisions[division].teams;
+    if (!officialTeams || !Array.isArray(base.teams)) return base;
+
+    const officialEntries = Object.entries(officialTeams);
+    const slotMap = {};
+    base.teams.forEach((team) => {
+      const match = officialEntries.find(([, officialTeam]) => sameTeamIdentity(team, officialTeam));
+      if (match) slotMap[String(team.slot)] = match[0];
+    });
+    const remapSlot = (slot) => slotMap[String(slot)] || slot;
+    const remapTeamEntries = (teams) => Array.isArray(teams)
+      ? teams.map((team) => typeof team === "string" ? remapSlot(team) : { ...team, slot: remapSlot(team.slot) })
+      : teams;
+
+    return {
+      ...base,
+      teams: base.teams.map((team) => ({ ...team, slot: remapSlot(team.slot) })),
+      players: (base.players || []).map((player) => ({ ...player, teams: remapTeamEntries(player.teams) })),
+      champions: (base.champions || []).map((champion) => ({ ...champion, teams: remapTeamEntries(champion.teams) })),
+      matches: (base.matches || []).map((match) => ({
+        ...match,
+        blueTeamSlot: remapSlot(match.blueTeamSlot),
+        redTeamSlot: remapSlot(match.redTeamSlot),
+        winnerSlot: remapSlot(match.winnerSlot),
+        loserSlot: remapSlot(match.loserSlot),
+        blueTeam: match.blueTeam ? { ...match.blueTeam, slot: remapSlot(match.blueTeam.slot) } : match.blueTeam,
+        redTeam: match.redTeam ? { ...match.redTeam, slot: remapSlot(match.redTeam.slot) } : match.redTeam,
+        participants: Array.isArray(match.participants)
+          ? match.participants.map((participant) => ({ ...participant, teamSlot: remapSlot(participant.teamSlot) }))
+          : match.participants
+      }))
+    };
+  }
+
+  function sameTeamIdentity(first, second) {
+    const firstTag = normalizeIdentityValue(first && first.tag);
+    const secondTag = normalizeIdentityValue(second && second.tag);
+    const firstName = normalizeIdentityValue(first && first.name);
+    const secondName = normalizeIdentityValue(second && second.name);
+    return Boolean((firstTag && firstTag === secondTag) || (firstName && firstName === secondName));
   }
 
   function zeroTeam(slot) {

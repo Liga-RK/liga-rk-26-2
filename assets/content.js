@@ -1750,15 +1750,15 @@ window.LIGA_RK_CONTENT = {
         }
       },
       "vod": {
-        "url": "",
-        "title": "",
-        "thumbnail": ""
+        "url": "https://www.youtube.com/watch?v=xISBRrUllQk&t=6101s&pp=ygUKcmsgaW5ob3VzZQ%3D%3D",
+        "title": "SORTEIO OFICIAL | LIGA RK 26.2",
+        "thumbnail": "https://img.youtube.com/vi/xISBRrUllQk/maxresdefault.jpg"
       },
       "vods": [
         {
-          "url": "",
-          "title": "",
-          "thumbnail": ""
+          "url": "https://www.youtube.com/watch?v=xISBRrUllQk&t=6101s&pp=ygUKcmsgaW5ob3VzZQ%3D%3D",
+          "title": "SORTEIO OFICIAL | LIGA RK 26.2",
+          "thumbnail": "https://img.youtube.com/vi/xISBRrUllQk/maxresdefault.jpg"
         }
       ],
       "statistics": {
@@ -3560,20 +3560,15 @@ window.LIGA_RK_CONTENT = {
         }
       },
       "vod": {
-        "url": "https://www.youtube.com/watch?v=p3uwPg9plfw&pp=0gcJCQMLAYcqIYzv",
-        "title": "LIGA RK | PXG X KG | FASE DE GRUPOS",
-        "thumbnail": "https://img.youtube.com/vi/p3uwPg9plfw/maxresdefault.jpg"
+        "url": "https://www.youtube.com/watch?v=xISBRrUllQk&t=6101s&pp=ygUKcmsgaW5ob3VzZQ%3D%3D",
+        "title": "SORTEIO OFICIAL | LIGA RK 26.2",
+        "thumbnail": "https://img.youtube.com/vi/xISBRrUllQk/maxresdefault.jpg"
       },
       "vods": [
         {
-          "url": "https://www.youtube.com/watch?v=p3uwPg9plfw&pp=0gcJCQMLAYcqIYzv",
-          "title": "LIGA RK | PXG X KG | FASE DE GRUPOS",
-          "thumbnail": "https://img.youtube.com/vi/p3uwPg9plfw/maxresdefault.jpg"
-        },
-        {
-          "url": "https://www.youtube.com/watch?v=nX5WrMcdSZ8",
-          "title": "RESUMÃO: Loud Kids x Suning Kids [Worlds - Inhouse RK]",
-          "thumbnail": "https://img.youtube.com/vi/nX5WrMcdSZ8/maxresdefault.jpg"
+          "url": "https://www.youtube.com/watch?v=xISBRrUllQk&t=6101s&pp=ygUKcmsgaW5ob3VzZQ%3D%3D",
+          "title": "SORTEIO OFICIAL | LIGA RK 26.2",
+          "thumbnail": "https://img.youtube.com/vi/xISBRrUllQk/maxresdefault.jpg"
         }
       ],
       "statistics": {
