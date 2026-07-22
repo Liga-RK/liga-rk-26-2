@@ -4405,6 +4405,10 @@ a.stats-postgame-team-logo:focus-visible {
   margin: 0 0 0.95rem;
 }
 
+.home-registration-action.is-hidden {
+  display: none;
+}
+
 .home-promo-slot {
   min-height: 4.35rem;
 }
