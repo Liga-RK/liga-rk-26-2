@@ -20,6 +20,7 @@
   };
   const groupLetters = ["A", "B", "C", "D"];
   const laneOrder = ["TOP", "JG", "MID", "ADC", "SUP", "SUB", "SUB", "SUB"];
+  const weekdayOptions = ["SEG", "TER", "QUA", "QUI", "SEX", "SAB", "DOM"];
   const slotOrder = groupLetters.flatMap((group) => [1, 2, 3, 4].map((seed) => `${group}${seed}`));
   const defaultApiBase = "https://liga-rk-api.suporteinhouserk.workers.dev";
   const editorConfig = {
@@ -173,10 +174,12 @@
         const keyName = gameKey(roundIndex, gameIndex);
         division.results[keyName] = {
           time: normalized.time,
+          weekday: weekdayFromDate(round.date),
           homeScore: "",
           awayScore: "",
           ...(division.results[keyName] || {})
         };
+        division.results[keyName].weekday = normalizeWeekday(division.results[keyName].weekday) || weekdayFromDate(round.date);
       });
     });
 
@@ -455,7 +458,10 @@
 
     return `
       <div class="calendar-editor-row">
-        ${input(`divisions.${key}.results.${resultKey}.time`, result.time, "Horário", "time")}
+        <div class="calendar-editor-schedule">
+          ${weekdaySelect(`divisions.${key}.results.${resultKey}.weekday`, result.weekday)}
+          ${input(`divisions.${key}.results.${resultKey}.time`, result.time, "Horário", "time")}
+        </div>
         ${renderEditorTeamLogo(homeTeam.logo)}
         <strong>${escapeHtml(editorCalendarTeamName(homeTeam, normalized.home))}</strong>
         ${input(`divisions.${key}.results.${resultKey}.homeScore`, result.homeScore, "0-2", "number", "0", "2")}
@@ -1300,6 +1306,15 @@
     return `<input type="${escapeAttribute(type)}" data-path="${escapeAttribute(path)}" value="${escapeAttribute(value ?? "")}" placeholder="${escapeAttribute(placeholder || "")}"${bounds} />`;
   }
 
+  function weekdaySelect(path, value) {
+    const selected = normalizeWeekday(value);
+    return `
+      <select class="calendar-weekday-select" data-path="${escapeAttribute(path)}" aria-label="Dia da semana" title="Dia da semana">
+        ${weekdayOptions.map((option) => `<option value="${option}" ${option === selected ? "selected" : ""}>${option}</option>`).join("")}
+      </select>
+    `;
+  }
+
   function renderImagePreview(path, label) {
     return path
       ? `<img src="${escapeAttribute(path)}" alt="${escapeAttribute(label || "Imagem")}" />`
@@ -1434,6 +1449,18 @@
       return { time: game[0], home: game[1], away: game[2] };
     }
     return game;
+  }
+
+  function normalizeWeekday(value) {
+    const normalized = String(value || "").trim().toUpperCase();
+    return weekdayOptions.includes(normalized) ? normalized : "";
+  }
+
+  function weekdayFromDate(value) {
+    const match = /^(\d{1,2})\/(\d{1,2})$/.exec(String(value || "").trim());
+    if (!match) return "";
+    const labels = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
+    return labels[new Date(2026, Number(match[2]) - 1, Number(match[1])).getDay()] || "";
   }
 
   function computeEditorStandings(key) {

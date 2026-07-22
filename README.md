@@ -53,11 +53,13 @@ Aliases salvos podem ser desativados depois em `Riot IDs alternativos`, sem apag
 ## Fase de grupos MD3
 
 - Cada confronto da fase de grupos possui tres espacos de replay.
+- Cada mapa confirmado atualiza o placar parcial do calendario e o `SJ` das equipes.
 - A serie so entra na classificacao quando um dos times alcanca duas vitorias de mapa: `2 x 0` ou `2 x 1`.
 - `V` e `D` representam series vencidas e perdidas.
 - `SJ` e o saldo de jogos (mapas vencidos menos mapas perdidos).
 - `J` representa series concluidas.
 - A ordem de desempate e: mais vitorias, menos derrotas, maior saldo de jogos e menor TMV.
+- Dia e horario continuam editaveis no editor online. O dia aceita `SEG`, `TER`, `QUA`, `QUI`, `SEX`, `SAB` ou `DOM`.
 
 ## Reprocessar e excluir
 
@@ -101,6 +103,8 @@ npm run smoke:public
 6. O workflow do GitHub Pages testa, gera `dist`, verifica o artefato e publica.
 
 Nenhum script deste fluxo faz commit, push ou merge automaticamente.
+
+Nao e necessario criar um commit para cada replay. Durante uma rodada, processe ou remova quantos jogos forem necessarios, revise o painel e execute `publicar_estatisticas.bat` quando quiser atualizar o site. Um unico commit e push pode publicar todo o lote. Alteracoes de dia, horario, times e outros conteudos feitas pelo editor com `Publicar online` vao para o Worker e nao exigem commit.
 
 ## Limites do formato ROFL
 

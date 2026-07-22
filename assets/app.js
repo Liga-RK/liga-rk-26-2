@@ -222,9 +222,9 @@
     (division.playoffs || []).forEach((column, columnIndex) => {
       (column || []).forEach((match, matchIndex) => {
         const key = playoffKey(columnIndex, matchIndex);
-        const result = getPlayoffResult(columnIndex, matchIndex);
         const teamA = resolvePlayoffTeam(match.teamA, winnersByTitle);
         const teamB = resolvePlayoffTeam(match.teamB, winnersByTitle);
+        const result = getPlayoffResult(columnIndex, matchIndex, teamA.slot, teamB.slot);
         const scoreA = parseSeriesScore(result.teamAScore);
         const scoreB = parseSeriesScore(result.teamBScore);
         const maxScore = maxSeriesScore(match);
@@ -406,10 +406,14 @@
     const result = getResult(roundIndex, gameIndex);
     const homeScore = scoreLabel(result.homeScore);
     const awayScore = scoreLabel(result.awayScore);
+    const weekday = normalizeWeekday(result.weekday) || weekdayFromDate((division.rounds || [])[roundIndex] && division.rounds[roundIndex].date);
 
     return `
       <div class="game-row">
-        <span class="game-time">${escapeHtml(result.time || normalized.time)}</span>
+        <span class="game-schedule">
+          <small>${escapeHtml(weekday)}</small>
+          <span class="game-time">${escapeHtml(result.time || normalized.time)}</span>
+        </span>
         ${renderCalendarLogo(normalized.home)}
         <span class="team-code">${escapeHtml(calendarTeamName(normalized.home))}</span>
         <span class="game-score">${escapeHtml(homeScore)}</span>
@@ -973,12 +977,44 @@
 
   function getResult(roundIndex, gameIndex) {
     const key = gameKey(roundIndex, gameIndex);
-    return (content.results && content.results[key]) || {};
+    const stored = (content.results && content.results[key]) || {};
+    if (stored.manualOverride) return stored;
+
+    const game = division.rounds && division.rounds[roundIndex] && division.rounds[roundIndex].games && division.rounds[roundIndex].games[gameIndex];
+    const normalized = normalizeGame(game || {});
+    const automatic = replaySeriesScore(`groups-${key}`, normalized.home, normalized.away, 2);
+    return automatic
+      ? { ...stored, homeScore: automatic.scoreA, awayScore: automatic.scoreB }
+      : stored;
   }
 
-  function getPlayoffResult(columnIndex, matchIndex) {
+  function getPlayoffResult(columnIndex, matchIndex, teamASlot, teamBSlot) {
     const key = playoffKey(columnIndex, matchIndex);
-    return (content.playoffResults && content.playoffResults[key]) || {};
+    const stored = (content.playoffResults && content.playoffResults[key]) || {};
+    if (stored.manualOverride) return stored;
+
+    const match = division.playoffs && division.playoffs[columnIndex] && division.playoffs[columnIndex][matchIndex];
+    const automatic = replaySeriesScore(`playoffs-${key}`, teamASlot, teamBSlot, maxSeriesScore(match));
+    return automatic
+      ? { ...stored, teamAScore: automatic.scoreA, teamBScore: automatic.scoreB }
+      : stored;
+  }
+
+  function replaySeriesScore(seriesId, preferredTeamA, preferredTeamB, maxScore) {
+    const matches = (replayStats.matches || [])
+      .filter((match) => match && match.seriesId === seriesId)
+      .sort((left, right) => Number(left.gameNumber || 0) - Number(right.gameNumber || 0));
+    if (!matches.length) return null;
+
+    const first = matches[0];
+    const teamA = preferredTeamA || first.blueTeamSlot || first.redTeamSlot;
+    const teamB = preferredTeamB || [first.blueTeamSlot, first.redTeamSlot].find((slot) => slot && slot !== teamA);
+    if (!teamA || !teamB || teamA === teamB) return null;
+
+    return {
+      scoreA: Math.min(maxScore, matches.filter((match) => match.winnerSlot === teamA).length),
+      scoreB: Math.min(maxScore, matches.filter((match) => match.winnerSlot === teamB).length)
+    };
   }
 
   function gameKey(roundIndex, gameIndex) {
@@ -995,6 +1031,18 @@
     }
 
     return game;
+  }
+
+  function normalizeWeekday(value) {
+    const normalized = String(value || "").trim().toUpperCase();
+    return ["SEG", "TER", "QUA", "QUI", "SEX", "SAB", "DOM"].includes(normalized) ? normalized : "";
+  }
+
+  function weekdayFromDate(value) {
+    const match = /^(\d{1,2})\/(\d{1,2})$/.exec(String(value || "").trim());
+    if (!match) return "";
+    const labels = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
+    return labels[new Date(2026, Number(match[2]) - 1, Number(match[1])).getDay()] || "";
   }
 
   function resolvePlayoffReference(reference) {

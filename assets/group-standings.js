@@ -41,12 +41,15 @@
     if (!home || !away) return false;
     const homeScore = parseScore(rawHomeScore);
     const awayScore = parseScore(rawAwayScore);
+    if (homeScore === null || awayScore === null) return false;
+
+    home.gameDiff += homeScore - awayScore;
+    away.gameDiff += awayScore - homeScore;
+
     if (!isCompletedSeries(homeScore, awayScore)) return false;
 
     home.games += 1;
     away.games += 1;
-    home.gameDiff += homeScore - awayScore;
-    away.gameDiff += awayScore - homeScore;
 
     if (homeScore === 2) {
       home.wins += 1;

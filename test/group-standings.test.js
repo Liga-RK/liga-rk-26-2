@@ -23,7 +23,7 @@ test("fase de grupos MD3 conta series e saldo de jogos", () => {
   );
 });
 
-test("serie incompleta nao altera classificacao e desempates seguem a ordem oficial", () => {
+test("serie incompleta atualiza apenas o saldo de mapas e desempates seguem a ordem oficial", () => {
   const entries = [
     { wins: 2, losses: 1, gameDiff: 1, seed: 0, team: { avgWinTime: "20:00" } },
     { wins: 2, losses: 1, gameDiff: 2, seed: 1, team: { avgWinTime: "22:00" } },
@@ -36,4 +36,11 @@ test("serie incompleta nao altera classificacao e desempates seguem a ordem ofic
   const away = { wins: 0, losses: 0, gameDiff: 0, games: 0 };
   assert.equal(standings.applySeries(home, away, 1, 1), false);
   assert.equal(home.games, 0);
+
+  assert.equal(standings.applySeries(home, away, 0, 1), false);
+  assert.deepEqual(
+    { wins: home.wins, losses: home.losses, gameDiff: home.gameDiff, games: home.games },
+    { wins: 0, losses: 0, gameDiff: -1, games: 0 }
+  );
+  assert.equal(away.gameDiff, 1);
 });

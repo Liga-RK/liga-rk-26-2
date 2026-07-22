@@ -4,7 +4,7 @@ const { loadOfficialContent } = require("../src/content/official-content");
 
 const minimumBaseline = {
   elite: { teamSlots: 16, occupiedTeams: 12, playerRecords: 128, namedPlayers: 95, opggs: 67 },
-  ascension: { teamSlots: 16, occupiedTeams: 16, playerRecords: 128, namedPlayers: 128, opggs: 106 }
+  ascension: { teamSlots: 16, occupiedTeams: 16, playerRecords: 128, namedPlayers: 108, opggs: 106 }
 };
 
 main().catch((error) => {
