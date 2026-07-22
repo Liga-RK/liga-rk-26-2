@@ -60,6 +60,8 @@ Aliases salvos podem ser desativados depois em `Riot IDs alternativos`, sem apag
 - `J` representa series concluidas.
 - A ordem de desempate e: mais vitorias, menos derrotas, maior saldo de jogos e menor TMV.
 - Dia e horario continuam editaveis no editor online. O dia aceita `SEG`, `TER`, `QUA`, `QUI`, `SEX`, `SAB` ou `DOM`.
+- O calendario oculta o dia padrao da divisao (`DOM` na Elite e `SAB` na Ascensao) e mostra apenas as excecoes.
+- No editor, arraste o controle na esquerda de um confronto para reorganiza-lo dentro da mesma rodada. A mudanca e apenas visual e preserva os placares e replays vinculados ao confronto.
 
 ## Reprocessar e excluir
 

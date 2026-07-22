@@ -1,6 +1,6 @@
 window.LIGA_RK_STATS = {
   "version": 2,
-  "generatedAt": "2026-07-22T01:06:32.912Z",
+  "generatedAt": "2026-07-22T04:14:27.322Z",
   "season": "Liga RK 26.2",
   "divisions": {
     "elite": {
@@ -8,7 +8,7 @@ window.LIGA_RK_STATS = {
       "overview": {
         "games": 0,
         "teams": 0,
-        "players": 97,
+        "players": 98,
         "champions": 0
       },
       "statistics": null,
@@ -2825,6 +2825,57 @@ window.LIGA_RK_STATS = {
           "teams": [
             {
               "slot": "C4",
+              "count": 0
+            }
+          ],
+          "champions": [],
+          "mostPlayedChampion": "",
+          "matches": []
+        },
+        {
+          "id": "4bfa12c2-e92a-4d70-9746-fe847bb89341",
+          "playerId": "4bfa12c2-e92a-4d70-9746-fe847bb89341",
+          "displayName": "LAST ONE",
+          "riotId": "Kept#Agh",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/Kept-Agh",
+          "games": 0,
+          "wins": 0,
+          "losses": 0,
+          "winRate": 0,
+          "kills": 0,
+          "deaths": 0,
+          "assists": 0,
+          "kda": 0,
+          "killsAvg": 0,
+          "deathsAvg": 0,
+          "assistsAvg": 0,
+          "kp": 0,
+          "gold": 0,
+          "goldAvg": 0,
+          "gpm": 0,
+          "damage": 0,
+          "damageAvg": 0,
+          "dpm": 0,
+          "damageShare": 0,
+          "visionScore": 0,
+          "visionScoreAvg": 0,
+          "vpm": 0,
+          "towers": 0,
+          "dragons": 0,
+          "heralds": 0,
+          "barons": 0,
+          "mvps": 0,
+          "positions": [
+            {
+              "position": "SUB",
+              "count": 0
+            }
+          ],
+          "mainPosition": "SUB",
+          "teams": [
+            {
+              "slot": "D2",
               "count": 0
             }
           ],

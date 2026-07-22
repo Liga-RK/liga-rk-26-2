@@ -748,6 +748,19 @@ a {
   transition: color 160ms ease;
 }
 
+.calendar-team-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.calendar-team-link:hover,
+.calendar-team-link:focus-visible {
+  color: var(--accent-light);
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.12em;
+}
+
 .standing-team:hover,
 .standing-team:focus-visible {
   color: var(--accent);
@@ -946,16 +959,19 @@ a {
 
 .game-schedule {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.28rem;
   min-width: 0;
   white-space: nowrap;
 }
 
-.game-schedule small {
+.game-schedule .game-weekday {
   color: var(--accent);
   font-size: 0.63rem;
   line-height: 1;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: -0.12em;
 }
 
 @media (max-width: 90rem) and (min-width: 44.01rem) {
@@ -973,7 +989,7 @@ a {
     height: 1.75rem;
   }
 
-  .game-schedule small {
+  .game-schedule .game-weekday {
     font-size: 0.55rem;
   }
 }
@@ -5509,12 +5525,34 @@ a.stats-postgame-team-logo:focus-visible {
 
 .calendar-editor-row {
   display: grid;
-  grid-template-columns: 8rem 1.75rem minmax(2.4rem, 3.5rem) 2.6rem 0.8rem 2.6rem minmax(2.4rem, 3.5rem) 1.75rem;
+  grid-template-columns: 1.15rem 8rem 1.75rem minmax(2.4rem, 3.5rem) 2.6rem 0.8rem 2.6rem minmax(2.4rem, 3.5rem) 1.75rem;
   align-items: center;
   gap: 0.25rem;
   min-height: 3rem;
   padding: 0.25rem 0.55rem;
   background: rgba(255, 255, 255, 0.04);
+}
+
+.calendar-drag-handle {
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+  min-width: 1.1rem;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: grab;
+  user-select: none;
+}
+
+.calendar-drag-handle:active {
+  cursor: grabbing;
+}
+
+.calendar-editor-row.is-dragging {
+  opacity: 0.42;
+}
+
+.calendar-editor-row.is-drag-over {
+  box-shadow: inset 0 0.18rem 0 var(--accent);
 }
 
 .calendar-editor-schedule {
@@ -6473,7 +6511,7 @@ a.stats-postgame-team-logo:focus-visible {
   }
 
   .calendar-editor-row {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: 1.15rem 7.2rem 1.65rem minmax(2.6rem, 1fr) 2.35rem 0.75rem 2.35rem minmax(2.6rem, 1fr) 1.65rem;
   }
 
   .playoff-editor {

@@ -395,10 +395,28 @@
       <article class="round-card">
         <header>${escapeHtml(round.name)} - ${escapeHtml(round.date)}</header>
         <div class="game-list">
-          ${(round.games || []).map((game, gameIndex) => renderCalendarGame(game, roundIndex, gameIndex)).join("")}
+          ${orderedRoundGames(round, roundIndex).map(({ game, gameIndex }) => renderCalendarGame(game, roundIndex, gameIndex)).join("")}
         </div>
       </article>
     `;
+  }
+
+  function orderedRoundGames(round, roundIndex) {
+    const games = (round.games || []).map((game, gameIndex) => ({
+      game,
+      gameIndex,
+      key: gameKey(roundIndex, gameIndex)
+    }));
+    const savedOrder = content.calendarOrder && content.calendarOrder[`r${roundIndex + 1}`];
+
+    if (!Array.isArray(savedOrder)) {
+      return games;
+    }
+
+    const byKey = new Map(games.map((entry) => [entry.key, entry]));
+    const ordered = savedOrder.map((key) => byKey.get(key)).filter(Boolean);
+    const included = new Set(ordered.map((entry) => entry.key));
+    return ordered.concat(games.filter((entry) => !included.has(entry.key)));
   }
 
   function renderCalendarGame(game, roundIndex, gameIndex) {
@@ -407,19 +425,23 @@
     const homeScore = scoreLabel(result.homeScore);
     const awayScore = scoreLabel(result.awayScore);
     const weekday = normalizeWeekday(result.weekday) || weekdayFromDate((division.rounds || [])[roundIndex] && division.rounds[roundIndex].date);
+    const defaultWeekday = divisionKey === "elite" ? "DOM" : "SAB";
+    const showWeekday = weekday && weekday !== defaultWeekday;
+    const homeTeamUrl = `time.html?division=${divisionKey}&id=${encodeURIComponent(normalized.home)}`;
+    const awayTeamUrl = `time.html?division=${divisionKey}&id=${encodeURIComponent(normalized.away)}`;
 
     return `
       <div class="game-row">
-        <span class="game-schedule">
-          <small>${escapeHtml(weekday)}</small>
+        <span class="game-schedule${showWeekday ? " has-weekday" : ""}">
+          ${showWeekday ? `<small class="game-weekday">${escapeHtml(weekday)}</small>` : ""}
           <span class="game-time">${escapeHtml(result.time || normalized.time)}</span>
         </span>
         ${renderCalendarLogo(normalized.home)}
-        <span class="team-code">${escapeHtml(calendarTeamName(normalized.home))}</span>
+        <a class="team-code calendar-team-link" href="${homeTeamUrl}" aria-label="Ver estatÃ­sticas de ${escapeAttribute(teamName(normalized.home))}">${escapeHtml(calendarTeamName(normalized.home))}</a>
         <span class="game-score">${escapeHtml(homeScore)}</span>
         <span class="versus">X</span>
         <span class="game-score">${escapeHtml(awayScore)}</span>
-        <span class="team-code team-code-away">${escapeHtml(calendarTeamName(normalized.away))}</span>
+        <a class="team-code team-code-away calendar-team-link" href="${awayTeamUrl}" aria-label="Ver estatÃ­sticas de ${escapeAttribute(teamName(normalized.away))}">${escapeHtml(calendarTeamName(normalized.away))}</a>
         ${renderCalendarLogo(normalized.away)}
       </div>
     `;

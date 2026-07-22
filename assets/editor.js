@@ -30,6 +30,7 @@
   let currentDivision = "elite";
   let state = normalizeContent(sourceContent);
   let identityConflicts = [];
+  let draggedCalendarGame = null;
 
   synchronizeAllReplayResults();
   render();
@@ -38,6 +39,11 @@
   app.addEventListener("input", handleInput);
   app.addEventListener("change", handleInput);
   app.addEventListener("click", handleClick);
+  app.addEventListener("dragstart", handleCalendarDragStart);
+  app.addEventListener("dragover", handleCalendarDragOver);
+  app.addEventListener("dragleave", handleCalendarDragLeave);
+  app.addEventListener("drop", handleCalendarDrop);
+  app.addEventListener("dragend", clearCalendarDragState);
 
   function normalizeContent(content) {
     const normalized = {
@@ -70,6 +76,7 @@
       })),
       mvp: { player: "JOGADOR" },
       results: {},
+      calendarOrder: {},
       playoffResults: {},
       vod: createVod(),
       vods: [createVod()],
@@ -133,6 +140,10 @@
     const division = targetState.divisions[key];
     const fixed = fixedData[key] || {};
 
+    if (!division.calendarOrder || typeof division.calendarOrder !== "object" || Array.isArray(division.calendarOrder)) {
+      division.calendarOrder = {};
+    }
+
     slotOrder.forEach((slot) => {
       if (!division.teams[slot]) {
         division.teams[slot] = createTeams(key === "elite" ? 1 : 3)[slot];
@@ -169,6 +180,12 @@
     }
 
     (fixed.rounds || []).forEach((round, roundIndex) => {
+      const roundKey = `r${roundIndex + 1}`;
+      const validOrder = (round.games || []).map((game, gameIndex) => gameKey(roundIndex, gameIndex));
+      const savedOrder = Array.isArray(division.calendarOrder[roundKey]) ? division.calendarOrder[roundKey] : [];
+      const uniqueSavedOrder = savedOrder.filter((resultKey, index) => validOrder.includes(resultKey) && savedOrder.indexOf(resultKey) === index);
+      division.calendarOrder[roundKey] = uniqueSavedOrder.concat(validOrder.filter((resultKey) => !uniqueSavedOrder.includes(resultKey)));
+
       (round.games || []).forEach((game, gameIndex) => {
         const normalized = normalizeGame(game);
         const keyName = gameKey(roundIndex, gameIndex);
@@ -443,9 +460,23 @@
     return `
       <article class="editor-card calendar-round-editor">
         <h3>${escapeHtml(round.name)} - ${escapeHtml(round.date)}</h3>
-        ${(round.games || []).map((game, gameIndex) => renderGameEditor(key, game, roundIndex, gameIndex)).join("")}
+        ${orderedEditorRoundGames(key, round, roundIndex).map(({ game, gameIndex }) => renderGameEditor(key, game, roundIndex, gameIndex)).join("")}
       </article>
     `;
+  }
+
+  function orderedEditorRoundGames(key, round, roundIndex) {
+    const games = (round.games || []).map((game, gameIndex) => ({
+      game,
+      gameIndex,
+      key: gameKey(roundIndex, gameIndex)
+    }));
+    const roundKey = `r${roundIndex + 1}`;
+    const order = state.divisions[key].calendarOrder[roundKey] || [];
+    const byKey = new Map(games.map((entry) => [entry.key, entry]));
+    const ordered = order.map((resultKey) => byKey.get(resultKey)).filter(Boolean);
+    const included = new Set(ordered.map((entry) => entry.key));
+    return ordered.concat(games.filter((entry) => !included.has(entry.key)));
   }
 
   function renderGameEditor(key, game, roundIndex, gameIndex) {
@@ -457,7 +488,8 @@
     const automatic = replaySeriesScore(key, `groups-${resultKey}`, normalized.home, normalized.away, 2);
 
     return `
-      <div class="calendar-editor-row">
+      <div class="calendar-editor-row" data-calendar-drop data-calendar-division="${key}" data-calendar-round="r${roundIndex + 1}" data-calendar-key="${resultKey}">
+        <span class="calendar-drag-handle" draggable="true" data-calendar-drag title="Arraste para mudar a ordem" aria-label="Arraste para mudar a ordem do confronto">&#8942;&#8942;</span>
         <div class="calendar-editor-schedule">
           ${weekdaySelect(`divisions.${key}.results.${resultKey}.weekday`, result.weekday)}
           ${input(`divisions.${key}.results.${resultKey}.time`, result.time, "Horário", "time")}
@@ -472,6 +504,72 @@
         ${renderScoreSource(key, "calendar", resultKey, result, automatic)}
       </div>
     `;
+  }
+
+  function handleCalendarDragStart(event) {
+    const handle = event.target.closest("[data-calendar-drag]");
+    const row = handle && handle.closest("[data-calendar-drop]");
+    if (!row) return;
+
+    draggedCalendarGame = {
+      division: row.dataset.calendarDivision,
+      round: row.dataset.calendarRound,
+      key: row.dataset.calendarKey
+    };
+    row.classList.add("is-dragging");
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", draggedCalendarGame.key);
+    }
+  }
+
+  function handleCalendarDragOver(event) {
+    const row = event.target.closest("[data-calendar-drop]");
+    if (!isCompatibleCalendarDrop(row)) return;
+    event.preventDefault();
+    row.classList.add("is-drag-over");
+    if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
+  }
+
+  function handleCalendarDragLeave(event) {
+    const row = event.target.closest("[data-calendar-drop]");
+    if (row && !row.contains(event.relatedTarget)) {
+      row.classList.remove("is-drag-over");
+    }
+  }
+
+  function handleCalendarDrop(event) {
+    const row = event.target.closest("[data-calendar-drop]");
+    if (!isCompatibleCalendarDrop(row)) return;
+    event.preventDefault();
+
+    const order = state.divisions[draggedCalendarGame.division].calendarOrder[draggedCalendarGame.round];
+    const sourceIndex = order.indexOf(draggedCalendarGame.key);
+    const targetIndex = order.indexOf(row.dataset.calendarKey);
+    if (sourceIndex >= 0 && targetIndex >= 0 && sourceIndex !== targetIndex) {
+      const [movedKey] = order.splice(sourceIndex, 1);
+      order.splice(targetIndex, 0, movedKey);
+      rerenderPreservingOpenSections();
+      markDirty();
+    }
+    clearCalendarDragState();
+  }
+
+  function isCompatibleCalendarDrop(row) {
+    return Boolean(
+      row &&
+      draggedCalendarGame &&
+      row.dataset.calendarDivision === draggedCalendarGame.division &&
+      row.dataset.calendarRound === draggedCalendarGame.round &&
+      row.dataset.calendarKey !== draggedCalendarGame.key
+    );
+  }
+
+  function clearCalendarDragState() {
+    draggedCalendarGame = null;
+    app.querySelectorAll(".calendar-editor-row.is-dragging, .calendar-editor-row.is-drag-over").forEach((row) => {
+      row.classList.remove("is-dragging", "is-drag-over");
+    });
   }
 
   function renderPlayoffsSection(key) {
