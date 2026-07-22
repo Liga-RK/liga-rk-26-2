@@ -31,6 +31,15 @@
     SUP: "assets/lanes/suporte.png",
     TEAM: "assets/lanes/equipe.png"
   };
+  const TEAM_LOGO_ONLY_PLAYERS = new Set([
+    "elite:FVL:TOP",
+    "elite:PXB:JG",
+    "elite:SDK:TOP",
+    "ascension:BST:JG",
+    "ascension:BST:MID",
+    "ascension:PXG:TOP",
+    "ascension:PXG:SUP"
+  ]);
 
   const state = {
     division: "elite",
@@ -762,14 +771,16 @@
 
   function createLogo(item) {
     const artwork = itemArtworkPath(item);
-    if (artwork || item.logo) {
+    const source = artwork || item.logo;
+    if (source) {
       const img = document.createElement("img");
       img.className = "player-logo";
-      img.src = artwork || item.logo;
-      img.alt = item.type === "player" ? `Arte de ${item.name}` : `Logo ${item.teamName}`;
+      img.src = source;
+      img.alt = artwork && item.type === "player" ? `Arte de ${item.name}` : `Logo ${item.teamName}`;
       img.addEventListener("error", () => {
         if (item.logo && img.src !== new URL(item.logo, location.href).href) {
           img.src = item.logo;
+          img.alt = `Logo ${item.teamName}`;
           return;
         }
         img.replaceWith(fallbackLogo(item.teamTag));
@@ -781,6 +792,7 @@
 
   function itemArtworkPath(item) {
     if (!item || item.type === "team" || item.role === "TEAM") return item && item.logo ? item.logo : "";
+    if (shouldUseTeamLogoOnly(item)) return "";
     const divisionFolder = state.division === "elite" ? "equipes_elite" : "equipes_ascensao";
     const roleFolders = state.division === "elite"
       ? { TOP: "top", JG: "jg", MID: "mid", ADC: "adc", SUP: "sup" }
@@ -789,6 +801,13 @@
     const teamTag = cleanText(item.teamTag).toLowerCase();
     if (!teamTag || !roleFolders[item.role]) return item.logo || "";
     return `assets/uploads/${divisionFolder}/jogadores/${roleFolders[item.role]}/${teamTag}_${roleNumbers[item.role]}.png`;
+  }
+
+  function shouldUseTeamLogoOnly(item) {
+    const division = cleanText(state.division);
+    const teamTag = cleanText(item && item.teamTag).toUpperCase();
+    const role = cleanText(item && item.role).toUpperCase();
+    return TEAM_LOGO_ONLY_PLAYERS.has(`${division}:${teamTag}:${role}`);
   }
 
   function fallbackLogo(tag) {
@@ -967,7 +986,7 @@
 
     const entries = await Promise.all(ROLE_ORDER.map(async (role) => {
       const item = lineup.slots[role];
-      const image = item ? await loadCanvasImage(itemArtworkPath(item) || item.logo).catch(() => null) : await loadCanvasImage(ROLE_ASSETS[role]).catch(() => null);
+      const image = item ? await loadItemCanvasImage(item) : await loadCanvasImage(ROLE_ASSETS[role]).catch(() => null);
       return { role, item, image };
     }));
 
@@ -1031,6 +1050,18 @@
       image.onerror = () => reject(new Error(`Não foi possível carregar ${src}.`));
       image.src = src;
     });
+  }
+
+  async function loadItemCanvasImage(item) {
+    const sources = [itemArtworkPath(item), item.logo].filter(Boolean);
+    for (const source of sources) {
+      try {
+        return await loadCanvasImage(source);
+      } catch (error) {
+        console.warn(`Não foi possível carregar ${source}.`, error);
+      }
+    }
+    return null;
   }
 
   function drawCover(ctx, image, x, y, width, height) {
