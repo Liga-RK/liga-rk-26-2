@@ -48,7 +48,7 @@ function copyFile(source, target) {
   fs.copyFileSync(source, target);
 }
 
-function copyDirectory(source, target, relative = "") {
+function copyDirectory(source, target, relative = "", filterAssets = true) {
   fs.mkdirSync(target, { recursive: true });
   for (const entry of fs.readdirSync(source, { withFileTypes: true })) {
     const sourcePath = path.join(source, entry.name);
@@ -56,11 +56,11 @@ function copyDirectory(source, target, relative = "") {
     const relativePath = path.join(relative, entry.name);
 
     if (entry.isDirectory()) {
-      copyDirectory(sourcePath, targetPath, relativePath);
+      copyDirectory(sourcePath, targetPath, relativePath, filterAssets);
       continue;
     }
 
-    if (entry.isFile() && shouldCopyAsset(entry.name, relativePath)) {
+    if (entry.isFile() && (!filterAssets || shouldCopyAsset(entry.name, relativePath))) {
       copyFile(sourcePath, targetPath);
     }
   }
@@ -119,6 +119,7 @@ for (const file of publicFiles) {
 }
 
 copyDirectory(path.join(ROOT, "assets"), path.join(DIST, "assets"));
+copyDirectory(path.join(ROOT, "fantasy"), path.join(DIST, "fantasy"), "", false);
 fs.writeFileSync(path.join(DIST, ".nojekyll"), "", "utf8");
 
 console.log(`Site publico gerado em ${path.relative(ROOT, DIST)}`);
