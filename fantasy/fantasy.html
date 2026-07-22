@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="RK Fantasy — o fantasy oficial da Liga RK 26.2" />
+  <meta name="theme-color" content="#e52632" />
+  <meta name="referrer" content="no-referrer" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <title>RK Fantasy | Liga RK 26.2</title>
+  <link rel="icon" type="image/png" href="assets/branding/logo-rk-fantasy.png" />
+  <link rel="stylesheet" href="assets/fantasy.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Ir para o início do RK Fantasy">
+      <img class="brand-logo" src="assets/branding/logo-rk-fantasy.png" alt="Logo oficial do RK Fantasy" />
+    </a>
+    <nav class="top-nav" aria-label="Navegação do RK Fantasy">
+      <button class="nav-button active" type="button" data-view="market">Mercado</button>
+      <button class="nav-button" type="button" data-view="ranking">Ranking</button>
+      <button class="nav-button" type="button" data-view="rules">Regras</button>
+    </nav>
+    <div class="account-box">
+      <span id="account-label">Não conectado</span>
+      <button id="account-button" class="ghost-button compact" type="button">Entrar</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">Monte seu time. Dispute cada rodada.</span>
+        <h1>O FANTASY DA <em>LIGA RK</em></h1>
+        <p>Escolha um jogador de cada posição, respeite o orçamento e acompanhe sua pontuação rodada após rodada.</p>
+      </div>
+      <div class="hero-status" aria-label="Situação do mercado">
+        <span>Mercado da rodada</span>
+        <strong id="market-status">ABERTO</strong>
+        <small id="market-deadline">Carregando prazo da rodada...</small>
+      </div>
+    </section>
+
+    <section class="division-tabs" aria-label="Escolha de divisão">
+      <button class="division-tab active" type="button" data-division="elite">Divisão Elite</button>
+      <button class="division-tab" type="button" data-division="ascension">Divisão Ascensão</button>
+    </section>
+
+    <section id="market-view" class="app-view active">
+      <div class="dashboard-grid">
+        <aside class="lineup-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">Sua escalação</span>
+              <h2 id="fantasy-team-name">Meu Time RK</h2>
+            </div>
+            <button id="rename-team" class="rename-button" type="button" aria-label="Alterar nome do time">
+              <span aria-hidden="true">✎</span> Editar nome
+            </button>
+          </div>
+
+          <div class="budget-card" aria-label="Resumo financeiro da escalação">
+            <div class="budget-stat">
+              <span>Patrimônio</span>
+              <strong><small>RK$</small> <span id="budget-total">100,00</span></strong>
+            </div>
+            <div class="budget-stat used">
+              <span>Utilizado</span>
+              <strong><small>RK$</small> <span id="budget-spent">0,00</span></strong>
+            </div>
+            <div class="budget-stat available">
+              <span>Disponível</span>
+              <strong><small>RK$</small> <span id="budget-remaining">100,00</span></strong>
+            </div>
+          </div>
+
+          <p class="slot-instruction">Clique em uma posição abaixo para filtrar o mercado.</p>
+          <div id="lineup-slots" class="lineup-slots" aria-label="Posições da sua escalação" aria-live="polite"></div>
+
+          <div class="lineup-footer">
+            <div id="captain-reminder" class="captain-reminder" hidden>
+              <strong>Falta o capitão</strong>
+              <span>Sua escalação está completa. Agora escolha um dos cinco jogadores como capitão.</span>
+            </div>
+
+            <div class="lineup-actions">
+              <button id="clear-lineup" class="ghost-button" type="button">Limpar</button>
+              <button id="share-lineup" class="share-button" type="button">Compartilhar</button>
+              <button id="save-lineup" class="primary-button" type="button">Salvar escalação</button>
+            </div>
+            <p class="edit-note">Você pode atualizar seu time livremente enquanto o mercado estiver aberto.</p>
+            <p id="lineup-message" class="status-message" aria-live="polite"></p>
+          </div>
+        </aside>
+
+        <section id="market-panel" class="market-panel">
+          <div class="market-header">
+            <div>
+              <span class="eyebrow">Mercado da rodada</span>
+              <h2>Escolha seus jogadores</h2>
+            </div>
+            <div class="market-count"><strong id="selected-count">0/6</strong><span>escolhidos</span></div>
+          </div>
+
+          <div class="role-shortcuts" aria-label="Filtrar mercado por posição">
+            <button class="role-shortcut active" type="button" data-role-shortcut="ALL"><span class="all-roles-mark">6</span><span>Todos</span></button>
+            <button class="role-shortcut" type="button" data-role-shortcut="TOP"><img src="assets/lanes/top.png" alt="" /><span>Top</span></button>
+            <button class="role-shortcut" type="button" data-role-shortcut="JG"><img src="assets/lanes/jungle.png" alt="" /><span>Jungle</span></button>
+            <button class="role-shortcut" type="button" data-role-shortcut="MID"><img src="assets/lanes/mid.png" alt="" /><span>Mid</span></button>
+            <button class="role-shortcut" type="button" data-role-shortcut="ADC"><img src="assets/lanes/adc.png" alt="" /><span>ADC</span></button>
+            <button class="role-shortcut" type="button" data-role-shortcut="SUP"><img src="assets/lanes/suporte.png" alt="" /><span>Suporte</span></button>
+            <span class="role-divider" aria-hidden="true"></span>
+            <button class="role-shortcut team-shortcut" type="button" data-role-shortcut="TEAM"><img src="assets/lanes/equipe.png" alt="" /><span>Equipe</span></button>
+          </div>
+
+          <div class="filters">
+            <label class="search-field">
+              <span class="sr-only">Pesquisar jogador</span>
+              <input id="search-player" type="search" placeholder="Pesquisar jogador ou equipe" />
+            </label>
+            <label class="role-select-accessible">
+              <span class="sr-only">Posição</span>
+              <select id="role-filter" aria-label="Filtrar posição">
+                <option value="ALL">Todas as posições</option>
+                <option value="TOP">TOP</option>
+                <option value="JG">JUNGLE</option>
+                <option value="MID">MID</option>
+                <option value="ADC">ADC</option>
+                <option value="SUP">SUPORTE</option>
+                <option value="TEAM">EQUIPE</option>
+              </select>
+            </label>
+            <label>
+              <span class="sr-only">Ordenação</span>
+              <select id="sort-filter" aria-label="Ordenar mercado">
+                <option value="price-desc">Maior preço</option>
+                <option value="price-asc">Menor preço</option>
+                <option value="name">Nome</option>
+                <option value="avg-desc">Maior média</option>
+              </select>
+            </label>
+          </div>
+
+          <div id="market-loading" class="empty-state">Carregando os dados oficiais da Liga RK...</div>
+          <div id="market-grid" class="market-grid" hidden></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="ranking-view" class="app-view">
+      <div class="content-card">
+        <div class="section-heading">
+          <div><span class="eyebrow">Classificação geral</span><h2>Ranking do RK Fantasy</h2></div>
+          <select id="ranking-scope" aria-label="Escopo do ranking">
+            <option value="overall">Campeonato</option>
+            <option value="round">Rodada atual</option>
+          </select>
+        </div>
+        <div class="ranking-table-wrap">
+          <table class="ranking-table">
+            <thead><tr><th>#</th><th>Time</th><th>Jogador</th><th>Rodada</th><th>Total</th></tr></thead>
+            <tbody id="ranking-body"></tbody>
+          </table>
+        </div>
+        <p class="helper-text">O ranking é atualizado após o processamento dos resultados oficiais da rodada.</p>
+      </div>
+    </section>
+
+    <section id="rules-view" class="app-view">
+      <div class="content-card rules-card">
+        <span class="eyebrow">Pontuação transparente</span>
+        <h2>Como funciona</h2>
+        <div class="rules-grid">
+          <article><strong>+3</strong><span>por abate</span></article>
+          <article><strong>+1,4</strong><span>por assistência</span></article>
+          <article><strong>−2,2</strong><span>por morte</span></article>
+          <article><strong>+6</strong><span>por vitória</span></article>
+          <article><strong>+3</strong><span>bônus de MVP</span></article>
+          <article><strong>1,5×</strong><span>para o capitão</span></article>
+        </div>
+        <div class="formula-box">
+          <h3>Pontuação completa por mapa</h3>
+          <code>(abates × 3 + assistências × 1,4 − mortes × 2,2 + KP × 17 + GPM × 0,016 + DPM × 0,02 + objetivos + peso da posição + vitória) ÷ 5</code>
+          <p>O cálculo reaproveita a lógica de impacto utilizada pela Liga RK para selecionar o MVP de cada partida. O MVP recebe mais 3 pontos no fantasy.</p>
+        </div>
+        <div class="rule-list">
+          <h3>Regras do elenco</h3>
+          <p>Uma escalação contém TOP, JG, MID, ADC, SUP e uma equipe. O orçamento inicial é de RK$ 100. É permitido escolher no máximo dois jogadores da mesma equipe real. Você pode alterar o elenco quantas vezes quiser até o fechamento do mercado.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="account-dialog">
+    <form method="dialog" class="dialog-card">
+      <button class="dialog-close" value="cancel" aria-label="Fechar">×</button>
+      <img class="dialog-logo" src="assets/branding/logo-rk-fantasy.png" alt="" />
+      <span class="eyebrow">Identificação</span>
+      <h2>Entre no RK Fantasy</h2>
+      <p>Conecte sua conta para salvar a escalação e participar do ranking.</p>
+      <label><span>Seu nome ou nick</span><input id="demo-user-name" maxlength="32" placeholder="Ex.: Vitor" /></label>
+      <button id="confirm-demo-user" class="primary-button" value="default" type="button">Continuar</button>
+    </form>
+  </dialog>
+
+  <dialog id="share-dialog">
+    <div class="dialog-card share-dialog-card">
+      <button id="close-share-dialog" class="dialog-close" type="button" aria-label="Fechar">×</button>
+      <span class="eyebrow">Sua escalação está pronta</span>
+      <h2>Compartilhar imagem</h2>
+      <p class="share-help">Escolha como deseja usar a imagem. No computador, a opção do WhatsApp copia o PNG para você colar com <strong>Ctrl+V</strong>.</p>
+      <div class="share-preview-wrap">
+        <img id="share-preview" class="share-preview" alt="Prévia da imagem da escalação" />
+      </div>
+      <div class="share-options">
+        <button id="download-share-image" class="primary-button" type="button">Baixar imagem PNG</button>
+        <button id="whatsapp-share-image" class="whatsapp-button" type="button">Copiar e abrir WhatsApp</button>
+        <button id="system-share-image" class="ghost-button" type="button">Outros aplicativos</button>
+      </div>
+      <p id="share-message" class="status-message" aria-live="polite"></p>
+    </div>
+  </dialog>
+
+  <dialog id="team-limit-dialog">
+    <div class="dialog-card limit-dialog-card" role="alertdialog" aria-labelledby="team-limit-title" aria-describedby="team-limit-message">
+      <button id="close-team-limit-dialog" class="dialog-close" type="button" aria-label="Fechar">×</button>
+      <div class="limit-dialog-icon" aria-hidden="true">!</div>
+      <span class="eyebrow">Limite de escalação</span>
+      <h2 id="team-limit-title">Máximo de 2 jogadores</h2>
+      <p id="team-limit-message"></p>
+      <div class="limit-current-picks">
+        <strong>Você já escalou:</strong>
+        <ul id="team-limit-players"></ul>
+      </div>
+      <p class="limit-dialog-help">Remova um deles ou escolha um jogador de outra equipe.</p>
+      <button id="confirm-team-limit-dialog" class="primary-button" type="button">Entendi</button>
+    </div>
+  </dialog>
+
+  <script src="assets/fantasy-config.js"></script>
+  <script src="assets/fantasy.js"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js");</script>
+</body>
+</html>
