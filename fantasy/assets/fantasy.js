@@ -38,7 +38,9 @@
     "ascension:BST:JG",
     "ascension:BST:MID",
     "ascension:PXG:TOP",
-    "ascension:PXG:SUP"
+    "ascension:PXG:SUP",
+    "ascension:RDG:SUP",
+    "ascension:UBR:SUP"
   ]);
 
   const state = {
