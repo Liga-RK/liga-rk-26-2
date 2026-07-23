@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <title>RK Fantasy | Liga RK 26.2</title>
   <link rel="icon" type="image/png" href="assets/branding/logo-rk-fantasy.png" />
-  <link rel="stylesheet" href="assets/fantasy.css" />
+  <link rel="stylesheet" href="assets/fantasy.css?v=20260722-stable" />
 </head>
 <body>
   <header class="site-header">
@@ -41,21 +41,10 @@
       </div>
     </section>
 
-    <section class="division-tabs" aria-label="Escolha de divisão">
-      <button class="division-tab active" type="button" data-division="elite">Divisão Elite</button>
-      <button class="division-tab" type="button" data-division="ascension">Divisão Ascensão</button>
-    </section>
-
     <section id="market-view" class="app-view active">
-      <section class="popular-strip" aria-labelledby="popular-title">
-        <div class="popular-heading">
-          <div>
-            <span class="eyebrow">Comunidade</span>
-            <h2 id="popular-title">Os mais escalados</h2>
-          </div>
-          <span id="popular-division" class="popular-note">Divisão Elite</span>
-        </div>
-        <div id="popular-list" class="popular-list" aria-live="polite"></div>
+      <section class="division-tabs" aria-label="Escolha de divisão">
+        <button class="division-tab active" type="button" data-division="elite">Divisão Elite</button>
+        <button class="division-tab" type="button" data-division="ascension">Divisão Ascensão</button>
       </section>
 
       <section id="market-closed" class="market-closed-panel" hidden>
@@ -277,7 +266,7 @@
   </dialog>
 
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/fantasy.js"></script>
-  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js");</script>
+  <script src="assets/fantasy.js?v=20260722-stable"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260722-stable");</script>
 </body>
 </html>

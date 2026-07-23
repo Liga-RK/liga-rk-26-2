@@ -48,7 +48,6 @@
     division: "elite",
     view: "market",
     market: { elite: [], ascension: [] },
-    popular: { elite: [], ascension: [] },
     marketOpen: { elite: true, ascension: true },
     roundInfo: { elite: null, ascension: null },
     lineups: { elite: emptyLineup(), ascension: emptyLineup() },
@@ -58,7 +57,6 @@
   };
 
   let preparedShare = null;
-  let popularRefreshTimer = null;
 
   const el = {
     navButtons: document.querySelectorAll("[data-view]"),
@@ -107,8 +105,6 @@
     closedMarketDetail: document.getElementById("closed-market-detail"),
     closedLineups: document.getElementById("closed-lineups"),
     marketPanel: document.getElementById("market-panel"),
-    popularList: document.getElementById("popular-list"),
-    popularDivision: document.getElementById("popular-division"),
     closedActions: document.querySelectorAll("[data-closed-action]"),
     roleShortcuts: document.querySelectorAll("[data-role-shortcut]")
   };
@@ -127,11 +123,10 @@
     await loadMarket();
     if (config.backendMode === "cloud") {
       await Promise.all([loadCloudLineup("elite"), loadCloudLineup("ascension")]);
-      await Promise.all([loadCloudConfig(state.division), loadCloudRanking(), loadCloudPopular(state.division)]);
+      await Promise.all([loadCloudConfig(state.division), loadCloudRanking()]);
       renderLineup();
       renderMarketShell();
       renderMarket();
-      startPopularRefresh();
     }
     if (initialAuthMessage) setMessage(initialAuthMessage, initialAuthError, !initialAuthError);
   }
@@ -192,7 +187,6 @@
     state.loaded = true;
     el.marketLoading.hidden = true;
     el.marketGrid.hidden = false;
-    renderPopularPicks();
     renderMarket();
     renderLineup();
   }
@@ -301,39 +295,6 @@
       empty.textContent = "Nenhum jogador encontrado com esses filtros.";
       el.marketGrid.appendChild(empty);
     }
-  }
-
-  function renderPopularPicks() {
-    if (!el.popularList) return;
-    if (el.popularDivision) el.popularDivision.textContent = state.division === "elite" ? "Divisão Elite" : "Divisão Ascensão";
-    const byRole = new Map((state.popular[state.division] || []).map((item) => [item.role, item]));
-    el.popularList.replaceChildren(...PLAYER_ROLES.map((role) => {
-      const item = byRole.get(role);
-      const row = document.createElement("article");
-      row.className = `popular-row${item ? "" : " empty"}`;
-
-      const logo = document.createElement("div");
-      logo.className = "popular-logo";
-      if (item) {
-        logo.appendChild(createLogo(item));
-      } else {
-        const icon = document.createElement("img");
-        icon.src = ROLE_ASSETS[role];
-        icon.alt = "";
-        logo.appendChild(icon);
-      }
-
-      const info = document.createElement("div");
-      info.className = "popular-info";
-      const name = document.createElement("strong");
-      name.textContent = item ? item.name : "Aguardando escolhas";
-      const meta = document.createElement("span");
-      meta.textContent = item ? `${ROLE_LABELS[role]} · ${item.teamTag}` : ROLE_LABELS[role];
-      info.append(name, meta);
-
-      row.append(logo, info);
-      return row;
-    }));
   }
 
   function renderMarketShell() {
@@ -745,7 +706,6 @@
         if (!response.ok) throw new Error(apiErrorMessage(result, "Não foi possível salvar a escalação."));
       }
       lineup.saved = true;
-      if (config.backendMode === "cloud") loadCloudPopular(state.division);
       persistLocalState();
       setMessage("Escalação salva! Você ainda pode alterá-la até o mercado fechar.", false, true);
     } catch (error) {
@@ -775,11 +735,9 @@
     setMessage("", false);
     renderLineup();
     renderMarket();
-    renderPopularPicks();
     renderMarketShell();
     if (config.backendMode === "cloud") {
       loadCloudConfig(division);
-      loadCloudPopular(division);
       if (state.view === "ranking") loadCloudRanking();
     }
   }
@@ -790,7 +748,6 @@
     el.views.forEach((section) => section.classList.toggle("active", section.id === `${view}-view`));
     if (view === "market") {
       renderMarketShell();
-      if (config.backendMode === "cloud") loadCloudPopular(state.division);
     }
     if (view === "ranking" && config.backendMode === "cloud") loadCloudRanking();
   }
@@ -916,45 +873,6 @@
     } catch (error) {
       console.warn("Não foi possível carregar o status da rodada.", error);
     }
-  }
-
-  async function loadCloudPopular(division) {
-    if (config.backendMode !== "cloud") {
-      state.popular[division] = [];
-      renderPopularPicks();
-      return;
-    }
-    try {
-      const response = await apiFetch(`/api/fantasy/popular?division=${encodeURIComponent(division)}`, { cache: "no-store" });
-      const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(apiErrorMessage(payload, "Mais escalados indisponÃ­veis."));
-      state.popular[division] = (payload.popular || []).map((item) => {
-        const marketItem = state.market[division].find((asset) => asset.id === String(item.id));
-        return marketItem || {
-          id: String(item.id),
-          type: "player",
-          role: normalizeRole(item.role),
-          name: cleanText(item.name),
-          teamName: cleanText(item.teamName),
-          teamTag: cleanText(item.teamTag).toUpperCase(),
-          teamSlot: cleanText(item.teamSlot),
-          logo: normalizeAssetPath(item.logo),
-          price: roundMoney(item.price),
-          average: roundMoney(item.average)
-        };
-      });
-    } catch (error) {
-      console.warn("NÃ£o foi possÃ­vel carregar os mais escalados.", error);
-      state.popular[division] = [];
-    }
-    if (division === state.division) renderPopularPicks();
-  }
-
-  function startPopularRefresh() {
-    if (popularRefreshTimer || config.backendMode !== "cloud") return;
-    popularRefreshTimer = window.setInterval(() => {
-      if (state.view === "market" && isMarketOpen()) loadCloudPopular(state.division);
-    }, 60000);
   }
 
   async function loadCloudRanking() {
