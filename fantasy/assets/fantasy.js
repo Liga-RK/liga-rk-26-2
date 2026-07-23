@@ -280,15 +280,25 @@
         .sort(sortMarket(sort));
     }
 
-    const players = items.filter((item) => item.role !== "TEAM");
-    const teams = items.filter((item) => item.role === "TEAM");
-    const sections = [];
-    if (players.length) {
-      const title = role === "ALL" ? "Jogadores" : ROLE_LABELS[role];
-      sections.push(marketSection(title, role === "ALL" ? "TOP" : role, players, selectedIds, lineup, false));
+    try {
+      const players = items.filter((item) => item.role !== "TEAM");
+      const teams = items.filter((item) => item.role === "TEAM");
+      const sections = [];
+      if (players.length) {
+        const title = role === "ALL" ? "Jogadores" : ROLE_LABELS[role];
+        sections.push(marketSection(title, role === "ALL" ? "TOP" : role, players, selectedIds, lineup, reserveId, false));
+      }
+      if (teams.length) sections.push(marketSection("Equipes", "TEAM", teams, selectedIds, lineup, reserveId, true));
+      el.marketGrid.replaceChildren(...sections);
+    } catch (error) {
+      console.error("RK Fantasy: falha ao montar o mercado.", error);
+      el.marketGrid.replaceChildren();
+      const errorBox = document.createElement("div");
+      errorBox.className = "empty-state";
+      errorBox.textContent = "Não foi possível montar a lista agora. Atualize a página e tente novamente.";
+      el.marketGrid.appendChild(errorBox);
+      return;
     }
-    if (teams.length) sections.push(marketSection("Equipes", "TEAM", teams, selectedIds, lineup, true));
-    el.marketGrid.replaceChildren(...sections);
     if (!items.length) {
       const empty = document.createElement("div");
       empty.className = "empty-state";
@@ -366,7 +376,7 @@
     }));
   }
 
-  function marketSection(title, role, items, selectedIds, lineup, teamSection) {
+  function marketSection(title, role, items, selectedIds, lineup, reserveId, teamSection) {
     const section = document.createElement("section");
     section.className = `market-section${teamSection ? " team-market-section" : ""}`;
     const heading = document.createElement("h3");
