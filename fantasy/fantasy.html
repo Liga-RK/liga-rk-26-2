@@ -10,7 +10,7 @@
   <title>RK Fantasy | Liga RK 26.2</title>
   <link rel="icon" type="image/png" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
   <link rel="apple-touch-icon" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
-  <link rel="stylesheet" href="assets/fantasy.css?v=20260723-popular" />
+  <link rel="stylesheet" href="assets/fantasy.css?v=20260723-ranking" />
 </head>
 <body>
   <header class="site-header">
@@ -185,26 +185,47 @@
     <section id="ranking-view" class="app-view">
       <div class="content-card">
         <div class="section-heading">
-          <div><span class="eyebrow">Classificação geral</span><h2>Ranking do RK Fantasy</h2></div>
-          <select id="ranking-scope" aria-label="Escopo do ranking">
-            <option value="overall">Campeonato</option>
-            <option value="round">Rodada atual</option>
-          </select>
+          <div><span class="eyebrow">Classificação</span><h2>Ranking do RK Fantasy</h2></div>
+          <div class="ranking-controls">
+            <div class="ranking-division-tabs" aria-label="Escolha de divisão do ranking">
+              <button class="ranking-division-tab active" type="button" data-ranking-division="elite">Divisão Elite</button>
+              <button class="ranking-division-tab" type="button" data-ranking-division="ascension">Divisão Ascensão</button>
+            </div>
+            <select id="ranking-scope" aria-label="Escopo do ranking">
+              <option value="championship">Campeonato</option>
+              <option value="round">Rodada atual</option>
+              <option value="overall">Ranking geral</option>
+              <option value="wealth">Maior patrimônio</option>
+            </select>
+          </div>
         </div>
         <div class="ranking-table-wrap">
           <table class="ranking-table">
-            <thead><tr><th>#</th><th>Time</th><th>Jogador</th><th>Rodada</th><th>Total</th></tr></thead>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Mov.</th>
+                <th>Time</th>
+                <th>Divisão</th>
+                <th>Jogador</th>
+                <th>Rodada</th>
+                <th>Total</th>
+                <th>Patrimônio</th>
+                <th>Média</th>
+                <th>Melhor</th>
+              </tr>
+            </thead>
             <tbody id="ranking-body"></tbody>
           </table>
         </div>
-        <p class="helper-text">O ranking é atualizado após o processamento dos resultados oficiais da rodada.</p>
+        <p id="ranking-helper" class="helper-text">O ranking é atualizado após o processamento dos resultados oficiais da rodada.</p>
       </div>
     </section>
 
     <section id="rules-view" class="app-view">
       <div class="content-card rules-card">
-        <span class="eyebrow">Pontuação transparente</span>
         <h2>Como funciona</h2>
+        <p class="rules-intro">Seus jogadores pontuam por abates, assistências, participação em abates, ouro, dano, objetivos, vitória e MVP. Mortes retiram pontos.</p>
         <div class="rules-grid">
           <article><strong>+3</strong><span>por abate</span></article>
           <article><strong>+1,4</strong><span>por assistência</span></article>
@@ -214,9 +235,40 @@
           <article><strong>1,5×</strong><span>para o capitão</span></article>
         </div>
         <div class="formula-box">
-          <h3>Pontuação completa por mapa</h3>
-          <code>(abates × 3 + assistências × 1,4 − mortes × 2,2 + KP × 17 + GPM × 0,016 + DPM × 0,02 + objetivos + peso da posição + vitória) ÷ 5</code>
-          <p>O cálculo reaproveita a lógica de impacto utilizada pela Liga RK para selecionar o MVP de cada partida. O MVP recebe mais 3 pontos no fantasy.</p>
+          <h3>Exemplo de pontuação por mapa</h3>
+          <p>Este exemplo mostra como as estatísticas entram no cálculo. O total final aplica o ajuste do fantasy e soma o bônus de MVP quando existir.</p>
+          <div class="rules-table-wrap">
+            <table class="rules-table">
+              <thead><tr><th>Estatística</th><th>Resultado</th><th>Pontos</th></tr></thead>
+              <tbody>
+                <tr><td>Abates</td><td>5</td><td>+15,00</td></tr>
+                <tr><td>Assistências</td><td>8</td><td>+11,20</td></tr>
+                <tr><td>Mortes</td><td>3</td><td>−6,60</td></tr>
+                <tr><td>KP</td><td>72%</td><td>+12,24</td></tr>
+                <tr><td>GPM</td><td>610</td><td>+9,76</td></tr>
+                <tr><td>DPM</td><td>685</td><td>+13,70</td></tr>
+                <tr><td>Objetivos</td><td>1 torre + 1 dragão</td><td>+4,50</td></tr>
+                <tr><td>Impacto da posição</td><td>TOP</td><td>+10,35</td></tr>
+                <tr><td>Vitória</td><td>Sim</td><td>+6,00</td></tr>
+                <tr><td>MVP</td><td>Sim</td><td>+3,00</td></tr>
+                <tr class="rules-total-row"><td>Total após ajuste</td><td>—</td><td>18,23</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="formula-box">
+          <h3>O que significa cada estatística?</h3>
+          <dl class="stat-glossary">
+            <div><dt>KP</dt><dd>Participação em abates. Mede quanto o jogador participou dos abates do próprio time.</dd></div>
+            <div><dt>GPM</dt><dd>Ouro por minuto. Mostra o ritmo de farm, recursos e vantagem econômica durante o mapa.</dd></div>
+            <div><dt>DPM</dt><dd>Dano por minuto. Mede o dano causado aos campeões inimigos ao longo da partida.</dd></div>
+            <div><dt>Objetivos</dt><dd>Inclui torres, dragões, Arauto/Vastilarvas e Barões. Quanto mais o jogador participa do controle do mapa, mais impacto ele gera.</dd></div>
+            <div><dt>Impacto da posição</dt><dd>Cada rota valoriza aspectos diferentes: TOP, MID e ADC recebem mais peso por dano/abates; JG e SUP recebem mais peso por participação e objetivos.</dd></div>
+          </dl>
+        </div>
+        <div class="formula-box">
+          <h3>Pontuação da equipe</h3>
+          <p>A equipe pontua pelo desempenho coletivo no mapa: vitória, abates totais, torres, Vastilarvas, Arauto, dragões e Barões. Ela serve para premiar quem escolheu uma organização que venceu e controlou melhor os objetivos da partida.</p>
         </div>
         <div class="rule-list">
           <h3>Regras do elenco</h3>
@@ -281,7 +333,7 @@
   </dialog>
 
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/fantasy.js?v=20260723-popular"></script>
-  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260723-popular");</script>
+  <script src="assets/fantasy.js?v=20260723-ranking"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260723-ranking");</script>
 </body>
 </html>

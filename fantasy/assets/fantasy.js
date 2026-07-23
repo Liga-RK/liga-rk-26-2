@@ -47,6 +47,8 @@
 
   const state = {
     division: "elite",
+    rankingDivision: "elite",
+    rankingScope: "championship",
     view: "market",
     market: { elite: [], ascension: [] },
     popular: { elite: [], ascension: [] },
@@ -60,6 +62,7 @@
   };
 
   let preparedShare = null;
+  let marketStatusTimer = null;
 
   const el = {
     navButtons: document.querySelectorAll("[data-view]"),
@@ -99,7 +102,10 @@
     accountDialog: document.getElementById("account-dialog"),
     demoUserName: document.getElementById("demo-user-name"),
     confirmDemoUser: document.getElementById("confirm-demo-user"),
+    rankingScope: document.getElementById("ranking-scope"),
+    rankingDivisionTabs: document.querySelectorAll("[data-ranking-division]"),
     rankingBody: document.getElementById("ranking-body"),
+    rankingHelper: document.getElementById("ranking-helper"),
     marketStatus: document.getElementById("market-status"),
     marketDeadline: document.getElementById("market-deadline"),
     marketDashboard: document.getElementById("market-dashboard"),
@@ -120,6 +126,7 @@
     await completeCloudLogin();
     restoreLocalState();
     bindEvents();
+    marketStatusTimer = window.setInterval(updateMarketStatus, 30000);
     if (config.backendMode === "cloud") await loadCloudAccount();
     renderAccount();
     renderLineup();
@@ -139,6 +146,8 @@
   function bindEvents() {
     el.navButtons.forEach((button) => button.addEventListener("click", () => setView(button.dataset.view)));
     el.divisionTabs.forEach((button) => button.addEventListener("click", () => setDivision(button.dataset.division)));
+    el.rankingDivisionTabs.forEach((button) => button.addEventListener("click", () => setRankingDivision(button.dataset.rankingDivision)));
+    el.rankingScope.addEventListener("input", () => setRankingScope(el.rankingScope.value));
     [el.search, el.sortFilter].forEach((input) => input.addEventListener("input", renderMarket));
     el.roleFilter.addEventListener("input", () => setRoleFilter(el.roleFilter.value, { scroll: false }));
     el.roleShortcuts.forEach((button) => button.addEventListener("click", () => setRoleFilter(button.dataset.roleShortcut)));
@@ -352,6 +361,7 @@
   }
 
   function renderMarketShell() {
+    updateMarketStatus();
     const open = isMarketOpen();
     if (el.marketDashboard) el.marketDashboard.hidden = !open;
     if (el.marketClosed) el.marketClosed.hidden = open;
@@ -799,6 +809,22 @@
     }
   }
 
+  function setRankingDivision(division) {
+    if (!state.lineups[division]) return;
+    state.rankingDivision = division;
+    updateRankingControls();
+    if (config.backendMode === "cloud") loadCloudRanking();
+    else renderRanking();
+  }
+
+  function setRankingScope(scope) {
+    const allowed = new Set(["championship", "round", "overall", "wealth"]);
+    state.rankingScope = allowed.has(scope) ? scope : "championship";
+    updateRankingControls();
+    if (config.backendMode === "cloud") loadCloudRanking();
+    else renderRanking();
+  }
+
   function setView(view) {
     state.view = view;
     el.navButtons.forEach((button) => button.classList.toggle("active", button.dataset.view === view));
@@ -806,7 +832,11 @@
     if (view === "market") {
       renderMarketShell();
     }
-    if (view === "ranking" && config.backendMode === "cloud") loadCloudRanking();
+    if (view === "ranking") {
+      updateRankingControls();
+      if (config.backendMode === "cloud") loadCloudRanking();
+      else renderRanking();
+    }
   }
 
   function handleClosedAction(action) {
@@ -860,15 +890,57 @@
   }
 
   function renderRanking() {
-    const rows = [
-      [1, "Barões da Madrugada", "Rickito", "87,40", "241,65"],
-      [2, "Só Mais Uma MD3", "Theo", "81,15", "228,20"],
-      [3, "Gap de Visão", "Melare", "76,90", "219,75"],
-      [4, "Meu Time RK", state.userName || "Você", "0,00", "0,00"]
-    ];
-    el.rankingBody.innerHTML = rows.map(([position, team, user, round, total]) =>
-      `<tr><td>${position}</td><td>${escapeHtml(team)}</td><td>${escapeHtml(user)}</td><td>${round}</td><td>${total}</td></tr>`
-    ).join("");
+    updateRankingControls();
+    renderRankingRows([
+      { position: 1, positionChange: 0, teamName: "Barões da Madrugada", division: "elite", manager: "Rickito", roundPoints: 87.4, totalPoints: 241.65, wealthCents: 10240, averagePoints: 80.55, bestRoundPoints: 87.4 },
+      { position: 2, positionChange: 1, teamName: "Só Mais Uma MD3", division: "ascension", manager: "Theo", roundPoints: 81.15, totalPoints: 228.2, wealthCents: 10080, averagePoints: 76.07, bestRoundPoints: 84.1 },
+      { position: 3, positionChange: -1, teamName: "Gap de Visão", division: "elite", manager: "Melare", roundPoints: 76.9, totalPoints: 219.75, wealthCents: 9940, averagePoints: 73.25, bestRoundPoints: 81.7 },
+      { position: 4, positionChange: 0, teamName: "Meu Time RK", division: state.rankingDivision, manager: state.userName || "Você", roundPoints: 0, totalPoints: 0, wealthCents: 10000, averagePoints: 0, bestRoundPoints: 0 }
+    ]);
+  }
+
+  function renderRankingRows(rows) {
+    if (!el.rankingBody) return;
+    el.rankingBody.innerHTML = rows.length ? rows.map((row) => `
+      <tr>
+        <td>${Number(row.position) || "-"}</td>
+        <td>${rankMoveMarkup(row.positionChange)}</td>
+        <td>${escapeHtml(row.teamName || "-")}</td>
+        <td><span class="division-pill">${escapeHtml(divisionLabel(row.division))}</span></td>
+        <td>${escapeHtml(row.manager || "-")}</td>
+        <td class="number-cell">${formatNumber(row.roundPoints)}</td>
+        <td class="number-cell">${formatNumber(row.totalPoints)}</td>
+        <td class="number-cell">RK$ ${formatNumber(Number(row.wealthCents || 0) / 100)}</td>
+        <td class="number-cell">${formatNumber(row.averagePoints)}</td>
+        <td class="number-cell">${formatNumber(row.bestRoundPoints)}</td>
+      </tr>
+    `).join("") : `<tr><td colspan="10">O ranking ainda não possui pontuações.</td></tr>`;
+  }
+
+  function updateRankingControls() {
+    if (el.rankingScope) el.rankingScope.value = state.rankingScope;
+    const allDivisions = rankingUsesAllDivisions();
+    el.rankingDivisionTabs.forEach((button) => {
+      button.classList.toggle("active", button.dataset.rankingDivision === state.rankingDivision);
+      button.disabled = allDivisions;
+    });
+    if (el.rankingHelper) {
+      if (state.rankingScope === "overall") el.rankingHelper.textContent = "Ranking geral junta os times da Elite e da Ascensão na mesma tabela.";
+      else if (state.rankingScope === "wealth") el.rankingHelper.textContent = "Maior patrimônio mostra quem tem mais RK$ acumulado no jogo, juntando as duas divisões.";
+      else if (state.rankingScope === "round") el.rankingHelper.textContent = `Ranking da rodada atual da ${divisionLabel(state.rankingDivision)}.`;
+      else el.rankingHelper.textContent = `Ranking do campeonato da ${divisionLabel(state.rankingDivision)}.`;
+    }
+  }
+
+  function rankingUsesAllDivisions() {
+    return state.rankingScope === "overall" || state.rankingScope === "wealth";
+  }
+
+  function rankMoveMarkup(value) {
+    const change = Number(value) || 0;
+    if (change > 0) return `<span class="rank-move up">↑ ${change}</span>`;
+    if (change < 0) return `<span class="rank-move down">↓ ${Math.abs(change)}</span>`;
+    return `<span class="rank-move">—</span>`;
   }
 
   async function loadCloudAccount() {
@@ -918,12 +990,7 @@
       state.roundInfo[division] = round;
       state.marketOpen[division] = open;
       if (division === state.division) {
-        el.marketStatus.textContent = open ? "ABERTO" : "FECHADO";
-        el.marketStatus.style.color = open ? "var(--success)" : "var(--danger)";
-        const lockDate = new Date(round.locks_at);
-        el.marketDeadline.textContent = open
-          ? `${round.name} · fecha em ${lockDate.toLocaleString("pt-BR")}`
-          : `${round.name} · mercado fechado`;
+        updateMarketStatus();
         renderLineup();
         renderMarketShell();
         renderPopularPicks();
@@ -969,15 +1036,17 @@
 
   async function loadCloudRanking() {
     try {
-      const response = await apiFetch(`/api/fantasy/ranking?division=${encodeURIComponent(state.division)}`, { cache: "no-store" });
+      updateRankingControls();
+      const division = rankingUsesAllDivisions() ? "all" : state.rankingDivision;
+      const scope = state.rankingScope || "championship";
+      const response = await apiFetch(`/api/fantasy/ranking?division=${encodeURIComponent(division)}&scope=${encodeURIComponent(scope)}`, { cache: "no-store" });
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(apiErrorMessage(payload, "Ranking indisponível."));
       const rows = payload.ranking || [];
-      el.rankingBody.innerHTML = rows.length ? rows.map((row) =>
-        `<tr><td>${Number(row.position) || "-"}</td><td>${escapeHtml(row.teamName)}</td><td>${escapeHtml(row.manager)}</td><td>${formatNumber(row.roundPoints)}</td><td>${formatNumber(row.totalPoints)}</td></tr>`
-      ).join("") : `<tr><td colspan="5">O ranking ainda não possui pontuações.</td></tr>`;
+      renderRankingRows(rows);
     } catch (error) {
       console.warn("Não foi possível carregar o ranking online.", error);
+      if (el.rankingBody) el.rankingBody.innerHTML = `<tr><td colspan="10">Não foi possível carregar o ranking agora.</td></tr>`;
     }
   }
 
@@ -1090,6 +1159,39 @@
 
   function isMarketOpen(division = state.division) {
     return state.marketOpen[division] !== false;
+  }
+
+  function updateMarketStatus() {
+    if (!el.marketStatus || !el.marketDeadline) return;
+    const round = state.roundInfo[state.division];
+    const now = Date.now();
+    const opensAt = Date.parse(round?.opens_at);
+    const locksAt = Date.parse(round?.locks_at);
+    const open = Boolean(round && round.status === "open" && Number.isFinite(locksAt) && now < locksAt && (!Number.isFinite(opensAt) || now >= opensAt));
+    if (round) state.marketOpen[state.division] = open;
+    el.marketStatus.textContent = open ? "MERCADO ABERTO" : "MERCADO FECHADO";
+    el.marketStatus.style.color = open ? "var(--success)" : "var(--danger)";
+    if (open) {
+      el.marketDeadline.textContent = `Mercado fecha em ${formatCountdown(locksAt - now)}`;
+      return;
+    }
+    if (round?.status === "scheduled" && Number.isFinite(opensAt) && opensAt > now) {
+      el.marketDeadline.textContent = `Mercado abre em ${formatCountdown(opensAt - now)}`;
+      return;
+    }
+    el.marketDeadline.textContent = round?.name ? `${round.name} · mercado fechado` : "Aguardando rodada.";
+  }
+
+  function formatCountdown(milliseconds) {
+    const totalMinutes = Math.max(0, Math.ceil(Number(milliseconds || 0) / 60000));
+    const days = Math.floor(totalMinutes / 1440);
+    const hours = Math.floor((totalMinutes % 1440) / 60);
+    const minutes = totalMinutes % 60;
+    const parts = [];
+    if (days > 0) parts.push(`${String(days).padStart(2, "0")}d`);
+    parts.push(`${String(hours).padStart(2, "0")}h`);
+    parts.push(`${String(minutes).padStart(2, "0")}min`);
+    return parts.join(" ");
   }
 
   function closedMarketDetail(round) {
@@ -1562,6 +1664,10 @@
 
   function formatNumber(value) {
     return Number(value || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function divisionLabel(value) {
+    return value === "ascension" ? "Divisão Ascensão" : "Divisão Elite";
   }
 
   function cleanText(value) {
