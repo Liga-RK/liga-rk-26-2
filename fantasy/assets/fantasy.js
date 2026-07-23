@@ -938,14 +938,14 @@
     });
     if (el.rankingHelper) {
       if (state.rankingScope === "overall") el.rankingHelper.textContent = "Ranking geral soma os pontos da Elite e da Ascensão por jogador.";
-      else if (state.rankingScope === "wealth") el.rankingHelper.textContent = "Maior patrimônio mostra quem tem mais RK$ acumulado no jogo, juntando as duas divisões.";
+      else if (state.rankingScope === "wealth") el.rankingHelper.textContent = `Maior patrimônio mostra quem tem mais RK$ acumulado na ${divisionLabel(state.rankingDivision)}.`;
       else if (state.rankingScope === "round") el.rankingHelper.textContent = `Ranking da rodada atual da ${divisionLabel(state.rankingDivision)}.`;
       else el.rankingHelper.textContent = `Ranking do campeonato da ${divisionLabel(state.rankingDivision)}.`;
     }
   }
 
   function rankingUsesAllDivisions() {
-    return state.rankingScope === "overall" || state.rankingScope === "wealth";
+    return state.rankingScope === "overall";
   }
 
   function rankMoveMarkup(value) {
