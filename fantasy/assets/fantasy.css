@@ -174,6 +174,20 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .role-shortcut.complete:not(.active) { opacity: .43; }
 .role-divider { flex: 0 0 1px; width: 1px; margin: .1rem .2rem; background: var(--line); }
 .team-shortcut { flex-basis: 92px; }
+.popular-panel { margin: .9rem 0 1rem; overflow: hidden; border: 1px solid var(--line); border-radius: .85rem; background: linear-gradient(145deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .018)); }
+.popular-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; padding: .9rem 1rem .65rem; border-bottom: 1px solid var(--line); }
+.popular-heading h3 { margin: .12rem 0 0; color: #fff; font-family: var(--title-font); font-size: 1.48rem; font-weight: 400; letter-spacing: .025em; text-transform: uppercase; }
+.popular-note { color: var(--muted); font-size: .68rem; font-weight: 800; text-align: right; text-transform: uppercase; }
+.popular-list { display: grid; }
+.popular-row { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; align-items: center; gap: .8rem; min-height: 76px; padding: .65rem 1rem; border-bottom: 1px solid rgba(255, 255, 255, .08); }
+.popular-row:last-child { border-bottom: 0; }
+.popular-row.empty { opacity: .55; }
+.popular-logo { display: grid; place-items: center; width: 58px; height: 58px; border-radius: .65rem; background: rgba(4, 4, 6, .82); }
+.popular-logo .player-logo, .popular-logo img { width: 54px; height: 54px; object-fit: contain; padding: .15rem; }
+.popular-info { min-width: 0; }
+.popular-info strong { display: block; overflow: hidden; color: #fff; font-size: 1rem; text-overflow: ellipsis; white-space: nowrap; }
+.popular-info span { display: block; margin-top: .18rem; color: var(--muted); font-size: .7rem; text-transform: uppercase; }
+.popular-rank { color: #fff; font-family: var(--title-font); font-size: 1.5rem; }
 .filters { display: grid; grid-template-columns: 1fr 190px; gap: .55rem; margin-bottom: 1rem; }
 .filters input, .filters select, .dialog-card input, .section-heading select { width: 100%; border: 1px solid var(--line); border-radius: .65rem; background: #0b090c; color: var(--text); padding: .78rem .88rem; outline: none; }
 .filters input:focus, .filters select:focus, .dialog-card input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(229, 38, 50, .13); }
@@ -326,6 +340,11 @@ dialog::backdrop { background: rgba(0, 0, 0, .78); backdrop-filter: blur(8px); }
   .filters { grid-template-columns: 1fr; }
   .player-card { grid-template-columns: 62px 1fr auto; }
   .player-logo { width: 62px; height: 62px; }
+  .popular-heading { align-items: flex-start; flex-direction: column; gap: .35rem; }
+  .popular-note { text-align: left; }
+  .popular-row { grid-template-columns: 50px minmax(0, 1fr) auto; padding: .58rem .75rem; }
+  .popular-logo { width: 50px; height: 50px; }
+  .popular-logo .player-logo, .popular-logo img { width: 46px; height: 46px; }
   .role-shortcuts { margin-inline: -.15rem; }
   .admin-form { grid-template-columns: 1fr; }
   .admin-actions > * { flex: 1 1 100%; }
