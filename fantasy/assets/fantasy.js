@@ -263,17 +263,28 @@
 
   function renderMarket() {
     if (!state.loaded) return;
+    if (el.marketLoading) el.marketLoading.hidden = true;
+    if (el.marketGrid) el.marketGrid.hidden = false;
     const query = cleanText(el.search.value).toLocaleLowerCase("pt-BR");
-    const role = el.roleFilter.value;
+    let role = el.roleFilter.value;
     const sort = el.sortFilter.value;
     const lineup = currentLineup();
     const selectedIds = new Set(Object.values(lineup.slots).filter(Boolean).map((item) => item.id));
     const reserveId = lineup.reserve ? lineup.reserve.id : "";
 
-    const items = state.market[state.division]
+    let items = state.market[state.division]
       .filter((item) => role === "ALL" || item.role === role)
       .filter((item) => !query || `${item.name} ${item.teamName} ${item.teamTag}`.toLocaleLowerCase("pt-BR").includes(query))
       .sort(sortMarket(sort));
+
+    if (!items.length && role !== "ALL" && state.market[state.division].length) {
+      role = "ALL";
+      el.roleFilter.value = "ALL";
+      el.roleShortcuts.forEach((button) => button.classList.toggle("active", button.dataset.roleShortcut === "ALL"));
+      items = state.market[state.division]
+        .filter((item) => !query || `${item.name} ${item.teamName} ${item.teamTag}`.toLocaleLowerCase("pt-BR").includes(query))
+        .sort(sortMarket(sort));
+    }
 
     const players = items.filter((item) => item.role !== "TEAM");
     const teams = items.filter((item) => item.role === "TEAM");
@@ -320,10 +331,7 @@
       meta.textContent = item ? `${ROLE_LABELS[role]} · ${item.teamTag}` : ROLE_LABELS[role];
       info.append(name, meta);
 
-      const rank = document.createElement("span");
-      rank.className = "popular-rank";
-      rank.textContent = item ? "1º" : "—";
-      row.append(logo, info, rank);
+      row.append(logo, info);
       return row;
     }));
   }
@@ -762,6 +770,7 @@
     state.division = division;
     el.roleFilter.value = "ALL";
     el.search.value = "";
+    el.roleShortcuts.forEach((button) => button.classList.toggle("active", button.dataset.roleShortcut === "ALL"));
     el.divisionTabs.forEach((button) => button.classList.toggle("active", button.dataset.division === division));
     setMessage("", false);
     renderLineup();
