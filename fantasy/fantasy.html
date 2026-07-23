@@ -10,7 +10,7 @@
   <title>RK Fantasy | Liga RK 26.2</title>
   <link rel="icon" type="image/png" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
   <link rel="apple-touch-icon" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
-  <link rel="stylesheet" href="assets/fantasy.css?v=20260723-ranking" />
+  <link rel="stylesheet" href="assets/fantasy.css?v=20260723-market-info" />
 </head>
 <body>
   <header class="site-header">
@@ -270,11 +270,28 @@
           <h3>Pontuação da equipe</h3>
           <p>A equipe pontua pelo desempenho coletivo no mapa: vitória, abates totais, torres, Vastilarvas, Arauto, dragões e Barões. Ela serve para premiar quem escolheu uma organização que venceu e controlou melhor os objetivos da partida.</p>
         </div>
+        <div class="formula-box">
+          <h3>Mercado e atualização de preços</h3>
+          <ul class="rule-bullets">
+            <li>Os preços são atualizados pela Staff depois que a rodada é processada. Eles não mudam enquanto o mercado daquela rodada estiver aberto.</li>
+            <li>Valoriza quem entrega pontuação acima do padrão esperado: boas lutas, participação em abates, ouro, dano, objetivos, vitória e MVP ajudam a subir.</li>
+            <li>Desvaloriza quem fica abaixo do esperado. Mortes, baixa participação, pouco impacto e derrota podem puxar o preço para baixo.</li>
+            <li>O preço considera principalmente a rodada recém-jogada, mas também leva em conta a média já existente para evitar grandes distorções.</li>
+            <li>Existe limite de variação: em uma atualização, um jogador ou equipe pode subir no máximo RK$ 2,00 e cair no máximo RK$ 2,00.</li>
+            <li>O preço mínimo é RK$ 4,00. Ninguém fica inutilizável por uma sequência ruim, então sempre existe chance de recuperação.</li>
+            <li>Quem não joga não valoriza nem desvaloriza naquela rodada. O preço e a média ficam preservados até voltar a atuar.</li>
+            <li>A valorização depende do desempenho do atleta/equipe, não do patrimônio dos usuários. Assim, quem foi mal ainda consegue recuperar, e quem foi bem é recompensado dentro do limite.</li>
+            <li>O reserva usa o preço normal do mercado. O limite para escolhê-lo é o saldo restante do time somado ao valor do titular mais barato.</li>
+          </ul>
+        </div>
         <div class="rule-list">
           <h3>Regras do elenco</h3>
           <p>Cada escalação deve ser formada por cinco jogadores — TOP, JG, MID, ADC e SUP — além de uma equipe.</p>
           <p>O orçamento inicial é de RK$ 100, e cada participante pode escalar no máximo dois jogadores da mesma equipe.</p>
-          <p>Também é permitido escolher um jogador reserva. Ele será acionado automaticamente caso algum titular não participe da rodada. O valor máximo disponível para o reserva será equivalente ao saldo restante somado ao preço do titular mais barato da escalação.</p>
+          <p>Também é permitido escolher um jogador reserva. Ele será acionado automaticamente caso um titular não participe da rodada. O valor máximo disponível para o reserva será equivalente ao saldo restante somado ao preço do titular mais barato da escalação.</p>
+          <p>O reserva pode substituir qualquer posição, não precisa ser da mesma rota, mas cobre apenas uma ausência e precisa ter jogado na rodada para entrar.</p>
+          <p>O reserva não pode ser capitão. Se o capitão titular não jogar e o reserva entrar em seu lugar, o reserva entra sem multiplicador.</p>
+          <p>O capitão multiplica a pontuação total do jogador escolhido, incluindo bônus de MVP. Se a pontuação do capitão for negativa, ela também será multiplicada.</p>
           <p>O elenco pode ser alterado quantas vezes for necessário até o fechamento do mercado.</p>
         </div>
       </div>
@@ -333,7 +350,7 @@
   </dialog>
 
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/fantasy.js?v=20260723-ranking"></script>
-  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260723-ranking");</script>
+  <script src="assets/fantasy.js?v=20260723-market-info"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260723-market-info");</script>
 </body>
 </html>

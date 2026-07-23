@@ -192,7 +192,7 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .captain-reminder span { color: #eadfc9; font-size: .76rem; line-height: 1.42; }
 .lineup-actions { display: grid; grid-template-columns: .72fr .95fr 1.45fr; gap: .45rem; margin-top: .55rem; }
 .edit-note { margin: .6rem 0 0; text-align: center; }
-.status-message { min-height: 1.25rem; margin: .55rem 0 0; color: var(--muted); font-size: .82rem; text-align: center; }
+.status-message { min-height: 1.25rem; margin: .55rem 0 0; color: var(--muted); font-size: .82rem; text-align: center; white-space: pre-line; }
 .status-message.error { color: var(--danger); }
 .status-message.success { color: var(--success); }
 
@@ -233,7 +233,7 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .player-meta strong, .player-meta span { display: block; }
 .player-meta strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .98rem; }
 .player-meta > span { margin-top: .2rem; color: var(--muted); font-size: .74rem; }
-.player-stats { display: flex; gap: .55rem; margin-top: .38rem; }
+.player-stats { display: flex; flex-wrap: wrap; gap: .28rem .55rem; margin-top: .38rem; }
 .player-stats span { color: #d8d1d3; font-size: .7rem; }
 .player-price { text-align: right; white-space: nowrap; }
 .player-price strong, .player-price span { display: block; }
@@ -278,6 +278,8 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .rules-grid span { margin-top: .25rem; color: var(--muted); }
 .formula-box, .rule-list { margin-top: 1rem; padding: 1.15rem; border: 1px solid var(--line); border-radius: .75rem; background: #0b090c; }
 .formula-box p, .rule-list p { color: var(--muted); line-height: 1.65; }
+.rule-bullets { display: grid; gap: .62rem; margin: .85rem 0 0; padding-left: 1.1rem; color: var(--muted); line-height: 1.55; }
+.rule-bullets li::marker { color: var(--accent-bright); }
 .rules-table-wrap { overflow: auto; margin-top: .9rem; border: 1px solid var(--line); border-radius: .65rem; }
 .rules-table { width: 100%; min-width: 620px; border-collapse: collapse; }
 .rules-table th, .rules-table td { padding: .78rem .9rem; border-bottom: 1px solid rgba(255, 255, 255, .08); text-align: left; }

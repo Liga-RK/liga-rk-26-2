@@ -220,7 +220,8 @@
       teamSlot: cleanText(item.teamSlot),
       logo: normalizeAssetPath(item.logo),
       price: roundMoney(item.price),
-      average: roundMoney(item.average)
+      average: roundMoney(item.average),
+      recentPoints: normalizeRecentPoints(item.recentPoints)
     }));
   }
 
@@ -242,7 +243,8 @@
         teamSlot: slot,
         logo,
         price: roundMoney(9 + (teamSeed % 700) / 100),
-        average: roundMoney(8 + (teamSeed % 900) / 100)
+        average: roundMoney(8 + (teamSeed % 900) / 100),
+        recentPoints: demoRecentPoints(teamSeed)
       });
 
       (team.players || []).forEach((player, index) => {
@@ -263,7 +265,8 @@
           riotId: cleanText(player.riotId),
           logo,
           price: roundMoney(roleBase + (seed % 800) / 100),
-          average: roundMoney(7 + (seed % 1300) / 100)
+          average: roundMoney(7 + (seed % 1300) / 100),
+          recentPoints: demoRecentPoints(seed)
         });
       });
     });
@@ -464,10 +467,13 @@
     const name = document.createElement("strong");
     name.textContent = item.name;
     const team = document.createElement("span");
-    team.textContent = `${ROLE_LABELS[item.role]} · ${item.teamTag}`;
+    team.textContent = `${ROLE_LABELS[item.role]} · ${item.teamName || item.teamTag}`;
     const stats = document.createElement("div");
     stats.className = "player-stats";
-    stats.innerHTML = `<span>Média ${formatNumber(item.average)}</span>`;
+    const recent = item.recentPoints && item.recentPoints.length
+      ? item.recentPoints.map((point) => formatNumber(point)).join(" · ")
+      : "aguardando rodada";
+    stats.innerHTML = `<span>Média: ${formatNumber(item.average)}</span><span>Performance recente: ${escapeHtml(recent)}</span>`;
     meta.append(name, team, stats);
 
     const price = document.createElement("div");
@@ -772,12 +778,18 @@
       lineup.saved = true;
       if (config.backendMode === "cloud") loadCloudPopular(state.division);
       persistLocalState();
-      setMessage("Escalação salva! Você ainda pode alterá-la até o mercado fechar.", false, true);
+      setMessage(lineupConfirmationMessage(), false, true);
     } catch (error) {
       setMessage(error.message || "Erro ao salvar a escalação.", true);
     } finally {
       renderLineup();
     }
+  }
+
+  function lineupConfirmationMessage() {
+    const round = state.roundInfo[state.division];
+    const roundName = cleanText(round && round.name) || "rodada atual";
+    return `Escalação confirmada para ${roundName}\nÚltima atualização: ${formatDateTime(new Date())}.`;
   }
 
   function setRoleFilter(role, options = {}) {
@@ -1662,8 +1674,28 @@
     return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
   }
 
+  function normalizeRecentPoints(value) {
+    return Array.isArray(value)
+      ? value.map((point) => roundMoney(point)).filter((point) => Number.isFinite(point)).slice(0, 3)
+      : [];
+  }
+
+  function demoRecentPoints(seed) {
+    return [0, 1, 2].map((index) => roundMoney(8 + ((stableNumber(`${seed}:${index}`) % 1200) / 100)));
+  }
+
   function formatNumber(value) {
     return Number(value || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function formatDateTime(value) {
+    return new Date(value).toLocaleString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).replace(",", " às");
   }
 
   function divisionLabel(value) {
