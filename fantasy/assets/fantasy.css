@@ -122,6 +122,7 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .popular-info { min-width: 0; }
 .popular-info strong { display: block; overflow: hidden; color: #fff; font-size: .9rem; text-overflow: ellipsis; white-space: nowrap; }
 .popular-info span { display: block; margin-top: .16rem; color: var(--muted); font-size: .66rem; text-transform: uppercase; }
+.popular-strip.closed-hidden { display: none; }
 .app-view { display: none; }
 .app-view.active { display: block; }
 
@@ -133,10 +134,17 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .closed-copy h2 { margin: .35rem 0 .65rem; color: #fff; font-family: var(--title-font); font-size: clamp(3rem, 8vw, 6.2rem); line-height: .9; text-transform: uppercase; }
 .closed-copy p { max-width: 760px; margin: 0 auto; color: #e4dcde; font-size: clamp(1rem, 1.7vw, 1.22rem); line-height: 1.55; }
 .closed-copy small { display: block; margin-top: .8rem; color: var(--muted); font-size: .9rem; line-height: 1.45; }
-.closed-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .7rem; }
-.closed-actions button { min-height: 54px; }
-.closed-lineups-wrap { display: grid; gap: .85rem; }
+.closed-highlights-wrap, .closed-lineups-wrap, .closed-ranking-wrap { display: grid; gap: .85rem; }
 .section-heading.compact h3 { margin: .18rem 0 0; color: #fff; font-family: var(--title-font); font-size: 1.55rem; font-weight: 400; text-transform: uppercase; }
+.closed-highlights { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .85rem; }
+.closed-highlight-card { display: grid; grid-template-columns: 54px minmax(0, 1fr); align-items: center; gap: .75rem; min-height: 88px; padding: .85rem; border: 1px solid rgba(229, 38, 50, .38); border-radius: .85rem; background: linear-gradient(145deg, rgba(229, 38, 50, .12), rgba(255, 255, 255, .022)); }
+.closed-highlight-card.empty { opacity: .68; border-color: var(--line); }
+.closed-highlight-logo { display: grid; place-items: center; width: 54px; height: 54px; border-radius: .62rem; background: rgba(4, 4, 6, .82); }
+.closed-highlight-logo .player-logo, .closed-highlight-logo img { width: 50px; height: 50px; object-fit: contain; padding: .12rem; }
+.closed-highlight-info { min-width: 0; }
+.closed-highlight-info span, .closed-highlight-card > span { display: block; color: var(--accent-bright); font-size: .68rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.closed-highlight-info strong, .closed-highlight-card > strong { display: block; overflow: hidden; margin-top: .16rem; color: #fff; font-size: .98rem; text-overflow: ellipsis; white-space: nowrap; }
+.closed-highlight-info small, .closed-highlight-card > small { display: block; margin-top: .16rem; color: var(--muted); font-size: .72rem; line-height: 1.35; }
 .closed-lineups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; }
 .closed-lineup-card { padding: .95rem; border: 1px solid var(--line); border-radius: .85rem; background: rgba(255, 255, 255, .035); }
 .closed-lineup-title { display: flex; align-items: center; justify-content: space-between; gap: .8rem; margin-bottom: .7rem; }
@@ -149,6 +157,12 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .closed-lineup-list strong { overflow: hidden; color: #fff; font-size: .86rem; text-overflow: ellipsis; white-space: nowrap; }
 .closed-lineup-list small { color: var(--muted); font-size: .72rem; white-space: nowrap; }
 .closed-lineup-list .reserve-summary span { color: var(--warning); }
+.closed-ranking { overflow: auto; border: 1px solid var(--line); border-radius: .85rem; background: rgba(255, 255, 255, .026); }
+.closed-ranking-table { width: 100%; min-width: 720px; border-collapse: collapse; }
+.closed-ranking-table th, .closed-ranking-table td { padding: .78rem .75rem; border-bottom: 1px solid var(--line); text-align: left; }
+.closed-ranking-table th { color: var(--muted); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+.closed-ranking-table tbody tr:last-child td { border-bottom: 0; }
+.closed-ranking-table .number-cell { text-align: right; white-space: nowrap; }
 .lineup-panel { position: sticky; top: 90px; display: flex; max-height: calc(100vh - 104px); min-height: 0; flex-direction: column; padding: 1.05rem; overflow: hidden; }
 .market-panel, .content-card { padding: 1.35rem; }
 .panel-heading, .market-header, .section-heading { display: flex; justify-content: space-between; gap: 1rem; align-items: center; }
@@ -233,6 +247,7 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .player-meta strong, .player-meta span { display: block; }
 .player-meta strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .98rem; }
 .player-meta > span { margin-top: .2rem; color: var(--muted); font-size: .74rem; }
+.matchup { display: inline-flex; align-items: center; width: fit-content; max-width: 100%; margin-top: .36rem; padding: .18rem .4rem; border: 1px solid rgba(229, 38, 50, .34); border-radius: 999px; color: #ffb1b7; background: rgba(229, 38, 50, .08); font-size: .67rem; font-weight: 800; text-transform: uppercase; }
 .player-stats { display: flex; flex-wrap: wrap; gap: .28rem .55rem; margin-top: .38rem; }
 .player-stats span { color: #d8d1d3; font-size: .7rem; }
 .player-price { text-align: right; white-space: nowrap; }
@@ -240,6 +255,9 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .player-price strong { color: #fff; font-size: .92rem; }
 .player-price strong b { color: var(--accent-bright); font-size: .65rem; }
 .player-price span { margin-top: .2rem; color: var(--muted); font-size: .66rem; }
+.price-change { display: inline-flex !important; align-items: center; justify-content: flex-end; gap: .16rem; font-weight: 900; letter-spacing: .02em; }
+.price-change.up { color: var(--success); }
+.price-change.down { color: var(--danger); }
 .card-actions { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .72fr); gap: .45rem; }
 .buy-button, .reserve-button { border: 1px solid rgba(255, 255, 255, .1); border-radius: .55rem; padding: .58rem; color: #fff; background: rgba(255, 255, 255, .075); font-weight: 900; }
 .player-card:not(.selected) .buy-button:hover { border-color: var(--accent); background: var(--accent); }
@@ -355,7 +373,7 @@ dialog::backdrop { background: rgba(0, 0, 0, .78); backdrop-filter: blur(8px); }
   .dashboard-grid { grid-template-columns: minmax(0, 1fr); }
   .lineup-panel, .market-panel { min-width: 0; }
   .lineup-panel { position: static; max-height: none; overflow: visible; }
-  .closed-lineups { grid-template-columns: 1fr; }
+  .closed-highlights, .closed-lineups { grid-template-columns: 1fr; }
   .role-shortcut { flex: 0 0 78px; }
   .admin-form { grid-template-columns: 1fr 1fr; }
 }
@@ -393,7 +411,7 @@ dialog::backdrop { background: rgba(0, 0, 0, .78); backdrop-filter: blur(8px); }
   .player-card { grid-template-columns: 62px 1fr auto; }
   .player-logo { width: 62px; height: 62px; }
   .popular-strip { margin-top: .2rem; padding: .62rem; }
-  .popular-list, .closed-actions { grid-template-columns: 1fr; }
+  .popular-list, .closed-highlights, .closed-lineups { grid-template-columns: 1fr; }
   .popular-note { text-align: left; }
   .popular-row { grid-template-columns: 50px minmax(0, 1fr); padding: .58rem .75rem; }
   .popular-logo { width: 50px; height: 50px; }

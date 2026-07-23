@@ -52,7 +52,9 @@
     view: "market",
     market: { elite: [], ascension: [] },
     popular: { elite: [], ascension: [] },
+    popularHighlights: { elite: {}, ascension: {} },
     popularRound: { elite: null, ascension: null },
+    closedRanking: { elite: [], ascension: [] },
     marketOpen: { elite: true, ascension: true },
     roundInfo: { elite: null, ascension: null },
     lineups: { elite: emptyLineup(), ascension: emptyLineup() },
@@ -112,8 +114,11 @@
     marketClosed: document.getElementById("market-closed"),
     closedMarketMessage: document.getElementById("closed-market-message"),
     closedMarketDetail: document.getElementById("closed-market-detail"),
+    closedHighlights: document.getElementById("closed-highlights"),
     closedLineups: document.getElementById("closed-lineups"),
+    closedRanking: document.getElementById("closed-ranking"),
     marketPanel: document.getElementById("market-panel"),
+    popularStrip: document.getElementById("popular-strip"),
     popularList: document.getElementById("popular-list"),
     popularDivision: document.getElementById("popular-division"),
     closedActions: document.querySelectorAll("[data-closed-action]"),
@@ -126,7 +131,7 @@
     await completeCloudLogin();
     restoreLocalState();
     bindEvents();
-    marketStatusTimer = window.setInterval(updateMarketStatus, 30000);
+    marketStatusTimer = window.setInterval(renderMarketShell, 30000);
     if (config.backendMode === "cloud") await loadCloudAccount();
     renderAccount();
     renderLineup();
@@ -220,6 +225,12 @@
       teamSlot: cleanText(item.teamSlot),
       logo: normalizeAssetPath(item.logo),
       price: roundMoney(item.price),
+      previousPrice: Number.isFinite(Number(item.previousPrice)) ? roundMoney(item.previousPrice) : roundMoney(item.price),
+      priceDelta: roundMoney(Number(item.price) - Number(Number.isFinite(Number(item.previousPrice)) ? item.previousPrice : item.price)),
+      opponentName: cleanText(item.opponentName),
+      opponentTag: cleanText(item.opponentTag).toUpperCase(),
+      opponentSlot: cleanText(item.opponentSlot),
+      matchup: cleanText(item.matchup),
       average: roundMoney(item.average),
       recentPoints: normalizeRecentPoints(item.recentPoints)
     }));
@@ -243,6 +254,9 @@
         teamSlot: slot,
         logo,
         price: roundMoney(9 + (teamSeed % 700) / 100),
+        previousPrice: roundMoney(9 + (teamSeed % 700) / 100),
+        priceDelta: 0,
+        matchup: "Confronto a definir",
         average: roundMoney(8 + (teamSeed % 900) / 100),
         recentPoints: demoRecentPoints(teamSeed)
       });
@@ -265,6 +279,9 @@
           riotId: cleanText(player.riotId),
           logo,
           price: roundMoney(roleBase + (seed % 800) / 100),
+          previousPrice: roundMoney(roleBase + (seed % 800) / 100),
+          priceDelta: 0,
+          matchup: "Confronto a definir",
           average: roundMoney(7 + (seed % 1300) / 100),
           recentPoints: demoRecentPoints(seed)
         });
@@ -366,6 +383,11 @@
   function renderMarketShell() {
     updateMarketStatus();
     const open = isMarketOpen();
+    syncNavigationForMarketStatus(open);
+    if (el.popularStrip) {
+      el.popularStrip.hidden = !open;
+      el.popularStrip.classList.toggle("closed-hidden", !open);
+    }
     if (el.marketDashboard) el.marketDashboard.hidden = !open;
     if (el.marketClosed) el.marketClosed.hidden = open;
     if (!open) {
@@ -374,8 +396,100 @@
         el.closedMarketMessage.textContent = "As escalações desta rodada foram bloqueadas. Estamos atualizando jogos, pontuações e preços.";
       }
       if (el.closedMarketDetail) el.closedMarketDetail.textContent = closedMarketDetail(round);
+      renderClosedHighlights();
+      renderClosedRanking();
     }
     renderClosedLineups();
+  }
+
+  function syncNavigationForMarketStatus(open) {
+    const marketButton = [...el.navButtons].find((button) => button.dataset.view === "market");
+    if (marketButton) marketButton.textContent = open ? "Mercado" : "Início";
+    el.navButtons.forEach((button) => {
+      if (button.dataset.view !== "market") button.hidden = !open;
+    });
+    if (!open && state.view !== "market") {
+      state.view = "market";
+      el.navButtons.forEach((button) => button.classList.toggle("active", button.dataset.view === "market"));
+      el.views.forEach((section) => section.classList.toggle("active", section.id === "market-view"));
+    }
+  }
+
+  function renderClosedHighlights() {
+    if (!el.closedHighlights) return;
+    const highlights = state.popularHighlights[state.division] || {};
+    const cards = [
+      { key: "player", label: "Jogador mais escalado", empty: "Aguardando escolhas" },
+      { key: "captain", label: "Capitão mais escolhido", empty: "Aguardando capitães" },
+      { key: "team", label: "Equipe mais escolhida", empty: "Aguardando equipes" }
+    ];
+    el.closedHighlights.replaceChildren(...cards.map(({ key, label, empty }) => closedHighlightCard(label, highlights[key], empty)));
+  }
+
+  function closedHighlightCard(label, item, emptyText) {
+    const card = document.createElement("article");
+    card.className = `closed-highlight-card${item ? "" : " empty"}`;
+    if (!item) {
+      const labelEl = document.createElement("span");
+      labelEl.textContent = label;
+      const strong = document.createElement("strong");
+      strong.textContent = emptyText;
+      const small = document.createElement("small");
+      small.textContent = "Aparece quando houver escalações salvas para esta rodada.";
+      card.append(labelEl, strong, small);
+      return card;
+    }
+    const logo = document.createElement("div");
+    logo.className = "closed-highlight-logo";
+    logo.appendChild(createLogo(item));
+    const info = document.createElement("div");
+    info.className = "closed-highlight-info";
+    const labelEl = document.createElement("span");
+    labelEl.textContent = label;
+    const strong = document.createElement("strong");
+    strong.textContent = item.name;
+    const small = document.createElement("small");
+    small.textContent = item.role === "TEAM"
+      ? cleanText(item.teamName || item.teamTag)
+      : `${ROLE_LABELS[item.role] || item.role} · ${item.teamTag}`;
+    info.append(labelEl, strong, small);
+    card.append(logo, info);
+    return card;
+  }
+
+  function renderClosedRanking() {
+    if (!el.closedRanking) return;
+    const rows = state.closedRanking[state.division] || [];
+    if (!rows.length) {
+      el.closedRanking.innerHTML = `<p class="closed-lineup-empty">O ranking aparecerá aqui assim que houver pontuação processada.</p>`;
+      return;
+    }
+    el.closedRanking.innerHTML = `
+      <table class="closed-ranking-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Time</th>
+            <th>Jogador</th>
+            <th class="number-cell">Rodada</th>
+            <th class="number-cell">Total</th>
+            <th class="number-cell">Patrimônio</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.slice(0, 10).map((row) => `
+            <tr>
+              <td>${Number(row.position) || "-"}</td>
+              <td>${escapeHtml(row.teamName || "-")}</td>
+              <td>${escapeHtml(row.manager || "-")}</td>
+              <td class="number-cell">${formatNumber(row.roundPoints)}</td>
+              <td class="number-cell">${formatNumber(row.totalPoints)}</td>
+              <td class="number-cell">RK$ ${formatNumber(Number(row.wealthCents || 0) / 100)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
   }
 
   function renderClosedLineups() {
@@ -468,17 +582,22 @@
     name.textContent = item.name;
     const team = document.createElement("span");
     team.textContent = `${ROLE_LABELS[item.role]} · ${item.teamName || item.teamTag}`;
+    const matchup = document.createElement("small");
+    matchup.className = "matchup";
+    matchup.textContent = matchupLabel(item);
     const stats = document.createElement("div");
     stats.className = "player-stats";
     const recent = item.recentPoints && item.recentPoints.length
       ? item.recentPoints.map((point) => formatNumber(point)).join(" · ")
       : "aguardando rodada";
     stats.innerHTML = `<span>Média: ${formatNumber(item.average)}</span><span>Performance recente: ${escapeHtml(recent)}</span>`;
-    meta.append(name, team, stats);
+    meta.append(name, team, matchup, stats);
 
     const price = document.createElement("div");
     price.className = "player-price";
-    price.innerHTML = `<strong><b>RK$</b> ${formatNumber(item.price)}</strong><span>mercado</span>`;
+    price.innerHTML = `<strong><b>RK$</b> ${formatNumber(item.price)}</strong>`;
+    const change = priceChangeElement(item);
+    if (change) price.appendChild(change);
 
     const button = document.createElement("button");
     button.type = "button";
@@ -504,19 +623,38 @@
     return card;
   }
 
+  function matchupLabel(item) {
+    if (item.matchup) return item.matchup;
+    if (item.opponentTag || item.opponentName) return `vs ${item.opponentTag || item.opponentName}`;
+    return "Confronto a definir";
+  }
+
+  function priceChangeElement(item) {
+    const delta = Number.isFinite(Number(item.priceDelta))
+      ? Number(item.priceDelta)
+      : Number(item.price) - Number(item.previousPrice);
+    if (!Number.isFinite(delta) || Math.abs(delta) < 0.005) return null;
+    const span = document.createElement("span");
+    span.className = `price-change ${delta > 0 ? "up" : "down"}`;
+    span.title = delta > 0 ? "Valorizou desde a última rodada" : "Desvalorizou desde a última rodada";
+    span.textContent = `${delta > 0 ? "▲" : "▼"} RK$ ${formatNumber(Math.abs(delta))}`;
+    return span;
+  }
+
   function renderLineup() {
     const lineup = currentLineup();
     el.lineupSlots.replaceChildren(...ROLE_ORDER.map((role) => lineupSlot(role, lineup.slots[role])), reserveSlot(lineup.reserve));
-    const spent = lineupCost(lineup);
+    const budgetCost = lineupCost(lineup);
+    const spent = lineupPurchaseCost(lineup);
     const selected = Object.values(lineup.slots).filter(Boolean).length;
-    el.budgetTotal.textContent = formatNumber(config.budget);
+    el.budgetTotal.textContent = formatNumber(lineupPatrimony(lineup));
     el.budgetSpent.textContent = formatNumber(spent);
-    el.budgetRemaining.textContent = formatNumber(config.budget - spent);
+    el.budgetRemaining.textContent = formatNumber(lineupCash(lineup));
     el.selectedCount.textContent = `${selected}/6${lineup.reserve ? " + reserva" : ""}`;
     el.fantasyTeamName.textContent = state.teamName;
     const reserveError = lineup.reserve && selected === 6 ? reserveValidationMessage(lineup.reserve, lineup) : "";
     const closed = !isMarketOpen();
-    el.saveLineup.disabled = closed || selected !== 6 || !lineup.captainId || spent > config.budget || Boolean(reserveError);
+    el.saveLineup.disabled = closed || selected !== 6 || !lineup.captainId || budgetCost > config.budget || Boolean(reserveError);
     el.saveLineup.textContent = closed ? "Mercado fechado" : (lineup.saved ? "Atualizar escalação" : "Salvar escalação");
     el.shareLineup.disabled = selected === 0;
     el.captainReminder.hidden = selected !== 6 || Boolean(lineup.captainId);
@@ -838,6 +976,7 @@
   }
 
   function setView(view) {
+    if (!isMarketOpen() && view !== "market") view = "market";
     state.view = view;
     el.navButtons.forEach((button) => button.classList.toggle("active", button.dataset.view === view));
     el.views.forEach((section) => section.classList.toggle("active", section.id === `${view}-view`));
@@ -977,11 +1116,11 @@
       for (const pick of payload.lineup.picks || []) {
         const role = normalizeRole(pick.role);
         const marketItem = state.market[division].find((item) => item.id === String(pick.id));
-        if (marketItem && ROLE_ORDER.includes(role)) lineup.slots[role] = marketItem;
+        if (marketItem && ROLE_ORDER.includes(role)) lineup.slots[role] = savedMarketItem(marketItem, pick);
       }
       if (payload.lineup.reserve && payload.lineup.reserve.id) {
         const reserveItem = state.market[division].find((item) => item.id === String(payload.lineup.reserve.id));
-        if (reserveItem && reserveItem.type === "player") lineup.reserve = reserveItem;
+        if (reserveItem && reserveItem.type === "player") lineup.reserve = savedMarketItem(reserveItem, payload.lineup.reserve);
       }
       lineup.captainId = cleanText(payload.lineup.captain_asset_id || payload.lineup.captainId);
       lineup.saved = true;
@@ -989,6 +1128,13 @@
     } catch (error) {
       console.warn(`Não foi possível carregar a escalação ${division}.`, error);
     }
+  }
+
+  function savedMarketItem(marketItem, pick) {
+    return {
+      ...marketItem,
+      purchasePrice: Number.isFinite(Number(pick && pick.price)) ? roundMoney(pick.price) : roundMoney(marketItem.price)
+    };
   }
 
   async function loadCloudConfig(division) {
@@ -1007,6 +1153,7 @@
         renderMarketShell();
         renderPopularPicks();
       }
+      if (!open && config.backendMode === "cloud") loadCloudClosedRanking(division);
     } catch (error) {
       console.warn("Não foi possível carregar o status da rodada.", error);
     }
@@ -1026,9 +1173,28 @@
       state.popularRound[division] = payload.round || null;
       state.popular[division] = (payload.popular || []).map((item) => {
         const marketItem = state.market[division].find((asset) => asset.id === String(item.id));
-        return marketItem || {
+        return marketItem || marketLikeItem(item);
+      });
+      state.popularHighlights[division] = Object.fromEntries(Object.entries(payload.highlights || {}).map(([key, item]) => {
+        const marketItem = item && state.market[division].find((asset) => asset.id === String(item.id));
+        return [key, marketItem || (item ? marketLikeItem(item) : null)];
+      }));
+      if (!state.popularHighlights[division].team && payload.team) state.popularHighlights[division].team = marketLikeItem(payload.team);
+    } catch (error) {
+      console.warn("Não foi possível carregar os mais escalados.", error);
+      state.popular[division] = [];
+      state.popularHighlights[division] = {};
+    }
+    if (division === state.division) {
+      renderPopularPicks();
+      renderClosedHighlights();
+    }
+  }
+
+  function marketLikeItem(item) {
+    return {
           id: String(item.id),
-          type: "player",
+          type: item.type === "team" || normalizeRole(item.role) === "TEAM" ? "team" : "player",
           role: normalizeRole(item.role),
           name: cleanText(item.name),
           teamName: cleanText(item.teamName),
@@ -1036,14 +1202,24 @@
           teamSlot: cleanText(item.teamSlot),
           logo: normalizeAssetPath(item.logo),
           price: roundMoney(item.price),
-          average: roundMoney(item.average)
-        };
-      });
+          previousPrice: Number.isFinite(Number(item.previousPrice)) ? roundMoney(item.previousPrice) : roundMoney(item.price),
+          priceDelta: roundMoney(Number(item.price) - Number(Number.isFinite(Number(item.previousPrice)) ? item.previousPrice : item.price)),
+          average: roundMoney(item.average),
+          recentPoints: normalizeRecentPoints(item.recentPoints)
+    };
+  }
+
+  async function loadCloudClosedRanking(division) {
+    try {
+      const response = await apiFetch(`/api/fantasy/ranking?division=${encodeURIComponent(division)}&scope=championship`, { cache: "no-store" });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(apiErrorMessage(payload, "Ranking indisponível."));
+      state.closedRanking[division] = payload.ranking || [];
     } catch (error) {
-      console.warn("Não foi possível carregar os mais escalados.", error);
-      state.popular[division] = [];
+      console.warn("Não foi possível carregar o ranking do mercado fechado.", error);
+      state.closedRanking[division] = [];
     }
-    if (division === state.division) renderPopularPicks();
+    if (division === state.division) renderClosedRanking();
   }
 
   async function loadCloudRanking() {
@@ -1218,6 +1394,26 @@
 
   function lineupCost(lineup) {
     return roundMoney(Object.values(lineup.slots).reduce((total, item) => total + (item ? Number(item.price) : 0), 0));
+  }
+
+  function itemPurchasePrice(item) {
+    return roundMoney(Number(item && item.purchasePrice != null ? item.purchasePrice : item && item.price) || 0);
+  }
+
+  function lineupPurchaseCost(lineup) {
+    return roundMoney(Object.values(lineup.slots).reduce((total, item) => total + (item ? itemPurchasePrice(item) : 0), 0));
+  }
+
+  function lineupCurrentValue(lineup) {
+    return roundMoney(Object.values(lineup.slots).reduce((total, item) => total + (item ? Number(item.price) : 0), 0));
+  }
+
+  function lineupCash(lineup) {
+    return roundMoney(config.budget - lineupPurchaseCost(lineup));
+  }
+
+  function lineupPatrimony(lineup) {
+    return roundMoney(lineupCash(lineup) + lineupCurrentValue(lineup));
   }
 
   function starterPlayers(lineup) {
@@ -1459,11 +1655,11 @@
     ctx.font = "39px Anton, Impact, sans-serif";
     ctx.fillText(fitCanvasText(ctx, state.teamName, 950), 88, 275);
 
-    const spent = lineupCost(lineup);
+    const spent = lineupPurchaseCost(lineup);
     const finance = [
-      ["PATRIMÔNIO", config.budget],
+      ["PATRIMÔNIO", lineupPatrimony(lineup)],
       ["UTILIZADO", spent],
-      ["DISPONÍVEL", config.budget - spent]
+      ["DISPONÍVEL", lineupCash(lineup)]
     ];
     finance.forEach(([label, value], index) => {
       const x = 58 + index * 368;

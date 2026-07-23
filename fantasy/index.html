@@ -10,7 +10,7 @@
   <title>RK Fantasy | Liga RK 26.2</title>
   <link rel="icon" type="image/png" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
   <link rel="apple-touch-icon" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
-  <link rel="stylesheet" href="assets/fantasy.css?v=20260723-wealth-division" />
+  <link rel="stylesheet" href="assets/fantasy.css?v=20260723-rollback-marketfix" />
 </head>
 <body>
   <header class="site-header">
@@ -48,7 +48,7 @@
         <button class="division-tab" type="button" data-division="ascension">Divisão Ascensão</button>
       </section>
 
-      <section class="popular-strip" aria-labelledby="popular-title">
+      <section id="popular-strip" class="popular-strip" aria-labelledby="popular-title">
         <div class="popular-heading">
           <div>
             <span class="eyebrow">Comunidade</span>
@@ -66,10 +66,30 @@
           <p id="closed-market-message">As escalações desta rodada foram bloqueadas. Estamos atualizando jogos, pontuações e preços.</p>
           <small id="closed-market-detail">Aguarde a organização abrir a próxima rodada.</small>
         </div>
-        <div class="closed-actions">
-          <button class="primary-button" type="button" data-closed-action="ranking">Ver ranking</button>
-          <button class="ghost-button" type="button" data-closed-action="lineups">Últimas escalações</button>
-          <button class="ghost-button" type="button" data-closed-action="rules">Ver regras</button>
+        <div class="closed-highlights-wrap">
+          <div class="section-heading compact">
+            <div>
+              <span class="eyebrow">Comunidade</span>
+              <h3>Destaques da rodada</h3>
+            </div>
+          </div>
+          <div id="closed-highlights" class="closed-highlights" aria-live="polite">
+            <article class="closed-highlight-card empty">
+              <span>Jogador mais escalado</span>
+              <strong>Aguardando escolhas</strong>
+              <small>Quando a rodada fechar, aparece aqui.</small>
+            </article>
+            <article class="closed-highlight-card empty">
+              <span>Capitão mais escolhido</span>
+              <strong>Aguardando escolhas</strong>
+              <small>Quando a rodada fechar, aparece aqui.</small>
+            </article>
+            <article class="closed-highlight-card empty">
+              <span>Equipe mais escolhida</span>
+              <strong>Aguardando escolhas</strong>
+              <small>Quando a rodada fechar, aparece aqui.</small>
+            </article>
+          </div>
         </div>
         <div class="closed-lineups-wrap">
           <div class="section-heading compact">
@@ -79,6 +99,17 @@
             </div>
           </div>
           <div id="closed-lineups" class="closed-lineups" aria-live="polite"></div>
+        </div>
+        <div class="closed-ranking-wrap">
+          <div class="section-heading compact">
+            <div>
+              <span class="eyebrow">Classificação</span>
+              <h3>Ranking da divisão</h3>
+            </div>
+          </div>
+          <div id="closed-ranking" class="closed-ranking" aria-live="polite">
+            <p class="closed-lineup-empty">O ranking aparecerá aqui assim que houver pontuação processada.</p>
+          </div>
         </div>
       </section>
 
