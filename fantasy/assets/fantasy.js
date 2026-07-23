@@ -49,6 +49,8 @@
     view: "market",
     market: { elite: [], ascension: [] },
     popular: { elite: [], ascension: [] },
+    marketOpen: { elite: true, ascension: true },
+    roundInfo: { elite: null, ascension: null },
     lineups: { elite: emptyLineup(), ascension: emptyLineup() },
     teamName: "Meu Time RK",
     userName: "",
@@ -99,8 +101,15 @@
     rankingBody: document.getElementById("ranking-body"),
     marketStatus: document.getElementById("market-status"),
     marketDeadline: document.getElementById("market-deadline"),
+    marketDashboard: document.getElementById("market-dashboard"),
+    marketClosed: document.getElementById("market-closed"),
+    closedMarketMessage: document.getElementById("closed-market-message"),
+    closedMarketDetail: document.getElementById("closed-market-detail"),
+    closedLineups: document.getElementById("closed-lineups"),
     marketPanel: document.getElementById("market-panel"),
     popularList: document.getElementById("popular-list"),
+    popularDivision: document.getElementById("popular-division"),
+    closedActions: document.querySelectorAll("[data-closed-action]"),
     roleShortcuts: document.querySelectorAll("[data-role-shortcut]")
   };
 
@@ -113,12 +122,14 @@
     if (config.backendMode === "cloud") await loadCloudAccount();
     renderAccount();
     renderLineup();
+    renderMarketShell();
     renderRanking();
     await loadMarket();
     if (config.backendMode === "cloud") {
       await Promise.all([loadCloudLineup("elite"), loadCloudLineup("ascension")]);
       await Promise.all([loadCloudConfig(state.division), loadCloudRanking(), loadCloudPopular(state.division)]);
       renderLineup();
+      renderMarketShell();
       renderMarket();
       startPopularRefresh();
     }
@@ -131,6 +142,7 @@
     [el.search, el.sortFilter].forEach((input) => input.addEventListener("input", renderMarket));
     el.roleFilter.addEventListener("input", () => setRoleFilter(el.roleFilter.value, { scroll: false }));
     el.roleShortcuts.forEach((button) => button.addEventListener("click", () => setRoleFilter(button.dataset.roleShortcut)));
+    el.closedActions.forEach((button) => button.addEventListener("click", () => handleClosedAction(button.dataset.closedAction)));
     el.clearLineup.addEventListener("click", clearLineup);
     el.shareLineup.addEventListener("click", shareLineupImage);
     el.closeShareDialog.addEventListener("click", closeShareDialog);
@@ -282,6 +294,7 @@
 
   function renderPopularPicks() {
     if (!el.popularList) return;
+    if (el.popularDivision) el.popularDivision.textContent = state.division === "elite" ? "Divisão Elite" : "Divisão Ascensão";
     const byRole = new Map((state.popular[state.division] || []).map((item) => [item.role, item]));
     el.popularList.replaceChildren(...PLAYER_ROLES.map((role) => {
       const item = byRole.get(role);
@@ -312,6 +325,75 @@
       rank.textContent = item ? "1º" : "—";
       row.append(logo, info, rank);
       return row;
+    }));
+  }
+
+  function renderMarketShell() {
+    const open = isMarketOpen();
+    if (el.marketDashboard) el.marketDashboard.hidden = !open;
+    if (el.marketClosed) el.marketClosed.hidden = open;
+    if (!open) {
+      const round = state.roundInfo[state.division];
+      if (el.closedMarketMessage) {
+        el.closedMarketMessage.textContent = "As escalações desta rodada foram bloqueadas. Estamos atualizando jogos, pontuações e preços.";
+      }
+      if (el.closedMarketDetail) el.closedMarketDetail.textContent = closedMarketDetail(round);
+    }
+    renderClosedLineups();
+  }
+
+  function renderClosedLineups() {
+    if (!el.closedLineups) return;
+    const divisions = ["elite", "ascension"];
+    el.closedLineups.replaceChildren(...divisions.map((division) => {
+      const lineup = state.lineups[division] || emptyLineup();
+      const picks = ROLE_ORDER.map((role) => ({ role, item: lineup.slots[role] })).filter((entry) => entry.item);
+      const card = document.createElement("article");
+      card.className = "closed-lineup-card";
+      const title = document.createElement("div");
+      title.className = "closed-lineup-title";
+      const name = document.createElement("strong");
+      name.textContent = division === "elite" ? "Divisão Elite" : "Divisão Ascensão";
+      const status = document.createElement("span");
+      status.textContent = picks.length ? `${picks.length}/6 escolhas salvas` : (state.userName ? "Nenhuma escalação salva" : "Entre para ver sua escalação");
+      title.append(name, status);
+      card.appendChild(title);
+
+      if (!picks.length) {
+        const empty = document.createElement("p");
+        empty.className = "closed-lineup-empty";
+        empty.textContent = state.userName ? "Você ainda não tem escalação salva para esta divisão." : "Faça login pelo Discord para consultar suas últimas escolhas.";
+        card.appendChild(empty);
+        return card;
+      }
+
+      const list = document.createElement("ul");
+      list.className = "closed-lineup-list";
+      for (const { role, item } of picks) {
+        const row = document.createElement("li");
+        const roleLabel = document.createElement("span");
+        roleLabel.textContent = ROLE_LABELS[role];
+        const player = document.createElement("strong");
+        player.textContent = `${item.name}${item.id === lineup.captainId ? " ★" : ""}`;
+        const team = document.createElement("small");
+        team.textContent = `${item.teamTag} · RK$ ${formatNumber(item.price)}`;
+        row.append(roleLabel, player, team);
+        list.appendChild(row);
+      }
+      if (lineup.reserve) {
+        const reserve = document.createElement("li");
+        reserve.className = "reserve-summary";
+        const roleLabel = document.createElement("span");
+        roleLabel.textContent = "RES";
+        const player = document.createElement("strong");
+        player.textContent = lineup.reserve.name;
+        const team = document.createElement("small");
+        team.textContent = `${ROLE_LABELS[lineup.reserve.role]} · ${lineup.reserve.teamTag}`;
+        reserve.append(roleLabel, player, team);
+        list.appendChild(reserve);
+      }
+      card.appendChild(list);
+      return card;
     }));
   }
 
@@ -394,8 +476,9 @@
     el.selectedCount.textContent = `${selected}/6${lineup.reserve ? " + reserva" : ""}`;
     el.fantasyTeamName.textContent = state.teamName;
     const reserveError = lineup.reserve && selected === 6 ? reserveValidationMessage(lineup.reserve, lineup) : "";
-    el.saveLineup.disabled = selected !== 6 || !lineup.captainId || spent > config.budget || Boolean(reserveError);
-    el.saveLineup.textContent = lineup.saved ? "Atualizar escalação" : "Salvar escalação";
+    const closed = !isMarketOpen();
+    el.saveLineup.disabled = closed || selected !== 6 || !lineup.captainId || spent > config.budget || Boolean(reserveError);
+    el.saveLineup.textContent = closed ? "Mercado fechado" : (lineup.saved ? "Atualizar escalação" : "Salvar escalação");
     el.shareLineup.disabled = selected === 0;
     el.captainReminder.hidden = selected !== 6 || Boolean(lineup.captainId);
     el.roleShortcuts.forEach((button) => {
@@ -613,6 +696,11 @@
   async function saveLineup() {
     const lineup = currentLineup();
     const items = Object.values(lineup.slots).filter(Boolean);
+    if (!isMarketOpen()) {
+      setMessage("O mercado está fechado. Você poderá alterar sua escalação quando a próxima janela abrir.", true);
+      renderMarketShell();
+      return;
+    }
     if (items.length !== 6 || !lineup.captainId) {
       setMessage("Complete as seis vagas e escolha um capitão.", true);
       return;
@@ -679,6 +767,7 @@
     renderLineup();
     renderMarket();
     renderPopularPicks();
+    renderMarketShell();
     if (config.backendMode === "cloud") {
       loadCloudConfig(division);
       loadCloudPopular(division);
@@ -690,8 +779,25 @@
     state.view = view;
     el.navButtons.forEach((button) => button.classList.toggle("active", button.dataset.view === view));
     el.views.forEach((section) => section.classList.toggle("active", section.id === `${view}-view`));
-    if (view === "market" && config.backendMode === "cloud") loadCloudPopular(state.division);
+    if (view === "market") {
+      renderMarketShell();
+      if (config.backendMode === "cloud") loadCloudPopular(state.division);
+    }
     if (view === "ranking" && config.backendMode === "cloud") loadCloudRanking();
+  }
+
+  function handleClosedAction(action) {
+    if (action === "ranking") {
+      setView("ranking");
+      return;
+    }
+    if (action === "rules") {
+      setView("rules");
+      return;
+    }
+    if (action === "lineups" && el.closedLineups) {
+      el.closedLineups.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }
 
   function renameTeam() {
@@ -786,10 +892,18 @@
       if (!response.ok || !round) return;
       const now = Date.now();
       const open = round.status === "open" && now >= Date.parse(round.opens_at) && now < Date.parse(round.locks_at);
-      el.marketStatus.textContent = open ? "ABERTO" : "FECHADO";
-      el.marketStatus.style.color = open ? "var(--success)" : "var(--danger)";
-      const lockDate = new Date(round.locks_at);
-      el.marketDeadline.textContent = `${round.name} · fecha em ${lockDate.toLocaleString("pt-BR")}`;
+      state.roundInfo[division] = round;
+      state.marketOpen[division] = open;
+      if (division === state.division) {
+        el.marketStatus.textContent = open ? "ABERTO" : "FECHADO";
+        el.marketStatus.style.color = open ? "var(--success)" : "var(--danger)";
+        const lockDate = new Date(round.locks_at);
+        el.marketDeadline.textContent = open
+          ? `${round.name} · fecha em ${lockDate.toLocaleString("pt-BR")}`
+          : `${round.name} · mercado fechado`;
+        renderLineup();
+        renderMarketShell();
+      }
     } catch (error) {
       console.warn("Não foi possível carregar o status da rodada.", error);
     }
@@ -830,7 +944,7 @@
   function startPopularRefresh() {
     if (popularRefreshTimer || config.backendMode !== "cloud") return;
     popularRefreshTimer = window.setInterval(() => {
-      if (state.view === "market" && el.marketStatus.textContent !== "FECHADO") loadCloudPopular(state.division);
+      if (state.view === "market" && isMarketOpen()) loadCloudPopular(state.division);
     }, 60000);
   }
 
@@ -953,6 +1067,20 @@
 
   function currentLineup() {
     return state.lineups[state.division];
+  }
+
+  function isMarketOpen(division = state.division) {
+    return state.marketOpen[division] !== false;
+  }
+
+  function closedMarketDetail(round) {
+    if (!round) return "Aguarde a organização abrir a próxima rodada.";
+    const opensAt = Date.parse(round.opens_at);
+    if (round.status === "scheduled" && Number.isFinite(opensAt) && opensAt > Date.now()) {
+      return `A próxima janela abre em ${new Date(round.opens_at).toLocaleString("pt-BR")}.`;
+    }
+    if (round.status === "scored") return "A pontuação desta rodada já foi processada. Aguarde a próxima janela do mercado.";
+    return "Você ainda pode ver ranking, regras e suas últimas escalações enquanto a rodada é atualizada.";
   }
 
   function lineupCost(lineup) {

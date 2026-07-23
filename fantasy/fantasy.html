@@ -41,13 +41,47 @@
       </div>
     </section>
 
+    <section class="popular-strip" aria-labelledby="popular-title">
+      <div class="popular-heading">
+        <div>
+          <span class="eyebrow">Comunidade</span>
+          <h2 id="popular-title">Os mais escalados</h2>
+        </div>
+        <span id="popular-division" class="popular-note">Divisão Elite</span>
+      </div>
+      <div id="popular-list" class="popular-list" aria-live="polite"></div>
+    </section>
+
     <section class="division-tabs" aria-label="Escolha de divisão">
       <button class="division-tab active" type="button" data-division="elite">Divisão Elite</button>
       <button class="division-tab" type="button" data-division="ascension">Divisão Ascensão</button>
     </section>
 
     <section id="market-view" class="app-view active">
-      <div class="dashboard-grid">
+      <section id="market-closed" class="market-closed-panel" hidden>
+        <div class="closed-copy">
+          <span class="eyebrow">Rodada em andamento</span>
+          <h2>Mercado fechado</h2>
+          <p id="closed-market-message">As escalações desta rodada foram bloqueadas. Estamos atualizando jogos, pontuações e preços.</p>
+          <small id="closed-market-detail">Aguarde a organização abrir a próxima rodada.</small>
+        </div>
+        <div class="closed-actions">
+          <button class="primary-button" type="button" data-closed-action="ranking">Ver ranking</button>
+          <button class="ghost-button" type="button" data-closed-action="lineups">Últimas escalações</button>
+          <button class="ghost-button" type="button" data-closed-action="rules">Ver regras</button>
+        </div>
+        <div class="closed-lineups-wrap">
+          <div class="section-heading compact">
+            <div>
+              <span class="eyebrow">Suas escolhas</span>
+              <h3>Última escalação salva</h3>
+            </div>
+          </div>
+          <div id="closed-lineups" class="closed-lineups" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <div id="market-dashboard" class="dashboard-grid">
         <aside class="lineup-panel">
           <div class="panel-heading">
             <div>
@@ -112,17 +146,6 @@
             <span class="role-divider" aria-hidden="true"></span>
             <button class="role-shortcut team-shortcut" type="button" data-role-shortcut="TEAM"><img src="assets/lanes/equipe.png" alt="" /><span>Equipe</span></button>
           </div>
-
-          <section class="popular-panel" aria-labelledby="popular-title">
-            <div class="popular-heading">
-              <div>
-                <span class="eyebrow">Comunidade</span>
-                <h3 id="popular-title">Os mais escalados</h3>
-              </div>
-              <span class="popular-note">Atualiza até o mercado fechar</span>
-            </div>
-            <div id="popular-list" class="popular-list" aria-live="polite"></div>
-          </section>
 
           <div class="filters">
             <label class="search-field">
