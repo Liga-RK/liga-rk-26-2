@@ -3,6 +3,7 @@
 
   const config = {
     apiBase: "",
+    siteUrl: "https://liga-rk.github.io/liga-rk-26-2/fantasy/",
     backendMode: "local",
     budget: 100,
     maxPlayersPerRealTeam: 2,
@@ -31,6 +32,7 @@
     SUP: "assets/lanes/suporte.png",
     TEAM: "assets/lanes/equipe.png"
   };
+  const PLAYER_ROLES = ROLE_ORDER.filter((role) => role !== "TEAM");
   const TEAM_LOGO_ONLY_PLAYERS = new Set([
     "elite:FVL:TOP",
     "elite:PXB:JG",
@@ -47,6 +49,10 @@
     division: "elite",
     view: "market",
     market: { elite: [], ascension: [] },
+    popular: { elite: [], ascension: [] },
+    popularRound: { elite: null, ascension: null },
+    marketOpen: { elite: true, ascension: true },
+    roundInfo: { elite: null, ascension: null },
     lineups: { elite: emptyLineup(), ascension: emptyLineup() },
     teamName: "Meu Time RK",
     userName: "",
@@ -96,7 +102,15 @@
     rankingBody: document.getElementById("ranking-body"),
     marketStatus: document.getElementById("market-status"),
     marketDeadline: document.getElementById("market-deadline"),
+    marketDashboard: document.getElementById("market-dashboard"),
+    marketClosed: document.getElementById("market-closed"),
+    closedMarketMessage: document.getElementById("closed-market-message"),
+    closedMarketDetail: document.getElementById("closed-market-detail"),
+    closedLineups: document.getElementById("closed-lineups"),
     marketPanel: document.getElementById("market-panel"),
+    popularList: document.getElementById("popular-list"),
+    popularDivision: document.getElementById("popular-division"),
+    closedActions: document.querySelectorAll("[data-closed-action]"),
     roleShortcuts: document.querySelectorAll("[data-role-shortcut]")
   };
 
@@ -109,12 +123,14 @@
     if (config.backendMode === "cloud") await loadCloudAccount();
     renderAccount();
     renderLineup();
+    renderMarketShell();
     renderRanking();
     await loadMarket();
     if (config.backendMode === "cloud") {
       await Promise.all([loadCloudLineup("elite"), loadCloudLineup("ascension")]);
-      await Promise.all([loadCloudConfig(state.division), loadCloudRanking()]);
+      await Promise.all([loadCloudConfig(state.division), loadCloudRanking(), loadCloudPopular(state.division)]);
       renderLineup();
+      renderMarketShell();
       renderMarket();
     }
     if (initialAuthMessage) setMessage(initialAuthMessage, initialAuthError, !initialAuthError);
@@ -126,6 +142,7 @@
     [el.search, el.sortFilter].forEach((input) => input.addEventListener("input", renderMarket));
     el.roleFilter.addEventListener("input", () => setRoleFilter(el.roleFilter.value, { scroll: false }));
     el.roleShortcuts.forEach((button) => button.addEventListener("click", () => setRoleFilter(button.dataset.roleShortcut)));
+    el.closedActions.forEach((button) => button.addEventListener("click", () => handleClosedAction(button.dataset.closedAction)));
     el.clearLineup.addEventListener("click", clearLineup);
     el.shareLineup.addEventListener("click", shareLineupImage);
     el.closeShareDialog.addEventListener("click", closeShareDialog);
@@ -176,6 +193,7 @@
     el.marketLoading.hidden = true;
     el.marketGrid.hidden = false;
     renderMarket();
+    renderPopularPicks();
     renderLineup();
   }
 
@@ -245,26 +263,48 @@
 
   function renderMarket() {
     if (!state.loaded) return;
+    if (el.marketLoading) el.marketLoading.hidden = true;
+    if (el.marketGrid) el.marketGrid.hidden = false;
     const query = cleanText(el.search.value).toLocaleLowerCase("pt-BR");
-    const role = el.roleFilter.value;
+    let role = el.roleFilter.value;
     const sort = el.sortFilter.value;
     const lineup = currentLineup();
     const selectedIds = new Set(Object.values(lineup.slots).filter(Boolean).map((item) => item.id));
+    const reserveId = lineup.reserve ? lineup.reserve.id : "";
 
-    const items = state.market[state.division]
+    let items = state.market[state.division]
       .filter((item) => role === "ALL" || item.role === role)
       .filter((item) => !query || `${item.name} ${item.teamName} ${item.teamTag}`.toLocaleLowerCase("pt-BR").includes(query))
       .sort(sortMarket(sort));
 
-    const players = items.filter((item) => item.role !== "TEAM");
-    const teams = items.filter((item) => item.role === "TEAM");
-    const sections = [];
-    if (players.length) {
-      const title = role === "ALL" ? "Jogadores" : ROLE_LABELS[role];
-      sections.push(marketSection(title, role === "ALL" ? "TOP" : role, players, selectedIds, lineup, false));
+    if (!items.length && role !== "ALL" && state.market[state.division].length) {
+      role = "ALL";
+      el.roleFilter.value = "ALL";
+      el.roleShortcuts.forEach((button) => button.classList.toggle("active", button.dataset.roleShortcut === "ALL"));
+      items = state.market[state.division]
+        .filter((item) => !query || `${item.name} ${item.teamName} ${item.teamTag}`.toLocaleLowerCase("pt-BR").includes(query))
+        .sort(sortMarket(sort));
     }
-    if (teams.length) sections.push(marketSection("Equipes", "TEAM", teams, selectedIds, lineup, true));
-    el.marketGrid.replaceChildren(...sections);
+
+    try {
+      const players = items.filter((item) => item.role !== "TEAM");
+      const teams = items.filter((item) => item.role === "TEAM");
+      const sections = [];
+      if (players.length) {
+        const title = role === "ALL" ? "Jogadores" : ROLE_LABELS[role];
+        sections.push(marketSection(title, role === "ALL" ? "TOP" : role, players, selectedIds, lineup, reserveId, false));
+      }
+      if (teams.length) sections.push(marketSection("Equipes", "TEAM", teams, selectedIds, lineup, reserveId, true));
+      el.marketGrid.replaceChildren(...sections);
+    } catch (error) {
+      console.error("RK Fantasy: falha ao montar o mercado.", error);
+      el.marketGrid.replaceChildren();
+      const errorBox = document.createElement("div");
+      errorBox.className = "empty-state";
+      errorBox.textContent = "Não foi possível montar a lista agora. Atualize a página e tente novamente.";
+      el.marketGrid.appendChild(errorBox);
+      return;
+    }
     if (!items.length) {
       const empty = document.createElement("div");
       empty.className = "empty-state";
@@ -273,7 +313,114 @@
     }
   }
 
-  function marketSection(title, role, items, selectedIds, lineup, teamSection) {
+  function renderPopularPicks() {
+    if (!el.popularList) return;
+    const divisionLabel = state.division === "elite" ? "Divisão Elite" : "Divisão Ascensão";
+    if (el.popularDivision) {
+      const round = state.roundInfo[state.division] || state.popularRound[state.division];
+      el.popularDivision.textContent = round && round.name ? `${divisionLabel} · ${round.name}` : divisionLabel;
+    }
+
+    const byRole = new Map((state.popular[state.division] || []).map((item) => [item.role, item]));
+    el.popularList.replaceChildren(...PLAYER_ROLES.map((role) => {
+      const item = byRole.get(role);
+      const row = document.createElement("article");
+      row.className = `popular-row${item ? "" : " empty"}`;
+
+      const logo = document.createElement("div");
+      logo.className = "popular-logo";
+      if (item) {
+        logo.appendChild(createLogo(item));
+      } else {
+        const icon = document.createElement("img");
+        icon.src = ROLE_ASSETS[role];
+        icon.alt = "";
+        logo.appendChild(icon);
+      }
+
+      const info = document.createElement("div");
+      info.className = "popular-info";
+      const name = document.createElement("strong");
+      name.textContent = item ? item.name : "Aguardando escolhas";
+      const meta = document.createElement("span");
+      meta.textContent = item ? `${ROLE_LABELS[role]} · ${item.teamTag}` : ROLE_LABELS[role];
+      info.append(name, meta);
+
+      row.append(logo, info);
+      return row;
+    }));
+  }
+
+  function renderMarketShell() {
+    const open = isMarketOpen();
+    if (el.marketDashboard) el.marketDashboard.hidden = !open;
+    if (el.marketClosed) el.marketClosed.hidden = open;
+    if (!open) {
+      const round = state.roundInfo[state.division];
+      if (el.closedMarketMessage) {
+        el.closedMarketMessage.textContent = "As escalações desta rodada foram bloqueadas. Estamos atualizando jogos, pontuações e preços.";
+      }
+      if (el.closedMarketDetail) el.closedMarketDetail.textContent = closedMarketDetail(round);
+    }
+    renderClosedLineups();
+  }
+
+  function renderClosedLineups() {
+    if (!el.closedLineups) return;
+    const divisions = ["elite", "ascension"];
+    el.closedLineups.replaceChildren(...divisions.map((division) => {
+      const lineup = state.lineups[division] || emptyLineup();
+      const picks = ROLE_ORDER.map((role) => ({ role, item: lineup.slots[role] })).filter((entry) => entry.item);
+      const card = document.createElement("article");
+      card.className = "closed-lineup-card";
+      const title = document.createElement("div");
+      title.className = "closed-lineup-title";
+      const name = document.createElement("strong");
+      name.textContent = division === "elite" ? "Divisão Elite" : "Divisão Ascensão";
+      const status = document.createElement("span");
+      status.textContent = picks.length ? `${picks.length}/6 escolhas salvas` : (state.userName ? "Nenhuma escalação salva" : "Entre para ver sua escalação");
+      title.append(name, status);
+      card.appendChild(title);
+
+      if (!picks.length) {
+        const empty = document.createElement("p");
+        empty.className = "closed-lineup-empty";
+        empty.textContent = state.userName ? "Você ainda não tem escalação salva para esta divisão." : "Faça login pelo Discord para consultar suas últimas escolhas.";
+        card.appendChild(empty);
+        return card;
+      }
+
+      const list = document.createElement("ul");
+      list.className = "closed-lineup-list";
+      for (const { role, item } of picks) {
+        const row = document.createElement("li");
+        const roleLabel = document.createElement("span");
+        roleLabel.textContent = ROLE_LABELS[role];
+        const player = document.createElement("strong");
+        player.textContent = `${item.name}${item.id === lineup.captainId ? " ★" : ""}`;
+        const team = document.createElement("small");
+        team.textContent = `${item.teamTag} · RK$ ${formatNumber(item.price)}`;
+        row.append(roleLabel, player, team);
+        list.appendChild(row);
+      }
+      if (lineup.reserve) {
+        const reserve = document.createElement("li");
+        reserve.className = "reserve-summary";
+        const roleLabel = document.createElement("span");
+        roleLabel.textContent = "RES";
+        const player = document.createElement("strong");
+        player.textContent = lineup.reserve.name;
+        const team = document.createElement("small");
+        team.textContent = `${ROLE_LABELS[lineup.reserve.role]} · ${lineup.reserve.teamTag}`;
+        reserve.append(roleLabel, player, team);
+        list.appendChild(reserve);
+      }
+      card.appendChild(list);
+      return card;
+    }));
+  }
+
+  function marketSection(title, role, items, selectedIds, lineup, reserveId, teamSection) {
     const section = document.createElement("section");
     section.className = `market-section${teamSection ? " team-market-section" : ""}`;
     const heading = document.createElement("h3");
@@ -290,15 +437,16 @@
     cards.replaceChildren(...items.map((item) => marketCard(
       item,
       selectedIds.has(item.id),
-      el.roleFilter.value === "ALL" && Boolean(lineup.slots[item.role]) && !selectedIds.has(item.id)
+      el.roleFilter.value === "ALL" && Boolean(lineup.slots[item.role]) && !selectedIds.has(item.id),
+      reserveId === item.id
     )));
     section.append(heading, cards);
     return section;
   }
 
-  function marketCard(item, selected, roleComplete) {
+  function marketCard(item, selected, roleComplete, reserveSelected) {
     const card = document.createElement("article");
-    card.className = `player-card${selected ? " selected" : ""}${roleComplete ? " role-complete" : ""}`;
+    card.className = `player-card${selected ? " selected" : ""}${roleComplete ? " role-complete" : ""}${reserveSelected ? " reserve-selected" : ""}`;
 
     const logo = createLogo(item);
     const meta = document.createElement("div");
@@ -322,22 +470,38 @@
     button.textContent = selected ? "Remover" : "Escalar";
     button.addEventListener("click", () => selected ? removeItem(item.role) : addItem(item));
 
-    card.append(logo, meta, price, button);
+    const actions = document.createElement("div");
+    actions.className = "card-actions";
+    actions.appendChild(button);
+    if (item.type === "player") {
+      const reserveButton = document.createElement("button");
+      reserveButton.type = "button";
+      reserveButton.className = "reserve-button";
+      reserveButton.textContent = reserveSelected ? "Remover reserva" : "Reserva";
+      reserveButton.disabled = selected && !reserveSelected;
+      reserveButton.title = selected && !reserveSelected ? "Remova dos titulares antes de usar como reserva." : "Escolher como reserva";
+      reserveButton.addEventListener("click", () => reserveSelected ? removeReserve() : setReserve(item));
+      actions.appendChild(reserveButton);
+    }
+
+    card.append(logo, meta, price, actions);
     return card;
   }
 
   function renderLineup() {
     const lineup = currentLineup();
-    el.lineupSlots.replaceChildren(...ROLE_ORDER.map((role) => lineupSlot(role, lineup.slots[role])));
+    el.lineupSlots.replaceChildren(...ROLE_ORDER.map((role) => lineupSlot(role, lineup.slots[role])), reserveSlot(lineup.reserve));
     const spent = lineupCost(lineup);
     const selected = Object.values(lineup.slots).filter(Boolean).length;
     el.budgetTotal.textContent = formatNumber(config.budget);
     el.budgetSpent.textContent = formatNumber(spent);
     el.budgetRemaining.textContent = formatNumber(config.budget - spent);
-    el.selectedCount.textContent = `${selected}/6`;
+    el.selectedCount.textContent = `${selected}/6${lineup.reserve ? " + reserva" : ""}`;
     el.fantasyTeamName.textContent = state.teamName;
-    el.saveLineup.disabled = selected !== 6 || !lineup.captainId || spent > config.budget;
-    el.saveLineup.textContent = lineup.saved ? "Atualizar escalação" : "Salvar escalação";
+    const reserveError = lineup.reserve && selected === 6 ? reserveValidationMessage(lineup.reserve, lineup) : "";
+    const closed = !isMarketOpen();
+    el.saveLineup.disabled = closed || selected !== 6 || !lineup.captainId || spent > config.budget || Boolean(reserveError);
+    el.saveLineup.textContent = closed ? "Mercado fechado" : (lineup.saved ? "Atualizar escalação" : "Salvar escalação");
     el.shareLineup.disabled = selected === 0;
     el.captainReminder.hidden = selected !== 6 || Boolean(lineup.captainId);
     el.roleShortcuts.forEach((button) => {
@@ -395,6 +559,50 @@
     return slot;
   }
 
+  function reserveSlot(item) {
+    const lineup = currentLineup();
+    const selected = Object.values(lineup.slots).filter(Boolean).length;
+    const budget = reserveBudget(lineup);
+    const slot = document.createElement("div");
+    slot.className = `lineup-slot reserve-slot${item ? " filled" : ""}`;
+    const selector = document.createElement("button");
+    selector.type = "button";
+    selector.className = "slot-selector";
+    selector.setAttribute("aria-label", "Filtrar mercado para escolher reserva");
+    selector.addEventListener("click", () => setRoleFilter("ALL"));
+
+    const badge = document.createElement("div");
+    badge.className = "role-badge reserve-badge";
+    badge.textContent = "R";
+
+    const info = document.createElement("div");
+    info.className = "slot-info";
+    const strong = document.createElement("strong");
+    strong.textContent = item ? item.name : "Escolha reserva";
+    const detail = document.createElement("span");
+    detail.textContent = item
+      ? `${ROLE_LABELS[item.role]} · ${item.teamTag} · RK$ ${formatNumber(item.price)}`
+      : selected === 6
+        ? `Pode custar até RK$ ${formatNumber(budget)}`
+        : "Complete os titulares para liberar";
+    info.append(strong, detail);
+    selector.append(badge, info);
+
+    const actions = document.createElement("div");
+    actions.className = "slot-actions";
+    if (item) {
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.title = "Remover reserva";
+      remove.textContent = "×";
+      remove.addEventListener("click", removeReserve);
+      actions.appendChild(remove);
+    }
+
+    slot.append(selector, actions);
+    return slot;
+  }
+
   function addItem(item) {
     const lineup = currentLineup();
     const replacing = lineup.slots[item.role];
@@ -412,10 +620,12 @@
       }
     }
     lineup.slots[item.role] = item;
+    if (lineup.reserve && lineup.reserve.id === item.id) lineup.reserve = null;
     if (replacing && lineup.captainId === replacing.id) lineup.captainId = "";
+    const removedReserve = clearInvalidReserveIfComplete(lineup);
     lineup.saved = false;
     persistLocalState();
-    setMessage(`${item.name} foi adicionado à escalação.`, false, true);
+    setMessage(removedReserve ? `${item.name} foi adicionado. ${removedReserve} saiu da reserva por não caber mais na regra.` : `${item.name} foi adicionado à escalação.`, false, true);
     const nextRole = ROLE_ORDER.find((role) => !lineup.slots[role]);
     setRoleFilter(nextRole || "ALL", { scroll: false });
   }
@@ -431,6 +641,47 @@
     setMessage(`${removed.name} foi removido.`, false);
     renderLineup();
     renderMarket();
+  }
+
+  function setReserve(item) {
+    const lineup = currentLineup();
+    const selected = Object.values(lineup.slots).filter(Boolean).length;
+    if (selected !== 6) {
+      setMessage("Complete os seis titulares antes de escolher o reserva.", true);
+      return;
+    }
+    const error = reserveValidationMessage(item, lineup);
+    if (error) {
+      setMessage(error, true);
+      return;
+    }
+    lineup.reserve = item;
+    lineup.saved = false;
+    persistLocalState();
+    setMessage(`${item.name} foi escolhido como reserva. Ele só entra se um titular jogador não atuar na rodada.`, false, true);
+    renderLineup();
+    renderMarket();
+  }
+
+  function removeReserve() {
+    const lineup = currentLineup();
+    if (!lineup.reserve) return;
+    const name = lineup.reserve.name;
+    lineup.reserve = null;
+    lineup.saved = false;
+    persistLocalState();
+    setMessage(`${name} saiu da reserva.`, false);
+    renderLineup();
+    renderMarket();
+  }
+
+  function clearInvalidReserveIfComplete(lineup) {
+    if (!lineup.reserve || Object.values(lineup.slots).filter(Boolean).length !== 6) return "";
+    const error = reserveValidationMessage(lineup.reserve, lineup);
+    if (!error) return "";
+    const name = lineup.reserve.name;
+    lineup.reserve = null;
+    return name;
   }
 
   function setCaptain(id) {
@@ -468,6 +719,11 @@
   async function saveLineup() {
     const lineup = currentLineup();
     const items = Object.values(lineup.slots).filter(Boolean);
+    if (!isMarketOpen()) {
+      setMessage("O mercado está fechado. Você poderá alterar sua escalação quando a próxima janela abrir.", true);
+      renderMarketShell();
+      return;
+    }
     if (items.length !== 6 || !lineup.captainId) {
       setMessage("Complete as seis vagas e escolha um capitão.", true);
       return;
@@ -477,12 +733,18 @@
       setMessage("Identifique-se antes de salvar.", true);
       return;
     }
+    const reserveError = lineup.reserve ? reserveValidationMessage(lineup.reserve, lineup) : "";
+    if (reserveError) {
+      setMessage(reserveError, true);
+      return;
+    }
 
     const payload = {
       division: state.division,
       teamName: state.teamName,
       captainPlayerId: lineup.captainId,
-      picks: items.map((item) => ({ id: item.id, role: item.role, price: item.price, teamSlot: item.teamSlot }))
+      picks: items.map((item) => ({ id: item.id, role: item.role, price: item.price, teamSlot: item.teamSlot })),
+      reserve: lineup.reserve ? { id: lineup.reserve.id, role: lineup.reserve.role, price: lineup.reserve.price, teamSlot: lineup.reserve.teamSlot } : null
     };
 
     el.saveLineup.disabled = true;
@@ -498,6 +760,7 @@
         if (!response.ok) throw new Error(apiErrorMessage(result, "Não foi possível salvar a escalação."));
       }
       lineup.saved = true;
+      if (config.backendMode === "cloud") loadCloudPopular(state.division);
       persistLocalState();
       setMessage("Escalação salva! Você ainda pode alterá-la até o mercado fechar.", false, true);
     } catch (error) {
@@ -522,12 +785,16 @@
     state.division = division;
     el.roleFilter.value = "ALL";
     el.search.value = "";
+    el.roleShortcuts.forEach((button) => button.classList.toggle("active", button.dataset.roleShortcut === "ALL"));
     el.divisionTabs.forEach((button) => button.classList.toggle("active", button.dataset.division === division));
     setMessage("", false);
     renderLineup();
     renderMarket();
+    renderPopularPicks();
+    renderMarketShell();
     if (config.backendMode === "cloud") {
       loadCloudConfig(division);
+      loadCloudPopular(division);
       if (state.view === "ranking") loadCloudRanking();
     }
   }
@@ -536,7 +803,24 @@
     state.view = view;
     el.navButtons.forEach((button) => button.classList.toggle("active", button.dataset.view === view));
     el.views.forEach((section) => section.classList.toggle("active", section.id === `${view}-view`));
+    if (view === "market") {
+      renderMarketShell();
+    }
     if (view === "ranking" && config.backendMode === "cloud") loadCloudRanking();
+  }
+
+  function handleClosedAction(action) {
+    if (action === "ranking") {
+      setView("ranking");
+      return;
+    }
+    if (action === "rules") {
+      setView("rules");
+      return;
+    }
+    if (action === "lineups" && el.closedLineups) {
+      el.closedLineups.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }
 
   function renameTeam() {
@@ -611,6 +895,10 @@
         const marketItem = state.market[division].find((item) => item.id === String(pick.id));
         if (marketItem && ROLE_ORDER.includes(role)) lineup.slots[role] = marketItem;
       }
+      if (payload.lineup.reserve && payload.lineup.reserve.id) {
+        const reserveItem = state.market[division].find((item) => item.id === String(payload.lineup.reserve.id));
+        if (reserveItem && reserveItem.type === "player") lineup.reserve = reserveItem;
+      }
       lineup.captainId = cleanText(payload.lineup.captain_asset_id || payload.lineup.captainId);
       lineup.saved = true;
       state.lineups[division] = lineup;
@@ -627,13 +915,56 @@
       if (!response.ok || !round) return;
       const now = Date.now();
       const open = round.status === "open" && now >= Date.parse(round.opens_at) && now < Date.parse(round.locks_at);
-      el.marketStatus.textContent = open ? "ABERTO" : "FECHADO";
-      el.marketStatus.style.color = open ? "var(--success)" : "var(--danger)";
-      const lockDate = new Date(round.locks_at);
-      el.marketDeadline.textContent = `${round.name} · fecha em ${lockDate.toLocaleString("pt-BR")}`;
+      state.roundInfo[division] = round;
+      state.marketOpen[division] = open;
+      if (division === state.division) {
+        el.marketStatus.textContent = open ? "ABERTO" : "FECHADO";
+        el.marketStatus.style.color = open ? "var(--success)" : "var(--danger)";
+        const lockDate = new Date(round.locks_at);
+        el.marketDeadline.textContent = open
+          ? `${round.name} · fecha em ${lockDate.toLocaleString("pt-BR")}`
+          : `${round.name} · mercado fechado`;
+        renderLineup();
+        renderMarketShell();
+        renderPopularPicks();
+      }
     } catch (error) {
       console.warn("Não foi possível carregar o status da rodada.", error);
     }
+  }
+
+  async function loadCloudPopular(division) {
+    if (config.backendMode !== "cloud") {
+      state.popular[division] = [];
+      state.popularRound[division] = null;
+      renderPopularPicks();
+      return;
+    }
+    try {
+      const response = await apiFetch(`/api/fantasy/popular?division=${encodeURIComponent(division)}`, { cache: "no-store" });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(apiErrorMessage(payload, "Mais escalados indisponíveis."));
+      state.popularRound[division] = payload.round || null;
+      state.popular[division] = (payload.popular || []).map((item) => {
+        const marketItem = state.market[division].find((asset) => asset.id === String(item.id));
+        return marketItem || {
+          id: String(item.id),
+          type: "player",
+          role: normalizeRole(item.role),
+          name: cleanText(item.name),
+          teamName: cleanText(item.teamName),
+          teamTag: cleanText(item.teamTag).toUpperCase(),
+          teamSlot: cleanText(item.teamSlot),
+          logo: normalizeAssetPath(item.logo),
+          price: roundMoney(item.price),
+          average: roundMoney(item.average)
+        };
+      });
+    } catch (error) {
+      console.warn("Não foi possível carregar os mais escalados.", error);
+      state.popular[division] = [];
+    }
+    if (division === state.division) renderPopularPicks();
   }
 
   async function loadCloudRanking() {
@@ -742,21 +1073,58 @@
       const item = value && value.slots && value.slots[role];
       if (item && item.id && item.role === role) lineup.slots[role] = item;
     }
+    const reserve = value && value.reserve;
+    if (reserve && reserve.id && reserve.type === "player") lineup.reserve = reserve;
     lineup.captainId = cleanText(value && value.captainId);
     lineup.saved = Boolean(value && value.saved);
     return lineup;
   }
 
   function emptyLineup() {
-    return { slots: Object.fromEntries(ROLE_ORDER.map((role) => [role, null])), captainId: "", saved: false };
+    return { slots: Object.fromEntries(ROLE_ORDER.map((role) => [role, null])), reserve: null, captainId: "", saved: false };
   }
 
   function currentLineup() {
     return state.lineups[state.division];
   }
 
+  function isMarketOpen(division = state.division) {
+    return state.marketOpen[division] !== false;
+  }
+
+  function closedMarketDetail(round) {
+    if (!round) return "Aguarde a organização abrir a próxima rodada.";
+    const opensAt = Date.parse(round.opens_at);
+    if (round.status === "scheduled" && Number.isFinite(opensAt) && opensAt > Date.now()) {
+      return `A próxima janela abre em ${new Date(round.opens_at).toLocaleString("pt-BR")}.`;
+    }
+    if (round.status === "scored") return "A pontuação desta rodada já foi processada. Aguarde a próxima janela do mercado.";
+    return "Você ainda pode ver ranking, regras e suas últimas escalações enquanto a rodada é atualizada.";
+  }
+
   function lineupCost(lineup) {
     return roundMoney(Object.values(lineup.slots).reduce((total, item) => total + (item ? Number(item.price) : 0), 0));
+  }
+
+  function starterPlayers(lineup) {
+    return PLAYER_ROLES.map((role) => lineup.slots[role]).filter(Boolean);
+  }
+
+  function reserveBudget(lineup) {
+    const players = starterPlayers(lineup);
+    const cheapestPlayer = players.length ? Math.min(...players.map((item) => Number(item.price) || 0)) : 0;
+    return roundMoney(config.budget - lineupCost(lineup) + cheapestPlayer);
+  }
+
+  function reserveValidationMessage(item, lineup) {
+    if (!item || item.type !== "player" || item.role === "TEAM") return "A reserva precisa ser um jogador, não uma equipe.";
+    if (Object.values(lineup.slots).some((picked) => picked && picked.id === item.id)) return "Esse jogador já está como titular. O reserva precisa ser outro jogador.";
+    if (Object.values(lineup.slots).filter(Boolean).length !== 6) return "Complete os seis titulares antes de escolher o reserva.";
+    const budget = reserveBudget(lineup);
+    if (Number(item.price) > budget + 0.001) return `Esse reserva custa RK$ ${formatNumber(item.price)}, mas seu limite para reserva é RK$ ${formatNumber(budget)}.`;
+    const sameTeamPlayers = starterPlayers(lineup).filter((picked) => picked.teamSlot === item.teamSlot);
+    if (sameTeamPlayers.length >= config.maxPlayersPerRealTeam) return `Para o reserva poder entrar em qualquer ausência, escolha alguém de uma equipe com no máximo ${config.maxPlayersPerRealTeam - 1} titular no seu time.`;
+    return "";
   }
 
   function setLoading(message) {
@@ -851,6 +1219,18 @@
     return Boolean(preparedShare && navigator.share && navigator.canShare && navigator.canShare({ files: [preparedShare.file] }));
   }
 
+  function officialSiteUrl() {
+    return cleanText(config.siteUrl) || "https://liga-rk.github.io/liga-rk-26-2/fantasy/";
+  }
+
+  function officialSiteLabel() {
+    return officialSiteUrl().replace(/^https?:\/\//, "").replace(/\/$/, "");
+  }
+
+  function shareLineupText() {
+    return `Minha escalação no RK Fantasy da Liga RK! ${officialSiteUrl()}`;
+  }
+
   function setShareMessage(message, isError = false, isSuccess = false) {
     el.shareMessage.textContent = message || "";
     el.shareMessage.classList.toggle("error", Boolean(isError));
@@ -865,16 +1245,15 @@
 
   async function sharePreparedOnWhatsApp() {
     if (!preparedShare) return;
-    const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
 
-    if (isTouchDevice && canSharePreparedFile()) {
+    if (canSharePreparedFile()) {
       try {
         await navigator.share({
           title: `${state.teamName} — RK Fantasy`,
-          text: "Minha escalação no RK Fantasy da Liga RK!",
+          text: shareLineupText(),
           files: [preparedShare.file]
         });
-        setShareMessage("Imagem enviada para o compartilhamento do celular.", false, true);
+        setShareMessage("Imagem enviada para o compartilhamento. Escolha o WhatsApp na lista do aparelho.", false, true);
         return;
       } catch (error) {
         if (error && error.name === "AbortError") return;
@@ -893,11 +1272,11 @@
     }
 
     if (!copied) downloadBlob(preparedShare.blob, preparedShare.file.name);
-    if (whatsappWindow) whatsappWindow.location.href = "https://web.whatsapp.com/";
+    if (whatsappWindow) whatsappWindow.location.href = `https://web.whatsapp.com/send?text=${encodeURIComponent(shareLineupText())}`;
     setShareMessage(
       copied
-        ? "Imagem copiada. Escolha uma conversa no WhatsApp e pressione Ctrl+V."
-        : "Imagem baixada. Abra o WhatsApp e anexe o PNG salvo.",
+        ? "Imagem copiada e WhatsApp aberto com o link oficial. Escolha uma conversa e pressione Ctrl+V para colar o PNG."
+        : "Imagem baixada e WhatsApp aberto com o link oficial. Anexe o PNG salvo na conversa.",
       false,
       true
     );
@@ -908,7 +1287,7 @@
     try {
       await navigator.share({
         title: `${state.teamName} — RK Fantasy`,
-        text: "Minha escalação no RK Fantasy da Liga RK!",
+        text: shareLineupText(),
         files: [preparedShare.file]
       });
       setShareMessage("Imagem compartilhada!", false, true);
@@ -991,6 +1370,7 @@
       const image = item ? await loadItemCanvasImage(item) : await loadCanvasImage(ROLE_ASSETS[role]).catch(() => null);
       return { role, item, image };
     }));
+    const reserveEntry = lineup.reserve ? { item: lineup.reserve, image: await loadItemCanvasImage(lineup.reserve) } : null;
 
     entries.forEach(({ role, item, image }, index) => {
       const column = index % 2;
@@ -1035,9 +1415,37 @@
       }
     });
 
+    if (reserveEntry) {
+      const item = reserveEntry.item;
+      const x = 58;
+      const y = 1314;
+      roundedRect(ctx, x, y, 1084, 94, 18, "rgba(57,10,16,.88)", "rgba(255,194,75,.52)");
+      ctx.fillStyle = "#ffc24b";
+      ctx.font = "20px Anton, Impact, sans-serif";
+      ctx.fillText("RESERVA", x + 26, y + 36);
+      if (reserveEntry.image) {
+        ctx.save();
+        roundedPath(ctx, x + 148, y + 17, 58, 58, 12);
+        ctx.clip();
+        ctx.fillStyle = "#050507";
+        ctx.fillRect(x + 148, y + 17, 58, 58);
+        drawContain(ctx, reserveEntry.image, x + 148, y + 17, 58, 58, 5);
+        ctx.restore();
+      }
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "28px Anton, Impact, sans-serif";
+      ctx.fillText(fitCanvasText(ctx, item.name, 410), x + 226, y + 43);
+      ctx.fillStyle = "#bdb5b7";
+      ctx.font = "17px Inter, Arial, sans-serif";
+      ctx.fillText(`${ROLE_LABELS[item.role]} · ${item.teamTag}`, x + 226, y + 69);
+      ctx.fillStyle = "#ff6872";
+      ctx.font = "20px Inter, Arial, sans-serif";
+      ctx.fillText(`RK$ ${formatNumber(item.price)} · só entra se titular não jogar`, x + 650, y + 55);
+    }
+
     ctx.fillStyle = "#9c9497";
     ctx.font = "18px Inter, Arial, sans-serif";
-    ctx.fillText("Monte seu time no RK Fantasy · fantasy-rk.vitorskd2.workers.dev", 60, 1452);
+    ctx.fillText(`Monte seu time no RK Fantasy · ${officialSiteLabel()}`, 60, 1452);
     ctx.fillStyle = "#e52632";
     ctx.fillRect(60, 1473, 1080, 4);
 

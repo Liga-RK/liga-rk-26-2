@@ -8,8 +8,9 @@
   <meta name="referrer" content="no-referrer" />
   <link rel="manifest" href="manifest.webmanifest" />
   <title>RK Fantasy | Liga RK 26.2</title>
-  <link rel="icon" type="image/png" href="assets/branding/logo-rk-fantasy.png" />
-  <link rel="stylesheet" href="assets/fantasy.css" />
+  <link rel="icon" type="image/png" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
+  <link rel="apple-touch-icon" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
+  <link rel="stylesheet" href="assets/fantasy.css?v=20260723-popular" />
 </head>
 <body>
   <header class="site-header">
@@ -41,13 +42,47 @@
       </div>
     </section>
 
-    <section class="division-tabs" aria-label="Escolha de divisão">
-      <button class="division-tab active" type="button" data-division="elite">Divisão Elite</button>
-      <button class="division-tab" type="button" data-division="ascension">Divisão Ascensão</button>
-    </section>
-
     <section id="market-view" class="app-view active">
-      <div class="dashboard-grid">
+      <section class="division-tabs" aria-label="Escolha de divisão">
+        <button class="division-tab active" type="button" data-division="elite">Divisão Elite</button>
+        <button class="division-tab" type="button" data-division="ascension">Divisão Ascensão</button>
+      </section>
+
+      <section class="popular-strip" aria-labelledby="popular-title">
+        <div class="popular-heading">
+          <div>
+            <span class="eyebrow">Comunidade</span>
+            <h2 id="popular-title">Mais escalados da rodada</h2>
+          </div>
+          <span id="popular-division" class="popular-note">Divisão Elite</span>
+        </div>
+        <div id="popular-list" class="popular-list" aria-live="polite"></div>
+      </section>
+
+      <section id="market-closed" class="market-closed-panel" hidden>
+        <div class="closed-copy">
+          <span class="eyebrow">Rodada em andamento</span>
+          <h2>Mercado fechado</h2>
+          <p id="closed-market-message">As escalações desta rodada foram bloqueadas. Estamos atualizando jogos, pontuações e preços.</p>
+          <small id="closed-market-detail">Aguarde a organização abrir a próxima rodada.</small>
+        </div>
+        <div class="closed-actions">
+          <button class="primary-button" type="button" data-closed-action="ranking">Ver ranking</button>
+          <button class="ghost-button" type="button" data-closed-action="lineups">Últimas escalações</button>
+          <button class="ghost-button" type="button" data-closed-action="rules">Ver regras</button>
+        </div>
+        <div class="closed-lineups-wrap">
+          <div class="section-heading compact">
+            <div>
+              <span class="eyebrow">Suas escolhas</span>
+              <h3>Última escalação salva</h3>
+            </div>
+          </div>
+          <div id="closed-lineups" class="closed-lineups" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <div id="market-dashboard" class="dashboard-grid">
         <aside class="lineup-panel">
           <div class="panel-heading">
             <div>
@@ -74,7 +109,7 @@
             </div>
           </div>
 
-          <p class="slot-instruction">Clique em uma posição abaixo para filtrar o mercado.</p>
+          <p class="slot-instruction">Clique em uma posição abaixo para filtrar o mercado. Depois dos titulares, você pode escolher 1 reserva.</p>
           <div id="lineup-slots" class="lineup-slots" aria-label="Posições da sua escalação" aria-live="polite"></div>
 
           <div class="lineup-footer">
@@ -185,10 +220,18 @@
         </div>
         <div class="rule-list">
           <h3>Regras do elenco</h3>
-          <p>Uma escalação contém TOP, JG, MID, ADC, SUP e uma equipe. O orçamento inicial é de RK$ 100. É permitido escolher no máximo dois jogadores da mesma equipe real. Você pode alterar o elenco quantas vezes quiser até o fechamento do mercado.</p>
+          <p>Cada escalação deve ser formada por cinco jogadores — TOP, JG, MID, ADC e SUP — além de uma equipe.</p>
+          <p>O orçamento inicial é de RK$ 100, e cada participante pode escalar no máximo dois jogadores da mesma equipe.</p>
+          <p>Também é permitido escolher um jogador reserva. Ele será acionado automaticamente caso algum titular não participe da rodada. O valor máximo disponível para o reserva será equivalente ao saldo restante somado ao preço do titular mais barato da escalação.</p>
+          <p>O elenco pode ser alterado quantas vezes for necessário até o fechamento do mercado.</p>
         </div>
       </div>
     </section>
+
+    <footer class="site-footer" aria-label="Créditos do RK Fantasy">
+      <span>© 2026 Inhouse RK. Todos os direitos reservados.</span>
+      <small>Criado e desenvolvido pela Staff RK.</small>
+    </footer>
   </main>
 
   <dialog id="account-dialog">
@@ -208,14 +251,14 @@
       <button id="close-share-dialog" class="dialog-close" type="button" aria-label="Fechar">×</button>
       <span class="eyebrow">Sua escalação está pronta</span>
       <h2>Compartilhar imagem</h2>
-      <p class="share-help">Escolha como deseja usar a imagem. No computador, a opção do WhatsApp copia o PNG para você colar com <strong>Ctrl+V</strong>.</p>
+      <p class="share-help">No celular, tente enviar a imagem direto pelo compartilhamento. No computador, se o navegador bloquear, o app copia ou baixa o PNG para você anexar no WhatsApp.</p>
       <div class="share-preview-wrap">
         <img id="share-preview" class="share-preview" alt="Prévia da imagem da escalação" />
       </div>
       <div class="share-options">
         <button id="download-share-image" class="primary-button" type="button">Baixar imagem PNG</button>
-        <button id="whatsapp-share-image" class="whatsapp-button" type="button">Copiar e abrir WhatsApp</button>
-        <button id="system-share-image" class="ghost-button" type="button">Outros aplicativos</button>
+        <button id="whatsapp-share-image" class="whatsapp-button" type="button">Compartilhar no WhatsApp</button>
+        <button id="system-share-image" class="ghost-button" type="button">Compartilhar imagem</button>
       </div>
       <p id="share-message" class="status-message" aria-live="polite"></p>
     </div>
@@ -238,7 +281,7 @@
   </dialog>
 
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/fantasy.js"></script>
-  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js");</script>
+  <script src="assets/fantasy.js?v=20260723-popular"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260723-popular");</script>
 </body>
 </html>
