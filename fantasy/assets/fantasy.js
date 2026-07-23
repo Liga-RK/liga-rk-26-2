@@ -50,6 +50,7 @@
     view: "market",
     market: { elite: [], ascension: [] },
     popular: { elite: [], ascension: [] },
+    popularRound: { elite: null, ascension: null },
     marketOpen: { elite: true, ascension: true },
     roundInfo: { elite: null, ascension: null },
     lineups: { elite: emptyLineup(), ascension: emptyLineup() },
@@ -316,7 +317,7 @@
     if (!el.popularList) return;
     const divisionLabel = state.division === "elite" ? "Divisão Elite" : "Divisão Ascensão";
     if (el.popularDivision) {
-      const round = state.roundInfo[state.division];
+      const round = state.roundInfo[state.division] || state.popularRound[state.division];
       el.popularDivision.textContent = round && round.name ? `${divisionLabel} · ${round.name}` : divisionLabel;
     }
 
@@ -935,6 +936,7 @@
   async function loadCloudPopular(division) {
     if (config.backendMode !== "cloud") {
       state.popular[division] = [];
+      state.popularRound[division] = null;
       renderPopularPicks();
       return;
     }
@@ -942,6 +944,7 @@
       const response = await apiFetch(`/api/fantasy/popular?division=${encodeURIComponent(division)}`, { cache: "no-store" });
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(apiErrorMessage(payload, "Mais escalados indisponíveis."));
+      state.popularRound[division] = payload.round || null;
       state.popular[division] = (payload.popular || []).map((item) => {
         const marketItem = state.market[division].find((asset) => asset.id === String(item.id));
         return marketItem || {
