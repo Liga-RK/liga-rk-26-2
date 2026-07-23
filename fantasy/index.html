@@ -8,8 +8,9 @@
   <meta name="referrer" content="no-referrer" />
   <link rel="manifest" href="manifest.webmanifest" />
   <title>RK Fantasy | Liga RK 26.2</title>
-  <link rel="icon" type="image/png" href="assets/branding/logo-rk-fantasy.png" />
-  <link rel="stylesheet" href="assets/fantasy.css?v=20260722-marketfix" />
+  <link rel="icon" type="image/png" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
+  <link rel="apple-touch-icon" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
+  <link rel="stylesheet" href="assets/fantasy.css?v=20260723-sharefix" />
 </head>
 <body>
   <header class="site-header">
@@ -236,14 +237,14 @@
       <button id="close-share-dialog" class="dialog-close" type="button" aria-label="Fechar">×</button>
       <span class="eyebrow">Sua escalação está pronta</span>
       <h2>Compartilhar imagem</h2>
-      <p class="share-help">Escolha como deseja usar a imagem. No computador, a opção do WhatsApp copia o PNG para você colar com <strong>Ctrl+V</strong>.</p>
+      <p class="share-help">No celular, tente enviar a imagem direto pelo compartilhamento. No computador, se o navegador bloquear, o app copia ou baixa o PNG para você anexar no WhatsApp.</p>
       <div class="share-preview-wrap">
         <img id="share-preview" class="share-preview" alt="Prévia da imagem da escalação" />
       </div>
       <div class="share-options">
         <button id="download-share-image" class="primary-button" type="button">Baixar imagem PNG</button>
-        <button id="whatsapp-share-image" class="whatsapp-button" type="button">Copiar e abrir WhatsApp</button>
-        <button id="system-share-image" class="ghost-button" type="button">Outros aplicativos</button>
+        <button id="whatsapp-share-image" class="whatsapp-button" type="button">Compartilhar no WhatsApp</button>
+        <button id="system-share-image" class="ghost-button" type="button">Compartilhar imagem</button>
       </div>
       <p id="share-message" class="status-message" aria-live="polite"></p>
     </div>
@@ -266,7 +267,7 @@
   </dialog>
 
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/fantasy.js?v=20260722-marketfix"></script>
-  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260722-marketfix");</script>
+  <script src="assets/fantasy.js?v=20260723-sharefix"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260723-sharefix");</script>
 </body>
 </html>

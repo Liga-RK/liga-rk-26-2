@@ -3,6 +3,7 @@
 
   const config = {
     apiBase: "",
+    siteUrl: "https://liga-rk.github.io/liga-rk-26-2/fantasy/",
     backendMode: "local",
     budget: 100,
     maxPlayersPerRealTeam: 2,
@@ -1137,6 +1138,18 @@
     return Boolean(preparedShare && navigator.share && navigator.canShare && navigator.canShare({ files: [preparedShare.file] }));
   }
 
+  function officialSiteUrl() {
+    return cleanText(config.siteUrl) || "https://liga-rk.github.io/liga-rk-26-2/fantasy/";
+  }
+
+  function officialSiteLabel() {
+    return officialSiteUrl().replace(/^https?:\/\//, "").replace(/\/$/, "");
+  }
+
+  function shareLineupText() {
+    return `Minha escalação no RK Fantasy da Liga RK! ${officialSiteUrl()}`;
+  }
+
   function setShareMessage(message, isError = false, isSuccess = false) {
     el.shareMessage.textContent = message || "";
     el.shareMessage.classList.toggle("error", Boolean(isError));
@@ -1151,16 +1164,15 @@
 
   async function sharePreparedOnWhatsApp() {
     if (!preparedShare) return;
-    const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
 
-    if (isTouchDevice && canSharePreparedFile()) {
+    if (canSharePreparedFile()) {
       try {
         await navigator.share({
           title: `${state.teamName} — RK Fantasy`,
-          text: "Minha escalação no RK Fantasy da Liga RK!",
+          text: shareLineupText(),
           files: [preparedShare.file]
         });
-        setShareMessage("Imagem enviada para o compartilhamento do celular.", false, true);
+        setShareMessage("Imagem enviada para o compartilhamento. Escolha o WhatsApp na lista do aparelho.", false, true);
         return;
       } catch (error) {
         if (error && error.name === "AbortError") return;
@@ -1179,11 +1191,11 @@
     }
 
     if (!copied) downloadBlob(preparedShare.blob, preparedShare.file.name);
-    if (whatsappWindow) whatsappWindow.location.href = "https://web.whatsapp.com/";
+    if (whatsappWindow) whatsappWindow.location.href = `https://web.whatsapp.com/send?text=${encodeURIComponent(shareLineupText())}`;
     setShareMessage(
       copied
-        ? "Imagem copiada. Escolha uma conversa no WhatsApp e pressione Ctrl+V."
-        : "Imagem baixada. Abra o WhatsApp e anexe o PNG salvo.",
+        ? "Imagem copiada e WhatsApp aberto com o link oficial. Escolha uma conversa e pressione Ctrl+V para colar o PNG."
+        : "Imagem baixada e WhatsApp aberto com o link oficial. Anexe o PNG salvo na conversa.",
       false,
       true
     );
@@ -1194,7 +1206,7 @@
     try {
       await navigator.share({
         title: `${state.teamName} — RK Fantasy`,
-        text: "Minha escalação no RK Fantasy da Liga RK!",
+        text: shareLineupText(),
         files: [preparedShare.file]
       });
       setShareMessage("Imagem compartilhada!", false, true);
@@ -1352,7 +1364,7 @@
 
     ctx.fillStyle = "#9c9497";
     ctx.font = "18px Inter, Arial, sans-serif";
-    ctx.fillText("Monte seu time no RK Fantasy · fantasy-rk.vitorskd2.workers.dev", 60, 1452);
+    ctx.fillText(`Monte seu time no RK Fantasy · ${officialSiteLabel()}`, 60, 1452);
     ctx.fillStyle = "#e52632";
     ctx.fillRect(60, 1473, 1080, 4);
 
