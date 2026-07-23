@@ -31,6 +31,7 @@
     SUP: "assets/lanes/suporte.png",
     TEAM: "assets/lanes/equipe.png"
   };
+  const PLAYER_ROLES = ROLE_ORDER.filter((role) => role !== "TEAM");
   const TEAM_LOGO_ONLY_PLAYERS = new Set([
     "elite:FVL:TOP",
     "elite:PXB:JG",
@@ -250,6 +251,7 @@
     const sort = el.sortFilter.value;
     const lineup = currentLineup();
     const selectedIds = new Set(Object.values(lineup.slots).filter(Boolean).map((item) => item.id));
+    const reserveId = lineup.reserve ? lineup.reserve.id : "";
 
     const items = state.market[state.division]
       .filter((item) => role === "ALL" || item.role === role)
@@ -290,15 +292,16 @@
     cards.replaceChildren(...items.map((item) => marketCard(
       item,
       selectedIds.has(item.id),
-      el.roleFilter.value === "ALL" && Boolean(lineup.slots[item.role]) && !selectedIds.has(item.id)
+      el.roleFilter.value === "ALL" && Boolean(lineup.slots[item.role]) && !selectedIds.has(item.id),
+      reserveId === item.id
     )));
     section.append(heading, cards);
     return section;
   }
 
-  function marketCard(item, selected, roleComplete) {
+  function marketCard(item, selected, roleComplete, reserveSelected) {
     const card = document.createElement("article");
-    card.className = `player-card${selected ? " selected" : ""}${roleComplete ? " role-complete" : ""}`;
+    card.className = `player-card${selected ? " selected" : ""}${roleComplete ? " role-complete" : ""}${reserveSelected ? " reserve-selected" : ""}`;
 
     const logo = createLogo(item);
     const meta = document.createElement("div");
@@ -322,21 +325,36 @@
     button.textContent = selected ? "Remover" : "Escalar";
     button.addEventListener("click", () => selected ? removeItem(item.role) : addItem(item));
 
-    card.append(logo, meta, price, button);
+    const actions = document.createElement("div");
+    actions.className = "card-actions";
+    actions.appendChild(button);
+    if (item.type === "player") {
+      const reserveButton = document.createElement("button");
+      reserveButton.type = "button";
+      reserveButton.className = "reserve-button";
+      reserveButton.textContent = reserveSelected ? "Remover reserva" : "Reserva";
+      reserveButton.disabled = selected && !reserveSelected;
+      reserveButton.title = selected && !reserveSelected ? "Remova dos titulares antes de usar como reserva." : "Escolher como reserva";
+      reserveButton.addEventListener("click", () => reserveSelected ? removeReserve() : setReserve(item));
+      actions.appendChild(reserveButton);
+    }
+
+    card.append(logo, meta, price, actions);
     return card;
   }
 
   function renderLineup() {
     const lineup = currentLineup();
-    el.lineupSlots.replaceChildren(...ROLE_ORDER.map((role) => lineupSlot(role, lineup.slots[role])));
+    el.lineupSlots.replaceChildren(...ROLE_ORDER.map((role) => lineupSlot(role, lineup.slots[role])), reserveSlot(lineup.reserve));
     const spent = lineupCost(lineup);
     const selected = Object.values(lineup.slots).filter(Boolean).length;
     el.budgetTotal.textContent = formatNumber(config.budget);
     el.budgetSpent.textContent = formatNumber(spent);
     el.budgetRemaining.textContent = formatNumber(config.budget - spent);
-    el.selectedCount.textContent = `${selected}/6`;
+    el.selectedCount.textContent = `${selected}/6${lineup.reserve ? " + reserva" : ""}`;
     el.fantasyTeamName.textContent = state.teamName;
-    el.saveLineup.disabled = selected !== 6 || !lineup.captainId || spent > config.budget;
+    const reserveError = lineup.reserve && selected === 6 ? reserveValidationMessage(lineup.reserve, lineup) : "";
+    el.saveLineup.disabled = selected !== 6 || !lineup.captainId || spent > config.budget || Boolean(reserveError);
     el.saveLineup.textContent = lineup.saved ? "Atualizar escalação" : "Salvar escalação";
     el.shareLineup.disabled = selected === 0;
     el.captainReminder.hidden = selected !== 6 || Boolean(lineup.captainId);
@@ -395,6 +413,50 @@
     return slot;
   }
 
+  function reserveSlot(item) {
+    const lineup = currentLineup();
+    const selected = Object.values(lineup.slots).filter(Boolean).length;
+    const budget = reserveBudget(lineup);
+    const slot = document.createElement("div");
+    slot.className = `lineup-slot reserve-slot${item ? " filled" : ""}`;
+    const selector = document.createElement("button");
+    selector.type = "button";
+    selector.className = "slot-selector";
+    selector.setAttribute("aria-label", "Filtrar mercado para escolher reserva");
+    selector.addEventListener("click", () => setRoleFilter("ALL"));
+
+    const badge = document.createElement("div");
+    badge.className = "role-badge reserve-badge";
+    badge.textContent = "R";
+
+    const info = document.createElement("div");
+    info.className = "slot-info";
+    const strong = document.createElement("strong");
+    strong.textContent = item ? item.name : "Escolha reserva";
+    const detail = document.createElement("span");
+    detail.textContent = item
+      ? `${ROLE_LABELS[item.role]} · ${item.teamTag} · RK$ ${formatNumber(item.price)}`
+      : selected === 6
+        ? `Pode custar até RK$ ${formatNumber(budget)}`
+        : "Complete os titulares para liberar";
+    info.append(strong, detail);
+    selector.append(badge, info);
+
+    const actions = document.createElement("div");
+    actions.className = "slot-actions";
+    if (item) {
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.title = "Remover reserva";
+      remove.textContent = "×";
+      remove.addEventListener("click", removeReserve);
+      actions.appendChild(remove);
+    }
+
+    slot.append(selector, actions);
+    return slot;
+  }
+
   function addItem(item) {
     const lineup = currentLineup();
     const replacing = lineup.slots[item.role];
@@ -412,10 +474,12 @@
       }
     }
     lineup.slots[item.role] = item;
+    if (lineup.reserve && lineup.reserve.id === item.id) lineup.reserve = null;
     if (replacing && lineup.captainId === replacing.id) lineup.captainId = "";
+    const removedReserve = clearInvalidReserveIfComplete(lineup);
     lineup.saved = false;
     persistLocalState();
-    setMessage(`${item.name} foi adicionado à escalação.`, false, true);
+    setMessage(removedReserve ? `${item.name} foi adicionado. ${removedReserve} saiu da reserva por não caber mais na regra.` : `${item.name} foi adicionado à escalação.`, false, true);
     const nextRole = ROLE_ORDER.find((role) => !lineup.slots[role]);
     setRoleFilter(nextRole || "ALL", { scroll: false });
   }
@@ -431,6 +495,47 @@
     setMessage(`${removed.name} foi removido.`, false);
     renderLineup();
     renderMarket();
+  }
+
+  function setReserve(item) {
+    const lineup = currentLineup();
+    const selected = Object.values(lineup.slots).filter(Boolean).length;
+    if (selected !== 6) {
+      setMessage("Complete os seis titulares antes de escolher o reserva.", true);
+      return;
+    }
+    const error = reserveValidationMessage(item, lineup);
+    if (error) {
+      setMessage(error, true);
+      return;
+    }
+    lineup.reserve = item;
+    lineup.saved = false;
+    persistLocalState();
+    setMessage(`${item.name} foi escolhido como reserva. Ele só entra se um titular jogador não atuar na rodada.`, false, true);
+    renderLineup();
+    renderMarket();
+  }
+
+  function removeReserve() {
+    const lineup = currentLineup();
+    if (!lineup.reserve) return;
+    const name = lineup.reserve.name;
+    lineup.reserve = null;
+    lineup.saved = false;
+    persistLocalState();
+    setMessage(`${name} saiu da reserva.`, false);
+    renderLineup();
+    renderMarket();
+  }
+
+  function clearInvalidReserveIfComplete(lineup) {
+    if (!lineup.reserve || Object.values(lineup.slots).filter(Boolean).length !== 6) return "";
+    const error = reserveValidationMessage(lineup.reserve, lineup);
+    if (!error) return "";
+    const name = lineup.reserve.name;
+    lineup.reserve = null;
+    return name;
   }
 
   function setCaptain(id) {
@@ -477,12 +582,18 @@
       setMessage("Identifique-se antes de salvar.", true);
       return;
     }
+    const reserveError = lineup.reserve ? reserveValidationMessage(lineup.reserve, lineup) : "";
+    if (reserveError) {
+      setMessage(reserveError, true);
+      return;
+    }
 
     const payload = {
       division: state.division,
       teamName: state.teamName,
       captainPlayerId: lineup.captainId,
-      picks: items.map((item) => ({ id: item.id, role: item.role, price: item.price, teamSlot: item.teamSlot }))
+      picks: items.map((item) => ({ id: item.id, role: item.role, price: item.price, teamSlot: item.teamSlot })),
+      reserve: lineup.reserve ? { id: lineup.reserve.id, role: lineup.reserve.role, price: lineup.reserve.price, teamSlot: lineup.reserve.teamSlot } : null
     };
 
     el.saveLineup.disabled = true;
@@ -610,6 +721,10 @@
         const role = normalizeRole(pick.role);
         const marketItem = state.market[division].find((item) => item.id === String(pick.id));
         if (marketItem && ROLE_ORDER.includes(role)) lineup.slots[role] = marketItem;
+      }
+      if (payload.lineup.reserve && payload.lineup.reserve.id) {
+        const reserveItem = state.market[division].find((item) => item.id === String(payload.lineup.reserve.id));
+        if (reserveItem && reserveItem.type === "player") lineup.reserve = reserveItem;
       }
       lineup.captainId = cleanText(payload.lineup.captain_asset_id || payload.lineup.captainId);
       lineup.saved = true;
@@ -742,13 +857,15 @@
       const item = value && value.slots && value.slots[role];
       if (item && item.id && item.role === role) lineup.slots[role] = item;
     }
+    const reserve = value && value.reserve;
+    if (reserve && reserve.id && reserve.type === "player") lineup.reserve = reserve;
     lineup.captainId = cleanText(value && value.captainId);
     lineup.saved = Boolean(value && value.saved);
     return lineup;
   }
 
   function emptyLineup() {
-    return { slots: Object.fromEntries(ROLE_ORDER.map((role) => [role, null])), captainId: "", saved: false };
+    return { slots: Object.fromEntries(ROLE_ORDER.map((role) => [role, null])), reserve: null, captainId: "", saved: false };
   }
 
   function currentLineup() {
@@ -757,6 +874,27 @@
 
   function lineupCost(lineup) {
     return roundMoney(Object.values(lineup.slots).reduce((total, item) => total + (item ? Number(item.price) : 0), 0));
+  }
+
+  function starterPlayers(lineup) {
+    return PLAYER_ROLES.map((role) => lineup.slots[role]).filter(Boolean);
+  }
+
+  function reserveBudget(lineup) {
+    const players = starterPlayers(lineup);
+    const cheapestPlayer = players.length ? Math.min(...players.map((item) => Number(item.price) || 0)) : 0;
+    return roundMoney(config.budget - lineupCost(lineup) + cheapestPlayer);
+  }
+
+  function reserveValidationMessage(item, lineup) {
+    if (!item || item.type !== "player" || item.role === "TEAM") return "A reserva precisa ser um jogador, não uma equipe.";
+    if (Object.values(lineup.slots).some((picked) => picked && picked.id === item.id)) return "Esse jogador já está como titular. O reserva precisa ser outro jogador.";
+    if (Object.values(lineup.slots).filter(Boolean).length !== 6) return "Complete os seis titulares antes de escolher o reserva.";
+    const budget = reserveBudget(lineup);
+    if (Number(item.price) > budget + 0.001) return `Esse reserva custa RK$ ${formatNumber(item.price)}, mas seu limite para reserva é RK$ ${formatNumber(budget)}.`;
+    const sameTeamPlayers = starterPlayers(lineup).filter((picked) => picked.teamSlot === item.teamSlot);
+    if (sameTeamPlayers.length >= config.maxPlayersPerRealTeam) return `Para o reserva poder entrar em qualquer ausência, escolha alguém de uma equipe com no máximo ${config.maxPlayersPerRealTeam - 1} titular no seu time.`;
+    return "";
   }
 
   function setLoading(message) {
@@ -991,6 +1129,7 @@
       const image = item ? await loadItemCanvasImage(item) : await loadCanvasImage(ROLE_ASSETS[role]).catch(() => null);
       return { role, item, image };
     }));
+    const reserveEntry = lineup.reserve ? { item: lineup.reserve, image: await loadItemCanvasImage(lineup.reserve) } : null;
 
     entries.forEach(({ role, item, image }, index) => {
       const column = index % 2;
@@ -1034,6 +1173,34 @@
         ctx.fillText("VAGA DISPONÍVEL", x + 198, y + 132);
       }
     });
+
+    if (reserveEntry) {
+      const item = reserveEntry.item;
+      const x = 58;
+      const y = 1314;
+      roundedRect(ctx, x, y, 1084, 94, 18, "rgba(57,10,16,.88)", "rgba(255,194,75,.52)");
+      ctx.fillStyle = "#ffc24b";
+      ctx.font = "20px Anton, Impact, sans-serif";
+      ctx.fillText("RESERVA", x + 26, y + 36);
+      if (reserveEntry.image) {
+        ctx.save();
+        roundedPath(ctx, x + 148, y + 17, 58, 58, 12);
+        ctx.clip();
+        ctx.fillStyle = "#050507";
+        ctx.fillRect(x + 148, y + 17, 58, 58);
+        drawContain(ctx, reserveEntry.image, x + 148, y + 17, 58, 58, 5);
+        ctx.restore();
+      }
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "28px Anton, Impact, sans-serif";
+      ctx.fillText(fitCanvasText(ctx, item.name, 410), x + 226, y + 43);
+      ctx.fillStyle = "#bdb5b7";
+      ctx.font = "17px Inter, Arial, sans-serif";
+      ctx.fillText(`${ROLE_LABELS[item.role]} · ${item.teamTag}`, x + 226, y + 69);
+      ctx.fillStyle = "#ff6872";
+      ctx.font = "20px Inter, Arial, sans-serif";
+      ctx.fillText(`RK$ ${formatNumber(item.price)} · só entra se titular não jogar`, x + 650, y + 55);
+    }
 
     ctx.fillStyle = "#9c9497";
     ctx.font = "18px Inter, Arial, sans-serif";

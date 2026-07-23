@@ -134,11 +134,14 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .lineup-slots { display: grid; flex: 1 1 auto; min-height: 0; gap: .45rem; padding-right: .22rem; overflow-y: auto; overscroll-behavior: contain; scrollbar-color: rgba(229, 38, 50, .6) transparent; scrollbar-width: thin; }
 .lineup-slot { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; min-height: 62px; border: 1px dashed rgba(255, 255, 255, .3); border-radius: .62rem; background: rgba(4, 5, 7, .82); overflow: hidden; }
 .lineup-slot.filled { border-style: solid; border-color: rgba(229, 38, 50, .62); background: linear-gradient(105deg, rgba(83, 9, 17, .58), rgba(5, 5, 7, .9)); }
+.lineup-slot.reserve-slot { border-color: rgba(255, 194, 75, .38); background: linear-gradient(105deg, rgba(73, 46, 6, .42), rgba(5, 5, 7, .9)); }
+.lineup-slot.reserve-slot.filled { border-color: rgba(255, 194, 75, .72); }
 .lineup-slot.active-filter { outline: 2px solid #fff; outline-offset: 2px; }
 .slot-selector { display: grid; grid-template-columns: 44px 1fr; align-items: center; gap: .65rem; min-width: 0; min-height: 60px; padding: .45rem .6rem; border: 0; color: inherit; background: transparent; text-align: left; }
 .slot-selector:hover { background: rgba(229, 38, 50, .08); }
 .role-badge { display: grid; place-items: center; width: 44px; height: 44px; border-radius: .52rem; background: #0b0a0c; border: 1px solid rgba(255, 255, 255, .12); }
 .role-badge img { width: 29px; height: 29px; object-fit: contain; }
+.reserve-badge { color: #ffc24b; font-family: var(--title-font); font-size: 1.35rem; border-color: rgba(255, 194, 75, .45); }
 .slot-info { min-width: 0; }
 .slot-info strong, .slot-info span { display: block; }
 .slot-info strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .88rem; }
@@ -189,6 +192,7 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .player-card.selected { border-color: var(--accent); background: linear-gradient(145deg, rgba(229, 38, 50, .2), rgba(89, 11, 19, .12)); box-shadow: 0 0 0 1px rgba(229, 38, 50, .25); }
 .player-card.role-complete:not(.selected) { opacity: .27; filter: saturate(.45); }
 .player-card.role-complete:not(.selected):hover { opacity: .82; filter: none; }
+.player-card.role-complete.reserve-selected { opacity: 1; filter: none; }
 .player-logo { width: 68px; height: 68px; object-fit: contain; border-radius: .65rem; background: rgba(4, 4, 6, .8); padding: .2rem; }
 .player-logo.fallback { display: grid; place-items: center; color: var(--accent-bright); font-weight: 900; }
 .player-meta { min-width: 0; }
@@ -202,9 +206,14 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .player-price strong { color: #fff; font-size: .92rem; }
 .player-price strong b { color: var(--accent-bright); font-size: .65rem; }
 .player-price span { margin-top: .2rem; color: var(--muted); font-size: .66rem; }
-.buy-button { grid-column: 1 / -1; border: 1px solid rgba(255, 255, 255, .1); border-radius: .55rem; padding: .58rem; color: #fff; background: rgba(255, 255, 255, .075); font-weight: 900; }
+.card-actions { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .72fr); gap: .45rem; }
+.buy-button, .reserve-button { border: 1px solid rgba(255, 255, 255, .1); border-radius: .55rem; padding: .58rem; color: #fff; background: rgba(255, 255, 255, .075); font-weight: 900; }
 .player-card:not(.selected) .buy-button:hover { border-color: var(--accent); background: var(--accent); }
 .player-card.selected .buy-button { border-color: rgba(255, 107, 120, .35); color: #ffadb4; background: rgba(255, 107, 120, .09); }
+.reserve-button { color: #ffe0a3; border-color: rgba(255, 194, 75, .28); background: rgba(255, 194, 75, .08); }
+.reserve-button:hover:not(:disabled), .player-card.reserve-selected .reserve-button { color: #17100a; border-color: #ffc24b; background: #ffc24b; }
+.reserve-button:disabled { cursor: not-allowed; opacity: .45; }
+.player-card.reserve-selected { border-color: rgba(255, 194, 75, .72); box-shadow: 0 0 24px rgba(255, 194, 75, .12); }
 .team-market-section .market-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .team-market-section .player-card { min-height: 116px; background: linear-gradient(145deg, rgba(229, 38, 50, .09), rgba(255, 255, 255, .018)); }
 .empty-state { padding: 4rem 1rem; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: .85rem; }
