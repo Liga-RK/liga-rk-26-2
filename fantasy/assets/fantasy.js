@@ -937,7 +937,7 @@
       button.disabled = allDivisions;
     });
     if (el.rankingHelper) {
-      if (state.rankingScope === "overall") el.rankingHelper.textContent = "Ranking geral junta os times da Elite e da Ascensão na mesma tabela.";
+      if (state.rankingScope === "overall") el.rankingHelper.textContent = "Ranking geral soma os pontos da Elite e da Ascensão por jogador.";
       else if (state.rankingScope === "wealth") el.rankingHelper.textContent = "Maior patrimônio mostra quem tem mais RK$ acumulado no jogo, juntando as duas divisões.";
       else if (state.rankingScope === "round") el.rankingHelper.textContent = `Ranking da rodada atual da ${divisionLabel(state.rankingDivision)}.`;
       else el.rankingHelper.textContent = `Ranking do campeonato da ${divisionLabel(state.rankingDivision)}.`;
@@ -1699,6 +1699,7 @@
   }
 
   function divisionLabel(value) {
+    if (value === "all") return "Geral";
     return value === "ascension" ? "Divisão Ascensão" : "Divisão Elite";
   }
 

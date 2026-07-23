@@ -1,5 +1,5 @@
-const CACHE="rk-fantasy-shell-v16";
-const ASSET_VERSION="20260723-market-info";
+const CACHE="rk-fantasy-shell-v17";
+const ASSET_VERSION="20260723-overall-sum";
 const BASE=new URL("./",self.location.href);
 const SHELL=["./","fantasy.html","offline.html",`assets/fantasy.css?v=${ASSET_VERSION}`,`assets/fantasy.js?v=${ASSET_VERSION}`,"assets/fantasy-config.js","assets/branding/logo-liga-rk.png","assets/branding/logo-rk-fantasy.png","assets/branding/favicon-rk-fantasy.png","assets/branding/wallpaper-rk.png"].map(path=>new URL(path,BASE).href);
 self.addEventListener("install",event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL))));
