@@ -152,8 +152,11 @@
     renderRanking();
     await loadMarket();
     if (config.backendMode === "cloud") {
+      await Promise.all([loadCloudConfig("elite"), loadCloudConfig("ascension")]);
+      syncAllLineupsWithMarket();
       await Promise.all([loadCloudLineup("elite"), loadCloudLineup("ascension")]);
-      await Promise.all([loadCloudConfig(state.division), loadCloudRanking(), loadCloudPopular(state.division)]);
+      syncAllLineupsWithMarket();
+      await Promise.all([loadCloudRanking(), loadCloudPopular(state.division)]);
       renderLineup();
       renderMarketShell();
       renderMarket();
@@ -217,7 +220,7 @@
     }
 
     state.loaded = true;
-    reconcileLineupsWithMarket();
+    syncAllLineupsWithMarket();
     el.marketLoading.hidden = true;
     el.marketGrid.hidden = false;
     renderMarket();
@@ -730,6 +733,7 @@
 
   function renderLineup() {
     const lineup = currentLineup();
+    syncLineupWithMarket(state.division);
     el.lineupSlots.replaceChildren(...ROLE_ORDER.map((role) => lineupSlot(role, lineup.slots[role])), reserveSlot(lineup.reserve));
     const spent = lineupPurchaseCost(lineup);
     const selected = Object.values(lineup.slots).filter(Boolean).length;
@@ -740,10 +744,16 @@
     el.fantasyTeamName.textContent = state.teamName;
     const reserveError = lineup.reserve && selected === 6 ? reserveValidationMessage(lineup.reserve, lineup) : "";
     const closed = !isMarketOpen();
-    el.saveLineup.disabled = closed || selected !== 6 || !lineup.captainId || spent > config.budget + 0.001 || Boolean(reserveError);
+    const overBudget = spent > config.budget + 0.001;
+    el.saveLineup.disabled = closed || selected !== 6 || !lineup.captainId || overBudget || Boolean(reserveError);
     el.saveLineup.textContent = closed ? "Mercado fechado" : (lineup.saved ? "Atualizar escalação" : "Salvar escalação");
     el.shareLineup.disabled = selected === 0;
     el.captainReminder.hidden = selected !== 6 || Boolean(lineup.captainId);
+    if (!closed && selected === 6 && overBudget) {
+      setMessage(`Sua escalação está em RK$ ${formatMoney(spent)} após a atualização dos preços. Troque uma ou mais escolhas para ficar dentro do limite de RK$ ${formatMoney(config.budget)}.`, true);
+    } else if (el.lineupMessage.textContent.includes("após a atualização dos preços")) {
+      setMessage("", false);
+    }
     el.roleShortcuts.forEach((button) => {
       const role = button.dataset.roleShortcut;
       button.classList.toggle("active", role === el.roleFilter.value);
@@ -965,6 +975,7 @@
   }
 
   async function saveLineup() {
+    syncLineupWithMarket(state.division, { forceCurrentPrices: true });
     const lineup = currentLineup();
     const items = Object.values(lineup.slots).filter(Boolean);
     if (!isMarketOpen()) {
@@ -974,6 +985,13 @@
     }
     if (items.length !== 6 || !lineup.captainId) {
       setMessage("Complete as seis vagas e escolha um capitão.", true);
+      return;
+    }
+    const currentCost = lineupCost(lineup);
+    if (currentCost > config.budget) {
+      setMessage(`Os preços do mercado foram atualizados e sua escalação agora custa RK$ ${formatNumber(currentCost)}. Troque um ou mais nomes para voltar ao limite de RK$ ${formatNumber(config.budget)}.`, true);
+      renderLineup();
+      renderMarket();
       return;
     }
     if (!state.userName && config.backendMode === "local") {
@@ -1220,11 +1238,11 @@
       for (const pick of payload.lineup.picks || []) {
         const role = normalizeRole(pick.role);
         const marketItem = state.market[division].find((item) => item.id === String(pick.id));
-        if (marketItem && ROLE_ORDER.includes(role)) lineup.slots[role] = savedMarketItem(marketItem, pick);
+        if (marketItem && ROLE_ORDER.includes(role)) lineup.slots[role] = savedMarketItem(marketItem, pick, division);
       }
       if (payload.lineup.reserve && payload.lineup.reserve.id) {
         const reserveItem = state.market[division].find((item) => item.id === String(payload.lineup.reserve.id));
-        if (reserveItem && reserveItem.type === "player") lineup.reserve = savedMarketItem(reserveItem, payload.lineup.reserve);
+        if (reserveItem && reserveItem.type === "player") lineup.reserve = savedMarketItem(reserveItem, payload.lineup.reserve, division);
       }
       if (!lineup.reserve && previousReserve && previousReserve.id) {
         const reserveItem = state.market[division].find((item) => item.id === String(previousReserve.id));
@@ -1238,11 +1256,58 @@
     }
   }
 
-  function savedMarketItem(marketItem, pick) {
+  function savedMarketItem(marketItem, pick, division = state.division) {
+    const priceSource = state.marketOpen[division] ? marketItem.price : (pick && pick.price);
     return {
       ...marketItem,
-      purchasePrice: Number.isFinite(Number(pick && pick.price)) ? roundMoney(pick.price) : roundMoney(marketItem.price)
+      purchasePrice: Number.isFinite(Number(priceSource)) ? roundMoney(priceSource) : roundMoney(marketItem.price)
     };
+  }
+
+  function syncAllLineupsWithMarket(options = {}) {
+    Object.keys(state.lineups).forEach((division) => syncLineupWithMarket(division, options));
+  }
+
+  function syncLineupWithMarket(division, options = {}) {
+    const lineup = state.lineups[division];
+    const market = state.market[division] || [];
+    if (!lineup || !market.length) return false;
+
+    let changed = false;
+    const forceCurrentPrices = Boolean(options.forceCurrentPrices);
+    const useCurrentPrices = forceCurrentPrices || Boolean(state.marketOpen[division]);
+
+    const syncItem = (item) => {
+      if (!item || !item.id) return item;
+      const marketItem = market.find((candidate) => candidate.id === String(item.id));
+      if (!marketItem) return item;
+      const purchaseSource = useCurrentPrices ? marketItem.price : itemPurchasePrice(item);
+      const purchasePrice = Number.isFinite(Number(purchaseSource)) ? roundMoney(purchaseSource) : roundMoney(marketItem.price);
+      const synced = { ...marketItem, purchasePrice };
+      if (
+        item.price !== synced.price ||
+        item.purchasePrice !== synced.purchasePrice ||
+        item.name !== synced.name ||
+        item.teamTag !== synced.teamTag ||
+        item.teamSlot !== synced.teamSlot
+      ) {
+        changed = true;
+      }
+      return synced;
+    };
+
+    for (const role of ROLE_ORDER) {
+      lineup.slots[role] = syncItem(lineup.slots[role]);
+    }
+    lineup.reserve = syncItem(lineup.reserve);
+
+    if (lineup.captainId && !Object.values(lineup.slots).some((item) => item && item.id === lineup.captainId)) {
+      lineup.captainId = "";
+      changed = true;
+    }
+
+    if (changed) persistLocalState();
+    return changed;
   }
 
   async function loadCloudConfig(division) {
