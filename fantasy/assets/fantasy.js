@@ -731,7 +731,6 @@
   function renderLineup() {
     const lineup = currentLineup();
     el.lineupSlots.replaceChildren(...ROLE_ORDER.map((role) => lineupSlot(role, lineup.slots[role])), reserveSlot(lineup.reserve));
-    const budgetCost = lineupCost(lineup);
     const spent = lineupPurchaseCost(lineup);
     const selected = Object.values(lineup.slots).filter(Boolean).length;
     el.budgetTotal.textContent = formatMoney(lineupPatrimony(lineup));
@@ -741,7 +740,7 @@
     el.fantasyTeamName.textContent = state.teamName;
     const reserveError = lineup.reserve && selected === 6 ? reserveValidationMessage(lineup.reserve, lineup) : "";
     const closed = !isMarketOpen();
-    el.saveLineup.disabled = closed || selected !== 6 || !lineup.captainId || budgetCost > config.budget || Boolean(reserveError);
+    el.saveLineup.disabled = closed || selected !== 6 || !lineup.captainId || spent > config.budget + 0.001 || Boolean(reserveError);
     el.saveLineup.textContent = closed ? "Mercado fechado" : (lineup.saved ? "Atualizar escalação" : "Salvar escalação");
     el.shareLineup.disabled = selected === 0;
     el.captainReminder.hidden = selected !== 6 || Boolean(lineup.captainId);
@@ -855,8 +854,8 @@
   function addItem(item) {
     const lineup = currentLineup();
     const replacing = lineup.slots[item.role];
-    const nextCost = lineupCost(lineup) - (replacing ? replacing.price : 0) + item.price;
-    if (nextCost > config.budget) {
+    const nextCost = lineupPurchaseCost(lineup) - (replacing ? itemPurchasePrice(replacing) : 0) + Number(item.price || 0);
+    if (nextCost > config.budget + 0.001) {
       setMessage("Seu orçamento não é suficiente para essa escolha.", true);
       return;
     }

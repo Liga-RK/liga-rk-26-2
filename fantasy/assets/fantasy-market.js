@@ -1276,7 +1276,7 @@ window.FANTASY_RK_MARKET = {
         "tier": "MASTER",
         "opgg": "https://op.gg/pt/lol/summoners/br/peido%20sniffer-6767",
         "captain": false,
-        "logo": "assets/uploads/equipes_elite/tsb.png",
+        "logo": "assets/uploads/equipes_elite/sdk.png",
         "artwork": "assets/uploads/equipes_elite/jogadores/top/sdk_1.png",
         "price": 14,
         "average": 0
@@ -1294,7 +1294,7 @@ window.FANTASY_RK_MARKET = {
         "tier": "MASTER",
         "opgg": "https://op.gg/pt/lol/summoners/br/LittleTeclas-0402",
         "captain": false,
-        "logo": "assets/uploads/equipes_elite/tsb.png",
+        "logo": "assets/uploads/equipes_elite/sdk.png",
         "artwork": "assets/uploads/equipes_elite/jogadores/jg/sdk_2.png",
         "price": 15,
         "average": 0
@@ -1312,7 +1312,7 @@ window.FANTASY_RK_MARKET = {
         "tier": "MASTER",
         "opgg": "https://op.gg/pt/lol/summoners/br/Dynas-Alone",
         "captain": false,
-        "logo": "assets/uploads/equipes_elite/tsb.png",
+        "logo": "assets/uploads/equipes_elite/sdk.png",
         "artwork": "assets/uploads/equipes_elite/jogadores/mid/sdk_3.png",
         "price": 17,
         "average": 0
@@ -1330,7 +1330,7 @@ window.FANTASY_RK_MARKET = {
         "tier": "GRANDMASTER",
         "opgg": "https://op.gg/pt/lol/summoners/br/epilul-ROX",
         "captain": false,
-        "logo": "assets/uploads/equipes_elite/tsb.png",
+        "logo": "assets/uploads/equipes_elite/sdk.png",
         "artwork": "assets/uploads/equipes_elite/jogadores/adc/sdk_4.png",
         "price": 17,
         "average": 0
@@ -1348,7 +1348,7 @@ window.FANTASY_RK_MARKET = {
         "tier": "MASTER",
         "opgg": "https://op.gg/pt/lol/summoners/br/Oxossi-SDK",
         "captain": true,
-        "logo": "assets/uploads/equipes_elite/tsb.png",
+        "logo": "assets/uploads/equipes_elite/sdk.png",
         "artwork": "assets/uploads/equipes_elite/jogadores/sup/sdk_5.png",
         "price": 14,
         "average": 0
@@ -1619,7 +1619,7 @@ window.FANTASY_RK_MARKET = {
         "teamName": "SPACE DUCKS",
         "teamTag": "SDK",
         "teamSlot": "D3",
-        "logo": "assets/uploads/equipes_elite/tsb.png",
+        "logo": "assets/uploads/equipes_elite/sdk.png",
         "price": 15,
         "average": 0
       },
