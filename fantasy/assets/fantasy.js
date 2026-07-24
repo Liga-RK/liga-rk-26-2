@@ -992,7 +992,7 @@
       teamName: state.teamName,
       captainPlayerId: lineup.captainId,
       picks: items.map((item) => ({ id: item.id, role: item.role, price: item.price, teamSlot: item.teamSlot })),
-      reserve: lineup.reserve ? { id: lineup.reserve.id, role: lineup.reserve.role, price: lineup.reserve.price, teamSlot: lineup.reserve.teamSlot } : null
+      reserve: lineup.reserve ? { id: lineup.reserve.id, role: lineup.reserve.role, price: 0, teamSlot: lineup.reserve.teamSlot } : null
     };
 
     el.saveLineup.disabled = true;
