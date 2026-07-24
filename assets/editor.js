@@ -253,6 +253,7 @@
           <button type="button" data-action="check-online">Testar acesso</button>
           <button type="button" data-action="publish-online">Publicar online</button>
           <button type="button" data-action="load-online">Carregar online</button>
+          <button type="button" data-action="download-fantasy-starters">Baixar JSON titulares</button>
           <button type="button" data-action="download">Baixar backup</button>
           <label class="file-button">
             Importar backup
@@ -833,6 +834,9 @@
     if (action === "download") {
       downloadFile();
     }
+    if (action === "download-fantasy-starters") {
+      downloadFantasyStartersJson();
+    }
     if (action === "copy") {
       copyFile();
     }
@@ -1245,6 +1249,322 @@
     link.click();
     URL.revokeObjectURL(link.href);
     setStatus("Backup baixado. Use apenas se quiser guardar uma copia local dos dados.");
+  }
+
+  function downloadFantasyStartersJson() {
+    const payload = buildFantasyStartersPayload();
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `liga-rk-26-2-fantasy-titulares-r1-${dateStamp()}.json`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+    const total = Object.values(payload.divisions).reduce((sum, division) => sum + division.players.length, 0);
+    setStatus(`JSON dos titulares baixado com ${total} jogadores. Quando o elo nao estiver salvo no cadastro local, foi usada a faixa-base da divisao.`);
+  }
+
+  function buildFantasyStartersPayload() {
+    const generatedAt = new Date().toISOString();
+    return {
+      schemaVersion: 1,
+      season: "Liga RK 26.2",
+      round: 1,
+      generatedAt,
+      source: "Editor Liga RK 26.2 - assets/content.js",
+      notes: [
+        "Contem apenas jogadores titulares: TOP, JG, MID, ADC e SUP.",
+        "O eloAtual vem do cadastro local quando existir; caso o conteudo nao tenha campo de elo salvo, usa a faixa-base da divisao para nao deixar o jogador sem precificacao.",
+        "Os precos iniciais usam RK$ e um modelo inspirado em mercado de fantasy: base por elo/faixa da divisao, ajuste por rota e pequeno ajuste deterministico por jogador.",
+        "Pontuacao e valorizacao futuras devem ser recalculadas apos processamento das partidas oficiais da rodada."
+      ],
+      pricing: {
+        currency: "RK$",
+        budgetReference: 100,
+        model: "initial-division-elo-baseline",
+        unknownEloPolicy: "Usa a faixa-base da divisao quando nao houver elo persistido no cadastro local.",
+        tierBasePrices: fantasyTierBasePrices(),
+        roleAdjustments: fantasyRoleAdjustments()
+      },
+      divisions: {
+        elite: buildFantasyDivision("elite", generatedAt),
+        ascension: buildFantasyDivision("ascension", generatedAt)
+      }
+    };
+  }
+
+  function buildFantasyDivision(key, generatedAt) {
+    const division = state.divisions[key] || { teams: {} };
+    const players = [];
+
+    slotOrder.forEach((slot) => {
+      const team = division.teams && division.teams[slot];
+      if (!isRealTeam(team)) return;
+
+      (team.players || []).forEach((player, index) => {
+        const lane = normalizeFantasyLane(player && player.lane);
+        if (!["TOP", "JG", "MID", "ADC", "SUP"].includes(lane)) return;
+        if (index > 4) return;
+        if (!isRealPlayer(player)) return;
+
+        const elo = resolvePlayerElo(player, key);
+        const price = calculateInitialFantasyPrice({ divisionKey: key, lane, elo, player, team, slot, index });
+        players.push({
+          id: String(player.playerId || `${key}:${slot}:${index}`),
+          division: key,
+          divisionLabel: divisionLabels[key] || key,
+          teamSlot: slot,
+          teamName: normalizeText(team.name),
+          teamTag: normalizeText(team.tag || slot).toUpperCase(),
+          teamLogo: normalizeText(team.logo),
+          lane,
+          laneLabel: lane,
+          playerName: normalizeText(player.player || player.name),
+          riotId: normalizeText(player.riotId),
+          gameName: normalizeText(player.gameName),
+          tagLine: normalizeText(player.tagLine),
+          opgg: normalizeText(player.opgg),
+          captain: Boolean(player.captain),
+          eloAtual: elo.label,
+          eloTier: elo.tier,
+          eloSource: elo.source,
+          eloVerifiedAt: elo.verifiedAt,
+          marketValue: price.value,
+          marketCurrency: "RK$",
+          priceBasis: price.basis,
+          roundStats: {
+            games: 0,
+            wins: 0,
+            losses: 0,
+            kills: 0,
+            deaths: 0,
+            assists: 0,
+            kda: 0,
+            kp: 0,
+            dpm: 0,
+            gpm: 0,
+            visionScore: 0,
+            mvp: 0,
+            points: 0,
+            priceVariation: 0
+          },
+          availability: {
+            status: "available",
+            locked: false,
+            updatedAt: generatedAt
+          }
+        });
+      });
+    });
+
+    return {
+      label: divisionLabels[key] || key,
+      startersOnly: true,
+      expectedTeams: 16,
+      expectedPlayersPerTeam: 5,
+      players,
+      playersCount: players.length,
+      teamsCount: new Set(players.map((player) => player.teamSlot)).size,
+      missingStarters: findMissingFantasyStarters(key)
+    };
+  }
+
+  function findMissingFantasyStarters(key) {
+    const division = state.divisions[key] || { teams: {} };
+    const missing = [];
+    slotOrder.forEach((slot) => {
+      const team = division.teams && division.teams[slot];
+      if (!isRealTeam(team)) return;
+      ["TOP", "JG", "MID", "ADC", "SUP"].forEach((lane, index) => {
+        if (!isRealPlayer((team.players || [])[index])) {
+          missing.push({
+            teamSlot: slot,
+            teamName: normalizeText(team.name),
+            teamTag: normalizeText(team.tag || slot).toUpperCase(),
+            lane
+          });
+        }
+      });
+    });
+    return missing;
+  }
+
+  function resolvePlayerElo(player, divisionKey) {
+    const candidates = [
+      player.elo,
+      player.eloAtual,
+      player.currentElo,
+      player.currentRank,
+      player.rank,
+      player.rankSolo,
+      player.soloRank,
+      player.soloQueueRank,
+      player.soloDuoRank,
+      player.tier,
+      player.ranked,
+      player.rankedSolo,
+      player.rankedSoloDuo,
+      player.soloq,
+      player.soloQueue,
+      player.league,
+      player.leagueRank,
+      player.profile
+    ];
+
+    const found = candidates
+      .map((candidate) => formatEloCandidate(candidate))
+      .find(Boolean);
+
+    const raw = normalizeText(found);
+    if (raw) {
+      return {
+        label: raw,
+        tier: normalizeEloTier(raw, divisionKey),
+        source: "cadastro-local",
+        verifiedAt: normalizeText(player.eloVerifiedAt || player.rankVerifiedAt || player.updatedAt) || null
+      };
+    }
+
+    const fallback = divisionKey === "elite"
+      ? { label: "Faixa Elite (D3-GM)", tier: "ELITE_BASE" }
+      : { label: "Faixa Ascensao (D4-)", tier: "ASCENSION_BASE" };
+
+    return {
+      label: fallback.label,
+      tier: fallback.tier,
+      source: "faixa-base-divisao",
+      verifiedAt: null
+    };
+  }
+
+  function formatEloCandidate(candidate) {
+    if (!candidate) return "";
+    if (typeof candidate === "string" || typeof candidate === "number") return normalizeText(candidate);
+    if (Array.isArray(candidate)) {
+      return candidate.map(formatEloCandidate).find(Boolean) || "";
+    }
+    if (typeof candidate !== "object") return "";
+
+    const nested = [
+      candidate.solo,
+      candidate.soloDuo,
+      candidate.soloQueue,
+      candidate.rankedSolo,
+      candidate.rankedSoloDuo,
+      candidate.current,
+      candidate.highest
+    ].map(formatEloCandidate).find(Boolean);
+    if (nested) return nested;
+
+    const tier = normalizeText(candidate.tier || candidate.rankTier || candidate.league || candidate.queueTier);
+    const rank = normalizeText(candidate.rank || candidate.division || candidate.queueRank);
+    const lp = normalizeText(candidate.lp || candidate.leaguePoints);
+    if (tier || rank) return [tier, rank, lp && `${lp} LP`].filter(Boolean).join(" ");
+
+    return normalizeText(candidate.label || candidate.name || candidate.value);
+  }
+
+  function normalizeEloTier(value, divisionKey) {
+    const text = normalizeText(value)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toUpperCase();
+    if (/CHALLENGER|DESAFIANTE/.test(text)) return "CHALLENGER";
+    if (/GRANDMASTER|GRAO.?MESTRE|GRAO MESTRE/.test(text)) return "GRANDMASTER";
+    if (/MASTER|MESTRE/.test(text)) return "MASTER";
+    if (/DIAMOND|DIAMANTE/.test(text)) return "DIAMOND";
+    if (/EMERALD|ESMERALDA/.test(text)) return "EMERALD";
+    if (/PLATINUM|PLATINA/.test(text)) return "PLATINUM";
+    if (/GOLD|OURO/.test(text)) return "GOLD";
+    if (/SILVER|PRATA/.test(text)) return "SILVER";
+    if (/BRONZE/.test(text)) return "BRONZE";
+    if (/IRON|FERRO/.test(text)) return "IRON";
+    return divisionKey === "elite" ? "ELITE_BASE" : "ASCENSION_BASE";
+  }
+
+  function calculateInitialFantasyPrice({ divisionKey, lane, elo, player, team, slot, index }) {
+    const tierBase = fantasyTierBasePrices()[elo.tier] || (divisionKey === "elite" ? 13.8 : 13.2);
+    const roleAdjustment = fantasyRoleAdjustments()[lane] || 0;
+    const seed = stableFantasyNumber(`${divisionKey}:${slot}:${index}:${team.tag || ""}:${player.player || ""}:${player.riotId || ""}`);
+    const deterministicAdjustment = ((seed % 17) - 8) / 20;
+    const value = roundMoney(Math.max(8, tierBase + roleAdjustment + deterministicAdjustment));
+
+    return {
+      value,
+      basis: {
+        tier: elo.tier,
+        tierBase,
+        roleAdjustment,
+        deterministicAdjustment: roundMoney(deterministicAdjustment),
+        source: elo.source
+      }
+    };
+  }
+
+  function fantasyTierBasePrices() {
+    return {
+      IRON: 10.5,
+      BRONZE: 11,
+      SILVER: 11.5,
+      GOLD: 12,
+      PLATINUM: 12.5,
+      EMERALD: 13,
+      DIAMOND: 13.5,
+      MASTER: 14.5,
+      GRANDMASTER: 15,
+      CHALLENGER: 15.5,
+      ASCENSION_BASE: 13.2,
+      ELITE_BASE: 13.8
+    };
+  }
+
+  function fantasyRoleAdjustments() {
+    return {
+      TOP: 0,
+      JG: 0.15,
+      MID: 0.25,
+      ADC: 0.25,
+      SUP: -0.15
+    };
+  }
+
+  function normalizeFantasyLane(value) {
+    return normalizeText(value).toUpperCase();
+  }
+
+  function isRealTeam(team) {
+    const name = normalizeText(team && team.name);
+    return Boolean(name) && !/^(nome do time|vaga disponivel|vaga disponível)$/i.test(name);
+  }
+
+  function isRealPlayer(player) {
+    const name = normalizeText(player && (player.player || player.name));
+    const identity = normalizeText(player && (player.riotId || player.opgg));
+    if (!name && !identity) return false;
+    return !/^(jogador|player|--|-|sub|vaga disponivel|vaga disponível)$/i.test(name);
+  }
+
+  function normalizeText(value) {
+    return String(value || "").trim();
+  }
+
+  function stableFantasyNumber(value) {
+    let hash = 2166136261;
+    const text = String(value || "");
+    for (let index = 0; index < text.length; index += 1) {
+      hash ^= text.charCodeAt(index);
+      hash = Math.imul(hash, 16777619);
+    }
+    return Math.abs(hash >>> 0);
+  }
+
+  function roundMoney(value) {
+    return Math.round((Number(value) || 0) * 100) / 100;
+  }
+
+  function dateStamp() {
+    const date = new Date();
+    const pad = (value) => String(value).padStart(2, "0");
+    return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}`;
   }
 
   async function copyFile() {

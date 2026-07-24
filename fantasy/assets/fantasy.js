@@ -10,6 +10,7 @@
     season: "Liga RK 26.2",
     ...(window.FANTASY_RK_CONFIG || {})
   };
+  const officialMarket = window.FANTASY_RK_MARKET || null;
   const AUTH_STORAGE_KEY = "rk-fantasy-session-v1";
   let authToken = readAuthToken();
   let initialAuthMessage = "";
@@ -190,6 +191,7 @@
     }
 
     state.loaded = true;
+    reconcileLineupsWithMarket();
     el.marketLoading.hidden = true;
     el.marketGrid.hidden = false;
     renderMarket();
@@ -201,7 +203,7 @@
     const response = await apiFetch(`/api/fantasy/market?division=${encodeURIComponent(division)}`, { cache: "no-store" });
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(apiErrorMessage(payload, `Mercado ${division} indisponível.`));
-    return (payload.market || []).map((item) => ({
+    const cloudMarket = (payload.market || []).map((item) => ({
       id: String(item.id),
       type: item.type === "team" ? "team" : "player",
       role: normalizeRole(item.role),
@@ -210,9 +212,15 @@
       teamTag: cleanText(item.teamTag).toUpperCase(),
       teamSlot: cleanText(item.teamSlot),
       logo: normalizeAssetPath(item.logo),
+      artwork: normalizeAssetPath(item.artwork),
+      riotId: cleanText(item.riotId),
+      elo: cleanText(item.elo),
+      tier: cleanText(item.tier),
+      opgg: cleanText(item.opgg),
       price: roundMoney(item.price),
       average: roundMoney(item.average)
     }));
+    return mergeOfficialMarket(division, cloudMarket);
   }
 
   function buildMarket(division, divisionKey) {
@@ -258,7 +266,58 @@
         });
       });
     });
-    return entries;
+    return mergeOfficialMarket(divisionKey, entries);
+  }
+
+  function officialMarketForDivision(division) {
+    const items = officialMarket && officialMarket.divisions && officialMarket.divisions[division];
+    if (!Array.isArray(items)) return [];
+    return items.map(normalizeMarketItem).filter((item) => item.id && item.name && ROLE_ORDER.includes(item.role));
+  }
+
+  function normalizeMarketItem(item) {
+    return {
+      id: String(item.id || ""),
+      type: item.type === "team" ? "team" : "player",
+      role: normalizeRole(item.role),
+      name: cleanText(item.name),
+      teamName: cleanText(item.teamName),
+      teamTag: cleanText(item.teamTag).toUpperCase(),
+      teamSlot: cleanText(item.teamSlot),
+      riotId: cleanText(item.riotId),
+      elo: cleanText(item.elo),
+      tier: cleanText(item.tier),
+      opgg: cleanText(item.opgg),
+      captain: Boolean(item.captain),
+      logo: normalizeAssetPath(item.logo),
+      artwork: normalizeAssetPath(item.artwork),
+      price: Number.isFinite(Number(item.price)) ? Number(item.price) : 0,
+      average: Number.isFinite(Number(item.average)) ? Number(item.average) : 0
+    };
+  }
+
+  function mergeOfficialMarket(division, baseItems) {
+    const officialItems = officialMarketForDivision(division);
+    if (!officialItems.length) return baseItems;
+    const baseByKey = new Map(baseItems.map((item) => [marketMergeKey(item), item]));
+    const merged = officialItems.map((official) => {
+      const base = baseByKey.get(marketMergeKey(official));
+      return {
+        ...(base || {}),
+        ...official,
+        id: base && base.id ? base.id : official.id,
+        price: roundMoney(official.price),
+        average: roundMoney(Number.isFinite(official.average) ? official.average : (base && base.average))
+      };
+    });
+    return merged.sort((a, b) => ROLE_ORDER.indexOf(a.role) - ROLE_ORDER.indexOf(b.role) || a.teamSlot.localeCompare(b.teamSlot, "pt-BR") || a.name.localeCompare(b.name, "pt-BR"));
+  }
+
+  function marketMergeKey(item) {
+    const type = item && item.type === "team" ? "team" : "player";
+    const role = normalizeRole(item && item.role);
+    const team = cleanText(item && item.teamSlot) || cleanText(item && item.teamTag).toUpperCase();
+    return `${type}:${team}:${role}`;
   }
 
   function renderMarket() {
@@ -520,11 +579,15 @@
     selector.setAttribute("aria-label", `Filtrar mercado por ${ROLE_LABELS[role]}`);
     selector.addEventListener("click", () => setRoleFilter(role));
     const badge = document.createElement("div");
-    badge.className = "role-badge";
-    const roleIcon = document.createElement("img");
-    roleIcon.src = ROLE_ASSETS[role];
-    roleIcon.alt = "";
-    badge.appendChild(roleIcon);
+    badge.className = `role-badge${item ? " selected-item-badge" : ""}`;
+    if (item) {
+      badge.appendChild(createLogo(item));
+    } else {
+      const roleIcon = document.createElement("img");
+      roleIcon.src = ROLE_ASSETS[role];
+      roleIcon.alt = "";
+      badge.appendChild(roleIcon);
+    }
 
     const info = document.createElement("div");
     info.className = "slot-info";
@@ -572,8 +635,12 @@
     selector.addEventListener("click", () => setRoleFilter("ALL"));
 
     const badge = document.createElement("div");
-    badge.className = "role-badge reserve-badge";
-    badge.textContent = "R";
+    badge.className = `role-badge reserve-badge${item ? " selected-item-badge" : ""}`;
+    if (item) {
+      badge.appendChild(createLogo(item));
+    } else {
+      badge.textContent = "R";
+    }
 
     const info = document.createElement("div");
     info.className = "slot-info";
@@ -1080,6 +1147,19 @@
     return lineup;
   }
 
+  function reconcileLineupsWithMarket() {
+    for (const division of ["elite", "ascension"]) {
+      const market = new Map((state.market[division] || []).map((item) => [item.id, item]));
+      const lineup = state.lineups[division];
+      if (!lineup) continue;
+      for (const role of ROLE_ORDER) {
+        const picked = lineup.slots[role];
+        if (picked && market.has(picked.id)) lineup.slots[role] = market.get(picked.id);
+      }
+      if (lineup.reserve && market.has(lineup.reserve.id)) lineup.reserve = market.get(lineup.reserve.id);
+    }
+  }
+
   function emptyLineup() {
     return { slots: Object.fromEntries(ROLE_ORDER.map((role) => [role, null])), reserve: null, captainId: "", saved: false };
   }
@@ -1161,6 +1241,7 @@
   }
 
   function itemArtworkPath(item) {
+    if (item && item.artwork) return item.artwork;
     if (!item || item.type === "team" || item.role === "TEAM") return item && item.logo ? item.logo : "";
     if (shouldUseTeamLogoOnly(item)) return "";
     const divisionFolder = state.division === "elite" ? "equipes_elite" : "equipes_ascensao";
@@ -1561,7 +1642,9 @@
   }
 
   function formatNumber(value) {
-    return Number(value || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const number = Number(value || 0);
+    const integer = Number.isInteger(number);
+    return number.toLocaleString("pt-BR", { minimumFractionDigits: integer ? 0 : 2, maximumFractionDigits: integer ? 0 : 2 });
   }
 
   function cleanText(value) {

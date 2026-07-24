@@ -10,13 +10,18 @@
   <title>RK Fantasy | Liga RK 26.2</title>
   <link rel="icon" type="image/png" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
   <link rel="apple-touch-icon" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
-  <link rel="stylesheet" href="assets/fantasy.css?v=20260723-popular" />
+  <link rel="stylesheet" href="assets/fantasy.css?v=20260724-market" />
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="index.html" aria-label="Ir para o início do RK Fantasy">
-      <img class="brand-logo" src="assets/branding/logo-rk-fantasy.png" alt="Logo oficial do RK Fantasy" />
-    </a>
+    <div class="brand-actions">
+      <a class="brand" href="index.html" aria-label="Ir para o início do RK Fantasy">
+        <img class="brand-logo" src="assets/branding/logo-rk-fantasy.png" alt="Logo oficial do RK Fantasy" />
+      </a>
+      <a class="league-home-link" href="https://liga-rk.github.io/liga-rk-26-2/" aria-label="Ir para o site oficial da Liga RK 26.2">
+        <img src="assets/branding/logo-liga-rk.png" alt="Liga RK 26.2" />
+      </a>
+    </div>
     <nav class="top-nav" aria-label="Navegação do RK Fantasy">
       <button class="nav-button active" type="button" data-view="market">Mercado</button>
       <button class="nav-button" type="button" data-view="ranking">Ranking</button>
@@ -32,7 +37,7 @@
     <section class="hero">
       <div class="hero-copy">
         <span class="eyebrow">Monte seu time. Dispute cada rodada.</span>
-        <h1>O FANTASY DA <em>LIGA RK</em></h1>
+        <h1>O FANTASY DA<br><em>LIGA RK</em></h1>
         <p>Escolha um jogador de cada posição, respeite o orçamento e acompanhe sua pontuação rodada após rodada.</p>
       </div>
       <div class="hero-status" aria-label="Situação do mercado">
@@ -281,7 +286,8 @@
   </dialog>
 
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/fantasy.js?v=20260723-popular"></script>
+  <script src="assets/fantasy-market.js?v=20260724-market"></script>
+  <script src="assets/fantasy.js?v=20260724-market"></script>
   <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260723-popular");</script>
 </body>
 </html>
