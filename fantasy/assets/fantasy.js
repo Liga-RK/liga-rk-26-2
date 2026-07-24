@@ -1495,7 +1495,7 @@
     const message = apiErrorMessage(payload, "Não foi possível salvar a escalação.");
     if (!isBudgetRejection(message)) return message;
     const localCost = formatMoney(lineupPurchaseCost(lineup));
-    return `O servidor ainda está usando uma tabela de preços diferente da tela. Sua escalação aparece como RK$ ${localCost} aqui, mas a API online recusou por orçamento. Atualize o mercado no painel de operação do Fantasy e tente novamente.`;
+    return `Sua escalação está em RK$ ${localCost} após a atualização dos preços. Troque uma ou mais escolhas para ficar dentro do limite de RK$ ${formatMoney(config.budget)} e tente salvar novamente.`;
   }
 
   function restoreLocalState() {
