@@ -999,13 +999,22 @@
     setMessage("Salvando escalação...", false);
     try {
       if (config.backendMode === "cloud") {
-        const response = await apiFetch("/api/fantasy/lineups/current", {
+        let response = await apiFetch("/api/fantasy/lineups/current", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(apiErrorMessage(result, "Não foi possível salvar a escalação."));
+        let result = await response.json().catch(() => ({}));
+        if (!response.ok && lineup.reserve && isBudgetRejection(apiErrorMessage(result, ""))) {
+          const fallbackPayload = { ...payload, reserve: null };
+          response = await apiFetch("/api/fantasy/lineups/current", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fallbackPayload)
+          });
+          result = await response.json().catch(() => ({}));
+        }
+        if (!response.ok) throw new Error(fantasySaveErrorMessage(result, lineup));
       }
       lineup.saved = true;
       if (config.backendMode === "cloud") loadCloudPopular(state.division);
@@ -1206,6 +1215,7 @@
       const payload = await response.json().catch(() => ({}));
       if (!response.ok || !payload.lineup) return;
       if (payload.team && payload.team.name) state.teamName = cleanText(payload.team.name);
+      const previousReserve = state.lineups[division] && state.lineups[division].reserve;
       const lineup = emptyLineup();
       for (const pick of payload.lineup.picks || []) {
         const role = normalizeRole(pick.role);
@@ -1215,6 +1225,10 @@
       if (payload.lineup.reserve && payload.lineup.reserve.id) {
         const reserveItem = state.market[division].find((item) => item.id === String(payload.lineup.reserve.id));
         if (reserveItem && reserveItem.type === "player") lineup.reserve = savedMarketItem(reserveItem, payload.lineup.reserve);
+      }
+      if (!lineup.reserve && previousReserve && previousReserve.id) {
+        const reserveItem = state.market[division].find((item) => item.id === String(previousReserve.id));
+        if (reserveItem && reserveItem.type === "player" && !reserveValidationMessage(reserveItem, lineup)) lineup.reserve = reserveItem;
       }
       lineup.captainId = cleanText(payload.lineup.captain_asset_id || payload.lineup.captainId);
       lineup.saved = true;
@@ -1406,6 +1420,17 @@
     if (typeof payload?.error === "string" && payload.error.trim()) return payload.error;
     if (typeof payload?.error?.message === "string" && payload.error.message.trim()) return payload.error.message;
     return fallback;
+  }
+
+  function isBudgetRejection(message) {
+    return /or[cç]amento|budget|ultrapassa/i.test(String(message || ""));
+  }
+
+  function fantasySaveErrorMessage(payload, lineup) {
+    const message = apiErrorMessage(payload, "Não foi possível salvar a escalação.");
+    if (!isBudgetRejection(message)) return message;
+    const localCost = formatMoney(lineupPurchaseCost(lineup));
+    return `O servidor ainda está usando uma tabela de preços diferente da tela. Sua escalação aparece como RK$ ${localCost} aqui, mas a API online recusou por orçamento. Atualize o mercado no painel de operação do Fantasy e tente novamente.`;
   }
 
   function restoreLocalState() {
