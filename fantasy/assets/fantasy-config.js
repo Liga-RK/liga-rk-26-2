@@ -4,5 +4,7 @@ window.FANTASY_RK_CONFIG = {
   backendMode: "cloud",
   budget: 100,
   maxPlayersPerRealTeam: 2,
-  season: "Liga RK 26.2"
+  season: "Liga RK 26.2",
+  roundOneName: "Rodada 1",
+  roundOneLocksAt: "2026-07-25T19:50:00.000Z"
 };

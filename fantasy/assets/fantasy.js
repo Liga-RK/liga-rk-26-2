@@ -11,6 +11,18 @@
     ...(window.FANTASY_RK_CONFIG || {})
   };
   const officialMarket = window.FANTASY_RK_MARKET || null;
+  const ROUND_ONE_NAME = cleanText(config.roundOneName) || "Rodada 1";
+  const ROUND_ONE_LOCKS_AT = cleanText(config.roundOneLocksAt) || "2026-07-25T19:50:00.000Z";
+  const MANUAL_PRICE_OVERRIDES = new Map(Object.entries({
+    MAYAN: 14,
+    BOTAS: 14,
+    MAYTAS: 13,
+    ERICK: 15,
+    YUJAY: 13,
+    GENGI: 12,
+    KYLLUA: 14,
+    ZAHIR: 17
+  }));
   const AUTH_STORAGE_KEY = "rk-fantasy-session-v1";
   let authToken = readAuthToken();
   let initialAuthMessage = "";
@@ -327,7 +339,7 @@
 
   function mergeOfficialMarket(division, baseItems) {
     const officialItems = officialMarketForDivision(division);
-    if (!officialItems.length) return baseItems;
+    if (!officialItems.length) return baseItems.map(applyManualPriceOverride);
     const baseByKey = new Map(baseItems.map((item) => [marketMergeKey(item), item]));
     const merged = officialItems.map((official) => {
       const base = baseByKey.get(marketMergeKey(official));
@@ -339,7 +351,21 @@
         average: roundMoney(Number.isFinite(official.average) ? official.average : (base && base.average))
       };
     });
-    return merged.sort((a, b) => ROLE_ORDER.indexOf(a.role) - ROLE_ORDER.indexOf(b.role) || a.teamSlot.localeCompare(b.teamSlot, "pt-BR") || a.name.localeCompare(b.name, "pt-BR"));
+    return merged
+      .map(applyManualPriceOverride)
+      .sort((a, b) => ROLE_ORDER.indexOf(a.role) - ROLE_ORDER.indexOf(b.role) || a.teamSlot.localeCompare(b.teamSlot, "pt-BR") || a.name.localeCompare(b.name, "pt-BR"));
+  }
+
+  function applyManualPriceOverride(item) {
+    const key = cleanText(item && item.name).toLocaleUpperCase("pt-BR");
+    if (!MANUAL_PRICE_OVERRIDES.has(key)) return item;
+    const price = roundMoney(MANUAL_PRICE_OVERRIDES.get(key));
+    return {
+      ...item,
+      price,
+      previousPrice: price,
+      priceDelta: 0
+    };
   }
 
   function marketMergeKey(item) {
@@ -543,7 +569,7 @@
               <td>${escapeHtml(row.manager || "-")}</td>
               <td class="number-cell">${formatNumber(row.roundPoints)}</td>
               <td class="number-cell">${formatNumber(row.totalPoints)}</td>
-              <td class="number-cell">RK$ ${formatNumber(Number(row.wealthCents || 0) / 100)}</td>
+              <td class="number-cell">RK$ ${formatMoney(Number(row.wealthCents || 0) / 100)}</td>
             </tr>
           `).join("")}
         </tbody>
@@ -585,7 +611,7 @@
         const player = document.createElement("strong");
         player.textContent = `${item.name}${item.id === lineup.captainId ? " ★" : ""}`;
         const team = document.createElement("small");
-        team.textContent = `${item.teamTag} · RK$ ${formatNumber(item.price)}`;
+        team.textContent = `${item.teamTag} · RK$ ${formatMoney(item.price)}`;
         row.append(roleLabel, player, team);
         list.appendChild(row);
       }
@@ -620,19 +646,21 @@
     heading.append(icon, label, count);
     const cards = document.createElement("div");
     cards.className = "market-cards";
-    cards.replaceChildren(...items.map((item) => marketCard(
-      item,
-      selectedIds.has(item.id),
-      el.roleFilter.value === "ALL" && Boolean(lineup.slots[item.role]) && !selectedIds.has(item.id),
-      reserveId === item.id
-    )));
+    cards.replaceChildren(...items.map((item) => {
+      const selected = selectedIds.has(item.id);
+      const reserveSelected = reserveId === item.id;
+      const reserveError = !selected && !reserveSelected ? reserveValidationMessage(item, lineup) : "";
+      const reserveEligible = item.type === "player" && !selected && !reserveSelected && !reserveError;
+      const roleComplete = el.roleFilter.value === "ALL" && Boolean(lineup.slots[item.role]) && !selected && !reserveEligible;
+      return marketCard(item, selected, roleComplete, reserveSelected, reserveError, reserveEligible);
+    }));
     section.append(heading, cards);
     return section;
   }
 
-  function marketCard(item, selected, roleComplete, reserveSelected) {
+  function marketCard(item, selected, roleComplete, reserveSelected, reserveError = "", reserveEligible = false) {
     const card = document.createElement("article");
-    card.className = `player-card${selected ? " selected" : ""}${roleComplete ? " role-complete" : ""}${reserveSelected ? " reserve-selected" : ""}`;
+    card.className = `player-card${selected ? " selected" : ""}${roleComplete ? " role-complete" : ""}${reserveSelected ? " reserve-selected" : ""}${reserveEligible ? " reserve-eligible" : ""}`;
 
     const logo = createLogo(item);
     const meta = document.createElement("div");
@@ -654,7 +682,7 @@
 
     const price = document.createElement("div");
     price.className = "player-price";
-    price.innerHTML = `<strong><b>RK$</b> ${formatNumber(item.price)}</strong>`;
+    price.innerHTML = `<strong><b>RK$</b> ${formatMoney(item.price)}</strong>`;
     const change = priceChangeElement(item);
     if (change) price.appendChild(change);
 
@@ -672,8 +700,8 @@
       reserveButton.type = "button";
       reserveButton.className = "reserve-button";
       reserveButton.textContent = reserveSelected ? "Remover reserva" : "Reserva";
-      reserveButton.disabled = selected && !reserveSelected;
-      reserveButton.title = selected && !reserveSelected ? "Remova dos titulares antes de usar como reserva." : "Escolher como reserva";
+      reserveButton.disabled = (selected && !reserveSelected) || Boolean(reserveError);
+      reserveButton.title = selected && !reserveSelected ? "Remova dos titulares antes de usar como reserva." : (reserveError || "Escolher como reserva");
       reserveButton.addEventListener("click", () => reserveSelected ? removeReserve() : setReserve(item));
       actions.appendChild(reserveButton);
     }
@@ -696,7 +724,7 @@
     const span = document.createElement("span");
     span.className = `price-change ${delta > 0 ? "up" : "down"}`;
     span.title = delta > 0 ? "Valorizou desde a última rodada" : "Desvalorizou desde a última rodada";
-    span.textContent = `${delta > 0 ? "▲" : "▼"} RK$ ${formatNumber(Math.abs(delta))}`;
+    span.textContent = `${delta > 0 ? "▲" : "▼"} RK$ ${formatMoney(Math.abs(delta))}`;
     return span;
   }
 
@@ -706,9 +734,9 @@
     const budgetCost = lineupCost(lineup);
     const spent = lineupPurchaseCost(lineup);
     const selected = Object.values(lineup.slots).filter(Boolean).length;
-    el.budgetTotal.textContent = formatNumber(lineupPatrimony(lineup));
-    el.budgetSpent.textContent = formatNumber(spent);
-    el.budgetRemaining.textContent = formatNumber(lineupCash(lineup));
+    el.budgetTotal.textContent = formatMoney(lineupPatrimony(lineup));
+    el.budgetSpent.textContent = formatMoney(spent);
+    el.budgetRemaining.textContent = formatMoney(lineupCash(lineup));
     el.selectedCount.textContent = `${selected}/6${lineup.reserve ? " + reserva" : ""}`;
     el.fantasyTeamName.textContent = state.teamName;
     const reserveError = lineup.reserve && selected === 6 ? reserveValidationMessage(lineup.reserve, lineup) : "";
@@ -748,7 +776,7 @@
     const strong = document.createElement("strong");
     strong.textContent = item ? item.name : `Escolha ${ROLE_LABELS[role]}`;
     const detail = document.createElement("span");
-    detail.textContent = item ? `${item.teamTag} · RK$ ${formatNumber(item.price)}` : "Vaga disponível";
+    detail.textContent = item ? `${item.teamTag} · RK$ ${formatMoney(item.price)}` : "Vaga disponível";
     info.append(strong, detail);
     selector.append(badge, info);
 
@@ -802,9 +830,9 @@
     strong.textContent = item ? item.name : "Escolha reserva";
     const detail = document.createElement("span");
     detail.textContent = item
-      ? `${ROLE_LABELS[item.role]} · ${item.teamTag} · RK$ ${formatNumber(item.price)}`
+      ? `${ROLE_LABELS[item.role]} · ${item.teamTag} · RK$ ${formatMoney(item.price)}`
       : selected === 6
-        ? `Pode custar até RK$ ${formatNumber(budget)}`
+        ? `Pode custar até RK$ ${formatMoney(budget)}`
         : "Complete os titulares para liberar";
     info.append(strong, detail);
     selector.append(badge, info);
@@ -1128,7 +1156,7 @@
         <td>${escapeHtml(row.manager || "-")}</td>
         <td class="number-cell">${formatNumber(row.roundPoints)}</td>
         <td class="number-cell">${formatNumber(row.totalPoints)}</td>
-        <td class="number-cell">RK$ ${formatNumber(Number(row.wealthCents || 0) / 100)}</td>
+        <td class="number-cell">RK$ ${formatMoney(Number(row.wealthCents || 0) / 100)}</td>
         <td class="number-cell">${formatNumber(row.averagePoints)}</td>
         <td class="number-cell">${formatNumber(row.bestRoundPoints)}</td>
       </tr>
@@ -1208,7 +1236,7 @@
     try {
       const response = await apiFetch(`/api/fantasy/config?division=${encodeURIComponent(division)}`, { cache: "no-store" });
       const payload = await response.json().catch(() => ({}));
-      const round = payload.round;
+      const round = normalizeRoundInfo(payload.round);
       if (!response.ok || !round) return;
       const now = Date.now();
       const open = round.status === "open" && now >= Date.parse(round.opens_at) && now < Date.parse(round.locks_at);
@@ -1224,6 +1252,18 @@
     } catch (error) {
       console.warn("Não foi possível carregar o status da rodada.", error);
     }
+  }
+
+  function normalizeRoundInfo(round) {
+    if (!round) return null;
+    const name = cleanText(round.name);
+    const roundNumber = Number(round.round_number || round.roundNumber || round.number || 1);
+    const isRoundOne = roundNumber === 1 || /teste|rodada\s*1/i.test(name);
+    return {
+      ...round,
+      name: isRoundOne ? ROUND_ONE_NAME : (name || `Rodada ${roundNumber || ""}`.trim()),
+      locks_at: isRoundOne ? ROUND_ONE_LOCKS_AT : round.locks_at
+    };
   }
 
   async function loadCloudPopular(division) {
@@ -1503,7 +1543,7 @@
   function reserveBudget(lineup) {
     const players = starterPlayers(lineup);
     const cheapestPlayer = players.length ? Math.min(...players.map((item) => Number(item.price) || 0)) : 0;
-    return roundMoney(config.budget - lineupCost(lineup) + cheapestPlayer);
+    return roundMoney(cheapestPlayer);
   }
 
   function reserveValidationMessage(item, lineup) {
@@ -1511,7 +1551,7 @@
     if (Object.values(lineup.slots).some((picked) => picked && picked.id === item.id)) return "Esse jogador já está como titular. O reserva precisa ser outro jogador.";
     if (Object.values(lineup.slots).filter(Boolean).length !== 6) return "Complete os seis titulares antes de escolher o reserva.";
     const budget = reserveBudget(lineup);
-    if (Number(item.price) > budget + 0.001) return `Esse reserva custa RK$ ${formatNumber(item.price)}, mas seu limite para reserva é RK$ ${formatNumber(budget)}.`;
+    if (Number(item.price) > budget + 0.001) return `Esse reserva custa RK$ ${formatMoney(item.price)}, mas seu limite para reserva é RK$ ${formatMoney(budget)}.`;
     const sameTeamPlayers = starterPlayers(lineup).filter((picked) => picked.teamSlot === item.teamSlot);
     if (sameTeamPlayers.length >= config.maxPlayersPerRealTeam) return `Para o reserva poder entrar em qualquer ausência, escolha alguém de uma equipe com no máximo ${config.maxPlayersPerRealTeam - 1} titular no seu time.`;
     return "";
@@ -1530,13 +1570,14 @@
   }
 
   function createLogo(item) {
-    const artwork = itemArtworkPath(item);
-    const source = artwork || item.logo;
+    const isPlayer = item && item.type === "player";
+    const artwork = isPlayer ? "" : itemArtworkPath(item);
+    const source = isPlayer ? item.logo : (artwork || item.logo);
     if (source) {
       const img = document.createElement("img");
       img.className = "player-logo";
       img.src = source;
-      img.alt = artwork && item.type === "player" ? `Arte de ${item.name}` : `Logo ${item.teamName}`;
+      img.alt = `Logo ${item.teamName || item.teamTag || item.name}`;
       img.addEventListener("error", () => {
         if (item.logo && img.src !== new URL(item.logo, location.href).href) {
           img.src = item.logo;
@@ -1753,7 +1794,7 @@
       ctx.fillText("RK$", x + 24, 402);
       ctx.fillStyle = "#ffffff";
       ctx.font = "43px Anton, Impact, sans-serif";
-      ctx.fillText(formatNumber(value), x + 70, 407);
+      ctx.fillText(formatMoney(value), x + 70, 407);
     });
 
     const entries = await Promise.all(ROLE_ORDER.map(async (role) => {
@@ -1792,7 +1833,7 @@
         ctx.fillText(fitCanvasText(ctx, item.teamName, 300), x + 198, y + 137);
         ctx.fillStyle = "#ff6872";
         ctx.font = "20px Inter, Arial, sans-serif";
-        ctx.fillText(`RK$ ${formatNumber(item.price)}`, x + 198, y + 181);
+        ctx.fillText(`RK$ ${formatMoney(item.price)}`, x + 198, y + 181);
         if (lineup.captainId === item.id) {
           roundedRect(ctx, x + 198, y + 193, 130, 32, 16, "#e52632");
           ctx.fillStyle = "#ffffff";
@@ -1831,7 +1872,7 @@
       ctx.fillText(`${ROLE_LABELS[item.role]} · ${item.teamTag}`, x + 226, y + 69);
       ctx.fillStyle = "#ff6872";
       ctx.font = "20px Inter, Arial, sans-serif";
-      ctx.fillText(`RK$ ${formatNumber(item.price)} · só entra se titular não jogar`, x + 650, y + 55);
+      ctx.fillText(`RK$ ${formatMoney(item.price)} · só entra se titular não jogar`, x + 650, y + 55);
     }
 
     ctx.fillStyle = "#9c9497";
@@ -1854,7 +1895,9 @@
   }
 
   async function loadItemCanvasImage(item) {
-    const sources = [itemArtworkPath(item), item.logo].filter(Boolean);
+    const sources = item && item.type === "player"
+      ? [item.logo].filter(Boolean)
+      : [itemArtworkPath(item), item && item.logo].filter(Boolean);
     for (const source of sources) {
       try {
         return await loadCanvasImage(source);
@@ -1965,6 +2008,11 @@
     const number = Number(value || 0);
     const integer = Number.isInteger(number);
     return number.toLocaleString("pt-BR", { minimumFractionDigits: integer ? 0 : 2, maximumFractionDigits: integer ? 0 : 2 });
+  }
+
+  function formatMoney(value) {
+    const number = Number(value || 0);
+    return number.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   function formatDateTime(value) {

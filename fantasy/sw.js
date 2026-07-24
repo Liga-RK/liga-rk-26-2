@@ -1,5 +1,5 @@
-const CACHE="rk-fantasy-shell-v20";
-const ASSET_VERSION="20260724-market-sw";
+const CACHE="rk-fantasy-shell-v21";
+const ASSET_VERSION="20260724-reserve-price";
 const BASE=new URL("./",self.location.href);
 const SHELL=["./","fantasy.html","offline.html",`assets/fantasy.css?v=${ASSET_VERSION}`,`assets/fantasy-market.js?v=${ASSET_VERSION}`,`assets/fantasy.js?v=${ASSET_VERSION}`,"assets/fantasy-config.js","assets/branding/logo-liga-rk.png","assets/branding/logo-rk-fantasy.png","assets/branding/favicon-rk-fantasy.png","assets/branding/wallpaper-rk.png"].map(path=>new URL(path,BASE).href);
 self.addEventListener("install",event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL))));

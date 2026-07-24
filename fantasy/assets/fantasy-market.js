@@ -1724,8 +1724,10 @@ window.FANTASY_RK_MARKET = {
         "captain": true,
         "logo": "assets/uploads/equipes_ascensao/fin.png",
         "artwork": "assets/uploads/equipes_ascensao/jogadores/sup/fin_5.png",
-        "price": 15,
-        "average": 0
+        "price": 17,
+        "average": 0,
+        "previousPrice": 17,
+        "priceDelta": 0
       },
       {
         "id": "42c6ac24-f39b-4d5a-aae7-30160c6cc49c",
@@ -1760,8 +1762,10 @@ window.FANTASY_RK_MARKET = {
         "captain": false,
         "logo": "assets/uploads/equipes_ascensao/sky.png",
         "artwork": "assets/uploads/equipes_ascensao/jogadores/jungle/sky_2.png",
-        "price": 12,
-        "average": 0
+        "price": 14,
+        "average": 0,
+        "previousPrice": 14,
+        "priceDelta": 0
       },
       {
         "id": "53715f45-481d-41f8-b91f-3ff3724f6d39",
@@ -1796,8 +1800,10 @@ window.FANTASY_RK_MARKET = {
         "captain": true,
         "logo": "assets/uploads/equipes_ascensao/sky.png",
         "artwork": "assets/uploads/equipes_ascensao/jogadores/adc/sky_4.png",
-        "price": 12,
-        "average": 0
+        "price": 13,
+        "average": 0,
+        "previousPrice": 13,
+        "priceDelta": 0
       },
       {
         "id": "efec416f-2c51-473d-b95f-dcef2bfcd57e",
@@ -2228,8 +2234,10 @@ window.FANTASY_RK_MARKET = {
         "captain": false,
         "logo": "assets/uploads/equipes_ascensao/fflt.png",
         "artwork": "assets/uploads/equipes_ascensao/jogadores/mid/fflt_3.png",
-        "price": 12,
-        "average": 0
+        "price": 13,
+        "average": 0,
+        "previousPrice": 13,
+        "priceDelta": 0
       },
       {
         "id": "09942fdd-b952-4c06-977d-8dfbcc459b48",
@@ -2264,8 +2272,10 @@ window.FANTASY_RK_MARKET = {
         "captain": false,
         "logo": "assets/uploads/equipes_ascensao/fflt.png",
         "artwork": "assets/uploads/equipes_ascensao/jogadores/sup/fflt_5.png",
-        "price": 15,
-        "average": 0
+        "price": 14,
+        "average": 0,
+        "previousPrice": 14,
+        "priceDelta": 0
       },
       {
         "id": "aa6ac989-fc62-4c23-946e-27780b019d39",
@@ -2606,8 +2616,10 @@ window.FANTASY_RK_MARKET = {
         "captain": false,
         "logo": "assets/uploads/equipes_ascensao/ubr.png",
         "artwork": "assets/uploads/equipes_ascensao/jogadores/adc/ubr_4.png",
-        "price": 13,
-        "average": 0
+        "price": 12,
+        "average": 0,
+        "previousPrice": 12,
+        "priceDelta": 0
       },
       {
         "id": "d030b255-3393-4ae7-a147-fb065fb0dd52",
@@ -2696,8 +2708,10 @@ window.FANTASY_RK_MARKET = {
         "captain": true,
         "logo": "assets/uploads/equipes_ascensao/tkt7.png",
         "artwork": "assets/uploads/equipes_ascensao/jogadores/adc/tkt7_4.png",
-        "price": 13,
-        "average": 0
+        "price": 14,
+        "average": 0,
+        "previousPrice": 14,
+        "priceDelta": 0
       },
       {
         "id": "bb62635b-126e-4407-97a0-240d38e200d6",
@@ -2966,8 +2980,10 @@ window.FANTASY_RK_MARKET = {
         "captain": false,
         "logo": "assets/uploads/equipes_ascensao/rdg.png",
         "artwork": "assets/uploads/equipes_ascensao/jogadores/adc/rdg_4.png",
-        "price": 16,
-        "average": 0
+        "price": 15,
+        "average": 0,
+        "previousPrice": 15,
+        "priceDelta": 0
       },
       {
         "id": "d9b48adc-0878-4579-9fdb-c6c2b45bdf04",

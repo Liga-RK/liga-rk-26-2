@@ -74,7 +74,7 @@ h1, h2, h3, .market-section-title {
 .brand-logo { width: 72px; height: 62px; object-fit: contain; filter: drop-shadow(0 0 14px rgba(229, 38, 50, .22)); }
 .league-home-link { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: .62rem; background: rgba(255, 255, 255, .045); transition: transform .16s ease, border-color .16s ease, background .16s ease; }
 .league-home-link:hover { border-color: rgba(255, 255, 255, .28); background: rgba(229, 38, 50, .12); transform: translateY(-1px); }
-.league-home-link img { width: 32px; height: 32px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(255, 255, 255, .16)); }
+.league-home-link img { width: 32px; height: 32px; object-fit: contain; filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(255, 255, 255, .16)); }
 .brand-mark { display: grid; place-items: center; width: 48px; height: 48px; border: 2px solid var(--accent); border-radius: .55rem; color: #fff; font-family: var(--title-font); font-size: 1.25rem; }
 .top-nav { display: flex; gap: .3rem; padding: .3rem; background: rgba(255, 255, 255, .045); border: 1px solid var(--line); border-radius: .85rem; }
 .nav-button, .division-tab, .ghost-button, .rename-button { border: 0; color: var(--muted); background: transparent; }
@@ -259,8 +259,8 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .player-stats span { color: #d8d1d3; font-size: .7rem; }
 .player-price { text-align: right; white-space: nowrap; }
 .player-price strong, .player-price span { display: block; }
-.player-price strong { color: #fff; font-size: .92rem; }
-.player-price strong b { color: var(--accent-bright); font-size: .65rem; }
+.player-price strong { color: #fff; font-family: var(--title-font); font-size: 1.18rem; line-height: 1; letter-spacing: .03em; }
+.player-price strong b { color: var(--accent-bright); font-size: .78rem; margin-right: .1rem; }
 .player-price span { margin-top: .2rem; color: var(--muted); font-size: .66rem; }
 .price-change { display: inline-flex !important; align-items: center; justify-content: flex-end; gap: .16rem; font-weight: 900; letter-spacing: .02em; }
 .price-change.up { color: var(--success); }
