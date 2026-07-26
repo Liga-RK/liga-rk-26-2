@@ -14,6 +14,7 @@
     LeeSin: "Lee Sin",
     MasterYi: "Master Yi",
     MissFortune: "Miss Fortune",
+    Bard: "Bardo",
     MonkeyKing: "Wukong",
     RekSai: "Rek'Sai",
     TahmKench: "Tahm Kench",

@@ -6162,13 +6162,13 @@ window.LIGA_RK_STATS = {
       "statistics": {
         "mostPicked": {
           "title": "MAIS ESCOLHAS",
-          "champion": "MONKEYKING",
+          "champion": "Wukong",
           "value": 5,
           "image": "assets/champions/MonkeyKing.jpg"
         },
         "mostWins": {
           "title": "MAIS VITORIAS",
-          "champion": "MONKEYKING",
+          "champion": "Wukong",
           "value": 3,
           "image": "assets/champions/MonkeyKing.jpg"
         },
@@ -7400,7 +7400,7 @@ window.LIGA_RK_STATS = {
           ],
           "champions": [
             {
-              "champion": "MonkeyKing",
+              "champion": "Wukong",
               "image": "assets/champions/MonkeyKing.jpg",
               "count": 1,
               "wins": 1,
@@ -7416,7 +7416,7 @@ window.LIGA_RK_STATS = {
               "winRate": 100
             }
           ],
-          "mostPlayedChampion": "MonkeyKing",
+          "mostPlayedChampion": "Wukong",
           "matches": [
             "groups-r1g8-j2",
             "groups-r1g8-j1"
@@ -7479,7 +7479,7 @@ window.LIGA_RK_STATS = {
               "winRate": 100
             },
             {
-              "champion": "MonkeyKing",
+              "champion": "Wukong",
               "image": "assets/champions/MonkeyKing.jpg",
               "count": 1,
               "wins": 1,
@@ -7968,7 +7968,7 @@ window.LIGA_RK_STATS = {
           ],
           "champions": [
             {
-              "champion": "Bard",
+              "champion": "Bardo",
               "image": "assets/champions/Bard.jpg",
               "count": 1,
               "wins": 1,
@@ -7984,7 +7984,7 @@ window.LIGA_RK_STATS = {
               "winRate": 100
             }
           ],
-          "mostPlayedChampion": "Bard",
+          "mostPlayedChampion": "Bardo",
           "matches": [
             "groups-r1g4-j2",
             "groups-r1g4-j1"
@@ -9340,7 +9340,7 @@ window.LIGA_RK_STATS = {
           ],
           "champions": [
             {
-              "champion": "MonkeyKing",
+              "champion": "Wukong",
               "image": "assets/champions/MonkeyKing.jpg",
               "count": 1,
               "wins": 1,
@@ -9364,7 +9364,7 @@ window.LIGA_RK_STATS = {
               "winRate": 0
             }
           ],
-          "mostPlayedChampion": "MonkeyKing",
+          "mostPlayedChampion": "Wukong",
           "matches": [
             "groups-r1g7-j3",
             "groups-r1g7-j2",
@@ -9717,7 +9717,7 @@ window.LIGA_RK_STATS = {
           ],
           "champions": [
             {
-              "champion": "Bard",
+              "champion": "Bardo",
               "image": "assets/champions/Bard.jpg",
               "count": 1,
               "wins": 1,
@@ -9741,7 +9741,7 @@ window.LIGA_RK_STATS = {
               "winRate": 0
             }
           ],
-          "mostPlayedChampion": "Bard",
+          "mostPlayedChampion": "Bardo",
           "matches": [
             "groups-r1g7-j3",
             "groups-r1g7-j2",
@@ -10445,7 +10445,7 @@ window.LIGA_RK_STATS = {
           ],
           "champions": [
             {
-              "champion": "Bard",
+              "champion": "Bardo",
               "image": "assets/champions/Bard.jpg",
               "count": 1,
               "wins": 0,
@@ -10461,7 +10461,7 @@ window.LIGA_RK_STATS = {
               "winRate": 0
             }
           ],
-          "mostPlayedChampion": "Bard",
+          "mostPlayedChampion": "Bardo",
           "matches": [
             "groups-r1g8-j2",
             "groups-r1g8-j1"
@@ -10954,7 +10954,7 @@ window.LIGA_RK_STATS = {
               "winRate": 0
             },
             {
-              "champion": "MonkeyKing",
+              "champion": "Wukong",
               "image": "assets/champions/MonkeyKing.jpg",
               "count": 1,
               "wins": 0,
@@ -11167,7 +11167,7 @@ window.LIGA_RK_STATS = {
               "winRate": 0
             },
             {
-              "champion": "MonkeyKing",
+              "champion": "Wukong",
               "image": "assets/champions/MonkeyKing.jpg",
               "count": 1,
               "wins": 0,
@@ -13976,7 +13976,7 @@ window.LIGA_RK_STATS = {
       "champions": [
         {
           "id": "monkeyking",
-          "name": "MonkeyKing",
+          "name": "Wukong",
           "image": "assets/champions/MonkeyKing.jpg",
           "picks": 5,
           "wins": 3,
@@ -14250,7 +14250,7 @@ window.LIGA_RK_STATS = {
         },
         {
           "id": "bard",
-          "name": "Bard",
+          "name": "Bardo",
           "image": "assets/champions/Bard.jpg",
           "picks": 3,
           "wins": 2,
@@ -16855,7 +16855,7 @@ window.LIGA_RK_STATS = {
               "team": 100,
               "teamSlot": "A2",
               "position": "JG",
-              "champion": "MonkeyKing",
+              "champion": "Wukong",
               "won": false,
               "kills": 2,
               "deaths": 8,
@@ -17775,7 +17775,7 @@ window.LIGA_RK_STATS = {
               "team": 100,
               "teamSlot": "B1",
               "position": "JG",
-              "champion": "MonkeyKing",
+              "champion": "Wukong",
               "won": true,
               "kills": 7,
               "deaths": 0,
@@ -18349,7 +18349,7 @@ window.LIGA_RK_STATS = {
               "team": 100,
               "teamSlot": "B3",
               "position": "SUP",
-              "champion": "Bard",
+              "champion": "Bardo",
               "won": true,
               "kills": 1,
               "deaths": 2,
@@ -18425,7 +18425,7 @@ window.LIGA_RK_STATS = {
               "team": 200,
               "teamSlot": "B4",
               "position": "JG",
-              "champion": "MonkeyKing",
+              "champion": "Wukong",
               "won": false,
               "kills": 2,
               "deaths": 4,
@@ -19155,7 +19155,7 @@ window.LIGA_RK_STATS = {
               "team": 100,
               "teamSlot": "D1",
               "position": "JG",
-              "champion": "MonkeyKing",
+              "champion": "Wukong",
               "won": true,
               "kills": 15,
               "deaths": 5,
@@ -19729,7 +19729,7 @@ window.LIGA_RK_STATS = {
               "team": 100,
               "teamSlot": "D2",
               "position": "SUP",
-              "champion": "Bard",
+              "champion": "Bardo",
               "won": true,
               "kills": 0,
               "deaths": 5,
@@ -21455,7 +21455,7 @@ window.LIGA_RK_STATS = {
               "team": 100,
               "teamSlot": "D3",
               "position": "JG",
-              "champion": "MonkeyKing",
+              "champion": "Wukong",
               "won": true,
               "kills": 3,
               "deaths": 1,
@@ -22029,7 +22029,7 @@ window.LIGA_RK_STATS = {
               "team": 100,
               "teamSlot": "D4",
               "position": "SUP",
-              "champion": "Bard",
+              "champion": "Bardo",
               "won": false,
               "kills": 0,
               "deaths": 7,

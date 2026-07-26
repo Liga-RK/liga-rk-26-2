@@ -31,11 +31,11 @@
 
   const sectionLinks = [
     ["selecao", "Seleção"],
+    ["estatisticas", "Estatísticas"],
     ["calendario", "Calendário"],
     ["grupos", "Grupos"],
     ["playoffs", "Playoffs"],
     ["vods", "VODs"],
-    ["estatisticas", "Estatísticas"],
     ["equipes", "Equipes"],
     ["regras", "Regras"]
   ];
@@ -160,11 +160,11 @@
 
       <main class="division-page">
         ${renderWeekly()}
+        ${renderStatistics()}
         ${renderCalendar()}
         ${renderGroups()}
         ${renderPlayoffs()}
         ${renderVods()}
-        ${renderStatistics()}
         ${renderTeams()}
         ${renderRules()}
       </main>
@@ -791,7 +791,7 @@
   }
 
   function renderChampionStat(stat = {}, fallbackTitle) {
-    const championName = stat.champion || "AATROX";
+    const championName = displayChampionName(stat.champion || "AATROX");
     const value = stat.value ?? 0;
     const image = stat.image
       ? `<img src="${escapeAttribute(stat.image)}" alt="${escapeAttribute(championName)}" />`
@@ -807,6 +807,13 @@
         </footer>
       </article>
     `;
+  }
+
+  function displayChampionName(value) {
+    const key = String(value || "").trim().toLowerCase();
+    if (key === "monkeyking") return "Wukong";
+    if (key === "bard") return "Bardo";
+    return String(value || "");
   }
 
   function renderPlayerStat(stat = {}) {

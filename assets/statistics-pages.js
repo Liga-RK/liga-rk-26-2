@@ -61,6 +61,7 @@
     `;
     setupFilters();
     setupSortableTables();
+    setupPaginatedTables();
   }
 
   function renderHeader(division) {
@@ -117,7 +118,7 @@
         <section class="stats-data-section" id="jogadores">
           ${sectionTitle("RANKING DE JOGADORES", "Busque por jogador, posi&ccedil;&atilde;o ou equipe")}
           ${playerFilters(players, division)}
-          <div class="stats-table-scroll">${playerTable(players, division)}</div>
+          <div class="stats-table-scroll">${playerTable(players, division, { paginate: true })}</div>
           <p class="stats-filter-empty" data-player-empty hidden>Nenhum jogador corresponde aos filtros.</p>
         </section>
 
@@ -406,8 +407,10 @@
       <tr><td>${index + 1}</td><td>${teamLink(team, division)}</td><td>${team.games}</td><td>${team.wins}</td><td>${team.losses}</td><td>${formatDecimal(team.winRate)}%</td><td>${formatDecimal(team.kda)}</td><td>${formatDecimal(team.gpmAvg)}</td><td>${text(team.avgWinTime)}</td></tr>`).join("")}</tbody></table>`;
   }
 
-  function playerTable(players, division) {
-    return `<table class="stats-table stats-player-table" data-sortable-table data-default-sort="kda" data-current-sort="kda" data-current-direction="desc"><thead><tr>${[
+  function playerTable(players, division, options = {}) {
+    const paginate = Boolean(options.paginate);
+    const paginationId = paginate ? `players-${division}` : "";
+    return `<table class="stats-table stats-player-table" data-sortable-table data-default-sort="kda" data-current-sort="kda" data-current-direction="desc"${paginate ? ` data-paginated-table data-page-size="10" data-current-page="1" data-pagination-id="${attribute(paginationId)}"` : ""}><thead><tr>${[
       sortableHeader("Jogador", "player", "text", "asc"),
       sortableHeader("Posi&ccedil;&atilde;o", "position", "number", "asc"),
       sortableHeader("KDA", "kda"),
@@ -427,7 +430,13 @@
         <td><div class="stats-player-identity">${teamLogo(team)}<a class="stats-entity-link" href="jogador.html?division=${division}&id=${encodeURIComponent(player.id)}"><strong>${text(player.displayName)}</strong><small>${text(teamTag)}</small></a></div></td>
         <td><span class="stats-lane-cell">${laneIcon(player.mainPosition)}</span></td><td class="stats-kda-cell">${formatDecimal(player.kda)}</td><td>${player.games}</td><td>${formatDecimal(player.winRate)}%</td><td>${formatDecimal(player.kp)}%</td><td>${formatDecimal(player.dpm)}</td><td>${formatDecimal(player.gpm)}</td><td>${formatDecimal(player.visionScoreAvg)}</td><td>${player.mvps}</td>
       </tr>`;
-    }).join("")}</tbody></table>`;
+    }).join("")}</tbody></table>${paginate ? `
+      <div class="stats-table-pagination" data-player-pagination="${attribute(paginationId)}" aria-label="Paginar ranking de jogadores">
+        <button type="button" data-page-action="prev">Anterior</button>
+        <span data-page-status>1 / 1</span>
+        <button type="button" data-page-action="next">Pr&oacute;xima</button>
+      </div>
+    ` : ""}`;
   }
 
   function sortableHeader(label, key, type = "number", direction = "desc") {
@@ -435,9 +444,10 @@
   }
 
   function championCard(champion) {
+    const championName = displayChampionName(champion.name);
     return `<article class="stats-champion-card">
-      <div class="stats-champion-art">${safeImageUrl(champion.image) ? `<img src="${attribute(safeImageUrl(champion.image))}" alt="${attribute(champion.name)}" loading="lazy" />` : ""}</div>
-      <div><strong>${text(champion.name)}</strong><span>${champion.picks} escolhas &middot; ${champion.wins} vit&oacute;rias</span><small>${formatDecimal(champion.winRate)}% &middot; ${formatDecimal(champion.kda)} KDA</small></div>
+      <div class="stats-champion-art">${safeImageUrl(champion.image) ? `<img src="${attribute(safeImageUrl(champion.image))}" alt="${attribute(championName)}" loading="lazy" />` : ""}</div>
+      <div><strong>${text(championName)}</strong><span>${champion.picks} escolhas &middot; ${champion.wins} vit&oacute;rias</span><small>${formatDecimal(champion.winRate)}% &middot; ${formatDecimal(champion.kda)} KDA</small></div>
     </article>`;
   }
 
@@ -447,9 +457,10 @@
     const games = numeric(entry.count);
     const wins = numeric(entry.wins);
     const winRate = Number.isFinite(Number(entry.winRate)) ? Number(entry.winRate) : games ? wins / games * 100 : 0;
+    const championName = displayChampionName(entry.champion);
     return `<article class="stats-player-champion-card">
-      <div class="stats-player-champion-art">${image ? `<img src="${attribute(image)}" alt="${attribute(entry.champion)}" loading="lazy" />` : ""}</div>
-      <div><strong>${text(entry.champion)}</strong><span>${games} ${games === 1 ? "partida" : "partidas"}</span><b>${formatDecimal(winRate)}% WR</b></div>
+      <div class="stats-player-champion-art">${image ? `<img src="${attribute(image)}" alt="${attribute(championName)}" loading="lazy" />` : ""}</div>
+      <div><strong>${text(championName)}</strong><span>${games} ${games === 1 ? "partida" : "partidas"}</span><b>${formatDecimal(winRate)}% WR</b></div>
     </article>`;
   }
 
@@ -491,7 +502,7 @@
       : `<strong>${text(displayName)}</strong>`;
     return `<article class="stats-postgame-player ${side}-player">
       <span class="stats-postgame-lane">${laneIcon(player.position)}</span>
-      <div class="stats-postgame-player-name">${identity}<small>${text(player.champion || "-")}${isMvp ? " &middot; MVP" : ""}</small></div>
+      <div class="stats-postgame-player-name">${identity}<small>${text(displayChampionName(player.champion || "-"))}${isMvp ? " &middot; MVP" : ""}</small></div>
       <div class="stats-postgame-performance">
         <div><b>${formatCompactNumber(damage)}</b><strong>${numeric(player.kills)}/${numeric(player.deaths)}/${numeric(player.assists)}</strong></div>
         <span class="stats-postgame-damage"><i style="width:${width}%"></i></span>
@@ -553,7 +564,7 @@
       const playerId = player.playerId || "";
       const isMvp = mvp && Number(mvp.participantIndex) === Number(player.participantIndex);
       return `<article class="stats-participant-row">
-        <div class="stats-participant-name"><span>${laneIcon(player.position)}</span><div>${playerId ? `<a href="jogador.html?division=${division}&id=${encodeURIComponent(playerId)}">${text(player.gameName || player.riotId)}</a>` : `<strong>${text(player.gameName || player.riotId)}</strong>`}<small>${text(player.champion)}${isMvp ? " &middot; MVP" : ""}</small></div></div>
+        <div class="stats-participant-name"><span>${laneIcon(player.position)}</span><div>${playerId ? `<a href="jogador.html?division=${division}&id=${encodeURIComponent(playerId)}">${text(player.gameName || player.riotId)}</a>` : `<strong>${text(player.gameName || player.riotId)}</strong>`}<small>${text(displayChampionName(player.champion))}${isMvp ? " &middot; MVP" : ""}</small></div></div>
         <div class="stats-participant-kda"><span>K / D / A</span><strong>${player.kills}/${player.deaths}/${player.assists}</strong></div>
         <div class="stats-participant-gold"><span>OURO</span><strong>${formatNumber(player.gold)}</strong></div>
         <div class="stats-damage-label"><span>DANO A CAMPE&Otilde;ES</span><strong>${formatNumber(player.damageToChampions)}</strong></div>
@@ -620,6 +631,10 @@
     table.dataset.currentSort = key;
     table.dataset.currentDirection = direction;
     markSortedHeader(table, key, direction);
+    if (table.matches("[data-paginated-table]")) {
+      table.dataset.currentPage = "1";
+      updatePaginatedTable(table);
+    }
   }
 
   function sortRowValue(row, key, type) {
@@ -652,6 +667,61 @@
     });
   }
 
+  function setupPaginatedTables() {
+    root.querySelectorAll("[data-paginated-table]").forEach((table) => updatePaginatedTable(table));
+    root.querySelectorAll("[data-player-pagination] [data-page-action]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const controls = button.closest("[data-player-pagination]");
+        const table = controls && controls.previousElementSibling && controls.previousElementSibling.matches("[data-paginated-table]")
+          ? controls.previousElementSibling
+          : null;
+        if (!table) return;
+        const action = button.dataset.pageAction;
+        const currentPage = Math.max(1, numeric(table.dataset.currentPage) || 1);
+        table.dataset.currentPage = String(action === "prev" ? currentPage - 1 : currentPage + 1);
+        updatePaginatedTable(table);
+      });
+    });
+  }
+
+  function updatePaginatedTables(resetPage = false) {
+    root.querySelectorAll("[data-paginated-table]").forEach((table) => {
+      if (resetPage) table.dataset.currentPage = "1";
+      updatePaginatedTable(table);
+    });
+  }
+
+  function updatePaginatedTable(table) {
+    const pageSize = Math.max(1, numeric(table.dataset.pageSize) || 10);
+    const rows = Array.from(table.querySelectorAll("tbody tr"));
+    const filteredRows = rows.filter((row) => row.dataset.filteredOut !== "true");
+    const totalPages = Math.max(1, Math.ceil(filteredRows.length / pageSize));
+    const currentPage = Math.min(totalPages, Math.max(1, numeric(table.dataset.currentPage) || 1));
+    const start = (currentPage - 1) * pageSize;
+    const end = start + pageSize;
+    table.dataset.currentPage = String(currentPage);
+
+    rows.forEach((row) => {
+      const filteredOut = row.dataset.filteredOut === "true";
+      const visibleIndex = filteredRows.indexOf(row);
+      const pagedOut = !filteredOut && (visibleIndex < start || visibleIndex >= end);
+      row.dataset.pagedOut = pagedOut ? "true" : "false";
+      row.hidden = filteredOut || pagedOut;
+    });
+
+    const controls = table.nextElementSibling && table.nextElementSibling.matches("[data-player-pagination]")
+      ? table.nextElementSibling
+      : null;
+    if (!controls) return;
+    const status = controls.querySelector("[data-page-status]");
+    const prev = controls.querySelector('[data-page-action="prev"]');
+    const next = controls.querySelector('[data-page-action="next"]');
+    if (status) status.textContent = `${currentPage} / ${totalPages}`;
+    if (prev) prev.disabled = currentPage <= 1;
+    if (next) next.disabled = currentPage >= totalPages;
+    controls.hidden = filteredRows.length <= pageSize;
+  }
+
   function setupFilters() {
     const playerInputs = [document.querySelector("[data-player-search]"), document.querySelector("[data-player-lane]"), document.querySelector("[data-player-team]")].filter(Boolean);
     playerInputs.forEach((input) => input.addEventListener("input", filterPlayers));
@@ -678,9 +748,11 @@
     let shown = 0;
     document.querySelectorAll("[data-player-row]").forEach((row) => {
       const visible = (!search || row.dataset.search.includes(search)) && (!lane || row.dataset.lane === lane) && (!team || row.dataset.team === team);
-      row.hidden = !visible;
+      row.dataset.filteredOut = visible ? "false" : "true";
+      if (!row.closest("[data-paginated-table]")) row.hidden = !visible;
       if (visible) shown += 1;
     });
+    updatePaginatedTables(true);
     const empty = document.querySelector("[data-player-empty]");
     if (empty) empty.hidden = shown > 0;
   }
@@ -1023,6 +1095,13 @@
 
   function normalizeChampionKey(value) {
     return String(value || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/gi, "").toLowerCase();
+  }
+
+  function displayChampionName(value) {
+    const key = normalizeChampionKey(value);
+    if (key === "monkeyking") return "Wukong";
+    if (key === "bard") return "Bardo";
+    return String(value || "");
   }
 
   function normalizeIdentity(value) {
