@@ -4356,15 +4356,15 @@ a.stats-postgame-team-logo:focus-visible {
 .home-shell {
   display: grid;
   place-items: center;
-  min-height: calc(100vh - 6.5rem);
-  padding: 2rem;
+  min-height: 100vh;
+  padding: clamp(1rem, 3vw, 2rem);
 }
 
 .home-panel {
   display: grid;
   justify-items: center;
-  width: min(100%, 52rem);
-  padding: 3rem 2rem;
+  width: min(100%, 48rem);
+  padding: clamp(2rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2rem);
   background:
     linear-gradient(180deg, rgba(8, 7, 10, 0.86), rgba(8, 7, 10, 0.72));
   border: 1px solid color-mix(in srgb, var(--accent) 32%, rgba(255, 255, 255, 0.14));
@@ -4373,8 +4373,8 @@ a.stats-postgame-team-logo:focus-visible {
 }
 
 .home-logo {
-  width: 13rem;
-  height: 13rem;
+  width: clamp(9.5rem, 18vw, 12.5rem);
+  height: clamp(9.5rem, 18vw, 12.5rem);
   object-fit: contain;
 }
 
@@ -4385,9 +4385,9 @@ a.stats-postgame-team-logo:focus-visible {
 }
 
 .home-panel h1 {
-  margin: 0 0 1.45rem;
+  margin: 0 0 1.7rem;
   color: #fff;
-  font-size: clamp(2.9rem, 6vw, 3.55rem);
+  font-size: clamp(2.45rem, 5vw, 3.3rem);
   line-height: 0.95;
   text-transform: uppercase;
 }
@@ -4396,7 +4396,8 @@ a.stats-postgame-team-logo:focus-visible {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1rem;
+  gap: clamp(0.75rem, 2vw, 1rem);
+  width: min(100%, 34rem);
 }
 
 .home-registration-action {
@@ -4429,9 +4430,10 @@ a.stats-postgame-team-logo:focus-visible {
 }
 
 .division-link {
-  min-width: 13rem;
-  min-height: 4rem;
-  font-size: 1.35rem;
+  min-width: min(100%, 14.5rem);
+  min-height: 4.15rem;
+  flex: 1 1 14rem;
+  font-size: clamp(1.15rem, 2.8vw, 1.35rem);
 }
 
 .division-link.elite {
