@@ -1,6 +1,6 @@
 window.LIGA_RK_STATS = {
   "version": 2,
-  "generatedAt": "2026-07-26T05:07:24.042Z",
+  "generatedAt": "2026-07-26T05:18:38.883Z",
   "season": "Liga RK 26.2",
   "divisions": {
     "elite": {
@@ -7347,19 +7347,17 @@ window.LIGA_RK_STATS = {
           ],
           "mostPlayedChampion": "Leona",
           "matches": [
-            "groups-r1g2-j2",
-            "groups-r1g2-j1"
+            "groups-r1g8-j2",
+            "groups-r1g8-j1"
           ]
         },
         {
           "id": "b23e9ca5-3abb-4222-9580-5965227b155c",
           "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c",
           "displayName": "DRAGON",
-          "riotId": "FLA Dragon B3#155",
-          "alsoPlayedAs": [
-            "RDG Dragon B3#155"
-          ],
-          "opgg": "https://op.gg/pt/lol/summoners/br/FLA%20Dragon%20B3-155",
+          "riotId": "RDG Dragon B3#155",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/RDG%20Dragon%20B3-155",
           "games": 2,
           "wins": 2,
           "losses": 0,
@@ -7420,8 +7418,8 @@ window.LIGA_RK_STATS = {
           ],
           "mostPlayedChampion": "MonkeyKing",
           "matches": [
-            "groups-r1g2-j2",
-            "groups-r1g2-j1"
+            "groups-r1g8-j2",
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -8068,10 +8066,8 @@ window.LIGA_RK_STATS = {
           "playerId": "683b5d91-4778-4fb2-963d-5ff30dc2f763",
           "displayName": "ERICK",
           "riotId": "FVLR DA MORTE#PRET",
-          "alsoPlayedAs": [
-            "FVLR DA MORTE#PRET"
-          ],
-          "opgg": "https://www.deeplol.gg/summoner/br/FVLR%20DA%20MORTE-PRET",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/FVLR%20DA%20MORTE-PRET",
           "games": 2,
           "wins": 2,
           "losses": 0,
@@ -8132,8 +8128,8 @@ window.LIGA_RK_STATS = {
           ],
           "mostPlayedChampion": "Tristana",
           "matches": [
-            "groups-r1g2-j2",
-            "groups-r1g2-j1"
+            "groups-r1g8-j2",
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -8203,8 +8199,8 @@ window.LIGA_RK_STATS = {
           ],
           "mostPlayedChampion": "Gnar",
           "matches": [
-            "groups-r1g2-j2",
-            "groups-r1g2-j1"
+            "groups-r1g8-j2",
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -8424,11 +8420,9 @@ window.LIGA_RK_STATS = {
           "id": "52cc780c-f595-4c45-af66-abc64b44e93b",
           "playerId": "52cc780c-f595-4c45-af66-abc64b44e93b",
           "displayName": "FALSE",
-          "riotId": "JGKING#tatu",
-          "alsoPlayedAs": [
-            "false jugking#lala"
-          ],
-          "opgg": "https://op.gg/pt/lol/summoners/br/JGKING-tatu",
+          "riotId": "false jugking#lala",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/false%20jugking-lala",
           "games": 3,
           "wins": 2,
           "losses": 1,
@@ -8642,8 +8636,8 @@ window.LIGA_RK_STATS = {
           ],
           "mostPlayedChampion": "Ahri",
           "matches": [
-            "groups-r1g2-j2",
-            "groups-r1g2-j1"
+            "groups-r1g8-j2",
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -8956,11 +8950,9 @@ window.LIGA_RK_STATS = {
           "id": "ac2dcf04-efb7-461d-85ac-dc49214ad466",
           "playerId": "ac2dcf04-efb7-461d-85ac-dc49214ad466",
           "displayName": "MECHANICS",
-          "riotId": "COW Mechanics#mrn16",
-          "alsoPlayedAs": [
-            "Mechanics#mrn16"
-          ],
-          "opgg": "https://op.gg/pt/lol/summoners/br/COW%20Mechanics-mrn16",
+          "riotId": "Mechanics#mrn16",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/Mechanics-mrn16",
           "games": 2,
           "wins": 2,
           "losses": 0,
@@ -9680,11 +9672,9 @@ window.LIGA_RK_STATS = {
           "id": "745a0ee6-ebda-4170-a095-68565c5f425b",
           "playerId": "745a0ee6-ebda-4170-a095-68565c5f425b",
           "displayName": "BURRAXA",
-          "riotId": "COW Buurraxa#FLU",
-          "alsoPlayedAs": [
-            "FEMBuurraxa#FLU"
-          ],
-          "opgg": "https://op.gg/pt/lol/summoners/br/COW%20Buurraxa-FLU",
+          "riotId": "FEMBuurraxa#FLU",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/FEMBuurraxa-FLU",
           "games": 3,
           "wins": 2,
           "losses": 1,
@@ -10322,8 +10312,8 @@ window.LIGA_RK_STATS = {
           ],
           "mostPlayedChampion": "Ezreal",
           "matches": [
-            "groups-r1g2-j2",
-            "groups-r1g2-j1"
+            "groups-r1g8-j2",
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -10473,8 +10463,8 @@ window.LIGA_RK_STATS = {
           ],
           "mostPlayedChampion": "Bard",
           "matches": [
-            "groups-r1g2-j2",
-            "groups-r1g2-j1"
+            "groups-r1g8-j2",
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -11045,8 +11035,8 @@ window.LIGA_RK_STATS = {
           ],
           "mostPlayedChampion": "Lissandra",
           "matches": [
-            "groups-r1g2-j2",
-            "groups-r1g2-j1"
+            "groups-r1g8-j2",
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -11116,8 +11106,8 @@ window.LIGA_RK_STATS = {
           ],
           "mostPlayedChampion": "Renekton",
           "matches": [
-            "groups-r1g2-j2",
-            "groups-r1g2-j1"
+            "groups-r1g8-j2",
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -11258,8 +11248,8 @@ window.LIGA_RK_STATS = {
           ],
           "mostPlayedChampion": "Jax",
           "matches": [
-            "groups-r1g2-j2",
-            "groups-r1g2-j1"
+            "groups-r1g8-j2",
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -14024,7 +14014,7 @@ window.LIGA_RK_STATS = {
             "groups-r1g3-j2",
             "groups-r1g4-j1",
             "groups-r1g7-j1",
-            "groups-r1g2-j1"
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -14091,20 +14081,20 @@ window.LIGA_RK_STATS = {
           "players": [
             "93504c7f-3a44-41d4-84ba-7fcdf9c4c202",
             "745a0ee6-ebda-4170-a095-68565c5f425b",
-            "d9b48adc-0878-4579-9fdb-c6c2b45bdf04",
-            "66d1841c-206c-451f-aac8-6e8b1a04ce16"
+            "66d1841c-206c-451f-aac8-6e8b1a04ce16",
+            "d9b48adc-0878-4579-9fdb-c6c2b45bdf04"
           ],
           "teams": [
             "B3",
             "D2",
-            "D3",
-            "C4"
+            "C4",
+            "D3"
           ],
           "matches": [
             "groups-r1g4-j2",
             "groups-r1g7-j1",
-            "groups-r1g2-j2",
-            "groups-r1g6-j1"
+            "groups-r1g6-j1",
+            "groups-r1g8-j2"
           ]
         },
         {
@@ -14131,20 +14121,20 @@ window.LIGA_RK_STATS = {
           "players": [
             "6385d288-850f-48ed-9020-70ddc683c75b",
             "b809b15f-5792-4fe7-b376-694fcf9391ea",
-            "d063fffc-b310-4449-9d66-7a08b97d452a",
-            "48b97f8e-3b5e-4219-8828-c916cc35518a"
+            "48b97f8e-3b5e-4219-8828-c916cc35518a",
+            "d063fffc-b310-4449-9d66-7a08b97d452a"
           ],
           "teams": [
             "B2",
             "B4",
-            "D3",
-            "D2"
+            "D2",
+            "D3"
           ],
           "matches": [
             "groups-r1g3-j1",
             "groups-r1g4-j2",
-            "groups-r1g2-j1",
-            "groups-r1g7-j3"
+            "groups-r1g7-j3",
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -14244,18 +14234,18 @@ window.LIGA_RK_STATS = {
           ],
           "players": [
             "4b785c1e-f133-481e-9628-2c4d92ac8959",
-            "ff6e177a-0dfe-43fa-ab75-1caff615ac19",
-            "6aa73999-3861-4c5e-95a7-d629b6bc501f"
+            "6aa73999-3861-4c5e-95a7-d629b6bc501f",
+            "ff6e177a-0dfe-43fa-ab75-1caff615ac19"
           ],
           "teams": [
             "B2",
-            "D3",
-            "C4"
+            "C4",
+            "D3"
           ],
           "matches": [
             "groups-r1g3-j1",
-            "groups-r1g2-j2",
-            "groups-r1g6-j1"
+            "groups-r1g6-j1",
+            "groups-r1g8-j2"
           ]
         },
         {
@@ -14292,7 +14282,7 @@ window.LIGA_RK_STATS = {
           "matches": [
             "groups-r1g4-j1",
             "groups-r1g7-j2",
-            "groups-r1g2-j2"
+            "groups-r1g8-j2"
           ]
         },
         {
@@ -14329,7 +14319,7 @@ window.LIGA_RK_STATS = {
           "matches": [
             "groups-r1g4-j2",
             "groups-r1g7-j1",
-            "groups-r1g2-j2"
+            "groups-r1g8-j2"
           ]
         },
         {
@@ -14362,19 +14352,19 @@ window.LIGA_RK_STATS = {
             }
           ],
           "players": [
-            "683b5d91-4778-4fb2-963d-5ff30dc2f763",
             "6aa73999-3861-4c5e-95a7-d629b6bc501f",
-            "9e27d442-9ec4-41c9-a05e-c2c52931094f"
+            "9e27d442-9ec4-41c9-a05e-c2c52931094f",
+            "683b5d91-4778-4fb2-963d-5ff30dc2f763"
           ],
           "teams": [
-            "D3",
             "C4",
-            "D1"
+            "D1",
+            "D3"
           ],
           "matches": [
-            "groups-r1g2-j2",
             "groups-r1g6-j2",
-            "groups-r1g7-j3"
+            "groups-r1g7-j3",
+            "groups-r1g8-j2"
           ]
         },
         {
@@ -14526,7 +14516,7 @@ window.LIGA_RK_STATS = {
           "matches": [
             "groups-r1g1-j2",
             "groups-r1g4-j2",
-            "groups-r1g2-j1"
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -14552,18 +14542,18 @@ window.LIGA_RK_STATS = {
           ],
           "players": [
             "c4875740-f916-44f3-b69d-27b65cf58e64",
-            "b23e9ca5-3abb-4222-9580-5965227b155c",
-            "6f77aa43-5ccb-4f3a-a767-faeb1fc00307"
+            "6f77aa43-5ccb-4f3a-a767-faeb1fc00307",
+            "b23e9ca5-3abb-4222-9580-5965227b155c"
           ],
           "teams": [
             "B2",
-            "D3",
-            "D1"
+            "D1",
+            "D3"
           ],
           "matches": [
             "groups-r1g3-j1",
-            "groups-r1g2-j2",
-            "groups-r1g7-j3"
+            "groups-r1g7-j3",
+            "groups-r1g8-j2"
           ]
         },
         {
@@ -15029,7 +15019,7 @@ window.LIGA_RK_STATS = {
           ],
           "matches": [
             "groups-r1g3-j1",
-            "groups-r1g2-j2"
+            "groups-r1g8-j2"
           ]
         },
         {
@@ -15097,7 +15087,7 @@ window.LIGA_RK_STATS = {
           ],
           "matches": [
             "groups-r1g3-j2",
-            "groups-r1g2-j1"
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -15165,7 +15155,7 @@ window.LIGA_RK_STATS = {
           ],
           "matches": [
             "groups-r1g4-j1",
-            "groups-r1g2-j1"
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -15199,7 +15189,7 @@ window.LIGA_RK_STATS = {
           ],
           "matches": [
             "groups-r1g7-j1",
-            "groups-r1g2-j1"
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -15233,7 +15223,7 @@ window.LIGA_RK_STATS = {
           ],
           "matches": [
             "groups-r1g1-j1",
-            "groups-r1g2-j1"
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -15267,7 +15257,7 @@ window.LIGA_RK_STATS = {
           ],
           "matches": [
             "groups-r1g1-j1",
-            "groups-r1g2-j2"
+            "groups-r1g8-j2"
           ]
         },
         {
@@ -15335,7 +15325,7 @@ window.LIGA_RK_STATS = {
           ],
           "matches": [
             "groups-r1g3-j2",
-            "groups-r1g2-j1"
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -15369,7 +15359,7 @@ window.LIGA_RK_STATS = {
           ],
           "matches": [
             "groups-r1g3-j2",
-            "groups-r1g2-j2"
+            "groups-r1g8-j2"
           ]
         },
         {
@@ -15690,68 +15680,6 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "tristana",
-          "name": "Tristana",
-          "image": "assets/champions/Tristana.jpg",
-          "picks": 1,
-          "wins": 1,
-          "losses": 0,
-          "winRate": 100,
-          "kills": 7,
-          "deaths": 2,
-          "assists": 2,
-          "kda": 4.5,
-          "goldAvg": 16655,
-          "damageAvg": 19129,
-          "dpm": 548.9,
-          "positions": [
-            {
-              "position": "ADC",
-              "count": 1
-            }
-          ],
-          "players": [
-            "683b5d91-4778-4fb2-963d-5ff30dc2f763"
-          ],
-          "teams": [
-            "D3"
-          ],
-          "matches": [
-            "groups-r1g2-j1"
-          ]
-        },
-        {
-          "id": "rakan",
-          "name": "Rakan",
-          "image": "assets/champions/Rakan.jpg",
-          "picks": 1,
-          "wins": 1,
-          "losses": 0,
-          "winRate": 100,
-          "kills": 0,
-          "deaths": 1,
-          "assists": 13,
-          "kda": 13,
-          "goldAvg": 9364,
-          "damageAvg": 5639,
-          "dpm": 161.81,
-          "positions": [
-            {
-              "position": "SUP",
-              "count": 1
-            }
-          ],
-          "players": [
-            "d9b48adc-0878-4579-9fdb-c6c2b45bdf04"
-          ],
-          "teams": [
-            "D3"
-          ],
-          "matches": [
-            "groups-r1g2-j1"
-          ]
-        },
-        {
           "id": "garen",
           "name": "Garen",
           "image": "assets/champions/Garen.jpg",
@@ -15842,6 +15770,68 @@ window.LIGA_RK_STATS = {
           ],
           "matches": [
             "groups-r1g7-j3"
+          ]
+        },
+        {
+          "id": "tristana",
+          "name": "Tristana",
+          "image": "assets/champions/Tristana.jpg",
+          "picks": 1,
+          "wins": 1,
+          "losses": 0,
+          "winRate": 100,
+          "kills": 7,
+          "deaths": 2,
+          "assists": 2,
+          "kda": 4.5,
+          "goldAvg": 16655,
+          "damageAvg": 19129,
+          "dpm": 548.9,
+          "positions": [
+            {
+              "position": "ADC",
+              "count": 1
+            }
+          ],
+          "players": [
+            "683b5d91-4778-4fb2-963d-5ff30dc2f763"
+          ],
+          "teams": [
+            "D3"
+          ],
+          "matches": [
+            "groups-r1g8-j1"
+          ]
+        },
+        {
+          "id": "rakan",
+          "name": "Rakan",
+          "image": "assets/champions/Rakan.jpg",
+          "picks": 1,
+          "wins": 1,
+          "losses": 0,
+          "winRate": 100,
+          "kills": 0,
+          "deaths": 1,
+          "assists": 13,
+          "kda": 13,
+          "goldAvg": 9364,
+          "damageAvg": 5639,
+          "dpm": 161.81,
+          "positions": [
+            {
+              "position": "SUP",
+              "count": 1
+            }
+          ],
+          "players": [
+            "d9b48adc-0878-4579-9fdb-c6c2b45bdf04"
+          ],
+          "teams": [
+            "D3"
+          ],
+          "matches": [
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -16093,37 +16083,6 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "renekton",
-          "name": "Renekton",
-          "image": "assets/champions/Renekton.jpg",
-          "picks": 1,
-          "wins": 0,
-          "losses": 1,
-          "winRate": 0,
-          "kills": 2,
-          "deaths": 7,
-          "assists": 8,
-          "kda": 1.43,
-          "goldAvg": 11207,
-          "damageAvg": 20475,
-          "dpm": 680.05,
-          "positions": [
-            {
-              "position": "TOP",
-              "count": 1
-            }
-          ],
-          "players": [
-            "41328541-367c-4556-bf01-fb1810cdfc07"
-          ],
-          "teams": [
-            "D4"
-          ],
-          "matches": [
-            "groups-r1g2-j2"
-          ]
-        },
-        {
           "id": "pantheon",
           "name": "Pantheon",
           "image": "assets/champions/Pantheon.jpg",
@@ -16276,6 +16235,37 @@ window.LIGA_RK_STATS = {
           ],
           "matches": [
             "groups-r1g6-j2"
+          ]
+        },
+        {
+          "id": "renekton",
+          "name": "Renekton",
+          "image": "assets/champions/Renekton.jpg",
+          "picks": 1,
+          "wins": 0,
+          "losses": 1,
+          "winRate": 0,
+          "kills": 2,
+          "deaths": 7,
+          "assists": 8,
+          "kda": 1.43,
+          "goldAvg": 11207,
+          "damageAvg": 20475,
+          "dpm": 680.05,
+          "positions": [
+            {
+              "position": "TOP",
+              "count": 1
+            }
+          ],
+          "players": [
+            "41328541-367c-4556-bf01-fb1810cdfc07"
+          ],
+          "teams": [
+            "D4"
+          ],
+          "matches": [
+            "groups-r1g8-j2"
           ]
         }
       ],
@@ -19961,926 +19951,6 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "groups-r1g2-j1",
-          "division": "ascension",
-          "seriesId": "groups-r1g2",
-          "stage": "grupos",
-          "round": "RODADA 1 - BKS x TNB",
-          "gameNumber": 1,
-          "date": "25/07 16:00",
-          "gameId": "",
-          "clientVersion": "16.14.794.9266",
-          "durationSeconds": 2090.987,
-          "duration": "34:51",
-          "blueTeamSlot": "D3",
-          "redTeamSlot": "D4",
-          "blueTeam": {
-            "slot": "D3",
-            "name": "RAISING DRAGONS",
-            "tag": "RDG",
-            "logo": "assets/uploads/equipes_ascensao/rdg.png"
-          },
-          "redTeam": {
-            "slot": "D4",
-            "name": "INAZUMA V",
-            "tag": "INZ",
-            "logo": "assets/uploads/equipes_ascensao/inz.png"
-          },
-          "winnerSlot": "D3",
-          "loserSlot": "D4",
-          "goldDiff": 5760,
-          "killsDiff": 6,
-          "mvp": {
-            "participantIndex": 1,
-            "riotId": "RDG Dragon B3#155",
-            "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c"
-          },
-          "teams": {
-            "100": {
-              "team": 100,
-              "side": "blue",
-              "won": true,
-              "kills": 15,
-              "deaths": 9,
-              "assists": 41,
-              "gold": 67265,
-              "damageToChampions": 79748,
-              "visionScore": 276,
-              "wardsPlaced": 106,
-              "wardsKilled": 41,
-              "towers": 9,
-              "voidGrubs": 0,
-              "heralds": 1,
-              "dragons": 3,
-              "elderDragons": 0,
-              "barons": 2,
-              "slot": "D3"
-            },
-            "200": {
-              "team": 200,
-              "side": "red",
-              "won": false,
-              "kills": 9,
-              "deaths": 15,
-              "assists": 15,
-              "gold": 61505,
-              "damageToChampions": 73188,
-              "visionScore": 292,
-              "wardsPlaced": 96,
-              "wardsKilled": 45,
-              "towers": 5,
-              "voidGrubs": 3,
-              "heralds": 0,
-              "dragons": 2,
-              "elderDragons": 0,
-              "barons": 0,
-              "slot": "D4"
-            }
-          },
-          "participants": [
-            {
-              "participantIndex": 0,
-              "playerId": "d063fffc-b310-4449-9d66-7a08b97d452a",
-              "riotId": "Buba#RN1",
-              "gameName": "Buba",
-              "tagLine": "RN1",
-              "team": 100,
-              "teamSlot": "D3",
-              "position": "TOP",
-              "champion": "Ornn",
-              "won": true,
-              "kills": 1,
-              "deaths": 0,
-              "assists": 7,
-              "gold": 12329,
-              "damageToChampions": 21405,
-              "visionScore": 9,
-              "wardsPlaced": 3,
-              "wardsKilled": 0,
-              "objectives": {
-                "towers": 0,
-                "voidGrubs": 0,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                2525,
-                3047,
-                3076,
-                2502,
-                2504,
-                3082,
-                3364
-              ],
-              "identificationMethod": "primary-riot-id"
-            },
-            {
-              "participantIndex": 1,
-              "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c",
-              "riotId": "RDG Dragon B3#155",
-              "gameName": "RDG Dragon B3",
-              "tagLine": "155",
-              "team": 100,
-              "teamSlot": "D3",
-              "position": "JG",
-              "champion": "MonkeyKing",
-              "won": true,
-              "kills": 3,
-              "deaths": 1,
-              "assists": 11,
-              "gold": 13962,
-              "damageToChampions": 14917,
-              "visionScore": 52,
-              "wardsPlaced": 16,
-              "wardsKilled": 7,
-              "objectives": {
-                "towers": 4,
-                "voidGrubs": 0,
-                "heralds": 1,
-                "dragons": 3,
-                "elderDragons": 0,
-                "barons": 2
-              },
-              "items": [
-                3078,
-                6333,
-                3111,
-                6610,
-                0,
-                0,
-                3364
-              ],
-              "identificationMethod": "manual"
-            },
-            {
-              "participantIndex": 2,
-              "playerId": "ff6e177a-0dfe-43fa-ab75-1caff615ac19",
-              "riotId": "RDG Fly#prado",
-              "gameName": "RDG Fly",
-              "tagLine": "prado",
-              "team": 100,
-              "teamSlot": "D3",
-              "position": "MID",
-              "champion": "Taliyah",
-              "won": true,
-              "kills": 4,
-              "deaths": 5,
-              "assists": 8,
-              "gold": 14955,
-              "damageToChampions": 18658,
-              "visionScore": 33,
-              "wardsPlaced": 16,
-              "wardsKilled": 7,
-              "objectives": {
-                "towers": 1,
-                "voidGrubs": 0,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                3089,
-                3116,
-                3916,
-                3173,
-                3041,
-                3040,
-                3363
-              ],
-              "identificationMethod": "manual"
-            },
-            {
-              "participantIndex": 3,
-              "playerId": "683b5d91-4778-4fb2-963d-5ff30dc2f763",
-              "riotId": "FVLR DA MORTE#PRET",
-              "gameName": "FVLR DA MORTE",
-              "tagLine": "PRET",
-              "team": 100,
-              "teamSlot": "D3",
-              "position": "ADC",
-              "champion": "Tristana",
-              "won": true,
-              "kills": 7,
-              "deaths": 2,
-              "assists": 2,
-              "gold": 16655,
-              "damageToChampions": 19129,
-              "visionScore": 29,
-              "wardsPlaced": 9,
-              "wardsKilled": 7,
-              "objectives": {
-                "towers": 3,
-                "voidGrubs": 0,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                3031,
-                3033,
-                1038,
-                6676,
-                2019,
-                6675,
-                3363
-              ],
-              "identificationMethod": "manual"
-            },
-            {
-              "participantIndex": 4,
-              "playerId": "d9b48adc-0878-4579-9fdb-c6c2b45bdf04",
-              "riotId": "Gabs Mattos#GABS",
-              "gameName": "Gabs Mattos",
-              "tagLine": "GABS",
-              "team": 100,
-              "teamSlot": "D3",
-              "position": "SUP",
-              "champion": "Rakan",
-              "won": true,
-              "kills": 0,
-              "deaths": 1,
-              "assists": 13,
-              "gold": 9364,
-              "damageToChampions": 5639,
-              "visionScore": 153,
-              "wardsPlaced": 62,
-              "wardsKilled": 20,
-              "objectives": {
-                "towers": 1,
-                "voidGrubs": 0,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                3869,
-                3222,
-                2065,
-                3158,
-                3050,
-                0,
-                3364
-              ],
-              "identificationMethod": "primary-riot-id"
-            },
-            {
-              "participantIndex": 5,
-              "playerId": "41328541-367c-4556-bf01-fb1810cdfc07",
-              "riotId": "luci#sfc",
-              "gameName": "luci",
-              "tagLine": "sfc",
-              "team": 200,
-              "teamSlot": "D4",
-              "position": "TOP",
-              "champion": "Yorick",
-              "won": false,
-              "kills": 1,
-              "deaths": 3,
-              "assists": 1,
-              "gold": 14605,
-              "damageToChampions": 26046,
-              "visionScore": 45,
-              "wardsPlaced": 16,
-              "wardsKilled": 3,
-              "objectives": {
-                "towers": 4,
-                "voidGrubs": 1,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                3161,
-                6694,
-                3078,
-                3047,
-                2021,
-                0,
-                3340
-              ],
-              "identificationMethod": "primary-riot-id"
-            },
-            {
-              "participantIndex": 6,
-              "playerId": "9cde653a-d2ab-4724-9b0a-274626101703",
-              "riotId": "INZ Kido#BENTO",
-              "gameName": "INZ Kido",
-              "tagLine": "BENTO",
-              "team": 200,
-              "teamSlot": "D4",
-              "position": "JG",
-              "champion": "XinZhao",
-              "won": false,
-              "kills": 2,
-              "deaths": 5,
-              "assists": 3,
-              "gold": 11771,
-              "damageToChampions": 14159,
-              "visionScore": 54,
-              "wardsPlaced": 11,
-              "wardsKilled": 11,
-              "objectives": {
-                "towers": 0,
-                "voidGrubs": 2,
-                "heralds": 0,
-                "dragons": 2,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                3071,
-                6610,
-                0,
-                3111,
-                1038,
-                2019,
-                3364
-              ],
-              "identificationMethod": "primary-riot-id"
-            },
-            {
-              "participantIndex": 7,
-              "playerId": "9ca85881-b3a9-4d35-b5a5-040d97360711",
-              "riotId": "josé 3000#zeze",
-              "gameName": "josé 3000",
-              "tagLine": "zeze",
-              "team": 200,
-              "teamSlot": "D4",
-              "position": "MID",
-              "champion": "Lissandra",
-              "won": false,
-              "kills": 4,
-              "deaths": 4,
-              "assists": 4,
-              "gold": 12530,
-              "damageToChampions": 17649,
-              "visionScore": 27,
-              "wardsPlaced": 12,
-              "wardsKilled": 5,
-              "objectives": {
-                "towers": 1,
-                "voidGrubs": 0,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                3173,
-                2503,
-                3152,
-                4645,
-                1058,
-                0,
-                3363
-              ],
-              "identificationMethod": "primary-riot-id"
-            },
-            {
-              "participantIndex": 8,
-              "playerId": "7e9fa67d-9be1-4a2f-95b0-da3ec6d83b49",
-              "riotId": "Ueu#0204",
-              "gameName": "Ueu",
-              "tagLine": "0204",
-              "team": 200,
-              "teamSlot": "D4",
-              "position": "ADC",
-              "champion": "Yunara",
-              "won": false,
-              "kills": 1,
-              "deaths": 2,
-              "assists": 1,
-              "gold": 13710,
-              "damageToChampions": 10870,
-              "visionScore": 45,
-              "wardsPlaced": 10,
-              "wardsKilled": 12,
-              "objectives": {
-                "towers": 0,
-                "voidGrubs": 0,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                2523,
-                2512,
-                3031,
-                3033,
-                0,
-                0,
-                3363
-              ],
-              "identificationMethod": "primary-riot-id"
-            },
-            {
-              "participantIndex": 9,
-              "playerId": "78002b34-f80b-46bb-9401-f905c2accbdd",
-              "riotId": "Magikarp#Jere",
-              "gameName": "Magikarp",
-              "tagLine": "Jere",
-              "team": 200,
-              "teamSlot": "D4",
-              "position": "SUP",
-              "champion": "Milio",
-              "won": false,
-              "kills": 1,
-              "deaths": 1,
-              "assists": 6,
-              "gold": 8889,
-              "damageToChampions": 4464,
-              "visionScore": 121,
-              "wardsPlaced": 47,
-              "wardsKilled": 14,
-              "objectives": {
-                "towers": 0,
-                "voidGrubs": 0,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                3870,
-                6620,
-                3158,
-                6617,
-                3504,
-                0,
-                3364
-              ],
-              "identificationMethod": "primary-riot-id"
-            }
-          ]
-        },
-        {
-          "id": "groups-r1g2-j2",
-          "division": "ascension",
-          "seriesId": "groups-r1g2",
-          "stage": "grupos",
-          "round": "RODADA 1 - BKS x TNB",
-          "gameNumber": 2,
-          "date": "25/07 16:00",
-          "gameId": "",
-          "clientVersion": "16.14.794.9266",
-          "durationSeconds": 1806.494,
-          "duration": "30:06",
-          "blueTeamSlot": "D4",
-          "redTeamSlot": "D3",
-          "blueTeam": {
-            "slot": "D4",
-            "name": "INAZUMA V",
-            "tag": "INZ",
-            "logo": "assets/uploads/equipes_ascensao/inz.png"
-          },
-          "redTeam": {
-            "slot": "D3",
-            "name": "RAISING DRAGONS",
-            "tag": "RDG",
-            "logo": "assets/uploads/equipes_ascensao/rdg.png"
-          },
-          "winnerSlot": "D3",
-          "loserSlot": "D4",
-          "goldDiff": 11558,
-          "killsDiff": 23,
-          "mvp": {
-            "participantIndex": 6,
-            "riotId": "RDG Dragon B3#155",
-            "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c"
-          },
-          "teams": {
-            "100": {
-              "team": 100,
-              "side": "blue",
-              "won": false,
-              "kills": 12,
-              "deaths": 35,
-              "assists": 28,
-              "gold": 52703,
-              "damageToChampions": 75991,
-              "visionScore": 183,
-              "wardsPlaced": 65,
-              "wardsKilled": 24,
-              "towers": 2,
-              "voidGrubs": 0,
-              "heralds": 0,
-              "dragons": 0,
-              "elderDragons": 0,
-              "barons": 0,
-              "slot": "D4"
-            },
-            "200": {
-              "team": 200,
-              "side": "red",
-              "won": true,
-              "kills": 35,
-              "deaths": 12,
-              "assists": 84,
-              "gold": 64261,
-              "damageToChampions": 113604,
-              "visionScore": 234,
-              "wardsPlaced": 93,
-              "wardsKilled": 23,
-              "towers": 9,
-              "voidGrubs": 3,
-              "heralds": 1,
-              "dragons": 4,
-              "elderDragons": 0,
-              "barons": 2,
-              "slot": "D3"
-            }
-          },
-          "participants": [
-            {
-              "participantIndex": 0,
-              "playerId": "41328541-367c-4556-bf01-fb1810cdfc07",
-              "riotId": "luci#sfc",
-              "gameName": "luci",
-              "tagLine": "sfc",
-              "team": 100,
-              "teamSlot": "D4",
-              "position": "TOP",
-              "champion": "Renekton",
-              "won": false,
-              "kills": 2,
-              "deaths": 7,
-              "assists": 8,
-              "gold": 11207,
-              "damageToChampions": 20475,
-              "visionScore": 35,
-              "wardsPlaced": 13,
-              "wardsKilled": 4,
-              "objectives": {
-                "towers": 0,
-                "voidGrubs": 0,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                1054,
-                3047,
-                6692,
-                3161,
-                3053,
-                0,
-                3340
-              ],
-              "identificationMethod": "primary-riot-id"
-            },
-            {
-              "participantIndex": 1,
-              "playerId": "9cde653a-d2ab-4724-9b0a-274626101703",
-              "riotId": "INZ Kido#BENTO",
-              "gameName": "INZ Kido",
-              "tagLine": "BENTO",
-              "team": 100,
-              "teamSlot": "D4",
-              "position": "JG",
-              "champion": "Jax",
-              "won": false,
-              "kills": 4,
-              "deaths": 9,
-              "assists": 5,
-              "gold": 13359,
-              "damageToChampions": 18855,
-              "visionScore": 27,
-              "wardsPlaced": 1,
-              "wardsKilled": 8,
-              "objectives": {
-                "towers": 0,
-                "voidGrubs": 0,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                3111,
-                3078,
-                3157,
-                6610,
-                1036,
-                1029,
-                3364
-              ],
-              "identificationMethod": "primary-riot-id"
-            },
-            {
-              "participantIndex": 2,
-              "playerId": "9ca85881-b3a9-4d35-b5a5-040d97360711",
-              "riotId": "josé 3000#zeze",
-              "gameName": "josé 3000",
-              "tagLine": "zeze",
-              "team": 100,
-              "teamSlot": "D4",
-              "position": "MID",
-              "champion": "Sylas",
-              "won": false,
-              "kills": 4,
-              "deaths": 8,
-              "assists": 3,
-              "gold": 9757,
-              "damageToChampions": 11801,
-              "visionScore": 13,
-              "wardsPlaced": 4,
-              "wardsKilled": 2,
-              "objectives": {
-                "towers": 1,
-                "voidGrubs": 0,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                1056,
-                2421,
-                3152,
-                3171,
-                4633,
-                0,
-                3364
-              ],
-              "identificationMethod": "primary-riot-id"
-            },
-            {
-              "participantIndex": 3,
-              "playerId": "7e9fa67d-9be1-4a2f-95b0-da3ec6d83b49",
-              "riotId": "Ueu#0204",
-              "gameName": "Ueu",
-              "tagLine": "0204",
-              "team": 100,
-              "teamSlot": "D4",
-              "position": "ADC",
-              "champion": "Ezreal",
-              "won": false,
-              "kills": 2,
-              "deaths": 4,
-              "assists": 6,
-              "gold": 11080,
-              "damageToChampions": 16835,
-              "visionScore": 24,
-              "wardsPlaced": 9,
-              "wardsKilled": 4,
-              "objectives": {
-                "towers": 1,
-                "voidGrubs": 0,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                3078,
-                3042,
-                1086,
-                2517,
-                0,
-                0,
-                3363
-              ],
-              "identificationMethod": "primary-riot-id"
-            },
-            {
-              "participantIndex": 4,
-              "playerId": "78002b34-f80b-46bb-9401-f905c2accbdd",
-              "riotId": "Magikarp#Jere",
-              "gameName": "Magikarp",
-              "tagLine": "Jere",
-              "team": 100,
-              "teamSlot": "D4",
-              "position": "SUP",
-              "champion": "Bard",
-              "won": false,
-              "kills": 0,
-              "deaths": 7,
-              "assists": 6,
-              "gold": 7300,
-              "damageToChampions": 8025,
-              "visionScore": 84,
-              "wardsPlaced": 38,
-              "wardsKilled": 6,
-              "objectives": {
-                "towers": 0,
-                "voidGrubs": 0,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                3877,
-                3742,
-                2524,
-                0,
-                3009,
-                0,
-                3364
-              ],
-              "identificationMethod": "primary-riot-id"
-            },
-            {
-              "participantIndex": 5,
-              "playerId": "d063fffc-b310-4449-9d66-7a08b97d452a",
-              "riotId": "Buba#RN1",
-              "gameName": "Buba",
-              "tagLine": "RN1",
-              "team": 200,
-              "teamSlot": "D3",
-              "position": "TOP",
-              "champion": "Gnar",
-              "won": true,
-              "kills": 3,
-              "deaths": 3,
-              "assists": 7,
-              "gold": 11280,
-              "damageToChampions": 23332,
-              "visionScore": 27,
-              "wardsPlaced": 9,
-              "wardsKilled": 3,
-              "objectives": {
-                "towers": 3,
-                "voidGrubs": 0,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 1
-              },
-              "items": [
-                1055,
-                3047,
-                3078,
-                3071,
-                3123,
-                1028,
-                3340
-              ],
-              "identificationMethod": "primary-riot-id"
-            },
-            {
-              "participantIndex": 6,
-              "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c",
-              "riotId": "RDG Dragon B3#155",
-              "gameName": "RDG Dragon B3",
-              "tagLine": "155",
-              "team": 200,
-              "teamSlot": "D3",
-              "position": "JG",
-              "champion": "Vi",
-              "won": true,
-              "kills": 12,
-              "deaths": 1,
-              "assists": 17,
-              "gold": 14732,
-              "damageToChampions": 24125,
-              "visionScore": 45,
-              "wardsPlaced": 13,
-              "wardsKilled": 5,
-              "objectives": {
-                "towers": 2,
-                "voidGrubs": 3,
-                "heralds": 1,
-                "dragons": 4,
-                "elderDragons": 0,
-                "barons": 1
-              },
-              "items": [
-                3071,
-                1038,
-                6610,
-                3047,
-                6333,
-                0,
-                3364
-              ],
-              "identificationMethod": "manual"
-            },
-            {
-              "participantIndex": 7,
-              "playerId": "ff6e177a-0dfe-43fa-ab75-1caff615ac19",
-              "riotId": "RDG Fly#prado",
-              "gameName": "RDG Fly",
-              "tagLine": "prado",
-              "team": 200,
-              "teamSlot": "D3",
-              "position": "MID",
-              "champion": "Ahri",
-              "won": true,
-              "kills": 7,
-              "deaths": 4,
-              "assists": 19,
-              "gold": 13050,
-              "damageToChampions": 33836,
-              "visionScore": 33,
-              "wardsPlaced": 17,
-              "wardsKilled": 2,
-              "objectives": {
-                "towers": 3,
-                "voidGrubs": 0,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                3152,
-                3089,
-                1058,
-                3171,
-                3118,
-                3916,
-                3363
-              ],
-              "identificationMethod": "manual"
-            },
-            {
-              "participantIndex": 8,
-              "playerId": "683b5d91-4778-4fb2-963d-5ff30dc2f763",
-              "riotId": "FVLR DA MORTE#PRET",
-              "gameName": "FVLR DA MORTE",
-              "tagLine": "PRET",
-              "team": 200,
-              "teamSlot": "D3",
-              "position": "ADC",
-              "champion": "Yasuo",
-              "won": true,
-              "kills": 11,
-              "deaths": 3,
-              "assists": 11,
-              "gold": 15164,
-              "damageToChampions": 19298,
-              "visionScore": 16,
-              "wardsPlaced": 8,
-              "wardsKilled": 2,
-              "objectives": {
-                "towers": 1,
-                "voidGrubs": 0,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                1086,
-                6672,
-                3031,
-                1043,
-                6673,
-                1033,
-                3363
-              ],
-              "identificationMethod": "manual"
-            },
-            {
-              "participantIndex": 9,
-              "playerId": "d9b48adc-0878-4579-9fdb-c6c2b45bdf04",
-              "riotId": "Gabs Mattos#GABS",
-              "gameName": "Gabs Mattos",
-              "tagLine": "GABS",
-              "team": 200,
-              "teamSlot": "D3",
-              "position": "SUP",
-              "champion": "Leona",
-              "won": true,
-              "kills": 2,
-              "deaths": 1,
-              "assists": 30,
-              "gold": 10035,
-              "damageToChampions": 13013,
-              "visionScore": 113,
-              "wardsPlaced": 46,
-              "wardsKilled": 11,
-              "objectives": {
-                "towers": 0,
-                "voidGrubs": 0,
-                "heralds": 0,
-                "dragons": 0,
-                "elderDragons": 0,
-                "barons": 0
-              },
-              "items": [
-                3869,
-                3190,
-                3109,
-                3111,
-                3067,
-                1011,
-                3364
-              ],
-              "identificationMethod": "primary-riot-id"
-            }
-          ]
-        },
-        {
           "id": "groups-r1g6-j1",
           "division": "ascension",
           "seriesId": "groups-r1g6",
@@ -22254,6 +21324,926 @@ window.LIGA_RK_STATS = {
                 1001,
                 0,
                 0,
+                3364
+              ],
+              "identificationMethod": "primary-riot-id"
+            }
+          ]
+        },
+        {
+          "id": "groups-r1g8-j1",
+          "division": "ascension",
+          "seriesId": "groups-r1g8",
+          "stage": "grupos",
+          "round": "RODADA 1 - RDG x INZ",
+          "gameNumber": 1,
+          "date": "25/07 20:30",
+          "gameId": "",
+          "clientVersion": "16.14.794.9266",
+          "durationSeconds": 2090.987,
+          "duration": "34:51",
+          "blueTeamSlot": "D3",
+          "redTeamSlot": "D4",
+          "blueTeam": {
+            "slot": "D3",
+            "name": "RAISING DRAGONS",
+            "tag": "RDG",
+            "logo": "assets/uploads/equipes_ascensao/rdg.png"
+          },
+          "redTeam": {
+            "slot": "D4",
+            "name": "INAZUMA V",
+            "tag": "INZ",
+            "logo": "assets/uploads/equipes_ascensao/inz.png"
+          },
+          "winnerSlot": "D3",
+          "loserSlot": "D4",
+          "goldDiff": 5760,
+          "killsDiff": 6,
+          "mvp": {
+            "participantIndex": 1,
+            "riotId": "RDG Dragon B3#155",
+            "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c"
+          },
+          "teams": {
+            "100": {
+              "team": 100,
+              "side": "blue",
+              "won": true,
+              "kills": 15,
+              "deaths": 9,
+              "assists": 41,
+              "gold": 67265,
+              "damageToChampions": 79748,
+              "visionScore": 276,
+              "wardsPlaced": 106,
+              "wardsKilled": 41,
+              "towers": 9,
+              "voidGrubs": 0,
+              "heralds": 1,
+              "dragons": 3,
+              "elderDragons": 0,
+              "barons": 2,
+              "slot": "D3"
+            },
+            "200": {
+              "team": 200,
+              "side": "red",
+              "won": false,
+              "kills": 9,
+              "deaths": 15,
+              "assists": 15,
+              "gold": 61505,
+              "damageToChampions": 73188,
+              "visionScore": 292,
+              "wardsPlaced": 96,
+              "wardsKilled": 45,
+              "towers": 5,
+              "voidGrubs": 3,
+              "heralds": 0,
+              "dragons": 2,
+              "elderDragons": 0,
+              "barons": 0,
+              "slot": "D4"
+            }
+          },
+          "participants": [
+            {
+              "participantIndex": 0,
+              "playerId": "d063fffc-b310-4449-9d66-7a08b97d452a",
+              "riotId": "Buba#RN1",
+              "gameName": "Buba",
+              "tagLine": "RN1",
+              "team": 100,
+              "teamSlot": "D3",
+              "position": "TOP",
+              "champion": "Ornn",
+              "won": true,
+              "kills": 1,
+              "deaths": 0,
+              "assists": 7,
+              "gold": 12329,
+              "damageToChampions": 21405,
+              "visionScore": 9,
+              "wardsPlaced": 3,
+              "wardsKilled": 0,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                2525,
+                3047,
+                3076,
+                2502,
+                2504,
+                3082,
+                3364
+              ],
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 1,
+              "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c",
+              "riotId": "RDG Dragon B3#155",
+              "gameName": "RDG Dragon B3",
+              "tagLine": "155",
+              "team": 100,
+              "teamSlot": "D3",
+              "position": "JG",
+              "champion": "MonkeyKing",
+              "won": true,
+              "kills": 3,
+              "deaths": 1,
+              "assists": 11,
+              "gold": 13962,
+              "damageToChampions": 14917,
+              "visionScore": 52,
+              "wardsPlaced": 16,
+              "wardsKilled": 7,
+              "objectives": {
+                "towers": 4,
+                "voidGrubs": 0,
+                "heralds": 1,
+                "dragons": 3,
+                "elderDragons": 0,
+                "barons": 2
+              },
+              "items": [
+                3078,
+                6333,
+                3111,
+                6610,
+                0,
+                0,
+                3364
+              ],
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 2,
+              "playerId": "ff6e177a-0dfe-43fa-ab75-1caff615ac19",
+              "riotId": "RDG Fly#prado",
+              "gameName": "RDG Fly",
+              "tagLine": "prado",
+              "team": 100,
+              "teamSlot": "D3",
+              "position": "MID",
+              "champion": "Taliyah",
+              "won": true,
+              "kills": 4,
+              "deaths": 5,
+              "assists": 8,
+              "gold": 14955,
+              "damageToChampions": 18658,
+              "visionScore": 33,
+              "wardsPlaced": 16,
+              "wardsKilled": 7,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3089,
+                3116,
+                3916,
+                3173,
+                3041,
+                3040,
+                3363
+              ],
+              "identificationMethod": "riot-id-alias"
+            },
+            {
+              "participantIndex": 3,
+              "playerId": "683b5d91-4778-4fb2-963d-5ff30dc2f763",
+              "riotId": "FVLR DA MORTE#PRET",
+              "gameName": "FVLR DA MORTE",
+              "tagLine": "PRET",
+              "team": 100,
+              "teamSlot": "D3",
+              "position": "ADC",
+              "champion": "Tristana",
+              "won": true,
+              "kills": 7,
+              "deaths": 2,
+              "assists": 2,
+              "gold": 16655,
+              "damageToChampions": 19129,
+              "visionScore": 29,
+              "wardsPlaced": 9,
+              "wardsKilled": 7,
+              "objectives": {
+                "towers": 3,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3031,
+                3033,
+                1038,
+                6676,
+                2019,
+                6675,
+                3363
+              ],
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 4,
+              "playerId": "d9b48adc-0878-4579-9fdb-c6c2b45bdf04",
+              "riotId": "Gabs Mattos#GABS",
+              "gameName": "Gabs Mattos",
+              "tagLine": "GABS",
+              "team": 100,
+              "teamSlot": "D3",
+              "position": "SUP",
+              "champion": "Rakan",
+              "won": true,
+              "kills": 0,
+              "deaths": 1,
+              "assists": 13,
+              "gold": 9364,
+              "damageToChampions": 5639,
+              "visionScore": 153,
+              "wardsPlaced": 62,
+              "wardsKilled": 20,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3869,
+                3222,
+                2065,
+                3158,
+                3050,
+                0,
+                3364
+              ],
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 5,
+              "playerId": "41328541-367c-4556-bf01-fb1810cdfc07",
+              "riotId": "luci#sfc",
+              "gameName": "luci",
+              "tagLine": "sfc",
+              "team": 200,
+              "teamSlot": "D4",
+              "position": "TOP",
+              "champion": "Yorick",
+              "won": false,
+              "kills": 1,
+              "deaths": 3,
+              "assists": 1,
+              "gold": 14605,
+              "damageToChampions": 26046,
+              "visionScore": 45,
+              "wardsPlaced": 16,
+              "wardsKilled": 3,
+              "objectives": {
+                "towers": 4,
+                "voidGrubs": 1,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3161,
+                6694,
+                3078,
+                3047,
+                2021,
+                0,
+                3340
+              ],
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 6,
+              "playerId": "9cde653a-d2ab-4724-9b0a-274626101703",
+              "riotId": "INZ Kido#BENTO",
+              "gameName": "INZ Kido",
+              "tagLine": "BENTO",
+              "team": 200,
+              "teamSlot": "D4",
+              "position": "JG",
+              "champion": "XinZhao",
+              "won": false,
+              "kills": 2,
+              "deaths": 5,
+              "assists": 3,
+              "gold": 11771,
+              "damageToChampions": 14159,
+              "visionScore": 54,
+              "wardsPlaced": 11,
+              "wardsKilled": 11,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 2,
+                "heralds": 0,
+                "dragons": 2,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3071,
+                6610,
+                0,
+                3111,
+                1038,
+                2019,
+                3364
+              ],
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 7,
+              "playerId": "9ca85881-b3a9-4d35-b5a5-040d97360711",
+              "riotId": "josé 3000#zeze",
+              "gameName": "josé 3000",
+              "tagLine": "zeze",
+              "team": 200,
+              "teamSlot": "D4",
+              "position": "MID",
+              "champion": "Lissandra",
+              "won": false,
+              "kills": 4,
+              "deaths": 4,
+              "assists": 4,
+              "gold": 12530,
+              "damageToChampions": 17649,
+              "visionScore": 27,
+              "wardsPlaced": 12,
+              "wardsKilled": 5,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3173,
+                2503,
+                3152,
+                4645,
+                1058,
+                0,
+                3363
+              ],
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 8,
+              "playerId": "7e9fa67d-9be1-4a2f-95b0-da3ec6d83b49",
+              "riotId": "Ueu#0204",
+              "gameName": "Ueu",
+              "tagLine": "0204",
+              "team": 200,
+              "teamSlot": "D4",
+              "position": "ADC",
+              "champion": "Yunara",
+              "won": false,
+              "kills": 1,
+              "deaths": 2,
+              "assists": 1,
+              "gold": 13710,
+              "damageToChampions": 10870,
+              "visionScore": 45,
+              "wardsPlaced": 10,
+              "wardsKilled": 12,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                2523,
+                2512,
+                3031,
+                3033,
+                0,
+                0,
+                3363
+              ],
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 9,
+              "playerId": "78002b34-f80b-46bb-9401-f905c2accbdd",
+              "riotId": "Magikarp#Jere",
+              "gameName": "Magikarp",
+              "tagLine": "Jere",
+              "team": 200,
+              "teamSlot": "D4",
+              "position": "SUP",
+              "champion": "Milio",
+              "won": false,
+              "kills": 1,
+              "deaths": 1,
+              "assists": 6,
+              "gold": 8889,
+              "damageToChampions": 4464,
+              "visionScore": 121,
+              "wardsPlaced": 47,
+              "wardsKilled": 14,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3870,
+                6620,
+                3158,
+                6617,
+                3504,
+                0,
+                3364
+              ],
+              "identificationMethod": "primary-riot-id"
+            }
+          ]
+        },
+        {
+          "id": "groups-r1g8-j2",
+          "division": "ascension",
+          "seriesId": "groups-r1g8",
+          "stage": "grupos",
+          "round": "RODADA 1 - RDG x INZ",
+          "gameNumber": 2,
+          "date": "25/07 20:30",
+          "gameId": "",
+          "clientVersion": "16.14.794.9266",
+          "durationSeconds": 1806.494,
+          "duration": "30:06",
+          "blueTeamSlot": "D4",
+          "redTeamSlot": "D3",
+          "blueTeam": {
+            "slot": "D4",
+            "name": "INAZUMA V",
+            "tag": "INZ",
+            "logo": "assets/uploads/equipes_ascensao/inz.png"
+          },
+          "redTeam": {
+            "slot": "D3",
+            "name": "RAISING DRAGONS",
+            "tag": "RDG",
+            "logo": "assets/uploads/equipes_ascensao/rdg.png"
+          },
+          "winnerSlot": "D3",
+          "loserSlot": "D4",
+          "goldDiff": 11558,
+          "killsDiff": 23,
+          "mvp": {
+            "participantIndex": 6,
+            "riotId": "RDG Dragon B3#155",
+            "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c"
+          },
+          "teams": {
+            "100": {
+              "team": 100,
+              "side": "blue",
+              "won": false,
+              "kills": 12,
+              "deaths": 35,
+              "assists": 28,
+              "gold": 52703,
+              "damageToChampions": 75991,
+              "visionScore": 183,
+              "wardsPlaced": 65,
+              "wardsKilled": 24,
+              "towers": 2,
+              "voidGrubs": 0,
+              "heralds": 0,
+              "dragons": 0,
+              "elderDragons": 0,
+              "barons": 0,
+              "slot": "D4"
+            },
+            "200": {
+              "team": 200,
+              "side": "red",
+              "won": true,
+              "kills": 35,
+              "deaths": 12,
+              "assists": 84,
+              "gold": 64261,
+              "damageToChampions": 113604,
+              "visionScore": 234,
+              "wardsPlaced": 93,
+              "wardsKilled": 23,
+              "towers": 9,
+              "voidGrubs": 3,
+              "heralds": 1,
+              "dragons": 4,
+              "elderDragons": 0,
+              "barons": 2,
+              "slot": "D3"
+            }
+          },
+          "participants": [
+            {
+              "participantIndex": 0,
+              "playerId": "41328541-367c-4556-bf01-fb1810cdfc07",
+              "riotId": "luci#sfc",
+              "gameName": "luci",
+              "tagLine": "sfc",
+              "team": 100,
+              "teamSlot": "D4",
+              "position": "TOP",
+              "champion": "Renekton",
+              "won": false,
+              "kills": 2,
+              "deaths": 7,
+              "assists": 8,
+              "gold": 11207,
+              "damageToChampions": 20475,
+              "visionScore": 35,
+              "wardsPlaced": 13,
+              "wardsKilled": 4,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                1054,
+                3047,
+                6692,
+                3161,
+                3053,
+                0,
+                3340
+              ],
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 1,
+              "playerId": "9cde653a-d2ab-4724-9b0a-274626101703",
+              "riotId": "INZ Kido#BENTO",
+              "gameName": "INZ Kido",
+              "tagLine": "BENTO",
+              "team": 100,
+              "teamSlot": "D4",
+              "position": "JG",
+              "champion": "Jax",
+              "won": false,
+              "kills": 4,
+              "deaths": 9,
+              "assists": 5,
+              "gold": 13359,
+              "damageToChampions": 18855,
+              "visionScore": 27,
+              "wardsPlaced": 1,
+              "wardsKilled": 8,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3111,
+                3078,
+                3157,
+                6610,
+                1036,
+                1029,
+                3364
+              ],
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 2,
+              "playerId": "9ca85881-b3a9-4d35-b5a5-040d97360711",
+              "riotId": "josé 3000#zeze",
+              "gameName": "josé 3000",
+              "tagLine": "zeze",
+              "team": 100,
+              "teamSlot": "D4",
+              "position": "MID",
+              "champion": "Sylas",
+              "won": false,
+              "kills": 4,
+              "deaths": 8,
+              "assists": 3,
+              "gold": 9757,
+              "damageToChampions": 11801,
+              "visionScore": 13,
+              "wardsPlaced": 4,
+              "wardsKilled": 2,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                1056,
+                2421,
+                3152,
+                3171,
+                4633,
+                0,
+                3364
+              ],
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 3,
+              "playerId": "7e9fa67d-9be1-4a2f-95b0-da3ec6d83b49",
+              "riotId": "Ueu#0204",
+              "gameName": "Ueu",
+              "tagLine": "0204",
+              "team": 100,
+              "teamSlot": "D4",
+              "position": "ADC",
+              "champion": "Ezreal",
+              "won": false,
+              "kills": 2,
+              "deaths": 4,
+              "assists": 6,
+              "gold": 11080,
+              "damageToChampions": 16835,
+              "visionScore": 24,
+              "wardsPlaced": 9,
+              "wardsKilled": 4,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3078,
+                3042,
+                1086,
+                2517,
+                0,
+                0,
+                3363
+              ],
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 4,
+              "playerId": "78002b34-f80b-46bb-9401-f905c2accbdd",
+              "riotId": "Magikarp#Jere",
+              "gameName": "Magikarp",
+              "tagLine": "Jere",
+              "team": 100,
+              "teamSlot": "D4",
+              "position": "SUP",
+              "champion": "Bard",
+              "won": false,
+              "kills": 0,
+              "deaths": 7,
+              "assists": 6,
+              "gold": 7300,
+              "damageToChampions": 8025,
+              "visionScore": 84,
+              "wardsPlaced": 38,
+              "wardsKilled": 6,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3877,
+                3742,
+                2524,
+                0,
+                3009,
+                0,
+                3364
+              ],
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 5,
+              "playerId": "d063fffc-b310-4449-9d66-7a08b97d452a",
+              "riotId": "Buba#RN1",
+              "gameName": "Buba",
+              "tagLine": "RN1",
+              "team": 200,
+              "teamSlot": "D3",
+              "position": "TOP",
+              "champion": "Gnar",
+              "won": true,
+              "kills": 3,
+              "deaths": 3,
+              "assists": 7,
+              "gold": 11280,
+              "damageToChampions": 23332,
+              "visionScore": 27,
+              "wardsPlaced": 9,
+              "wardsKilled": 3,
+              "objectives": {
+                "towers": 3,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 1
+              },
+              "items": [
+                1055,
+                3047,
+                3078,
+                3071,
+                3123,
+                1028,
+                3340
+              ],
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 6,
+              "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c",
+              "riotId": "RDG Dragon B3#155",
+              "gameName": "RDG Dragon B3",
+              "tagLine": "155",
+              "team": 200,
+              "teamSlot": "D3",
+              "position": "JG",
+              "champion": "Vi",
+              "won": true,
+              "kills": 12,
+              "deaths": 1,
+              "assists": 17,
+              "gold": 14732,
+              "damageToChampions": 24125,
+              "visionScore": 45,
+              "wardsPlaced": 13,
+              "wardsKilled": 5,
+              "objectives": {
+                "towers": 2,
+                "voidGrubs": 3,
+                "heralds": 1,
+                "dragons": 4,
+                "elderDragons": 0,
+                "barons": 1
+              },
+              "items": [
+                3071,
+                1038,
+                6610,
+                3047,
+                6333,
+                0,
+                3364
+              ],
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 7,
+              "playerId": "ff6e177a-0dfe-43fa-ab75-1caff615ac19",
+              "riotId": "RDG Fly#prado",
+              "gameName": "RDG Fly",
+              "tagLine": "prado",
+              "team": 200,
+              "teamSlot": "D3",
+              "position": "MID",
+              "champion": "Ahri",
+              "won": true,
+              "kills": 7,
+              "deaths": 4,
+              "assists": 19,
+              "gold": 13050,
+              "damageToChampions": 33836,
+              "visionScore": 33,
+              "wardsPlaced": 17,
+              "wardsKilled": 2,
+              "objectives": {
+                "towers": 3,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3152,
+                3089,
+                1058,
+                3171,
+                3118,
+                3916,
+                3363
+              ],
+              "identificationMethod": "riot-id-alias"
+            },
+            {
+              "participantIndex": 8,
+              "playerId": "683b5d91-4778-4fb2-963d-5ff30dc2f763",
+              "riotId": "FVLR DA MORTE#PRET",
+              "gameName": "FVLR DA MORTE",
+              "tagLine": "PRET",
+              "team": 200,
+              "teamSlot": "D3",
+              "position": "ADC",
+              "champion": "Yasuo",
+              "won": true,
+              "kills": 11,
+              "deaths": 3,
+              "assists": 11,
+              "gold": 15164,
+              "damageToChampions": 19298,
+              "visionScore": 16,
+              "wardsPlaced": 8,
+              "wardsKilled": 2,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                1086,
+                6672,
+                3031,
+                1043,
+                6673,
+                1033,
+                3363
+              ],
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 9,
+              "playerId": "d9b48adc-0878-4579-9fdb-c6c2b45bdf04",
+              "riotId": "Gabs Mattos#GABS",
+              "gameName": "Gabs Mattos",
+              "tagLine": "GABS",
+              "team": 200,
+              "teamSlot": "D3",
+              "position": "SUP",
+              "champion": "Leona",
+              "won": true,
+              "kills": 2,
+              "deaths": 1,
+              "assists": 30,
+              "gold": 10035,
+              "damageToChampions": 13013,
+              "visionScore": 113,
+              "wardsPlaced": 46,
+              "wardsKilled": 11,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3869,
+                3190,
+                3109,
+                3111,
+                3067,
+                1011,
                 3364
               ],
               "identificationMethod": "primary-riot-id"
