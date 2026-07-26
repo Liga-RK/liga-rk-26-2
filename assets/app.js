@@ -295,6 +295,10 @@
   }
 
   function renderLockedContent(lockKey, body) {
+    if (divisionKey === "ascension" && lockKey === "statistics") {
+      return body;
+    }
+
     const message = publicSectionLocks[lockKey];
 
     if (!message) {
