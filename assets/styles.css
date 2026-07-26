@@ -2193,10 +2193,11 @@ a {
 .stats-table th {
   position: sticky;
   top: 0;
-  color: rgba(255, 255, 255, 0.68);
-  background: color-mix(in srgb, var(--accent-dark) 76%, #09090b);
+  color: rgba(255, 255, 255, 0.96);
+  background: color-mix(in srgb, var(--accent-dark) 84%, #09090b);
   font-size: 0.9rem;
   text-transform: uppercase;
+  text-shadow: 0 0.08rem 0.45rem rgba(0, 0, 0, 0.7);
 }
 
 .stats-table td {
@@ -6381,9 +6382,56 @@ a.stats-postgame-team-logo:focus-visible {
 }
 
 .stats-table th {
-  color: var(--muted);
-  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.12);
   font-size: 1rem;
+  text-shadow: 0 0.08rem 0.45rem rgba(0, 0, 0, 0.7);
+}
+
+.stats-sort-button {
+  width: 100%;
+  border: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: inherit;
+  gap: 0.4rem;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  text-align: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.stats-sort-button::after {
+  content: "";
+  width: 0.36rem;
+  height: 0.36rem;
+  border-right: 0.12rem solid currentColor;
+  border-bottom: 0.12rem solid currentColor;
+  opacity: 0.4;
+  transform: rotate(45deg) translateY(-0.06rem);
+  transition: opacity 0.15s ease, transform 0.15s ease, color 0.15s ease;
+}
+
+.stats-sort-button:hover,
+.stats-sort-button:focus-visible {
+  color: #fff;
+}
+
+.stats-sort-button:hover::after,
+.stats-sort-button:focus-visible::after,
+.stats-sort-button.is-sorted::after {
+  opacity: 1;
+}
+
+.stats-sort-button.is-sorted::after {
+  color: var(--accent);
+}
+
+.stats-sort-button.is-sorted[data-sort-direction="asc"]::after {
+  transform: rotate(225deg) translateY(-0.06rem);
 }
 
 .stats-table td {

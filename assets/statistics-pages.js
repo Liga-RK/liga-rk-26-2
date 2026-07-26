@@ -60,6 +60,7 @@
       ${renderFooter()}
     `;
     setupFilters();
+    setupSortableTables();
   }
 
   function renderHeader(division) {
@@ -406,15 +407,31 @@
   }
 
   function playerTable(players, division) {
-    return `<table class="stats-table stats-player-table"><thead><tr><th>Jogador</th><th>Posi&ccedil;&atilde;o</th><th>KDA</th><th>J</th><th>V%</th><th>KP</th><th>DPM</th><th>GPM</th><th>VS</th><th>MVP</th></tr></thead><tbody>${players.map((player) => {
+    return `<table class="stats-table stats-player-table" data-sortable-table data-default-sort="kda" data-current-sort="kda" data-current-direction="desc"><thead><tr>${[
+      sortableHeader("Jogador", "player", "text", "asc"),
+      sortableHeader("Posi&ccedil;&atilde;o", "position", "number", "asc"),
+      sortableHeader("KDA", "kda"),
+      sortableHeader("J", "games"),
+      sortableHeader("V%", "winrate"),
+      sortableHeader("KP", "kp"),
+      sortableHeader("DPM", "dpm"),
+      sortableHeader("GPM", "gpm"),
+      sortableHeader("VS", "vision"),
+      sortableHeader("MVP", "mvps")
+    ].join("")}</tr></thead><tbody>${players.map((player) => {
       const team = primaryTeam(player, division);
       const teamTag = team && (team.tag || team.slot) || "SEM EQUIPE";
+      const displayName = String(player.displayName || "");
       return `
-      <tr data-player-row data-search="${attribute(`${player.displayName} ${player.riotId} ${teamTag}`.toLowerCase())}" data-lane="${attribute(player.mainPosition || "")}" data-team="${attribute((player.teams && player.teams[0] && player.teams[0].slot) || "")}">
+      <tr data-player-row data-search="${attribute(`${displayName} ${player.riotId} ${teamTag}`.toLowerCase())}" data-lane="${attribute(player.mainPosition || "")}" data-team="${attribute((player.teams && player.teams[0] && player.teams[0].slot) || "")}" data-sort-player="${attribute(displayName.toLowerCase())}" data-sort-position="${laneIndex(player.mainPosition)}" data-sort-kda="${numeric(player.kda)}" data-sort-games="${numeric(player.games)}" data-sort-winrate="${numeric(player.winRate)}" data-sort-kp="${numeric(player.kp)}" data-sort-dpm="${numeric(player.dpm)}" data-sort-gpm="${numeric(player.gpm)}" data-sort-vision="${numeric(player.visionScoreAvg)}" data-sort-mvps="${numeric(player.mvps)}">
         <td><div class="stats-player-identity">${teamLogo(team)}<a class="stats-entity-link" href="jogador.html?division=${division}&id=${encodeURIComponent(player.id)}"><strong>${text(player.displayName)}</strong><small>${text(teamTag)}</small></a></div></td>
         <td><span class="stats-lane-cell">${laneIcon(player.mainPosition)}</span></td><td class="stats-kda-cell">${formatDecimal(player.kda)}</td><td>${player.games}</td><td>${formatDecimal(player.winRate)}%</td><td>${formatDecimal(player.kp)}%</td><td>${formatDecimal(player.dpm)}</td><td>${formatDecimal(player.gpm)}</td><td>${formatDecimal(player.visionScoreAvg)}</td><td>${player.mvps}</td>
       </tr>`;
     }).join("")}</tbody></table>`;
+  }
+
+  function sortableHeader(label, key, type = "number", direction = "desc") {
+    return `<th><button class="stats-sort-button" type="button" data-sort-key="${attribute(key)}" data-sort-type="${attribute(type)}" data-sort-default="${attribute(direction)}">${label}</button></th>`;
   }
 
   function championCard(champion) {
@@ -570,6 +587,69 @@
   function matchFilters(matches) {
     const stages = [...new Set(matches.map((match) => match.stage).filter(Boolean))];
     return `<div class="stats-filters"><label>Buscar<input type="search" placeholder="Equipe, fase ou s&eacute;rie" data-match-search /></label><label>Fase<select data-match-stage><option value="">Todas</option>${stages.map((stage) => `<option>${text(stage)}</option>`).join("")}</select></label></div>`;
+  }
+
+  function setupSortableTables() {
+    root.querySelectorAll("[data-sortable-table]").forEach((table) => {
+      table.querySelectorAll("[data-sort-key]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.sortKey || "";
+          const type = button.dataset.sortType || "number";
+          const currentKey = table.dataset.currentSort || "";
+          const currentDirection = table.dataset.currentDirection || "desc";
+          const direction = currentKey === key
+            ? (currentDirection === "asc" ? "desc" : "asc")
+            : (button.dataset.sortDefault || "desc");
+          sortTableBy(table, key, type, direction);
+        });
+      });
+      markSortedHeader(table, table.dataset.currentSort || table.dataset.defaultSort || "", table.dataset.currentDirection || "desc");
+    });
+  }
+
+  function sortTableBy(table, key, type, direction) {
+    const body = table.querySelector("tbody");
+    if (!body || !key) return;
+    const rows = Array.from(body.querySelectorAll("tr"));
+    rows.sort((left, right) => {
+      const compared = compareSortValues(sortRowValue(left, key, type), sortRowValue(right, key, type), type);
+      const primary = direction === "asc" ? compared : -compared;
+      return primary || comparePlayerRows(left, right);
+    });
+    rows.forEach((row) => body.appendChild(row));
+    table.dataset.currentSort = key;
+    table.dataset.currentDirection = direction;
+    markSortedHeader(table, key, direction);
+  }
+
+  function sortRowValue(row, key, type) {
+    const value = row.getAttribute(`data-sort-${key}`) || "";
+    return type === "text" ? value : numeric(value);
+  }
+
+  function compareSortValues(left, right, type) {
+    if (type === "text") return String(left).localeCompare(String(right), "pt-BR", { numeric: true, sensitivity: "base" });
+    return numeric(left) - numeric(right);
+  }
+
+  function comparePlayerRows(left, right) {
+    return numeric(right.getAttribute("data-sort-kda")) - numeric(left.getAttribute("data-sort-kda")) ||
+      numeric(right.getAttribute("data-sort-games")) - numeric(left.getAttribute("data-sort-games")) ||
+      numeric(right.getAttribute("data-sort-winrate")) - numeric(left.getAttribute("data-sort-winrate")) ||
+      String(left.getAttribute("data-sort-player") || "").localeCompare(String(right.getAttribute("data-sort-player") || ""), "pt-BR", { numeric: true, sensitivity: "base" });
+  }
+
+  function markSortedHeader(table, key, direction) {
+    table.querySelectorAll("[data-sort-key]").forEach((button) => {
+      const active = button.dataset.sortKey === key;
+      button.classList.toggle("is-sorted", active);
+      button.dataset.sortDirection = active ? direction : "";
+      const cell = button.closest("th");
+      if (cell) {
+        if (active) cell.setAttribute("aria-sort", direction === "asc" ? "ascending" : "descending");
+        else cell.removeAttribute("aria-sort");
+      }
+    });
   }
 
   function setupFilters() {
