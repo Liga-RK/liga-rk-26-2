@@ -295,7 +295,7 @@
   }
 
   function renderLockedContent(lockKey, body) {
-    if (divisionKey === "ascension" && lockKey === "statistics") {
+    if (lockKey === "statistics") {
       return body;
     }
 
