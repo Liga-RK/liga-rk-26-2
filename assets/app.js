@@ -930,11 +930,8 @@
         : Array.isArray(division.vods)
           ? division.vods
           : [division.vod || {}];
-    const localVods = Array.isArray(contentData.divisions && contentData.divisions[divisionKey] && contentData.divisions[divisionKey].vods)
-      ? contentData.divisions[divisionKey].vods
-      : [];
     const uniqueUrls = new Set();
-    const vods = [...localVods, ...rawVods]
+    const vods = rawVods
       .filter(Boolean)
       .map(normalizeVod)
       .filter((vod) => {

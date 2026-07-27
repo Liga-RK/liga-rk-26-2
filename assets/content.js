@@ -1750,15 +1750,15 @@ window.LIGA_RK_CONTENT = {
         }
       },
       "vod": {
-        "url": "https://www.youtube.com/watch?v=xISBRrUllQk&t=6101s&pp=ygUKcmsgaW5ob3VzZQ%3D%3D",
-        "title": "SORTEIO OFICIAL | LIGA RK 26.2",
-        "thumbnail": "https://img.youtube.com/vi/xISBRrUllQk/maxresdefault.jpg"
+        "url": "",
+        "title": "",
+        "thumbnail": ""
       },
       "vods": [
         {
-          "url": "https://www.youtube.com/watch?v=xISBRrUllQk&t=6101s&pp=ygUKcmsgaW5ob3VzZQ%3D%3D",
-          "title": "SORTEIO OFICIAL | LIGA RK 26.2",
-          "thumbnail": "https://img.youtube.com/vi/xISBRrUllQk/maxresdefault.jpg"
+          "url": "",
+          "title": "",
+          "thumbnail": ""
         }
       ],
       "statistics": {
@@ -3560,15 +3560,15 @@ window.LIGA_RK_CONTENT = {
         }
       },
       "vod": {
-        "url": "https://www.youtube.com/watch?v=xISBRrUllQk&t=6101s&pp=ygUKcmsgaW5ob3VzZQ%3D%3D",
-        "title": "SORTEIO OFICIAL | LIGA RK 26.2",
-        "thumbnail": "https://img.youtube.com/vi/xISBRrUllQk/maxresdefault.jpg"
+        "url": "",
+        "title": "",
+        "thumbnail": ""
       },
       "vods": [
         {
-          "url": "https://www.youtube.com/watch?v=xISBRrUllQk&t=6101s&pp=ygUKcmsgaW5ob3VzZQ%3D%3D",
-          "title": "SORTEIO OFICIAL | LIGA RK 26.2",
-          "thumbnail": "https://img.youtube.com/vi/xISBRrUllQk/maxresdefault.jpg"
+          "url": "",
+          "title": "",
+          "thumbnail": ""
         }
       ],
       "statistics": {
