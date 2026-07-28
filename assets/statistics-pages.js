@@ -108,6 +108,7 @@
 
     return `
       ${hero("CENTRAL DE ESTAT&Iacute;STICAS", label, "Resultados processados diretamente dos replays oficiais da Liga RK 26.2.")}
+      ${statisticsMethodology()}
       ${!data.hasData ? emptyState("As estat&iacute;sticas desta divis&atilde;o aparecer&atilde;o aqui assim que a primeira partida for processada e confirmada pela organiza&ccedil;&atilde;o.") : `
         <section class="stats-overview" aria-label="Vis&atilde;o geral">
           ${metric("Partidas", overview.games)}
@@ -1010,6 +1011,56 @@
 
   function hero(title, eyebrow, description) {
     return `<section class="stats-public-hero"><span>${eyebrow}</span><h1>${title}</h1><p>${description}</p></section>`;
+  }
+
+  function statisticsMethodology() {
+    return `
+      <section class="stats-methodology" aria-labelledby="stats-methodology-title">
+        <header class="stats-methodology-heading">
+          <div>
+            <span>MODELO ROLE-IMPACT V2</span>
+            <h2 id="stats-methodology-title">COMO AS NOTAS S&Atilde;O CALCULADAS</h2>
+          </div>
+          <p>Modelo autom&aacute;tico, reproduz&iacute;vel e ajustado &agrave;s responsabilidades de cada posi&ccedil;&atilde;o.</p>
+        </header>
+
+        <div class="stats-methodology-grid">
+          <article class="stats-methodology-card">
+            <span class="stats-methodology-index">01</span>
+            <div>
+              <h3>NOTA DE DESEMPENHO</h3>
+              <p>Cada jogador recebe uma nota de <strong>0 a 100 por mapa</strong>. KDA, KP, dano, ouro, vis&atilde;o, sentinelas, torres, objetivos, sobreviv&ecirc;ncia e vantagem sobre o advers&aacute;rio da mesma lane s&atilde;o normalizados e ponderados conforme a fun&ccedil;&atilde;o.</p>
+              <code>nota = limitar(25 + impacto ponderado &times; 1,05, entre 0 e 100)</code>
+            </div>
+          </article>
+
+          <article class="stats-methodology-card">
+            <span class="stats-methodology-index">02</span>
+            <div>
+              <h3>MVP DA PARTIDA</h3>
+              <p>Somente jogadores da <strong>equipe vencedora</strong> concorrem ao MVP. O jogador com a maior nota do mapa vence. Em caso de empate, a ordem de desempate &eacute;: maior KP, menos mortes, maior dano a campe&otilde;es e ordem est&aacute;vel do replay.</p>
+              <p class="stats-methodology-note">Jogadores derrotados continuam recebendo nota normalmente, mas n&atilde;o podem ser MVP daquele mapa.</p>
+            </div>
+          </article>
+        </div>
+
+        <details class="stats-methodology-details">
+          <summary>CONSULTAR PESOS T&Eacute;CNICOS POR POSI&Ccedil;&Atilde;O</summary>
+          <div class="stats-methodology-role-grid">
+            ${methodologyRole("TOP", "KDA 13% &middot; KP 10% &middot; dano 17% &middot; efici&ecirc;ncia 8% &middot; vis&atilde;o 3% &middot; sentinelas 2% &middot; torres 15% &middot; objetivos 5% &middot; abates 5% &middot; assist&ecirc;ncias 2% &middot; sobreviv&ecirc;ncia 8% &middot; confronto direto 12%")}
+            ${methodologyRole("JG", "KDA 11% &middot; KP 18% &middot; dano 7% &middot; efici&ecirc;ncia 4% &middot; vis&atilde;o 8% &middot; sentinelas 6% &middot; torres 3% &middot; objetivos 20% &middot; abates 4% &middot; assist&ecirc;ncias 8% &middot; sobreviv&ecirc;ncia 4% &middot; confronto direto 7%")}
+            ${methodologyRole("MID", "KDA 14% &middot; KP 15% &middot; dano 20% &middot; efici&ecirc;ncia 10% &middot; vis&atilde;o 4% &middot; sentinelas 2% &middot; torres 8% &middot; objetivos 4% &middot; abates 7% &middot; assist&ecirc;ncias 2% &middot; sobreviv&ecirc;ncia 7% &middot; confronto direto 7%")}
+            ${methodologyRole("ADC", "KDA 15% &middot; KP 13% &middot; dano 24% &middot; efici&ecirc;ncia 11% &middot; vis&atilde;o 2% &middot; sentinelas 1% &middot; torres 12% &middot; objetivos 2% &middot; abates 10% &middot; assist&ecirc;ncias 1% &middot; sobreviv&ecirc;ncia 6% &middot; confronto direto 3%")}
+            ${methodologyRole("SUP", "KDA 10% &middot; KP 22% &middot; dano 3% &middot; efici&ecirc;ncia 2% &middot; vis&atilde;o 17% &middot; sentinelas 12% &middot; torres 1% &middot; objetivos 5% &middot; abates 1% &middot; assist&ecirc;ncias 18% &middot; sobreviv&ecirc;ncia 4% &middot; confronto direto 5%")}
+          </div>
+          <p class="stats-methodology-footnote">A nota m&eacute;dia individual &eacute; a m&eacute;dia das notas de todos os mapas confirmados. A nota da equipe &eacute; a m&eacute;dia de todas as atua&ccedil;&otilde;es de seus jogadores.</p>
+        </details>
+      </section>
+    `;
+  }
+
+  function methodologyRole(role, weights) {
+    return `<article><strong>${role}</strong><p>${weights}</p></article>`;
   }
 
   function detailBack(division) {
