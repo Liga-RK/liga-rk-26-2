@@ -275,48 +275,76 @@ Em empate exato, permanece o primeiro registro encontrado pelo agregador.
 
 ## 10. Como o MVP da partida é escolhido
 
-O **MVP da partida é calculado automaticamente** entre os dez participantes do mapa. Ele não é escolhido por votação.
+O **MVP da partida é calculado automaticamente**, mas apenas os cinco jogadores da equipe vencedora são elegíveis. Essa regra acompanha a prática competitiva do LoL Esports para prêmios de MVP de final, nos quais os jogadores da equipe campeã formam o grupo elegível.
 
-Para cada jogador, o sistema calcula:
+O LoL Esports não publica uma fórmula matemática única para seus MVPs: a escolha oficial é feita por votação ou por um painel. Por isso, a Liga RK utiliza um modelo próprio, transparente e reproduzível, inspirado nos mesmos eixos de avaliação: desempenho individual, trabalho em equipe, impacto no mapa e execução da função.
+
+### Pontuação normalizada
+
+Cada candidato recebe uma pontuação de `0` a `100`. Para impedir que uma função seja favorecida apenas pela escala bruta de seus números, o sistema trabalha principalmente com:
+
+- participação nos números da própria equipe;
+- comparação direta com o adversário da mesma posição;
+- eficiência de dano em relação ao ouro recebido;
+- KDA, participação em abates e sobrevivência;
+- dano, ouro, visão, sentinelas e torres;
+- participação em larvas, arautos, dragões, Dragão Ancião e Barão.
+
+### Pesos por função
+
+Os mesmos dados não têm o mesmo significado para todas as posições:
+
+| Função | Impactos mais valorizados |
+| --- | --- |
+| TOP | pressão individual, dano, torres, sobrevivência e vantagem sobre o TOP adversário |
+| JG | participação em abates, objetivos neutros, visão, assistências e controle de mapa |
+| MID | dano, participação em abates, eficiência de ouro e vantagem sobre o MID adversário |
+| ADC | dano sustentado, KDA, abates, eficiência de ouro, sobrevivência e torres |
+| SUP | participação em abates, assistências, visão, sentinelas e vantagem sobre o SUP adversário |
+
+Os pesos da nota principal somam `100%` em cada função:
 
 ```text
-Impacto em objetivos =
-  torres x 2
-  + dragões x 2,5
-  + arautos x 2
-  + barões x 3
+TOP: KDA 13%, KP 10%, dano 17%, eficiência 8%, visão 3%,
+     sentinelas 2%, torres 15%, objetivos 5%, abates 5%,
+     assistências 2%, sobrevivência 8% e comparação de rota 12%.
+
+JG:  KDA 11%, KP 18%, dano 7%, eficiência 4%, visão 8%,
+     sentinelas 6%, torres 3%, objetivos 20%, abates 4%,
+     assistências 8%, sobrevivência 4% e comparação de rota 7%.
+
+MID: KDA 14%, KP 15%, dano 20%, eficiência 10%, visão 4%,
+     sentinelas 2%, torres 8%, objetivos 4%, abates 7%,
+     assistências 2%, sobrevivência 7% e comparação de rota 7%.
+
+ADC: KDA 15%, KP 13%, dano 24%, eficiência 11%, visão 2%,
+     sentinelas 1%, torres 12%, objetivos 2%, abates 10%,
+     assistências 1%, sobrevivência 6% e comparação de rota 3%.
+
+SUP: KDA 10%, KP 22%, dano 3%, eficiência 2%, visão 17%,
+     sentinelas 12%, torres 1%, objetivos 5%, abates 1%,
+     assistências 18%, sobrevivência 4% e comparação de rota 5%.
 ```
 
-Depois aplica um peso específico para a posição:
+Antes da aplicação desses pesos, participações de equipe são normalizadas pela expectativa da função. Assim, por exemplo, uma parcela de visão comum para um suporte não recebe a mesma avaliação que essa mesma parcela excepcional para um ADC. Isso permite comparar funções diferentes sem criar uma cota obrigatória de MVP por posição.
+
+O **impacto em objetivos** usa pesos diferentes conforme o valor estratégico:
 
 ```text
-TOP = DPM x 0,01 + abates x 0,7
-JG  = KP x 9 + impacto em objetivos x 1,5
-MID = DPM x 0,014 + abates x 0,8
-ADC = DPM x 0,017 + abates
-SUP = KP x 12 + assistências x 0,6
+larva = 1
+arauto = 2
+dragão = 2,5
+Dragão Ancião = 4
+Barão = 4
 ```
 
-Nesse cálculo, KP é usado no formato decimal: 50% corresponde a `0,50`.
+### Comparação de rota
 
-A pontuação final é:
+Além da contribuição dentro da própria equipe, cada jogador é comparado com o adversário da mesma função. Essa comparação considera um conjunto específico por posição. Para um caçador, por exemplo, objetivos e controle de mapa têm mais peso; para um ADC, dano, ouro, abates e torres são mais relevantes; para um suporte, visão, sentinelas, assistências e KP ganham prioridade.
 
-```text
-Pontuação MVP =
-  abates x 3
-  + assistências x 1,4
-  - mortes x 2,2
-  + KP x 17
-  + GPM x 0,016
-  + DPM x 0,02
-  + impacto em objetivos
-  + peso da posição
-  + 6 pontos em caso de vitória
-```
+O vencedor entre os cinco candidatos recebe um MVP. Em caso de empate na pontuação, o sistema desempata por maior KP, menos mortes, maior dano a campeões e, por último, pela ordem estável dos participantes no replay.
 
-O jogador com a maior pontuação recebe um MVP. O bônus de vitória favorece a equipe vencedora, mas o cálculo avalia os dez jogadores e considera impacto individual, função e objetivos.
-
-Os MVPs acumulados no perfil representam quantas partidas o jogador venceu nesse cálculo automático.
+O resultado também armazena a versão do modelo, a pontuação final e o detalhamento das métricas usadas. Assim, uma alteração futura de pesos pode ser auditada sem confundir modelos diferentes. Os MVPs acumulados no perfil representam quantas partidas o jogador venceu nesse cálculo automático.
 
 ## 11. Playoffs
 
@@ -399,4 +427,3 @@ Ao final da rodada:
 | Seleção da Semana | **Votação popular** |
 | Destaque da Semana | Resultado popular registrado pela organização |
 | Correções excepcionais | Administração da Liga RK |
-

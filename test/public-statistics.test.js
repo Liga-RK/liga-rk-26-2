@@ -3,7 +3,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const test = require("node:test");
 const { parseReplay } = require("../src/replay/parser-factory");
-const { aggregateDatabase } = require("../src/statistics/aggregators");
+const { aggregateDatabase, selectMvp } = require("../src/statistics/aggregators");
 const { assertPublicPayloadSafe, createPublicPayload } = require("../src/statistics/public-payload");
 
 const replayPath = path.resolve(__dirname, "..", "samples", "BR1-3262336523.rofl");
@@ -120,6 +120,33 @@ test("ordena equipes por winrate e usa o menor TMV como desempate", { skip: !fs.
   assert.deepEqual(winners.map((team) => team.avgWinTime), ["15:00", "20:00"]);
 });
 
+test("MVP e escolhido somente entre jogadores do time vencedor", () => {
+  const match = mvpTestMatch();
+  const losingAdc = match.participants.find((participant) => participant.team === 200 && participant.position === "ADC");
+  losingAdc.kills = 40;
+  losingAdc.assists = 20;
+  losingAdc.damageToChampions = 100000;
+  losingAdc.gold = 30000;
+
+  const mvp = selectMvp(match, match.durationSeconds);
+
+  assert.equal(mvp.team, 100);
+  assert.equal(mvp.won, true);
+  assert.equal(mvp.mvpModel, "role-impact-v2");
+  assert.ok(mvp.mvpScore > 0 && mvp.mvpScore <= 100);
+});
+
+test("suporte pode ser MVP por participacao, assistencias e visao", () => {
+  const match = mvpTestMatch();
+  const mvp = selectMvp(match, match.durationSeconds);
+
+  assert.equal(mvp.position, "SUP");
+  assert.equal(mvp.riotId, "Winner SUP#BR1");
+  assert.ok(mvp.mvpBreakdown.kp > 60);
+  assert.ok(mvp.mvpBreakdown.vision > 50);
+  assert.ok(mvp.mvpBreakdown.wards > 50);
+});
+
 function playerRecord(participant) {
   return {
     playerId: participant.playerId,
@@ -127,5 +154,54 @@ function playerRecord(participant) {
     riotId: participant.riotId,
     lane: participant.position,
     opgg: ""
+  };
+}
+
+function mvpTestMatch() {
+  const roles = ["TOP", "JG", "MID", "ADC", "SUP"];
+  const winners = [
+    mvpParticipant(0, 100, roles[0], { kills: 1, deaths: 3, assists: 5, gold: 10000, damageToChampions: 12000, visionScore: 20, wardsPlaced: 8, wardsKilled: 2, towers: 2 }),
+    mvpParticipant(1, 100, roles[1], { kills: 2, deaths: 2, assists: 8, gold: 9000, damageToChampions: 9000, visionScore: 35, wardsPlaced: 15, wardsKilled: 5, dragons: 2, barons: 1 }),
+    mvpParticipant(2, 100, roles[2], { kills: 4, deaths: 4, assists: 4, gold: 11000, damageToChampions: 15000, visionScore: 15, wardsPlaced: 7, wardsKilled: 1, towers: 1 }),
+    mvpParticipant(3, 100, roles[3], { kills: 5, deaths: 3, assists: 5, gold: 12000, damageToChampions: 18000, visionScore: 15, wardsPlaced: 6, wardsKilled: 1, towers: 2 }),
+    mvpParticipant(4, 100, roles[4], { kills: 1, deaths: 1, assists: 20, gold: 7000, damageToChampions: 5000, visionScore: 100, wardsPlaced: 50, wardsKilled: 15 })
+  ];
+  const losers = [
+    mvpParticipant(5, 200, roles[0], { kills: 2, deaths: 5, assists: 2, gold: 8500, damageToChampions: 8000, visionScore: 15, wardsPlaced: 6, wardsKilled: 1 }),
+    mvpParticipant(6, 200, roles[1], { kills: 1, deaths: 6, assists: 3, gold: 7500, damageToChampions: 6000, visionScore: 20, wardsPlaced: 9, wardsKilled: 2, dragons: 1 }),
+    mvpParticipant(7, 200, roles[2], { kills: 3, deaths: 5, assists: 2, gold: 9000, damageToChampions: 10000, visionScore: 12, wardsPlaced: 5, wardsKilled: 1 }),
+    mvpParticipant(8, 200, roles[3], { kills: 4, deaths: 4, assists: 1, gold: 9500, damageToChampions: 12000, visionScore: 10, wardsPlaced: 4, wardsKilled: 1 }),
+    mvpParticipant(9, 200, roles[4], { kills: 0, deaths: 5, assists: 4, gold: 6000, damageToChampions: 3000, visionScore: 40, wardsPlaced: 20, wardsKilled: 5 })
+  ];
+  return {
+    durationSeconds: 1800,
+    winnerTeam: 100,
+    participants: [...winners, ...losers]
+  };
+}
+
+function mvpParticipant(participantIndex, team, position, overrides) {
+  return {
+    participantIndex,
+    playerId: `mvp-player-${participantIndex}`,
+    riotId: `${team === 100 ? "Winner" : "Loser"} ${position}#BR1`,
+    team,
+    position,
+    won: team === 100,
+    kills: 0,
+    deaths: 0,
+    assists: 0,
+    gold: 0,
+    damageToChampions: 0,
+    visionScore: 0,
+    wardsPlaced: 0,
+    wardsKilled: 0,
+    towers: 0,
+    voidGrubs: 0,
+    heralds: 0,
+    dragons: 0,
+    elderDragons: 0,
+    barons: 0,
+    ...overrides
   };
 }

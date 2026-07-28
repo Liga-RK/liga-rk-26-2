@@ -1,6 +1,6 @@
 window.LIGA_RK_STATS = {
   "version": 2,
-  "generatedAt": "2026-07-27T02:37:07.569Z",
+  "generatedAt": "2026-07-28T00:31:44.151Z",
   "season": "Liga RK 26.2",
   "divisions": {
     "elite": {
@@ -8,7 +8,7 @@ window.LIGA_RK_STATS = {
       "overview": {
         "games": 12,
         "teams": 10,
-        "players": 103,
+        "players": 102,
         "champions": 65
       },
       "statistics": {
@@ -1096,7 +1096,7 @@ window.LIGA_RK_STATS = {
           "dragons": 0,
           "heralds": 0,
           "barons": 0,
-          "mvps": 1,
+          "mvps": 2,
           "positions": [
             {
               "position": "ADC",
@@ -1167,7 +1167,7 @@ window.LIGA_RK_STATS = {
           "dragons": 6,
           "heralds": 2,
           "barons": 2,
-          "mvps": 1,
+          "mvps": 0,
           "positions": [
             {
               "position": "JG",
@@ -1427,12 +1427,12 @@ window.LIGA_RK_STATS = {
         {
           "id": "9921122f-617d-4631-9fc6-aa6e1a63578a",
           "playerId": "9921122f-617d-4631-9fc6-aa6e1a63578a",
-          "displayName": "TUBLAS",
-          "riotId": "mentally dream#tubla",
+          "displayName": "N I H I L メ",
+          "riotId": "N I H I L メ#CDRP",
           "alsoPlayedAs": [
             "N I H I L メ#CDRP"
           ],
-          "opgg": "https://op.gg/pt/lol/summoners/br/mentally%20dream-tubla",
+          "opgg": "",
           "games": 2,
           "wins": 2,
           "losses": 0,
@@ -1459,15 +1459,11 @@ window.LIGA_RK_STATS = {
           "dragons": 0,
           "heralds": 0,
           "barons": 0,
-          "mvps": 0,
+          "mvps": 1,
           "positions": [
             {
               "position": "TOP",
               "count": 2
-            },
-            {
-              "position": "SUB",
-              "count": 0
             }
           ],
           "mainPosition": "TOP",
@@ -1605,7 +1601,7 @@ window.LIGA_RK_STATS = {
           "dragons": 6,
           "heralds": 2,
           "barons": 2,
-          "mvps": 2,
+          "mvps": 1,
           "positions": [
             {
               "position": "JG",
@@ -1987,7 +1983,7 @@ window.LIGA_RK_STATS = {
           "dragons": 0,
           "heralds": 0,
           "barons": 0,
-          "mvps": 0,
+          "mvps": 1,
           "positions": [
             {
               "position": "MID",
@@ -2742,7 +2738,7 @@ window.LIGA_RK_STATS = {
           "dragons": 0,
           "heralds": 0,
           "barons": 0,
-          "mvps": 1,
+          "mvps": 0,
           "positions": [
             {
               "position": "ADC",
@@ -3124,7 +3120,7 @@ window.LIGA_RK_STATS = {
           "dragons": 3,
           "heralds": 1,
           "barons": 1,
-          "mvps": 0,
+          "mvps": 1,
           "positions": [
             {
               "position": "JG",
@@ -3595,7 +3591,7 @@ window.LIGA_RK_STATS = {
           "dragons": 0,
           "heralds": 0,
           "barons": 0,
-          "mvps": 1,
+          "mvps": 0,
           "positions": [
             {
               "position": "ADC",
@@ -4237,10 +4233,8 @@ window.LIGA_RK_STATS = {
           "playerId": "5ef6dac6-8daf-42e6-b3af-c8896a8554e1",
           "displayName": "BLEYDAS",
           "riotId": "Bleyblade#Bleyd",
-          "alsoPlayedAs": [
-            "Bleyblade#Bleyd"
-          ],
-          "opgg": "Bleyblade#Bleyd",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/Bleyblade-Bleyd",
           "games": 2,
           "wins": 0,
           "losses": 2,
@@ -4911,9 +4905,9 @@ window.LIGA_RK_STATS = {
           "id": "ae76fd2f-1c07-44e1-a35e-5f0512f28ebd",
           "playerId": "ae76fd2f-1c07-44e1-a35e-5f0512f28ebd",
           "displayName": "BIEL",
-          "riotId": "",
+          "riotId": "부스트 이걸#Karma",
           "alsoPlayedAs": [],
-          "opgg": "부스트 이걸#Karma",
+          "opgg": "https://op.gg/pt/lol/summoners/br/%EB%B6%80%EC%8A%A4%ED%8A%B8%20%EC%9D%B4%EA%B1%B8-Karma",
           "games": 0,
           "wins": 0,
           "losses": 0,
@@ -5724,12 +5718,12 @@ window.LIGA_RK_STATS = {
           "matches": []
         },
         {
-          "id": "8c15fd37-f417-4f4a-a9cc-ccb7f38f9c47",
-          "playerId": "8c15fd37-f417-4f4a-a9cc-ccb7f38f9c47",
-          "displayName": "KEST",
-          "riotId": "suiren#凍華夢",
+          "id": "59ae6875-f951-418c-a2b4-209a84330869",
+          "playerId": "59ae6875-f951-418c-a2b4-209a84330869",
+          "displayName": "JPERSO",
+          "riotId": "peek m0NESY ssj2#jper",
           "alsoPlayedAs": [],
-          "opgg": "https://op.gg/pt/lol/summoners/br/suiren-%E5%87%8D%E8%8F%AF%E5%A4%A2",
+          "opgg": "https://op.gg/pt/lol/summoners/br/peek%20m0NESY%20ssj2-jper",
           "games": 0,
           "wins": 0,
           "losses": 0,
@@ -5759,11 +5753,11 @@ window.LIGA_RK_STATS = {
           "mvps": 0,
           "positions": [
             {
-              "position": "SUB",
+              "position": "ADC",
               "count": 0
             }
           ],
-          "mainPosition": "SUB",
+          "mainPosition": "ADC",
           "teams": [
             {
               "slot": "A1",
@@ -5877,57 +5871,6 @@ window.LIGA_RK_STATS = {
           "matches": []
         },
         {
-          "id": "692841c2-5e24-4f0b-933c-69498e3ef643",
-          "playerId": "692841c2-5e24-4f0b-933c-69498e3ef643",
-          "displayName": "LOTHUS",
-          "riotId": "Satella#nwjs",
-          "alsoPlayedAs": [],
-          "opgg": "https://op.gg/lol/summoners/br/Satella-nwjs",
-          "games": 0,
-          "wins": 0,
-          "losses": 0,
-          "winRate": 0,
-          "kills": 0,
-          "deaths": 0,
-          "assists": 0,
-          "kda": 0,
-          "killsAvg": 0,
-          "deathsAvg": 0,
-          "assistsAvg": 0,
-          "kp": 0,
-          "gold": 0,
-          "goldAvg": 0,
-          "gpm": 0,
-          "damage": 0,
-          "damageAvg": 0,
-          "dpm": 0,
-          "damageShare": 0,
-          "visionScore": 0,
-          "visionScoreAvg": 0,
-          "vpm": 0,
-          "towers": 0,
-          "dragons": 0,
-          "heralds": 0,
-          "barons": 0,
-          "mvps": 0,
-          "positions": [
-            {
-              "position": "ADC",
-              "count": 0
-            }
-          ],
-          "mainPosition": "ADC",
-          "teams": [
-            {
-              "slot": "A1",
-              "count": 0
-            }
-          ],
-          "champions": [],
-          "mostPlayedChampion": "",
-          "matches": []
-        },
-        {
           "id": "79057b1c-c417-4f7d-9fd3-221be5f705d3",
           "playerId": "79057b1c-c417-4f7d-9fd3-221be5f705d3",
           "displayName": "LUFFY",
@@ -6022,57 +5965,6 @@ window.LIGA_RK_STATS = {
           "teams": [
             {
               "slot": "C4",
-              "count": 0
-            }
-          ],
-          "champions": [],
-          "mostPlayedChampion": "",
-          "matches": []
-        },
-        {
-          "id": "0764acf5-cf08-4b12-ae1a-7a5f3e6be6b8",
-          "playerId": "0764acf5-cf08-4b12-ae1a-7a5f3e6be6b8",
-          "displayName": "MELARE",
-          "riotId": "沒有敵人弧線#心安勝過一",
-          "alsoPlayedAs": [],
-          "opgg": "https://op.gg/pt/lol/summoners/br/%E6%B2%92%E6%9C%89%E6%95%B5%E4%BA%BA%E5%BC%A7%E7%B7%9A-%E5%BF%83%E5%AE%89%E5%8B%9D%E9%81%8E%E4%B8%80",
-          "games": 0,
-          "wins": 0,
-          "losses": 0,
-          "winRate": 0,
-          "kills": 0,
-          "deaths": 0,
-          "assists": 0,
-          "kda": 0,
-          "killsAvg": 0,
-          "deathsAvg": 0,
-          "assistsAvg": 0,
-          "kp": 0,
-          "gold": 0,
-          "goldAvg": 0,
-          "gpm": 0,
-          "damage": 0,
-          "damageAvg": 0,
-          "dpm": 0,
-          "damageShare": 0,
-          "visionScore": 0,
-          "visionScoreAvg": 0,
-          "vpm": 0,
-          "towers": 0,
-          "dragons": 0,
-          "heralds": 0,
-          "barons": 0,
-          "mvps": 0,
-          "positions": [
-            {
-              "position": "JG",
-              "count": 0
-            }
-          ],
-          "mainPosition": "JG",
-          "teams": [
-            {
-              "slot": "A1",
               "count": 0
             }
           ],
@@ -6226,6 +6118,57 @@ window.LIGA_RK_STATS = {
           "teams": [
             {
               "slot": "A2",
+              "count": 0
+            }
+          ],
+          "champions": [],
+          "mostPlayedChampion": "",
+          "matches": []
+        },
+        {
+          "id": "ee09cf39-13a1-4268-a363-dbd28955437b",
+          "playerId": "ee09cf39-13a1-4268-a363-dbd28955437b",
+          "displayName": "NIHIL",
+          "riotId": "N I H I L メ#CDRP",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/N%20I%20H%20I%20L%20%E3%83%A1-CDRP",
+          "games": 0,
+          "wins": 0,
+          "losses": 0,
+          "winRate": 0,
+          "kills": 0,
+          "deaths": 0,
+          "assists": 0,
+          "kda": 0,
+          "killsAvg": 0,
+          "deathsAvg": 0,
+          "assistsAvg": 0,
+          "kp": 0,
+          "gold": 0,
+          "goldAvg": 0,
+          "gpm": 0,
+          "damage": 0,
+          "damageAvg": 0,
+          "dpm": 0,
+          "damageShare": 0,
+          "visionScore": 0,
+          "visionScoreAvg": 0,
+          "vpm": 0,
+          "towers": 0,
+          "dragons": 0,
+          "heralds": 0,
+          "barons": 0,
+          "mvps": 0,
+          "positions": [
+            {
+              "position": "SUB",
+              "count": 0
+            }
+          ],
+          "mainPosition": "SUB",
+          "teams": [
+            {
+              "slot": "D1",
               "count": 0
             }
           ],
@@ -7356,8 +7299,8 @@ window.LIGA_RK_STATS = {
           "matches": []
         },
         {
-          "id": "9d47f20c-870a-40fe-84d8-e2fbae019374",
-          "playerId": "9d47f20c-870a-40fe-84d8-e2fbae019374",
+          "id": "52bee1c2-bff8-4e7a-a21e-1e81cc6f0edd",
+          "playerId": "52bee1c2-bff8-4e7a-a21e-1e81cc6f0edd",
           "displayName": "XK",
           "riotId": "ericjnobighorpia#hugo",
           "alsoPlayedAs": [],
@@ -7391,11 +7334,11 @@ window.LIGA_RK_STATS = {
           "mvps": 0,
           "positions": [
             {
-              "position": "SUB",
+              "position": "JG",
               "count": 0
             }
           ],
-          "mainPosition": "SUB",
+          "mainPosition": "JG",
           "teams": [
             {
               "slot": "A1",
@@ -9704,9 +9647,29 @@ window.LIGA_RK_STATS = {
           "goldDiff": 17813,
           "killsDiff": 23,
           "mvp": {
-            "participantIndex": 1,
-            "riotId": "maronato#rat",
-            "playerId": "80165c7c-806c-4cb3-90f2-a4a969000bfd"
+            "participantIndex": 3,
+            "riotId": "lMiracle#BR01",
+            "playerId": "094a9436-c639-4195-a01b-0fd126ed96fe",
+            "position": "ADC",
+            "score": 67.27,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 90.91,
+              "kp": 56.37,
+              "damage": 65.78,
+              "gold": 54.62,
+              "efficiency": 59.32,
+              "vision": 65.97,
+              "wards": 54.88,
+              "towers": 100,
+              "objectives": 0,
+              "kills": 30.05,
+              "assists": 100,
+              "survival": 60.61,
+              "roleEdge": 82.66,
+              "dpm": 1110.99,
+              "gpm": 523.92
+            }
           },
           "teams": {
             "100": {
@@ -10166,7 +10129,27 @@ window.LIGA_RK_STATS = {
           "mvp": {
             "participantIndex": 3,
             "riotId": "lMiracle#BR01",
-            "playerId": "094a9436-c639-4195-a01b-0fd126ed96fe"
+            "playerId": "094a9436-c639-4195-a01b-0fd126ed96fe",
+            "position": "ADC",
+            "score": 64.8,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 90.91,
+              "kp": 61.18,
+              "damage": 74.38,
+              "gold": 64.49,
+              "efficiency": 56.81,
+              "vision": 56.03,
+              "wards": 96.45,
+              "towers": 47.62,
+              "objectives": 0,
+              "kills": 45.36,
+              "assists": 80.65,
+              "survival": 60.61,
+              "roleEdge": 77.69,
+              "dpm": 1401.38,
+              "gpm": 648.02
+            }
           },
           "teams": {
             "100": {
@@ -10626,7 +10609,27 @@ window.LIGA_RK_STATS = {
           "mvp": {
             "participantIndex": 6,
             "riotId": "EGO YAMAL#zoro",
-            "playerId": "d91655cf-58e0-4430-9bb2-2c12dd273b89"
+            "playerId": "d91655cf-58e0-4430-9bb2-2c12dd273b89",
+            "position": "JG",
+            "score": 66.83,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 100,
+              "kp": 54.49,
+              "damage": 76.48,
+              "gold": 64.67,
+              "efficiency": 55.99,
+              "vision": 39.95,
+              "wards": 22.28,
+              "towers": 100,
+              "objectives": 76.92,
+              "kills": 69.44,
+              "assists": 51.98,
+              "survival": 100,
+              "roleEdge": 65.42,
+              "dpm": 863.83,
+              "gpm": 517.94
+            }
           },
           "teams": {
             "100": {
@@ -11084,9 +11087,29 @@ window.LIGA_RK_STATS = {
           "goldDiff": 7366,
           "killsDiff": 1,
           "mvp": {
-            "participantIndex": 8,
-            "riotId": "SBK Legolas#SKTT1",
-            "playerId": "5cfa35d7-d9cb-4188-8f1f-a653f099bdd8"
+            "participantIndex": 2,
+            "riotId": "Xand#완벽한",
+            "playerId": "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda",
+            "position": "MID",
+            "score": 51.35,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 37.5,
+              "kp": 43.1,
+              "damage": 60.18,
+              "gold": 55.07,
+              "efficiency": 54.2,
+              "vision": 44.93,
+              "wards": 52.29,
+              "towers": 100,
+              "objectives": 0,
+              "kills": 54.35,
+              "assists": 69.12,
+              "survival": 30.86,
+              "roleEdge": 56.91,
+              "dpm": 921.03,
+              "gpm": 482.15
+            }
           },
           "teams": {
             "100": {
@@ -11546,7 +11569,27 @@ window.LIGA_RK_STATS = {
           "mvp": {
             "participantIndex": 1,
             "riotId": "Shaka#VCB",
-            "playerId": "31fcec05-9dc7-40ce-ba29-8ad9217622fa"
+            "playerId": "31fcec05-9dc7-40ce-ba29-8ad9217622fa",
+            "position": "JG",
+            "score": 61.88,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 97.22,
+              "kp": 53.85,
+              "damage": 42.26,
+              "gold": 55.3,
+              "efficiency": 36.19,
+              "vision": 45.86,
+              "wards": 22.4,
+              "towers": 100,
+              "objectives": 76.92,
+              "kills": 27.78,
+              "assists": 76.73,
+              "survival": 48.31,
+              "roleEdge": 64.4,
+              "dpm": 312.88,
+              "gpm": 415.13
+            }
           },
           "teams": {
             "100": {
@@ -12006,7 +12049,27 @@ window.LIGA_RK_STATS = {
           "mvp": {
             "participantIndex": 1,
             "riotId": "Dede#muy",
-            "playerId": "f9133bce-2d98-4534-9d82-16dd768d7540"
+            "playerId": "f9133bce-2d98-4534-9d82-16dd768d7540",
+            "position": "JG",
+            "score": 59.88,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 100,
+              "kp": 44.29,
+              "damage": 52.93,
+              "gold": 56.82,
+              "efficiency": 44.11,
+              "vision": 42.92,
+              "wards": 25.98,
+              "towers": 100,
+              "objectives": 76.92,
+              "kills": 33.67,
+              "assists": 52.59,
+              "survival": 48.31,
+              "roleEdge": 65.37,
+              "dpm": 576.1,
+              "gpm": 426.74
+            }
           },
           "teams": {
             "100": {
@@ -12466,7 +12529,27 @@ window.LIGA_RK_STATS = {
           "mvp": {
             "participantIndex": 8,
             "riotId": "wishes#just",
-            "playerId": "8cc6a257-8017-49f5-a803-12300c85f16c"
+            "playerId": "8cc6a257-8017-49f5-a803-12300c85f16c",
+            "position": "ADC",
+            "score": 68.68,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 90.91,
+              "kp": 73.53,
+              "damage": 79.51,
+              "gold": 56.53,
+              "efficiency": 62.5,
+              "vision": 53.76,
+              "wards": 66.55,
+              "towers": 71.43,
+              "objectives": 0,
+              "kills": 41.36,
+              "assists": 96.15,
+              "survival": 33.9,
+              "roleEdge": 69.54,
+              "dpm": 1955.59,
+              "gpm": 531.51
+            }
           },
           "teams": {
             "100": {
@@ -12926,7 +13009,27 @@ window.LIGA_RK_STATS = {
           "mvp": {
             "participantIndex": 1,
             "riotId": "arima#εsεs",
-            "playerId": "adcf03a3-0794-4ec3-902e-c8894dfdbfc3"
+            "playerId": "adcf03a3-0794-4ec3-902e-c8894dfdbfc3",
+            "position": "JG",
+            "score": 69.87,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 100,
+              "kp": 70.51,
+              "damage": 94.99,
+              "gold": 64,
+              "efficiency": 70.28,
+              "vision": 39.51,
+              "wards": 32.81,
+              "towers": 100,
+              "objectives": 76.92,
+              "kills": 69.44,
+              "assists": 58.95,
+              "survival": 37.66,
+              "roleEdge": 60.1,
+              "dpm": 837.52,
+              "gpm": 477.96
+            }
           },
           "teams": {
             "100": {
@@ -13384,9 +13487,29 @@ window.LIGA_RK_STATS = {
           "goldDiff": 6584,
           "killsDiff": 2,
           "mvp": {
-            "participantIndex": 8,
-            "riotId": "Lisboa#TTS",
-            "playerId": "a44b2125-85a3-4f69-9caa-97a385822b0a"
+            "participantIndex": 6,
+            "riotId": "Gavinzera#BR2",
+            "playerId": "37d5697c-d21a-4bc1-b104-1f580f396133",
+            "position": "JG",
+            "score": 56.22,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 57.87,
+              "kp": 66.31,
+              "damage": 59.15,
+              "gold": 60.83,
+              "efficiency": 46.04,
+              "vision": 53.5,
+              "wards": 51.08,
+              "towers": 100,
+              "objectives": 52.88,
+              "kills": 67.05,
+              "assists": 51.49,
+              "survival": 22.68,
+              "roleEdge": 47.16,
+              "dpm": 717.35,
+              "gpm": 480.66
+            }
           },
           "teams": {
             "100": {
@@ -13846,7 +13969,27 @@ window.LIGA_RK_STATS = {
           "mvp": {
             "participantIndex": 6,
             "riotId": "arima#εsεs",
-            "playerId": "adcf03a3-0794-4ec3-902e-c8894dfdbfc3"
+            "playerId": "adcf03a3-0794-4ec3-902e-c8894dfdbfc3",
+            "position": "JG",
+            "score": 60.91,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 100,
+              "kp": 65.09,
+              "damage": 91.44,
+              "gold": 66.74,
+              "efficiency": 64.87,
+              "vision": 32.3,
+              "wards": 21.93,
+              "towers": 100,
+              "objectives": 44.87,
+              "kills": 100,
+              "assists": 40.76,
+              "survival": 48.31,
+              "roleEdge": 59.03,
+              "dpm": 975.73,
+              "gpm": 502.86
+            }
           },
           "teams": {
             "100": {
@@ -14304,9 +14447,29 @@ window.LIGA_RK_STATS = {
           "goldDiff": 15008,
           "killsDiff": 12,
           "mvp": {
-            "participantIndex": 1,
-            "riotId": "TeteuCantoni#BR1",
-            "playerId": "6e241754-e4e8-4f57-9818-b2279e3bd0a6"
+            "participantIndex": 0,
+            "riotId": "N I H I L メ#CDRP",
+            "playerId": "9921122f-617d-4631-9fc6-aa6e1a63578a",
+            "position": "TOP",
+            "score": 69,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 97.22,
+              "kp": 41.18,
+              "damage": 58.69,
+              "gold": 52.57,
+              "efficiency": 55.73,
+              "vision": 83.72,
+              "wards": 68.81,
+              "towers": 100,
+              "objectives": 32.89,
+              "kills": 32.68,
+              "assists": 62.03,
+              "survival": 67.34,
+              "roleEdge": 75.15,
+              "dpm": 699.61,
+              "gpm": 442.1
+            }
           },
           "teams": {
             "100": {
@@ -14766,7 +14929,27 @@ window.LIGA_RK_STATS = {
           "mvp": {
             "participantIndex": 1,
             "riotId": "TeteuCantoni#BR1",
-            "playerId": "6e241754-e4e8-4f57-9818-b2279e3bd0a6"
+            "playerId": "6e241754-e4e8-4f57-9818-b2279e3bd0a6",
+            "position": "JG",
+            "score": 62.45,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 100,
+              "kp": 42.18,
+              "damage": 75.35,
+              "gold": 64.97,
+              "efficiency": 54.91,
+              "vision": 49.42,
+              "wards": 21.97,
+              "towers": 100,
+              "objectives": 76.92,
+              "kills": 89.61,
+              "assists": 27.67,
+              "survival": 48.31,
+              "roleEdge": 71.49,
+              "dpm": 762.79,
+              "gpm": 562.53
+            }
           },
           "teams": {
             "100": {
@@ -16499,7 +16682,7 @@ window.LIGA_RK_STATS = {
           "dragons": 4,
           "heralds": 2,
           "barons": 2,
-          "mvps": 1,
+          "mvps": 2,
           "positions": [
             {
               "position": "JG",
@@ -16641,7 +16824,7 @@ window.LIGA_RK_STATS = {
           "dragons": 6,
           "heralds": 1,
           "barons": 1,
-          "mvps": 1,
+          "mvps": 2,
           "positions": [
             {
               "position": "JG",
@@ -16712,7 +16895,7 @@ window.LIGA_RK_STATS = {
           "dragons": 0,
           "heralds": 0,
           "barons": 0,
-          "mvps": 0,
+          "mvps": 1,
           "positions": [
             {
               "position": "TOP",
@@ -16783,7 +16966,7 @@ window.LIGA_RK_STATS = {
           "dragons": 0,
           "heralds": 0,
           "barons": 0,
-          "mvps": 1,
+          "mvps": 0,
           "positions": [
             {
               "position": "ADC",
@@ -16925,7 +17108,7 @@ window.LIGA_RK_STATS = {
           "dragons": 0,
           "heralds": 0,
           "barons": 0,
-          "mvps": 1,
+          "mvps": 0,
           "positions": [
             {
               "position": "ADC",
@@ -17422,7 +17605,7 @@ window.LIGA_RK_STATS = {
           "dragons": 0,
           "heralds": 0,
           "barons": 0,
-          "mvps": 1,
+          "mvps": 0,
           "positions": [
             {
               "position": "ADC",
@@ -17717,7 +17900,7 @@ window.LIGA_RK_STATS = {
           "dragons": 0,
           "heralds": 0,
           "barons": 0,
-          "mvps": 1,
+          "mvps": 0,
           "positions": [
             {
               "position": "ADC",
@@ -17792,7 +17975,7 @@ window.LIGA_RK_STATS = {
           "dragons": 0,
           "heralds": 0,
           "barons": 0,
-          "mvps": 0,
+          "mvps": 1,
           "positions": [
             {
               "position": "MID",
@@ -17952,7 +18135,7 @@ window.LIGA_RK_STATS = {
           "dragons": 1,
           "heralds": 1,
           "barons": 0,
-          "mvps": 0,
+          "mvps": 1,
           "positions": [
             {
               "position": "TOP",
@@ -18665,7 +18848,7 @@ window.LIGA_RK_STATS = {
           "dragons": 0,
           "heralds": 0,
           "barons": 0,
-          "mvps": 1,
+          "mvps": 0,
           "positions": [
             {
               "position": "ADC",
@@ -19762,10 +19945,6 @@ window.LIGA_RK_STATS = {
             {
               "position": "ADC",
               "count": 2
-            },
-            {
-              "position": "SUB",
-              "count": 0
             }
           ],
           "mainPosition": "ADC",
@@ -19773,6 +19952,10 @@ window.LIGA_RK_STATS = {
             {
               "slot": "B4",
               "count": 2
+            },
+            {
+              "slot": "A4",
+              "count": 0
             }
           ],
           "champions": [
@@ -22542,11 +22725,11 @@ window.LIGA_RK_STATS = {
           "mvps": 0,
           "positions": [
             {
-              "position": "ADC",
+              "position": "SUB",
               "count": 0
             }
           ],
-          "mainPosition": "ADC",
+          "mainPosition": "SUB",
           "teams": [
             {
               "slot": "A4",
@@ -25345,9 +25528,29 @@ window.LIGA_RK_STATS = {
           "goldDiff": 5082,
           "killsDiff": 2,
           "mvp": {
-            "participantIndex": 1,
-            "riotId": "qquq#yve",
-            "playerId": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39"
+            "participantIndex": 0,
+            "riotId": "Red KauanMemes#BA1",
+            "playerId": "c49312d8-3672-4654-9790-a9cad7f59937",
+            "position": "TOP",
+            "score": 53.93,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 62.5,
+              "kp": 45,
+              "damage": 37.63,
+              "gold": 44.14,
+              "efficiency": 42.55,
+              "vision": 77.83,
+              "wards": 83,
+              "towers": 75,
+              "objectives": 75.76,
+              "kills": 27.78,
+              "assists": 62.61,
+              "survival": 48.31,
+              "roleEdge": 49.68,
+              "dpm": 474.29,
+              "gpm": 357.74
+            }
           },
           "teams": {
             "100": {
@@ -25805,9 +26008,29 @@ window.LIGA_RK_STATS = {
           "goldDiff": 12824,
           "killsDiff": 17,
           "mvp": {
-            "participantIndex": 8,
-            "riotId": "bad decisions#void",
-            "playerId": "41b3325e-3a2f-4a67-b18a-880c7a0f546f"
+            "participantIndex": 6,
+            "riotId": "qquq#yve",
+            "playerId": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39",
+            "position": "JG",
+            "score": 62.12,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 100,
+              "kp": 39.89,
+              "damage": 88.03,
+              "gold": 58.88,
+              "efficiency": 70.79,
+              "vision": 39.44,
+              "wards": 28.11,
+              "towers": 69.44,
+              "objectives": 65.61,
+              "kills": 72.02,
+              "assists": 38.04,
+              "survival": 100,
+              "roleEdge": 71.13,
+              "dpm": 882.33,
+              "gpm": 460.59
+            }
           },
           "teams": {
             "100": {
@@ -26265,9 +26488,29 @@ window.LIGA_RK_STATS = {
           "goldDiff": 11574,
           "killsDiff": 10,
           "mvp": {
-            "participantIndex": 3,
-            "riotId": "Just Feeling#Bad",
-            "playerId": "271defca-2ef0-4720-b96f-5f68a6ddfeea"
+            "participantIndex": 1,
+            "riotId": "kylo ren#zed",
+            "playerId": "b92cbd24-be2e-4c7b-b2dd-86105c87d127",
+            "position": "JG",
+            "score": 65.47,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 100,
+              "kp": 56.41,
+              "damage": 59.96,
+              "gold": 57.21,
+              "efficiency": 49.63,
+              "vision": 53.03,
+              "wards": 41.55,
+              "towers": 100,
+              "objectives": 73.17,
+              "kills": 37.04,
+              "assists": 69.88,
+              "survival": 48.31,
+              "roleEdge": 68.01,
+              "dpm": 552.27,
+              "gpm": 453.74
+            }
           },
           "teams": {
             "100": {
@@ -26727,7 +26970,27 @@ window.LIGA_RK_STATS = {
           "mvp": {
             "participantIndex": 1,
             "riotId": "kylo ren#zed",
-            "playerId": "b92cbd24-be2e-4c7b-b2dd-86105c87d127"
+            "playerId": "b92cbd24-be2e-4c7b-b2dd-86105c87d127",
+            "position": "JG",
+            "score": 60.83,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 100,
+              "kp": 48.95,
+              "damage": 41.2,
+              "gold": 61.97,
+              "efficiency": 31.48,
+              "vision": 70.37,
+              "wards": 70.62,
+              "towers": 100,
+              "objectives": 41.21,
+              "kills": 88.38,
+              "assists": 41.13,
+              "survival": 100,
+              "roleEdge": 70.66,
+              "dpm": 381.26,
+              "gpm": 489.75
+            }
           },
           "teams": {
             "100": {
@@ -27185,9 +27448,29 @@ window.LIGA_RK_STATS = {
           "goldDiff": 15795,
           "killsDiff": 18,
           "mvp": {
-            "participantIndex": 3,
-            "riotId": "FFLT KitteN#gay",
-            "playerId": "4468c885-4c32-4c7e-a749-b74f5d9530cb"
+            "participantIndex": 0,
+            "riotId": "Mits#KIM",
+            "playerId": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
+            "position": "TOP",
+            "score": 73.15,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 100,
+              "kp": 61.9,
+              "damage": 56.99,
+              "gold": 52.24,
+              "efficiency": 54.45,
+              "vision": 79.08,
+              "wards": 69.2,
+              "towers": 100,
+              "objectives": 0,
+              "kills": 52.91,
+              "assists": 65.31,
+              "survival": 100,
+              "roleEdge": 76.74,
+              "dpm": 704.08,
+              "gpm": 448.19
+            }
           },
           "teams": {
             "100": {
@@ -27647,7 +27930,27 @@ window.LIGA_RK_STATS = {
           "mvp": {
             "participantIndex": 6,
             "riotId": "FFLT Rick#Rick",
-            "playerId": "d0570a3b-415e-4f1c-8e31-ef6a57884ac1"
+            "playerId": "d0570a3b-415e-4f1c-8e31-ef6a57884ac1",
+            "position": "JG",
+            "score": 59.68,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 100,
+              "kp": 36.63,
+              "damage": 42.07,
+              "gold": 55.62,
+              "efficiency": 35.81,
+              "vision": 53.07,
+              "wards": 52.08,
+              "towers": 100,
+              "objectives": 76.92,
+              "kills": 39.68,
+              "assists": 35.39,
+              "survival": 67.34,
+              "roleEdge": 69.23,
+              "dpm": 341,
+              "gpm": 398.7
+            }
           },
           "teams": {
             "100": {
@@ -28105,9 +28408,29 @@ window.LIGA_RK_STATS = {
           "goldDiff": 11841,
           "killsDiff": 18,
           "mvp": {
-            "participantIndex": 3,
-            "riotId": "DKV Julin#666",
-            "playerId": "9dae6be8-5946-42f0-bbe0-5b3c18000b5d"
+            "participantIndex": 2,
+            "riotId": "Guolherme21#BR1",
+            "playerId": "003f66b9-fa33-4dfa-8213-26dd2949ee79",
+            "position": "MID",
+            "score": 62.31,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 100,
+              "kp": 45.16,
+              "damage": 52.39,
+              "gold": 48.34,
+              "efficiency": 53.75,
+              "vision": 38.73,
+              "wards": 51.35,
+              "towers": 100,
+              "objectives": 83.33,
+              "kills": 46.58,
+              "assists": 53.37,
+              "survival": 48.31,
+              "roleEdge": 58.08,
+              "dpm": 1136.09,
+              "gpm": 425.44
+            }
           },
           "teams": {
             "100": {
@@ -28567,7 +28890,27 @@ window.LIGA_RK_STATS = {
           "mvp": {
             "participantIndex": 1,
             "riotId": "false jugking#lala",
-            "playerId": "52cc780c-f595-4c45-af66-abc64b44e93b"
+            "playerId": "52cc780c-f595-4c45-af66-abc64b44e93b",
+            "position": "JG",
+            "score": 54.77,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 100,
+              "kp": 50.4,
+              "damage": 66.99,
+              "gold": 66.27,
+              "efficiency": 47.86,
+              "vision": 43.12,
+              "wards": 29.64,
+              "towers": 0,
+              "objectives": 61.91,
+              "kills": 100,
+              "assists": 5.06,
+              "survival": 48.31,
+              "roleEdge": 59.27,
+              "dpm": 588.71,
+              "gpm": 505.82
+            }
           },
           "teams": {
             "100": {
@@ -29025,9 +29368,29 @@ window.LIGA_RK_STATS = {
           "goldDiff": 17444,
           "killsDiff": 28,
           "mvp": {
-            "participantIndex": 8,
-            "riotId": "Kyllua#KOBE",
-            "playerId": "c9245faa-3264-49d5-b6d3-15336567772b"
+            "participantIndex": 6,
+            "riotId": "Latrell Spencer#TBG3",
+            "playerId": "9ed6c467-f397-4906-9967-63dea851d6c0",
+            "position": "JG",
+            "score": 62.1,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 100,
+              "kp": 47.51,
+              "damage": 54.07,
+              "gold": 58.87,
+              "efficiency": 43.49,
+              "vision": 45.09,
+              "wards": 41.37,
+              "towers": 0,
+              "objectives": 71.62,
+              "kills": 65.36,
+              "assists": 57.68,
+              "survival": 100,
+              "roleEdge": 76.85,
+              "dpm": 602.65,
+              "gpm": 490.67
+            }
           },
           "teams": {
             "100": {
@@ -29487,7 +29850,27 @@ window.LIGA_RK_STATS = {
           "mvp": {
             "participantIndex": 1,
             "riotId": "Latrell Spencer#TBG3",
-            "playerId": "9ed6c467-f397-4906-9967-63dea851d6c0"
+            "playerId": "9ed6c467-f397-4906-9967-63dea851d6c0",
+            "position": "JG",
+            "score": 60.86,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 62.5,
+              "kp": 57.69,
+              "damage": 98.35,
+              "gold": 60.42,
+              "efficiency": 77.07,
+              "vision": 60.47,
+              "wards": 67.97,
+              "towers": 69.44,
+              "objectives": 50.17,
+              "kills": 69.44,
+              "assists": 56.71,
+              "survival": 30.86,
+              "roleEdge": 57.92,
+              "dpm": 780.81,
+              "gpm": 458.36
+            }
           },
           "teams": {
             "100": {
@@ -29947,7 +30330,27 @@ window.LIGA_RK_STATS = {
           "mvp": {
             "participantIndex": 3,
             "riotId": "DarKaiser#CARRY",
-            "playerId": "2594034c-9394-4b79-8b59-dedbf66482e5"
+            "playerId": "2594034c-9394-4b79-8b59-dedbf66482e5",
+            "position": "ADC",
+            "score": 69.5,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 90.91,
+              "kp": 74.96,
+              "damage": 78.71,
+              "gold": 64.46,
+              "efficiency": 60.14,
+              "vision": 57.65,
+              "wards": 67.87,
+              "towers": 61.22,
+              "objectives": 0,
+              "kills": 54.35,
+              "assists": 100,
+              "survival": 43.48,
+              "roleEdge": 79.72,
+              "dpm": 1052.78,
+              "gpm": 628.15
+            }
           },
           "teams": {
             "100": {
@@ -30407,7 +30810,27 @@ window.LIGA_RK_STATS = {
           "mvp": {
             "participantIndex": 1,
             "riotId": "RDG Dragon B3#155",
-            "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c"
+            "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c",
+            "position": "JG",
+            "score": 69.69,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 100,
+              "kp": 71.79,
+              "damage": 62.35,
+              "gold": 57.66,
+              "efficiency": 51.2,
+              "vision": 52.33,
+              "wards": 43.95,
+              "towers": 100,
+              "objectives": 76.92,
+              "kills": 55.56,
+              "assists": 58.32,
+              "survival": 67.34,
+              "roleEdge": 65.26,
+              "dpm": 428.04,
+              "gpm": 400.63
+            }
           },
           "teams": {
             "100": {
@@ -30867,7 +31290,27 @@ window.LIGA_RK_STATS = {
           "mvp": {
             "participantIndex": 6,
             "riotId": "RDG Dragon B3#155",
-            "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c"
+            "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c",
+            "position": "JG",
+            "score": 67.44,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 100,
+              "kp": 63.74,
+              "damage": 70.79,
+              "gold": 63.68,
+              "efficiency": 52.63,
+              "vision": 53.42,
+              "wards": 44.66,
+              "towers": 100,
+              "objectives": 63.55,
+              "kills": 95.24,
+              "assists": 44,
+              "survival": 67.34,
+              "roleEdge": 74.55,
+              "dpm": 801.28,
+              "gpm": 489.3
+            }
           },
           "teams": {
             "100": {

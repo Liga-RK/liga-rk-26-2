@@ -3,6 +3,28 @@ const { damageShare, kda, participation, perMinute, round, winRate } = require("
 const { normalizeRiotId } = require("./player-identity");
 
 const DIVISIONS = ["elite", "ascension"];
+const MVP_MODEL_VERSION = "role-impact-v2";
+const MVP_ROLE_WEIGHTS = Object.freeze({
+  TOP: Object.freeze({ kda: 0.13, kp: 0.10, damage: 0.17, efficiency: 0.08, vision: 0.03, wards: 0.02, towers: 0.15, objectives: 0.05, kills: 0.05, assists: 0.02, survival: 0.08, roleEdge: 0.12 }),
+  JG: Object.freeze({ kda: 0.11, kp: 0.18, damage: 0.07, efficiency: 0.04, vision: 0.08, wards: 0.06, towers: 0.03, objectives: 0.20, kills: 0.04, assists: 0.08, survival: 0.04, roleEdge: 0.07 }),
+  MID: Object.freeze({ kda: 0.14, kp: 0.15, damage: 0.20, efficiency: 0.10, vision: 0.04, wards: 0.02, towers: 0.08, objectives: 0.04, kills: 0.07, assists: 0.02, survival: 0.07, roleEdge: 0.07 }),
+  ADC: Object.freeze({ kda: 0.15, kp: 0.13, damage: 0.24, efficiency: 0.11, vision: 0.02, wards: 0.01, towers: 0.12, objectives: 0.02, kills: 0.10, assists: 0.01, survival: 0.06, roleEdge: 0.03 }),
+  SUP: Object.freeze({ kda: 0.10, kp: 0.22, damage: 0.03, efficiency: 0.02, vision: 0.17, wards: 0.12, towers: 0.01, objectives: 0.05, kills: 0.01, assists: 0.18, survival: 0.04, roleEdge: 0.05 })
+});
+const MVP_ROLE_EDGE_WEIGHTS = Object.freeze({
+  TOP: Object.freeze({ kda: 0.18, kp: 0.08, damage: 0.28, gold: 0.22, vision: 0.06, towers: 0.18 }),
+  JG: Object.freeze({ kda: 0.14, kp: 0.20, damage: 0.10, gold: 0.10, vision: 0.14, objectives: 0.32 }),
+  MID: Object.freeze({ kda: 0.20, kp: 0.15, damage: 0.28, gold: 0.20, vision: 0.07, towers: 0.10 }),
+  ADC: Object.freeze({ kda: 0.20, kp: 0.06, damage: 0.30, gold: 0.22, kills: 0.12, towers: 0.10 }),
+  SUP: Object.freeze({ kda: 0.15, kp: 0.22, damage: 0.05, vision: 0.28, assists: 0.20, wards: 0.10 })
+});
+const MVP_ROLE_BASELINES = Object.freeze({
+  TOP: Object.freeze({ kda: 0.45, kp: 0.50, damage: 0.23, gold: 0.20, efficiency: 0.72, vision: 0.10, wards: 0.10, towers: 0.25, objectives: 0.08, kills: 0.18, assists: 0.13, survival: 0.45 }),
+  JG: Object.freeze({ kda: 0.45, kp: 0.65, damage: 0.15, gold: 0.18, efficiency: 0.55, vision: 0.18, wards: 0.18, towers: 0.08, objectives: 0.65, kills: 0.18, assists: 0.23, survival: 0.45 }),
+  MID: Object.freeze({ kda: 0.50, kp: 0.58, damage: 0.24, gold: 0.21, efficiency: 0.72, vision: 0.12, wards: 0.12, towers: 0.20, objectives: 0.08, kills: 0.23, assists: 0.14, survival: 0.45 }),
+  ADC: Object.freeze({ kda: 0.55, kp: 0.58, damage: 0.29, gold: 0.23, efficiency: 0.80, vision: 0.08, wards: 0.08, towers: 0.35, objectives: 0.07, kills: 0.32, assists: 0.13, survival: 0.50 }),
+  SUP: Object.freeze({ kda: 0.45, kp: 0.68, damage: 0.09, gold: 0.14, efficiency: 0.45, vision: 0.45, wards: 0.50, towers: 0.04, objectives: 0.05, kills: 0.05, assists: 0.40, survival: 0.42 })
+});
 
 function aggregateDatabase(database, content, fixedData = {}) {
   return {
@@ -422,7 +444,15 @@ function buildMatchSummary(game, teams, mvp) {
     loserSlot,
     goldDiff: Math.abs(value(team100.gold) - value(team200.gold)),
     killsDiff: Math.abs(value(team100.kills) - value(team200.kills)),
-    mvp: mvp ? { participantIndex: mvp.participantIndex, riotId: mvp.riotId, playerId: mvp.playerId || "" } : null,
+    mvp: mvp ? {
+      participantIndex: mvp.participantIndex,
+      riotId: mvp.riotId,
+      playerId: mvp.playerId || "",
+      position: mvp.position || "",
+      score: mvp.mvpScore,
+      model: mvp.mvpModel,
+      breakdown: mvp.mvpBreakdown
+    } : null,
     teams: { "100": { ...team100, slot: game.blueTeamSlot }, "200": { ...team200, slot: game.redTeamSlot } },
     participants: (match.participants || []).map((participant) => ({
       participantIndex: participant.participantIndex,
@@ -451,24 +481,174 @@ function buildMatchSummary(game, teams, mvp) {
 }
 
 function selectMvp(match, durationSeconds) {
+  const participants = Array.isArray(match.participants) ? match.participants : [];
+  const winnerTeam = Number(match.winnerTeam) || Number((participants.find((participant) => participant.won) || {}).team);
+  const eligible = participants.filter((participant) => (
+    winnerTeam ? Number(participant.team) === winnerTeam : Boolean(participant.won)
+  ));
+  const candidates = eligible.length ? eligible : participants;
   let best = null;
-  for (const participant of match.participants || []) {
-    const side = teamStats(match, participant.team);
-    const kp = participation(participant.kills, participant.assists, side.kills);
-    const dpm = perMinute(participant.damageToChampions, durationSeconds);
-    const gpm = perMinute(participant.gold, durationSeconds);
-    const objectiveImpact = value(participant.towers) * 2 + value(participant.dragons) * 2.5 + value(participant.heralds) * 2 + value(participant.barons) * 3;
-    const laneWeight = {
-      TOP: dpm * 0.01 + participant.kills * 0.7,
-      JG: kp * 9 + objectiveImpact * 1.5,
-      MID: dpm * 0.014 + participant.kills * 0.8,
-      ADC: dpm * 0.017 + participant.kills,
-      SUP: kp * 12 + participant.assists * 0.6
-    }[participant.position] || 0;
-    const score = participant.kills * 3 + participant.assists * 1.4 - participant.deaths * 2.2 + kp * 17 + gpm * 0.016 + dpm * 0.02 + objectiveImpact + laneWeight + (participant.won ? 6 : 0);
-    if (!best || score > best.score) best = { ...participant, score };
+  for (const participant of candidates) {
+    const rawMetrics = mvpMetrics(match, participant, durationSeconds);
+    const role = MVP_ROLE_WEIGHTS[participant.position] ? participant.position : "MID";
+    const metrics = normalizeMvpMetrics(rawMetrics, role);
+    const roleEdge = mvpRoleEdge(match, participant, durationSeconds);
+    const breakdown = { ...metrics, roleEdge };
+    const score = weightedScore(breakdown, MVP_ROLE_WEIGHTS[role]) * 100;
+    const candidate = {
+      ...participant,
+      mvpScore: round(score),
+      mvpModel: MVP_MODEL_VERSION,
+      mvpBreakdown: {
+        kda: percentage(metrics.kda),
+        kp: percentage(metrics.kp),
+        damage: percentage(metrics.damage),
+        gold: percentage(metrics.gold),
+        efficiency: percentage(metrics.efficiency),
+        vision: percentage(metrics.vision),
+        wards: percentage(metrics.wards),
+        towers: percentage(metrics.towers),
+        objectives: percentage(metrics.objectives),
+        kills: percentage(metrics.kills),
+        assists: percentage(metrics.assists),
+        survival: percentage(metrics.survival),
+        roleEdge: percentage(roleEdge),
+        dpm: round(rawMetrics.dpm),
+        gpm: round(rawMetrics.gpm)
+      }
+    };
+    if (!best || compareMvpCandidates(candidate, best) < 0) best = candidate;
   }
   return best;
+}
+
+function mvpMetrics(match, participant, durationSeconds) {
+  const side = mvpTeamStats(match, participant.team);
+  const damage = share(participant.damageToChampions, side.damageToChampions);
+  const gold = share(participant.gold, side.gold);
+  const wardImpact = value(participant.wardsPlaced) + value(participant.wardsKilled) * 1.5;
+  const sideWardImpact = value(side.wardsPlaced) + value(side.wardsKilled) * 1.5;
+  return {
+    kda: clamp01(kda(participant.kills, participant.deaths, participant.assists) / 8),
+    kp: clamp01(participation(participant.kills, participant.assists, side.kills)),
+    damage: clamp01(damage),
+    gold: clamp01(gold),
+    efficiency: clamp01((damage / Math.max(0.01, gold)) / 1.6),
+    vision: clamp01(share(participant.visionScore, side.visionScore)),
+    wards: clamp01(share(wardImpact, sideWardImpact)),
+    towers: clamp01(share(participant.towers, side.towers)),
+    objectives: clamp01(share(objectiveImpact(participant), objectiveImpact(side))),
+    kills: clamp01(share(participant.kills, side.kills)),
+    assists: clamp01(share(participant.assists, side.assists)),
+    survival: clamp01(1 / (1 + value(participant.deaths) * 0.65)),
+    dpm: perMinute(participant.damageToChampions, durationSeconds),
+    gpm: perMinute(participant.gold, durationSeconds)
+  };
+}
+
+function mvpRoleEdge(match, participant, durationSeconds) {
+  const opponent = (match.participants || []).find((candidate) => (
+    Number(candidate.team) !== Number(participant.team) &&
+    candidate.position === participant.position
+  ));
+  if (!opponent) return 0.5;
+
+  const current = mvpMetrics(match, participant, durationSeconds);
+  const rival = mvpMetrics(match, opponent, durationSeconds);
+  const role = MVP_ROLE_EDGE_WEIGHTS[participant.position] ? participant.position : "MID";
+  const values = {
+    kda: relativeEdge(current.kda, rival.kda),
+    kp: relativeEdge(current.kp, rival.kp),
+    damage: relativeEdge(current.dpm, rival.dpm),
+    gold: relativeEdge(current.gpm, rival.gpm),
+    vision: relativeEdge(participant.visionScore, opponent.visionScore),
+    wards: relativeEdge(
+      value(participant.wardsPlaced) + value(participant.wardsKilled) * 1.5,
+      value(opponent.wardsPlaced) + value(opponent.wardsKilled) * 1.5
+    ),
+    towers: relativeEdge(participant.towers, opponent.towers),
+    objectives: relativeEdge(objectiveImpact(participant), objectiveImpact(opponent)),
+    kills: relativeEdge(participant.kills, opponent.kills),
+    assists: relativeEdge(participant.assists, opponent.assists)
+  };
+  return weightedScore(values, MVP_ROLE_EDGE_WEIGHTS[role]);
+}
+
+function normalizeMvpMetrics(metrics, role) {
+  const baselines = MVP_ROLE_BASELINES[role] || MVP_ROLE_BASELINES.MID;
+  return Object.fromEntries(Object.entries(metrics).map(([key, metric]) => [
+    key,
+    Object.hasOwn(baselines, key) ? relativeToRoleBaseline(metric, baselines[key]) : metric
+  ]));
+}
+
+function mvpTeamStats(match, teamNumber) {
+  const stored = teamStats(match, teamNumber);
+  if (stored && Object.keys(stored).length) return stored;
+  const players = (match.participants || []).filter((participant) => Number(participant.team) === Number(teamNumber));
+  return {
+    kills: sumValues(players, "kills"),
+    assists: sumValues(players, "assists"),
+    gold: sumValues(players, "gold"),
+    damageToChampions: sumValues(players, "damageToChampions"),
+    visionScore: sumValues(players, "visionScore"),
+    wardsPlaced: sumValues(players, "wardsPlaced"),
+    wardsKilled: sumValues(players, "wardsKilled"),
+    towers: sumValues(players, "towers"),
+    voidGrubs: sumValues(players, "voidGrubs"),
+    heralds: sumValues(players, "heralds"),
+    dragons: sumValues(players, "dragons"),
+    elderDragons: sumValues(players, "elderDragons"),
+    barons: sumValues(players, "barons")
+  };
+}
+
+function compareMvpCandidates(left, right) {
+  return right.mvpScore - left.mvpScore ||
+    value(right.mvpBreakdown && right.mvpBreakdown.kp) -
+      value(left.mvpBreakdown && left.mvpBreakdown.kp) ||
+    value(left.deaths) - value(right.deaths) ||
+    value(right.damageToChampions) - value(left.damageToChampions) ||
+    value(left.participantIndex) - value(right.participantIndex);
+}
+
+function objectiveImpact(stats) {
+  return value(stats.voidGrubs) +
+    value(stats.heralds) * 2 +
+    value(stats.dragons) * 2.5 +
+    value(stats.elderDragons) * 4 +
+    value(stats.barons) * 4;
+}
+
+function weightedScore(metrics, weights) {
+  return Object.entries(weights).reduce((total, [key, weight]) => total + clamp01(metrics[key]) * weight, 0);
+}
+
+function relativeEdge(left, right) {
+  const safeLeft = Math.max(0, value(left));
+  const safeRight = Math.max(0, value(right));
+  const total = safeLeft + safeRight;
+  return total > 0 ? clamp01(safeLeft / total) : 0.5;
+}
+
+function relativeToRoleBaseline(input, baseline) {
+  return baseline > 0 ? clamp01(value(input) / (baseline * 2)) : clamp01(input);
+}
+
+function share(input, total) {
+  return value(total) > 0 ? value(input) / value(total) : 0;
+}
+
+function clamp01(input) {
+  return Math.max(0, Math.min(1, value(input)));
+}
+
+function percentage(input) {
+  return round(clamp01(input) * 100);
+}
+
+function sumValues(items, key) {
+  return items.reduce((total, item) => total + value(item[key]), 0);
 }
 
 function buildHeadlineStatistics(players, champions) {
