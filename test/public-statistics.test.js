@@ -43,6 +43,8 @@ test("agrega replay e publica somente estatisticas sanitizadas", { skip: !fs.exi
   assert.ok(publicPayload.divisions.elite.players.every((player) => player.ratings.length === 1));
   assert.ok(publicPayload.divisions.elite.players.some((player) => player.visionScoreAvg > 0));
   assert.ok(publicPayload.divisions.elite.teams.some((team) => team.dpmAvg > 0));
+  assert.ok(publicPayload.divisions.elite.teams.some((team) => team.averageScore > 0));
+  assert.ok(publicPayload.divisions.elite.teams.every((team) => team.averageScore >= 0 && team.averageScore <= 100));
   const playerChampion = publicPayload.divisions.elite.players[0].champions[0];
   assert.equal(playerChampion.count, 1);
   assert.equal(playerChampion.wins + playerChampion.losses, playerChampion.count);
@@ -71,12 +73,12 @@ test("gera estado publico vazio sem inventar estatisticas", () => {
   assert.deepEqual(publicPayload.divisions.elite.matches, []);
 });
 
-test("seleciona para a semana somente jogadores com dois jogos e ao menos uma vitoria na rodada", () => {
+test("seleciona para a semana somente jogadores com dois jogos e uma serie vencida na rodada", () => {
   const teams = {
     A1: { slot: "A1", name: "Elegiveis", tag: "EGL", logo: "" },
     A2: { slot: "A2", name: "Um Jogo", tag: "UM", logo: "" }
   };
-  const player = (id, role, averageScore, games, wins, teamSlot) => ({
+  const player = (id, role, averageScore, games, wins, seriesWins, teamSlot) => ({
     id,
     displayName: id,
     riotId: `${id}#BR1`,
@@ -89,22 +91,24 @@ test("seleciona para a semana somente jogadores com dois jogos e ao menos uma vi
       games,
       wins,
       losses: games - wins,
+      seriesWins,
       series: ["groups-r1g1"],
       matches: Array.from({ length: games }, (_, index) => `${id}-game-${index + 1}`)
     }]
   });
   const players = [
-    player("top-um-jogo", "TOP", 99, 1, 1, "A2"),
-    player("top-sem-vitoria", "TOP", 98, 2, 0, "A2"),
-    player("top-elegivel", "TOP", 88, 2, 1, "A1"),
-    player("jg-sem-vitoria", "JG", 100, 2, 0, "A2")
+    player("top-um-jogo", "TOP", 99, 1, 1, 1, "A2"),
+    player("top-venceu-mapa-mas-perdeu-serie", "TOP", 98, 3, 1, 0, "A2"),
+    player("top-elegivel", "TOP", 88, 2, 2, 1, "A1"),
+    player("jg-sem-serie-vencida", "JG", 100, 3, 1, 0, "A2")
   ];
 
   const teamOfWeek = buildTeamOfWeek(players, teams, 1);
 
   assert.equal(teamOfWeek.minimumGames, 2);
   assert.deepEqual(teamOfWeek.selection.map((entry) => entry.playerId), ["top-elegivel"]);
-  assert.equal(teamOfWeek.selection[0].wins, 1);
+  assert.equal(teamOfWeek.selection[0].wins, 2);
+  assert.equal(teamOfWeek.selection[0].seriesWins, 1);
   assert.equal(teamOfWeek.highlightPlayerId, "top-elegivel");
 });
 
@@ -127,7 +131,7 @@ test("publica jogadores inscritos sem partidas com estatisticas zeradas", () => 
   assert.equal(player.teams[0].slot, "A1");
 });
 
-test("ordena equipes por winrate e usa o menor TMV como desempate", { skip: !fs.existsSync(replayPath) }, () => {
+test("ordena equipes por nota media e preserva o TMV", { skip: !fs.existsSync(replayPath) }, () => {
   const first = parseReplay(fs.readFileSync(replayPath), { fileName: path.basename(replayPath) });
   first.durationSeconds = 1200;
   first.participants = first.participants.map((participant, index) => ({ ...participant, playerId: `first-${index}` }));
@@ -160,6 +164,7 @@ test("ordena equipes por winrate e usa o menor TMV como desempate", { skip: !fs.
 
   const winners = aggregateDatabase(database, content, {}).divisions.elite.teams.filter((team) => team.wins > 0);
   assert.deepEqual(winners.map((team) => team.tag), ["BWIN", "AWIN"]);
+  assert.ok(winners[0].averageScore >= winners[1].averageScore);
   assert.deepEqual(winners.map((team) => team.winRate), [100, 100]);
   assert.deepEqual(winners.map((team) => team.avgWinTime), ["15:00", "20:00"]);
 });

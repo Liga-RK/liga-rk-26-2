@@ -46,6 +46,7 @@ function aggregateDivision(divisionDatabase, content, fixedData, division) {
   const roster = rosterByPlayerId(teams);
   const games = Array.isArray(divisionDatabase && divisionDatabase.games) ? divisionDatabase.games : [];
   const parsedGames = games.filter((game) => game && game.match && /^parsed_/.test(String(game.parserStatus || "")));
+  const seriesWinners = buildSeriesWinners(parsedGames);
   const teamAggregates = Object.fromEntries(Object.entries(teams).map(([slot, team]) => [slot, createTeamAggregate(team)]));
   const playerAggregates = new Map();
   const championAggregates = new Map();
@@ -140,6 +141,10 @@ function aggregateDivision(divisionDatabase, content, fixedData, division) {
       if (performance) {
         player.scoreSum += performance.performanceScore;
         player.scoreGames += 1;
+        const teamAggregate = teamAggregates[teamSlot] || createTeamAggregate(teams[teamSlot] || { slot: teamSlot });
+        teamAggregate.scoreSum += performance.performanceScore;
+        teamAggregate.scoreGames += 1;
+        teamAggregates[teamSlot] = teamAggregate;
         player.ratings.push({
           matchId: game.id,
           seriesId: game.seriesId || "",
@@ -147,7 +152,8 @@ function aggregateDivision(divisionDatabase, content, fixedData, division) {
           position: normalizePosition(participant.position),
           teamSlot,
           score: performance.performanceScore,
-          won: Boolean(participant.won)
+          won: Boolean(participant.won),
+          seriesWon: seriesWinners.get(String(game.seriesId || "")) === teamSlot
         });
       }
       if (mvp && mvp.participantIndex === participant.participantIndex) player.mvps += 1;
@@ -175,6 +181,8 @@ function aggregateDivision(divisionDatabase, content, fixedData, division) {
   }
 
   const teamList = Object.values(teamAggregates).map(summarizeTeam).sort((a, b) => (
+    b.averageScore - a.averageScore ||
+    b.scoreGames - a.scoreGames ||
     b.winRate - a.winRate ||
     timeStringToSeconds(a.avgWinTime) - timeStringToSeconds(b.avgWinTime) ||
     b.games - a.games ||
@@ -280,7 +288,9 @@ function createTeamAggregate(team) {
     barons: 0,
     durationSeconds: 0,
     winDurationSeconds: 0,
-    winDurationCount: 0
+    winDurationCount: 0,
+    scoreSum: 0,
+    scoreGames: 0
   };
 }
 
@@ -352,6 +362,8 @@ function summarizeTeam(team) {
     games,
     wins: team.wins,
     losses: team.losses,
+    averageScore: team.scoreGames ? round(team.scoreSum / team.scoreGames) : 0,
+    scoreGames: team.scoreGames,
     winRate: round(winRate(team.wins, games) * 100),
     kills: team.kills,
     deaths: team.deaths,
@@ -728,6 +740,47 @@ function gameRoundNumber(game) {
   return seriesMatch ? Number(seriesMatch[1]) : 0;
 }
 
+function buildSeriesWinners(games) {
+  const series = new Map();
+
+  for (const game of games || []) {
+    const seriesId = String(game && game.seriesId || "");
+    const match = game && game.match;
+    if (!seriesId || !match) continue;
+
+    const blueSlot = String(game.blueTeamSlot || "");
+    const redSlot = String(game.redTeamSlot || "");
+    const winnerSlot = Number(match.winnerTeam) === 100 ? blueSlot
+      : Number(match.winnerTeam) === 200 ? redSlot
+        : "";
+    if (!winnerSlot) continue;
+
+    const current = series.get(seriesId) || {
+      target: seriesWinTarget(game),
+      slots: new Set(),
+      wins: new Map()
+    };
+    if (blueSlot) current.slots.add(blueSlot);
+    if (redSlot) current.slots.add(redSlot);
+    current.wins.set(winnerSlot, (current.wins.get(winnerSlot) || 0) + 1);
+    series.set(seriesId, current);
+  }
+
+  const winners = new Map();
+  for (const [seriesId, current] of series.entries()) {
+    const ordered = Array.from(current.wins.entries()).sort((left, right) => right[1] - left[1]);
+    if (ordered[0] && ordered[0][1] >= current.target && (!ordered[1] || ordered[0][1] > ordered[1][1])) {
+      winners.set(seriesId, ordered[0][0]);
+    }
+  }
+  return winners;
+}
+
+function seriesWinTarget(game) {
+  const stage = String(game && game.stage || "").trim().toUpperCase();
+  return /SEMI|FINAL/.test(stage) ? 3 : 2;
+}
+
 function normalizePosition(position) {
   const normalized = String(position || "").trim().toUpperCase();
   const aliases = {
@@ -757,12 +810,14 @@ function summarizeRoundRatings(ratings) {
       games: 0,
       wins: 0,
       series: new Set(),
+      seriesWins: new Set(),
       matches: []
     };
     current.scoreSum += value(rating.score);
     current.games += 1;
     current.wins += rating.won ? 1 : 0;
     if (rating.seriesId) current.series.add(rating.seriesId);
+    if (rating.seriesWon && rating.seriesId) current.seriesWins.add(rating.seriesId);
     if (rating.matchId) current.matches.push(rating.matchId);
     groups.set(key, current);
   }
@@ -776,6 +831,7 @@ function summarizeRoundRatings(ratings) {
     wins: entry.wins,
     losses: entry.games - entry.wins,
     series: Array.from(entry.series),
+    seriesWins: entry.seriesWins.size,
     matches: entry.matches
   })).sort((left, right) => (
     left.round - right.round ||
@@ -793,7 +849,7 @@ function buildTeamOfWeek(players, teams, roundNumber) {
           Number(rating.round) !== Number(roundNumber) ||
           rating.position !== role ||
           Number(rating.games) < MIN_TEAM_OF_WEEK_GAMES ||
-          Number(rating.wins) < 1
+          Number(rating.seriesWins) < 1
         ) continue;
         candidates.push({ player, rating });
       }
@@ -824,6 +880,7 @@ function buildTeamOfWeek(players, teams, roundNumber) {
       games: winner.rating.games,
       wins: winner.rating.wins,
       losses: winner.rating.losses,
+      seriesWins: winner.rating.seriesWins,
       series: winner.rating.series || [],
       matches: winner.rating.matches || []
     };

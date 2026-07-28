@@ -447,6 +447,23 @@ a {
   object-fit: cover;
 }
 
+.player-photo.weekly-team-portrait {
+  background:
+    radial-gradient(circle at 50% 44%, color-mix(in srgb, var(--weekly-team-color, var(--accent)) 72%, #fff 8%) 0, transparent 64%),
+    color-mix(in srgb, var(--weekly-team-color, var(--accent)) 48%, #05070a);
+  border-color: color-mix(in srgb, var(--weekly-team-color, var(--accent)) 72%, #fff);
+  box-shadow:
+    inset 0 0 3.5rem rgba(0, 0, 0, 0.45),
+    0 0 0.7rem color-mix(in srgb, var(--weekly-team-color, var(--accent)) 62%, transparent);
+}
+
+.player-photo.weekly-team-portrait img {
+  width: 82%;
+  height: 82%;
+  object-fit: contain;
+  filter: drop-shadow(0 0.65rem 0.65rem rgba(0, 0, 0, 0.42));
+}
+
 .player-photo-placeholder {
   background: rgba(3, 3, 5, 0.88);
 }
@@ -544,9 +561,23 @@ a {
   line-height: 0.9;
 }
 
+.player-name a,
+.weekly-team-name {
+  color: inherit;
+  text-decoration: none;
+}
+
+.player-name a:hover,
+.player-name a:focus-visible,
+.weekly-team-name:hover,
+.weekly-team-name:focus-visible {
+  color: #fff;
+  text-shadow: 0 0 0.8rem color-mix(in srgb, var(--accent) 78%, transparent);
+}
+
 .player-meta {
   display: grid;
-  grid-template-columns: 2rem minmax(0, 1fr) 2rem;
+  grid-template-columns: 2rem minmax(0, 1fr);
   align-items: center;
   gap: 0.45rem;
   min-height: 2.65rem;
@@ -556,7 +587,6 @@ a {
   font-size: 1.45rem;
 }
 
-.weekly-team-logo,
 .weekly-lane-icon {
   display: grid;
   place-items: center;
@@ -564,16 +594,31 @@ a {
   height: 1.8rem;
 }
 
-.weekly-team-logo img,
 .weekly-lane-icon img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-.weekly-team-logo .team-mark {
-  width: 1.55rem;
-  height: 1.7rem;
+.weekly-team-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.weekly-criteria {
+  width: fit-content;
+  max-width: 100%;
+  margin: 6.25rem auto 0;
+  padding: 0.55rem 0.8rem 0.42rem;
+  color: rgba(255, 255, 255, 0.74);
+  background: rgba(4, 6, 9, 0.82);
+  border-top: 1px solid color-mix(in srgb, var(--accent) 68%, transparent);
+  font-size: 0.92rem;
+  line-height: 1.15;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .weekly-team-name {
@@ -3339,8 +3384,24 @@ body[data-statistics-page="player"] .stats-breadcrumb {
 
 .stats-rating-cell {
   font-size: 1.18rem;
-  font-weight: 400;
+  font-weight: 700;
   text-align: center;
+}
+
+.stats-rating-cell strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3.6rem;
+  padding: 0.28rem 0.45rem 0.18rem;
+  color: currentColor;
+  background: color-mix(in srgb, currentColor 12%, rgba(4, 6, 9, 0.9));
+  border: 1px solid color-mix(in srgb, currentColor 58%, transparent);
+  box-shadow: 0 0 0.8rem color-mix(in srgb, currentColor 18%, transparent);
+  font-family: var(--title-font);
+  font-size: 1.28rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .stats-player-champions {
@@ -6790,6 +6851,10 @@ a.stats-postgame-team-logo:focus-visible {
 
   .player-meta {
     font-size: 1.05rem;
+  }
+
+  .weekly-criteria {
+    margin-top: 2rem;
   }
 
   .vod-frame {

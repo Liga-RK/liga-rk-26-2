@@ -172,6 +172,7 @@
     `;
     restoreDivisionScrollPosition();
     setupDivisionNavScrollTransfer();
+    setupWeeklyTeamColors();
     setupVodCarousels();
     hydrateVodTitles();
   }
@@ -334,41 +335,93 @@
         <div class="lineup">
           ${weeklySelection.map((player, index) => renderPlayer(player, index, index === highlightIndex)).join("")}
         </div>
+        ${hasAutomaticTeam ? `<p class="weekly-criteria">Maior nota média por posição na rodada · mínimo de 2 mapas · somente vencedores da série</p>` : ""}
       </section>
     `;
   }
 
   function renderPlayer(player, index, highlighted) {
-    const image = player.image
-      ? `<img src="${escapeAttribute(player.image)}" alt="${escapeAttribute(player.player || "JOGADOR")}" />`
-      : `<img class="placeholder-logo-img" src="${escapeAttribute(rkPlaceholderUrl)}" alt="" loading="lazy" />`;
     const role = player.role || "";
-    const teamText = resolveTeamText(player.team || "EQUIPE");
+    const teamSlot = isSlot(player.team) ? player.team : "";
+    const team = teamSlot ? teamsBySlot[teamSlot] : null;
+    const teamText = player.teamName || resolveTeamText(player.team || "EQUIPE");
+    const teamLogo = player.teamLogo || team && team.logo || rkPlaceholderUrl;
     const laneIcon = getLaneIcon(normalizeLane(role), role);
+    const playerName = player.player || "JOGADOR";
+    const playerUrl = player.playerId
+      ? `jogador.html?division=${divisionKey}&id=${encodeURIComponent(player.playerId)}`
+      : "";
+    const teamUrl = teamSlot
+      ? `time.html?division=${divisionKey}&id=${encodeURIComponent(teamSlot)}`
+      : "";
 
     return `
       <article class="player-card player-${index + 1} ${highlighted ? "weekly-highlight" : ""}">
         ${highlighted ? `<div class="weekly-highlight-badge">DESTAQUE DA SEMANA</div>` : ""}
         ${Number(player.games) > 0 ? `<div class="weekly-player-score ${ratingClass(player.averageScore)}"><span>NOTA</span><strong>${formatRating(player.averageScore)}</strong></div>` : ""}
-        <div class="player-photo ${player.image ? "" : "player-photo-placeholder"}">${image}</div>
-        <div class="player-name">${escapeHtml(player.player || "JOGADOR")}</div>
+        <div class="player-photo weekly-team-portrait" data-weekly-team-color>
+          <img src="${escapeAttribute(teamLogo)}" alt="${escapeAttribute(teamText)}" loading="lazy" />
+        </div>
+        <div class="player-name">${playerUrl
+          ? `<a href="${escapeAttribute(playerUrl)}">${escapeHtml(playerName)}</a>`
+          : escapeHtml(playerName)}</div>
         <div class="player-meta">
-          ${renderWeeklyTeamLogo(player)}
-          <span class="weekly-team-name">${escapeHtml(teamText)}</span>
           <span class="weekly-lane-icon">${laneIcon}</span>
+          ${teamUrl
+            ? `<a class="weekly-team-name" href="${escapeAttribute(teamUrl)}">${escapeHtml(teamText)}</a>`
+            : `<span class="weekly-team-name">${escapeHtml(teamText)}</span>`}
         </div>
       </article>
     `;
   }
 
-  function renderWeeklyTeamLogo(player) {
-    const teamLogo = player.teamLogo || (isSlot(player.team) && teamsBySlot[player.team] && teamsBySlot[player.team].logo) || "";
+  function setupWeeklyTeamColors() {
+    document.querySelectorAll("[data-weekly-team-color]").forEach((portrait) => {
+      const image = portrait.querySelector("img");
+      if (!image) return;
+      const applyColor = () => {
+        const color = dominantLogoColor(image);
+        if (color) portrait.style.setProperty("--weekly-team-color", color);
+      };
+      if (image.complete) applyColor();
+      else image.addEventListener("load", applyColor, { once: true });
+    });
+  }
 
-    if (teamLogo) {
-      return `<span class="weekly-team-logo"><img src="${escapeAttribute(teamLogo)}" alt="${escapeAttribute(resolveTeamText(player.team || "EQUIPE"))}" /></span>`;
+  function dominantLogoColor(image) {
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = 24;
+      canvas.height = 24;
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      if (!context) return "";
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      const buckets = new Map();
+
+      for (let index = 0; index < pixels.length; index += 4) {
+        const red = pixels[index];
+        const green = pixels[index + 1];
+        const blue = pixels[index + 2];
+        const alpha = pixels[index + 3];
+        const max = Math.max(red, green, blue);
+        const min = Math.min(red, green, blue);
+        if (alpha < 150 || max < 45 || min > 225 || max - min < 24) continue;
+        const key = `${Math.floor(red / 32)}:${Math.floor(green / 32)}:${Math.floor(blue / 32)}`;
+        const bucket = buckets.get(key) || { count: 0, red: 0, green: 0, blue: 0 };
+        bucket.count += 1;
+        bucket.red += red;
+        bucket.green += green;
+        bucket.blue += blue;
+        buckets.set(key, bucket);
+      }
+
+      const winner = Array.from(buckets.values()).sort((left, right) => right.count - left.count)[0];
+      if (!winner) return "";
+      return `rgb(${Math.round(winner.red / winner.count)} ${Math.round(winner.green / winner.count)} ${Math.round(winner.blue / winner.count)})`;
+    } catch {
+      return "";
     }
-
-    return `<span class="weekly-team-logo rk-logo-placeholder"><img src="${escapeAttribute(rkPlaceholderUrl)}" alt="" loading="lazy" /></span>`;
   }
 
   function weeklyHighlightIndex(weeklySelection, automaticTeam = {}) {

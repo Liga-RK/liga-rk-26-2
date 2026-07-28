@@ -61,13 +61,13 @@ O sistema separa os jogadores por posição e considera somente as partidas pert
 
 1. calcula a nota de `0` a `100` de cada jogador em cada mapa;
 2. calcula a média das notas que o jogador recebeu na rodada;
-3. elimina da disputa quem jogou menos de dois mapas ou não venceu nenhum mapa na rodada;
+3. elimina da disputa quem jogou menos de dois mapas ou cuja equipe não venceu a série disputada na rodada;
 4. escolhe a maior média entre os TOPs, JGs, MIDs, ADCs e SUPs elegíveis;
 5. compara os cinco selecionados e define como Destaque da Semana aquele que tiver a maior nota média.
 
 Enquanto a Rodada 1 estiver ativa, resultados de outras rodadas não interferem nessa seleção. Na mudança de rodada, a organização atualiza o número da rodada ativa no agregador e gera novamente as estatísticas públicas.
 
-Se uma posição ainda não tiver jogador com pelo menos dois replays confirmados e uma vitória de mapa na rodada, ela fica sem representante até existirem dados suficientes. O conteúdo manual do editor não substitui esse critério.
+Se uma posição ainda não tiver jogador com pelo menos dois replays confirmados e uma série vencida na rodada, ela fica sem representante até existirem dados suficientes. Vencer apenas um mapa em uma série perdida não torna o jogador elegível. O conteúdo manual do editor não substitui esse critério.
 
 ## 4. Como um replay vira estatística
 
@@ -376,6 +376,16 @@ nota média = soma das notas dos mapas / quantidade de mapas
 
 Ela aparece antes do KDA no perfil individual e é o critério padrão de ordenação do Ranking de Jogadores. O usuário ainda pode ordenar a tabela por outras colunas quando quiser analisar KDA, jogos, KP, DPM, GPM, visão ou MVPs.
 
+### Nota média das equipes
+
+A nota média da equipe usa todas as notas individuais obtidas por seus jogadores nos mapas confirmados:
+
+```text
+nota média da equipe = soma das notas dos jogadores / quantidade de atuações individuais
+```
+
+O Ranking de Equipes é ordenado primeiro por essa nota média. Como cada equipe possui cinco jogadores por mapa, o cálculo compara as equipes na mesma escala sem favorecer quem disputou mais partidas.
+
 ## 11. Playoffs
 
 Os classificados são definidos pela posição final dos grupos. O chaveamento resolve automaticamente referências como `A1`, `B2` e vencedores de fases anteriores.
@@ -395,7 +405,7 @@ O editor permite alterar:
 
 - equipes, tags, logos e jogadores;
 - capitães, Riot IDs, aliases e links do OP.GG;
-- Seleção da Semana e destaque popular;
+- Seleção da Semana e Destaque da Semana automáticos;
 - calendário e placares;
 - playoffs;
 - VODs;
@@ -455,7 +465,8 @@ Ao final da rodada:
 | MVP da partida | Fórmula automática de impacto |
 | Destaques estatísticos | Maiores valores calculados |
 | Nota por mapa | Fórmula automática de impacto por função |
-| Ranking de jogadores | Maior nota média |
-| Seleção da Semana | Maior nota média por posição na rodada ativa |
+| Ranking de jogadores | Maior nota média individual |
+| Ranking de equipes | Maior nota média dos jogadores da equipe |
+| Seleção da Semana | Maior nota média por posição, com no mínimo dois mapas e série vencida na rodada ativa |
 | Destaque da Semana | Maior nota entre os cinco selecionados |
 | Correções excepcionais | Administração da Liga RK |

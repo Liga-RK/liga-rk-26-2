@@ -90,7 +90,12 @@
     const data = divisionData(division);
     const label = divisionLabel(division);
     const overview = data.overview || {};
-    const teams = data.teams || [];
+    const teams = (data.teams || []).slice().sort((left, right) => (
+      numeric(right.averageScore) - numeric(left.averageScore) ||
+      numeric(right.scoreGames) - numeric(left.scoreGames) ||
+      numeric(right.winRate) - numeric(left.winRate) ||
+      String(left.name || "").localeCompare(String(right.name || ""), "pt-BR")
+    ));
     const players = (data.players || []).slice().sort((left, right) => (
       numeric(right.averageScore) - numeric(left.averageScore) ||
       numeric(right.games) - numeric(left.games) ||
@@ -405,8 +410,8 @@
   }
 
   function teamTable(teams, division) {
-    return `<table class="stats-table"><thead><tr><th>#</th><th>Equipe</th><th>J</th><th>V</th><th>D</th><th>V%</th><th>KDA</th><th>GPM</th><th>TMV</th></tr></thead><tbody>${teams.map((team, index) => `
-      <tr><td>${index + 1}</td><td>${teamLink(team, division)}</td><td>${team.games}</td><td>${team.wins}</td><td>${team.losses}</td><td>${formatDecimal(team.winRate)}%</td><td>${formatDecimal(team.kda)}</td><td>${formatDecimal(team.gpmAvg)}</td><td>${text(team.avgWinTime)}</td></tr>`).join("")}</tbody></table>`;
+    return `<table class="stats-table"><thead><tr><th>#</th><th>Equipe</th><th>Nota</th><th>J</th><th>V</th><th>D</th><th>V%</th><th>KDA</th><th>GPM</th><th>TMV</th></tr></thead><tbody>${teams.map((team, index) => `
+      <tr><td>${index + 1}</td><td>${teamLink(team, division)}</td><td class="stats-rating-cell ${ratingClass(team.averageScore)}"><strong>${formatRating(team.averageScore)}</strong></td><td>${team.games}</td><td>${team.wins}</td><td>${team.losses}</td><td>${formatDecimal(team.winRate)}%</td><td>${formatDecimal(team.kda)}</td><td>${formatDecimal(team.gpmAvg)}</td><td>${text(team.avgWinTime)}</td></tr>`).join("")}</tbody></table>`;
   }
 
   function playerTable(players, division, options = {}) {
@@ -431,7 +436,7 @@
       return `
       <tr data-player-row data-search="${attribute(`${displayName} ${player.riotId} ${teamTag}`.toLowerCase())}" data-lane="${attribute(player.mainPosition || "")}" data-team="${attribute((player.teams && player.teams[0] && player.teams[0].slot) || "")}" data-sort-player="${attribute(displayName.toLowerCase())}" data-sort-position="${laneIndex(player.mainPosition)}" data-sort-score="${numeric(player.averageScore)}" data-sort-kda="${numeric(player.kda)}" data-sort-games="${numeric(player.games)}" data-sort-winrate="${numeric(player.winRate)}" data-sort-kp="${numeric(player.kp)}" data-sort-dpm="${numeric(player.dpm)}" data-sort-gpm="${numeric(player.gpm)}" data-sort-vision="${numeric(player.visionScoreAvg)}" data-sort-mvps="${numeric(player.mvps)}">
         <td><div class="stats-player-identity">${teamLogo(team)}<a class="stats-entity-link" href="jogador.html?division=${division}&id=${encodeURIComponent(player.id)}"><strong>${text(player.displayName)}</strong><small>${text(teamTag)}</small></a></div></td>
-        <td><span class="stats-lane-cell">${laneIcon(player.mainPosition)}</span></td><td class="stats-rating-cell ${ratingClass(player.averageScore)}">${formatRating(player.averageScore)}</td><td class="stats-kda-cell">${formatDecimal(player.kda)}</td><td>${player.games}</td><td>${formatDecimal(player.winRate)}%</td><td>${formatDecimal(player.kp)}%</td><td>${formatDecimal(player.dpm)}</td><td>${formatDecimal(player.gpm)}</td><td>${formatDecimal(player.visionScoreAvg)}</td><td>${player.mvps}</td>
+        <td><span class="stats-lane-cell">${laneIcon(player.mainPosition)}</span></td><td class="stats-rating-cell ${ratingClass(player.averageScore)}"><strong>${formatRating(player.averageScore)}</strong></td><td class="stats-kda-cell">${formatDecimal(player.kda)}</td><td>${player.games}</td><td>${formatDecimal(player.winRate)}%</td><td>${formatDecimal(player.kp)}%</td><td>${formatDecimal(player.dpm)}</td><td>${formatDecimal(player.gpm)}</td><td>${formatDecimal(player.visionScoreAvg)}</td><td>${player.mvps}</td>
       </tr>`;
     }).join("")}</tbody></table>${paginate ? `
       <div class="stats-table-pagination" data-player-pagination="${attribute(paginationId)}" aria-label="Paginar ranking de jogadores">
@@ -930,7 +935,8 @@
   function zeroTeam(slot) {
     return {
       slot, name: slot, tag: slot, logo: "", games: 0, wins: 0, losses: 0, winRate: 0,
-      kills: 0, deaths: 0, assists: 0, kda: 0, gpmAvg: 0, dpmAvg: 0, avgWinTime: "00:00"
+      kills: 0, deaths: 0, assists: 0, kda: 0, averageScore: 0, scoreGames: 0,
+      gpmAvg: 0, dpmAvg: 0, avgWinTime: "00:00"
     };
   }
 

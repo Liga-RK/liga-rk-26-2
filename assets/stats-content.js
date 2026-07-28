@@ -1,6 +1,6 @@
 window.LIGA_RK_STATS = {
   "version": 2,
-  "generatedAt": "2026-07-28T03:25:53.114Z",
+  "generatedAt": "2026-07-28T04:07:55.554Z",
   "season": "Liga RK 26.2",
   "divisions": {
     "elite": {
@@ -59,6 +59,37 @@ window.LIGA_RK_STATS = {
       },
       "teams": [
         {
+          "slot": "A3",
+          "name": "RAVENCLAW",
+          "tag": "RAVE",
+          "logo": "assets/uploads/equipes_elite/rave.png",
+          "games": 2,
+          "wins": 2,
+          "losses": 0,
+          "averageScore": 81.67,
+          "scoreGames": 10,
+          "winRate": 100,
+          "kills": 57,
+          "deaths": 16,
+          "assists": 104,
+          "kda": 10.06,
+          "killsAvg": 28.5,
+          "deathsAvg": 8,
+          "assistsAvg": 52,
+          "goldAvg": 56312,
+          "gpmAvg": 2134.16,
+          "damageAvg": 81214,
+          "dpmAvg": 3077.92,
+          "towersAvg": 9.5,
+          "voidGrubsAvg": 0,
+          "heraldsAvg": 1,
+          "dragonsAvg": 3.5,
+          "elderDragons": 0,
+          "baronsAvg": 1,
+          "avgDuration": "26:23",
+          "avgWinTime": "26:23"
+        },
+        {
           "slot": "D1",
           "name": "FAVELÃO DO TECHY",
           "tag": "FVL",
@@ -66,6 +97,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 2,
           "losses": 0,
+          "averageScore": 81.64,
+          "scoreGames": 10,
           "winRate": 100,
           "kills": 48,
           "deaths": 14,
@@ -95,6 +128,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 2,
           "losses": 0,
+          "averageScore": 79.96,
+          "scoreGames": 10,
           "winRate": 100,
           "kills": 42,
           "deaths": 28,
@@ -117,64 +152,6 @@ window.LIGA_RK_STATS = {
           "avgWinTime": "26:03"
         },
         {
-          "slot": "A3",
-          "name": "RAVENCLAW",
-          "tag": "RAVE",
-          "logo": "assets/uploads/equipes_elite/rave.png",
-          "games": 2,
-          "wins": 2,
-          "losses": 0,
-          "winRate": 100,
-          "kills": 57,
-          "deaths": 16,
-          "assists": 104,
-          "kda": 10.06,
-          "killsAvg": 28.5,
-          "deathsAvg": 8,
-          "assistsAvg": 52,
-          "goldAvg": 56312,
-          "gpmAvg": 2134.16,
-          "damageAvg": 81214,
-          "dpmAvg": 3077.92,
-          "towersAvg": 9.5,
-          "voidGrubsAvg": 0,
-          "heraldsAvg": 1,
-          "dragonsAvg": 3.5,
-          "elderDragons": 0,
-          "baronsAvg": 1,
-          "avgDuration": "26:23",
-          "avgWinTime": "26:23"
-        },
-        {
-          "slot": "B2",
-          "name": "LENDINHAS",
-          "tag": "IDL",
-          "logo": "assets/uploads/equipes_elite/idl.png",
-          "games": 2,
-          "wins": 2,
-          "losses": 0,
-          "winRate": 100,
-          "kills": 48,
-          "deaths": 34,
-          "assists": 77,
-          "kda": 3.68,
-          "killsAvg": 24,
-          "deathsAvg": 17,
-          "assistsAvg": 38.5,
-          "goldAvg": 59536.5,
-          "gpmAvg": 2149.85,
-          "damageAvg": 95754,
-          "dpmAvg": 3457.66,
-          "towersAvg": 9.5,
-          "voidGrubsAvg": 2.5,
-          "heraldsAvg": 1,
-          "dragonsAvg": 2,
-          "elderDragons": 0,
-          "baronsAvg": 1,
-          "avgDuration": "27:42",
-          "avgWinTime": "27:42"
-        },
-        {
           "slot": "B3",
           "name": "PHOENIX GAMING BLUE",
           "tag": "PXB",
@@ -182,6 +159,8 @@ window.LIGA_RK_STATS = {
           "games": 3,
           "wins": 2,
           "losses": 1,
+          "averageScore": 77.07,
+          "scoreGames": 15,
           "winRate": 66.67,
           "kills": 81,
           "deaths": 57,
@@ -204,33 +183,35 @@ window.LIGA_RK_STATS = {
           "avgWinTime": "27:16"
         },
         {
-          "slot": "C2",
-          "name": "BRONGUINHOS TEAM 67",
-          "tag": "BG67",
-          "logo": "assets/uploads/equipes_elite/bg67.png",
-          "games": 3,
+          "slot": "B2",
+          "name": "LENDINHAS",
+          "tag": "IDL",
+          "logo": "assets/uploads/equipes_elite/idl.png",
+          "games": 2,
           "wins": 2,
-          "losses": 1,
-          "winRate": 66.67,
-          "kills": 73,
-          "deaths": 61,
-          "assists": 155,
-          "kda": 3.74,
-          "killsAvg": 24.33,
-          "deathsAvg": 20.33,
-          "assistsAvg": 51.67,
-          "goldAvg": 69989.33,
-          "gpmAvg": 1971.68,
-          "damageAvg": 120769.33,
-          "dpmAvg": 3402.21,
-          "towersAvg": 7,
-          "voidGrubsAvg": 2,
-          "heraldsAvg": 0.33,
-          "dragonsAvg": 2.67,
+          "losses": 0,
+          "averageScore": 76.67,
+          "scoreGames": 10,
+          "winRate": 100,
+          "kills": 48,
+          "deaths": 34,
+          "assists": 77,
+          "kda": 3.68,
+          "killsAvg": 24,
+          "deathsAvg": 17,
+          "assistsAvg": 38.5,
+          "goldAvg": 59536.5,
+          "gpmAvg": 2149.85,
+          "damageAvg": 95754,
+          "dpmAvg": 3457.66,
+          "towersAvg": 9.5,
+          "voidGrubsAvg": 2.5,
+          "heraldsAvg": 1,
+          "dragonsAvg": 2,
           "elderDragons": 0,
           "baronsAvg": 1,
-          "avgDuration": "35:30",
-          "avgWinTime": "40:43"
+          "avgDuration": "27:42",
+          "avgWinTime": "27:42"
         },
         {
           "slot": "C1",
@@ -240,6 +221,8 @@ window.LIGA_RK_STATS = {
           "games": 3,
           "wins": 1,
           "losses": 2,
+          "averageScore": 75.91,
+          "scoreGames": 15,
           "winRate": 33.33,
           "kills": 61,
           "deaths": 73,
@@ -262,6 +245,37 @@ window.LIGA_RK_STATS = {
           "avgWinTime": "25:04"
         },
         {
+          "slot": "C2",
+          "name": "BRONGUINHOS TEAM 67",
+          "tag": "BG67",
+          "logo": "assets/uploads/equipes_elite/bg67.png",
+          "games": 3,
+          "wins": 2,
+          "losses": 1,
+          "averageScore": 74.83,
+          "scoreGames": 15,
+          "winRate": 66.67,
+          "kills": 73,
+          "deaths": 61,
+          "assists": 155,
+          "kda": 3.74,
+          "killsAvg": 24.33,
+          "deathsAvg": 20.33,
+          "assistsAvg": 51.67,
+          "goldAvg": 69989.33,
+          "gpmAvg": 1971.68,
+          "damageAvg": 120769.33,
+          "dpmAvg": 3402.21,
+          "towersAvg": 7,
+          "voidGrubsAvg": 2,
+          "heraldsAvg": 0.33,
+          "dragonsAvg": 2.67,
+          "elderDragons": 0,
+          "baronsAvg": 1,
+          "avgDuration": "35:30",
+          "avgWinTime": "40:43"
+        },
+        {
           "slot": "B4",
           "name": "TOPEIRAS DO MAU",
           "tag": "TOP",
@@ -269,6 +283,8 @@ window.LIGA_RK_STATS = {
           "games": 3,
           "wins": 1,
           "losses": 2,
+          "averageScore": 72.37,
+          "scoreGames": 15,
           "winRate": 33.33,
           "kills": 57,
           "deaths": 81,
@@ -291,64 +307,6 @@ window.LIGA_RK_STATS = {
           "avgWinTime": "35:03"
         },
         {
-          "slot": "D2",
-          "name": "BORRACHARIA FC",
-          "tag": "BOR",
-          "logo": "assets/uploads/equipes_elite/bor.png",
-          "games": 2,
-          "wins": 0,
-          "losses": 2,
-          "winRate": 0,
-          "kills": 14,
-          "deaths": 48,
-          "assists": 28,
-          "kda": 0.88,
-          "killsAvg": 7,
-          "deathsAvg": 24,
-          "assistsAvg": 14,
-          "goldAvg": 41364.5,
-          "gpmAvg": 1613.08,
-          "damageAvg": 50152,
-          "dpmAvg": 1955.77,
-          "towersAvg": 0.5,
-          "voidGrubsAvg": 1.5,
-          "heraldsAvg": 0,
-          "dragonsAvg": 0,
-          "elderDragons": 0,
-          "baronsAvg": 0,
-          "avgDuration": "25:39",
-          "avgWinTime": "00:00"
-        },
-        {
-          "slot": "D4",
-          "name": "M7 ESPORTS",
-          "tag": "M7",
-          "logo": "assets/uploads/equipes_elite/m7.png",
-          "games": 2,
-          "wins": 0,
-          "losses": 2,
-          "winRate": 0,
-          "kills": 28,
-          "deaths": 42,
-          "assists": 49,
-          "kda": 1.83,
-          "killsAvg": 14,
-          "deathsAvg": 21,
-          "assistsAvg": 24.5,
-          "goldAvg": 44733,
-          "gpmAvg": 1716.94,
-          "damageAvg": 73502.5,
-          "dpmAvg": 2821.16,
-          "towersAvg": 1.5,
-          "voidGrubsAvg": 1,
-          "heraldsAvg": 0,
-          "dragonsAvg": 1.5,
-          "elderDragons": 0,
-          "baronsAvg": 0,
-          "avgDuration": "26:03",
-          "avgWinTime": "00:00"
-        },
-        {
           "slot": "B1",
           "name": "NEW AGS",
           "tag": "AGS",
@@ -356,6 +314,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 0,
           "losses": 2,
+          "averageScore": 72,
+          "scoreGames": 10,
           "winRate": 0,
           "kills": 34,
           "deaths": 48,
@@ -378,6 +338,68 @@ window.LIGA_RK_STATS = {
           "avgWinTime": "00:00"
         },
         {
+          "slot": "D4",
+          "name": "M7 ESPORTS",
+          "tag": "M7",
+          "logo": "assets/uploads/equipes_elite/m7.png",
+          "games": 2,
+          "wins": 0,
+          "losses": 2,
+          "averageScore": 71.43,
+          "scoreGames": 10,
+          "winRate": 0,
+          "kills": 28,
+          "deaths": 42,
+          "assists": 49,
+          "kda": 1.83,
+          "killsAvg": 14,
+          "deathsAvg": 21,
+          "assistsAvg": 24.5,
+          "goldAvg": 44733,
+          "gpmAvg": 1716.94,
+          "damageAvg": 73502.5,
+          "dpmAvg": 2821.16,
+          "towersAvg": 1.5,
+          "voidGrubsAvg": 1,
+          "heraldsAvg": 0,
+          "dragonsAvg": 1.5,
+          "elderDragons": 0,
+          "baronsAvg": 0,
+          "avgDuration": "26:03",
+          "avgWinTime": "00:00"
+        },
+        {
+          "slot": "D2",
+          "name": "BORRACHARIA FC",
+          "tag": "BOR",
+          "logo": "assets/uploads/equipes_elite/bor.png",
+          "games": 2,
+          "wins": 0,
+          "losses": 2,
+          "averageScore": 64.97,
+          "scoreGames": 10,
+          "winRate": 0,
+          "kills": 14,
+          "deaths": 48,
+          "assists": 28,
+          "kda": 0.88,
+          "killsAvg": 7,
+          "deathsAvg": 24,
+          "assistsAvg": 14,
+          "goldAvg": 41364.5,
+          "gpmAvg": 1613.08,
+          "damageAvg": 50152,
+          "dpmAvg": 1955.77,
+          "towersAvg": 0.5,
+          "voidGrubsAvg": 1.5,
+          "heraldsAvg": 0,
+          "dragonsAvg": 0,
+          "elderDragons": 0,
+          "baronsAvg": 0,
+          "avgDuration": "25:39",
+          "avgWinTime": "00:00"
+        },
+        {
           "slot": "A4",
           "name": "QUANTUM RABBITS",
           "tag": "QR",
@@ -385,6 +407,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 0,
           "losses": 2,
+          "averageScore": 62.82,
+          "scoreGames": 10,
           "winRate": 0,
           "kills": 15,
           "deaths": 57,
@@ -414,6 +438,8 @@ window.LIGA_RK_STATS = {
           "games": 0,
           "wins": 0,
           "losses": 0,
+          "averageScore": 0,
+          "scoreGames": 0,
           "winRate": 0,
           "kills": 0,
           "deaths": 0,
@@ -443,6 +469,8 @@ window.LIGA_RK_STATS = {
           "games": 0,
           "wins": 0,
           "losses": 0,
+          "averageScore": 0,
+          "scoreGames": 0,
           "winRate": 0,
           "kills": 0,
           "deaths": 0,
@@ -472,6 +500,8 @@ window.LIGA_RK_STATS = {
           "games": 0,
           "wins": 0,
           "losses": 0,
+          "averageScore": 0,
+          "scoreGames": 0,
           "winRate": 0,
           "kills": 0,
           "deaths": 0,
@@ -501,6 +531,8 @@ window.LIGA_RK_STATS = {
           "games": 0,
           "wins": 0,
           "losses": 0,
+          "averageScore": 0,
+          "scoreGames": 0,
           "winRate": 0,
           "kills": 0,
           "deaths": 0,
@@ -524,6 +556,37 @@ window.LIGA_RK_STATS = {
         }
       ],
       "teamSummaries": {
+        "A3": {
+          "slot": "A3",
+          "name": "RAVENCLAW",
+          "tag": "RAVE",
+          "logo": "assets/uploads/equipes_elite/rave.png",
+          "games": 2,
+          "wins": 2,
+          "losses": 0,
+          "averageScore": 81.67,
+          "scoreGames": 10,
+          "winRate": 100,
+          "kills": 57,
+          "deaths": 16,
+          "assists": 104,
+          "kda": 10.06,
+          "killsAvg": 28.5,
+          "deathsAvg": 8,
+          "assistsAvg": 52,
+          "goldAvg": 56312,
+          "gpmAvg": 2134.16,
+          "damageAvg": 81214,
+          "dpmAvg": 3077.92,
+          "towersAvg": 9.5,
+          "voidGrubsAvg": 0,
+          "heraldsAvg": 1,
+          "dragonsAvg": 3.5,
+          "elderDragons": 0,
+          "baronsAvg": 1,
+          "avgDuration": "26:23",
+          "avgWinTime": "26:23"
+        },
         "D1": {
           "slot": "D1",
           "name": "FAVELÃO DO TECHY",
@@ -532,6 +595,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 2,
           "losses": 0,
+          "averageScore": 81.64,
+          "scoreGames": 10,
           "winRate": 100,
           "kills": 48,
           "deaths": 14,
@@ -561,6 +626,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 2,
           "losses": 0,
+          "averageScore": 79.96,
+          "scoreGames": 10,
           "winRate": 100,
           "kills": 42,
           "deaths": 28,
@@ -582,64 +649,6 @@ window.LIGA_RK_STATS = {
           "avgDuration": "26:03",
           "avgWinTime": "26:03"
         },
-        "A3": {
-          "slot": "A3",
-          "name": "RAVENCLAW",
-          "tag": "RAVE",
-          "logo": "assets/uploads/equipes_elite/rave.png",
-          "games": 2,
-          "wins": 2,
-          "losses": 0,
-          "winRate": 100,
-          "kills": 57,
-          "deaths": 16,
-          "assists": 104,
-          "kda": 10.06,
-          "killsAvg": 28.5,
-          "deathsAvg": 8,
-          "assistsAvg": 52,
-          "goldAvg": 56312,
-          "gpmAvg": 2134.16,
-          "damageAvg": 81214,
-          "dpmAvg": 3077.92,
-          "towersAvg": 9.5,
-          "voidGrubsAvg": 0,
-          "heraldsAvg": 1,
-          "dragonsAvg": 3.5,
-          "elderDragons": 0,
-          "baronsAvg": 1,
-          "avgDuration": "26:23",
-          "avgWinTime": "26:23"
-        },
-        "B2": {
-          "slot": "B2",
-          "name": "LENDINHAS",
-          "tag": "IDL",
-          "logo": "assets/uploads/equipes_elite/idl.png",
-          "games": 2,
-          "wins": 2,
-          "losses": 0,
-          "winRate": 100,
-          "kills": 48,
-          "deaths": 34,
-          "assists": 77,
-          "kda": 3.68,
-          "killsAvg": 24,
-          "deathsAvg": 17,
-          "assistsAvg": 38.5,
-          "goldAvg": 59536.5,
-          "gpmAvg": 2149.85,
-          "damageAvg": 95754,
-          "dpmAvg": 3457.66,
-          "towersAvg": 9.5,
-          "voidGrubsAvg": 2.5,
-          "heraldsAvg": 1,
-          "dragonsAvg": 2,
-          "elderDragons": 0,
-          "baronsAvg": 1,
-          "avgDuration": "27:42",
-          "avgWinTime": "27:42"
-        },
         "B3": {
           "slot": "B3",
           "name": "PHOENIX GAMING BLUE",
@@ -648,6 +657,8 @@ window.LIGA_RK_STATS = {
           "games": 3,
           "wins": 2,
           "losses": 1,
+          "averageScore": 77.07,
+          "scoreGames": 15,
           "winRate": 66.67,
           "kills": 81,
           "deaths": 57,
@@ -669,34 +680,36 @@ window.LIGA_RK_STATS = {
           "avgDuration": "29:52",
           "avgWinTime": "27:16"
         },
-        "C2": {
-          "slot": "C2",
-          "name": "BRONGUINHOS TEAM 67",
-          "tag": "BG67",
-          "logo": "assets/uploads/equipes_elite/bg67.png",
-          "games": 3,
+        "B2": {
+          "slot": "B2",
+          "name": "LENDINHAS",
+          "tag": "IDL",
+          "logo": "assets/uploads/equipes_elite/idl.png",
+          "games": 2,
           "wins": 2,
-          "losses": 1,
-          "winRate": 66.67,
-          "kills": 73,
-          "deaths": 61,
-          "assists": 155,
-          "kda": 3.74,
-          "killsAvg": 24.33,
-          "deathsAvg": 20.33,
-          "assistsAvg": 51.67,
-          "goldAvg": 69989.33,
-          "gpmAvg": 1971.68,
-          "damageAvg": 120769.33,
-          "dpmAvg": 3402.21,
-          "towersAvg": 7,
-          "voidGrubsAvg": 2,
-          "heraldsAvg": 0.33,
-          "dragonsAvg": 2.67,
+          "losses": 0,
+          "averageScore": 76.67,
+          "scoreGames": 10,
+          "winRate": 100,
+          "kills": 48,
+          "deaths": 34,
+          "assists": 77,
+          "kda": 3.68,
+          "killsAvg": 24,
+          "deathsAvg": 17,
+          "assistsAvg": 38.5,
+          "goldAvg": 59536.5,
+          "gpmAvg": 2149.85,
+          "damageAvg": 95754,
+          "dpmAvg": 3457.66,
+          "towersAvg": 9.5,
+          "voidGrubsAvg": 2.5,
+          "heraldsAvg": 1,
+          "dragonsAvg": 2,
           "elderDragons": 0,
           "baronsAvg": 1,
-          "avgDuration": "35:30",
-          "avgWinTime": "40:43"
+          "avgDuration": "27:42",
+          "avgWinTime": "27:42"
         },
         "C1": {
           "slot": "C1",
@@ -706,6 +719,8 @@ window.LIGA_RK_STATS = {
           "games": 3,
           "wins": 1,
           "losses": 2,
+          "averageScore": 75.91,
+          "scoreGames": 15,
           "winRate": 33.33,
           "kills": 61,
           "deaths": 73,
@@ -727,6 +742,37 @@ window.LIGA_RK_STATS = {
           "avgDuration": "35:30",
           "avgWinTime": "25:04"
         },
+        "C2": {
+          "slot": "C2",
+          "name": "BRONGUINHOS TEAM 67",
+          "tag": "BG67",
+          "logo": "assets/uploads/equipes_elite/bg67.png",
+          "games": 3,
+          "wins": 2,
+          "losses": 1,
+          "averageScore": 74.83,
+          "scoreGames": 15,
+          "winRate": 66.67,
+          "kills": 73,
+          "deaths": 61,
+          "assists": 155,
+          "kda": 3.74,
+          "killsAvg": 24.33,
+          "deathsAvg": 20.33,
+          "assistsAvg": 51.67,
+          "goldAvg": 69989.33,
+          "gpmAvg": 1971.68,
+          "damageAvg": 120769.33,
+          "dpmAvg": 3402.21,
+          "towersAvg": 7,
+          "voidGrubsAvg": 2,
+          "heraldsAvg": 0.33,
+          "dragonsAvg": 2.67,
+          "elderDragons": 0,
+          "baronsAvg": 1,
+          "avgDuration": "35:30",
+          "avgWinTime": "40:43"
+        },
         "B4": {
           "slot": "B4",
           "name": "TOPEIRAS DO MAU",
@@ -735,6 +781,8 @@ window.LIGA_RK_STATS = {
           "games": 3,
           "wins": 1,
           "losses": 2,
+          "averageScore": 72.37,
+          "scoreGames": 15,
           "winRate": 33.33,
           "kills": 57,
           "deaths": 81,
@@ -756,64 +804,6 @@ window.LIGA_RK_STATS = {
           "avgDuration": "29:52",
           "avgWinTime": "35:03"
         },
-        "D2": {
-          "slot": "D2",
-          "name": "BORRACHARIA FC",
-          "tag": "BOR",
-          "logo": "assets/uploads/equipes_elite/bor.png",
-          "games": 2,
-          "wins": 0,
-          "losses": 2,
-          "winRate": 0,
-          "kills": 14,
-          "deaths": 48,
-          "assists": 28,
-          "kda": 0.88,
-          "killsAvg": 7,
-          "deathsAvg": 24,
-          "assistsAvg": 14,
-          "goldAvg": 41364.5,
-          "gpmAvg": 1613.08,
-          "damageAvg": 50152,
-          "dpmAvg": 1955.77,
-          "towersAvg": 0.5,
-          "voidGrubsAvg": 1.5,
-          "heraldsAvg": 0,
-          "dragonsAvg": 0,
-          "elderDragons": 0,
-          "baronsAvg": 0,
-          "avgDuration": "25:39",
-          "avgWinTime": "00:00"
-        },
-        "D4": {
-          "slot": "D4",
-          "name": "M7 ESPORTS",
-          "tag": "M7",
-          "logo": "assets/uploads/equipes_elite/m7.png",
-          "games": 2,
-          "wins": 0,
-          "losses": 2,
-          "winRate": 0,
-          "kills": 28,
-          "deaths": 42,
-          "assists": 49,
-          "kda": 1.83,
-          "killsAvg": 14,
-          "deathsAvg": 21,
-          "assistsAvg": 24.5,
-          "goldAvg": 44733,
-          "gpmAvg": 1716.94,
-          "damageAvg": 73502.5,
-          "dpmAvg": 2821.16,
-          "towersAvg": 1.5,
-          "voidGrubsAvg": 1,
-          "heraldsAvg": 0,
-          "dragonsAvg": 1.5,
-          "elderDragons": 0,
-          "baronsAvg": 0,
-          "avgDuration": "26:03",
-          "avgWinTime": "00:00"
-        },
         "B1": {
           "slot": "B1",
           "name": "NEW AGS",
@@ -822,6 +812,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 0,
           "losses": 2,
+          "averageScore": 72,
+          "scoreGames": 10,
           "winRate": 0,
           "kills": 34,
           "deaths": 48,
@@ -843,6 +835,68 @@ window.LIGA_RK_STATS = {
           "avgDuration": "27:42",
           "avgWinTime": "00:00"
         },
+        "D4": {
+          "slot": "D4",
+          "name": "M7 ESPORTS",
+          "tag": "M7",
+          "logo": "assets/uploads/equipes_elite/m7.png",
+          "games": 2,
+          "wins": 0,
+          "losses": 2,
+          "averageScore": 71.43,
+          "scoreGames": 10,
+          "winRate": 0,
+          "kills": 28,
+          "deaths": 42,
+          "assists": 49,
+          "kda": 1.83,
+          "killsAvg": 14,
+          "deathsAvg": 21,
+          "assistsAvg": 24.5,
+          "goldAvg": 44733,
+          "gpmAvg": 1716.94,
+          "damageAvg": 73502.5,
+          "dpmAvg": 2821.16,
+          "towersAvg": 1.5,
+          "voidGrubsAvg": 1,
+          "heraldsAvg": 0,
+          "dragonsAvg": 1.5,
+          "elderDragons": 0,
+          "baronsAvg": 0,
+          "avgDuration": "26:03",
+          "avgWinTime": "00:00"
+        },
+        "D2": {
+          "slot": "D2",
+          "name": "BORRACHARIA FC",
+          "tag": "BOR",
+          "logo": "assets/uploads/equipes_elite/bor.png",
+          "games": 2,
+          "wins": 0,
+          "losses": 2,
+          "averageScore": 64.97,
+          "scoreGames": 10,
+          "winRate": 0,
+          "kills": 14,
+          "deaths": 48,
+          "assists": 28,
+          "kda": 0.88,
+          "killsAvg": 7,
+          "deathsAvg": 24,
+          "assistsAvg": 14,
+          "goldAvg": 41364.5,
+          "gpmAvg": 1613.08,
+          "damageAvg": 50152,
+          "dpmAvg": 1955.77,
+          "towersAvg": 0.5,
+          "voidGrubsAvg": 1.5,
+          "heraldsAvg": 0,
+          "dragonsAvg": 0,
+          "elderDragons": 0,
+          "baronsAvg": 0,
+          "avgDuration": "25:39",
+          "avgWinTime": "00:00"
+        },
         "A4": {
           "slot": "A4",
           "name": "QUANTUM RABBITS",
@@ -851,6 +905,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 0,
           "losses": 2,
+          "averageScore": 62.82,
+          "scoreGames": 10,
           "winRate": 0,
           "kills": 15,
           "deaths": 57,
@@ -880,6 +936,8 @@ window.LIGA_RK_STATS = {
           "games": 0,
           "wins": 0,
           "losses": 0,
+          "averageScore": 0,
+          "scoreGames": 0,
           "winRate": 0,
           "kills": 0,
           "deaths": 0,
@@ -909,6 +967,8 @@ window.LIGA_RK_STATS = {
           "games": 0,
           "wins": 0,
           "losses": 0,
+          "averageScore": 0,
+          "scoreGames": 0,
           "winRate": 0,
           "kills": 0,
           "deaths": 0,
@@ -938,6 +998,8 @@ window.LIGA_RK_STATS = {
           "games": 0,
           "wins": 0,
           "losses": 0,
+          "averageScore": 0,
+          "scoreGames": 0,
           "winRate": 0,
           "kills": 0,
           "deaths": 0,
@@ -967,6 +1029,8 @@ window.LIGA_RK_STATS = {
           "games": 0,
           "wins": 0,
           "losses": 0,
+          "averageScore": 0,
+          "scoreGames": 0,
           "winRate": 0,
           "kills": 0,
           "deaths": 0,
@@ -1035,7 +1099,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D3",
               "score": 97.39,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -1044,7 +1109,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D3",
               "score": 94.65,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -1059,6 +1125,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -1149,7 +1216,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "A3",
               "score": 93.04,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g2-j1",
@@ -1158,7 +1226,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "A3",
               "score": 95.63,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -1173,6 +1242,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g2"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g2-j1",
                 "groups-r1g2-j2"
@@ -1261,7 +1331,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D1",
               "score": 90.58,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -1270,7 +1341,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D1",
               "score": 95.98,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -1285,6 +1357,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2"
@@ -1373,7 +1446,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "A3",
               "score": 88.05,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g2-j1",
@@ -1382,7 +1456,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "A3",
               "score": 94.64,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -1397,6 +1472,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g2"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g2-j1",
                 "groups-r1g2-j2"
@@ -1489,7 +1565,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B3",
               "score": 88.96,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g4-j2",
@@ -1498,7 +1575,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B3",
               "score": 83.15,
-              "won": false
+              "won": false,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -1507,7 +1585,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B3",
               "score": 98.37,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -1522,6 +1601,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2",
@@ -1620,7 +1700,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D1",
               "score": 77.36,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -1629,7 +1710,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D1",
               "score": 97.45,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -1644,6 +1726,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2"
@@ -1736,7 +1819,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B2",
               "score": 76.6,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -1745,7 +1829,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B2",
               "score": 95.18,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -1760,6 +1845,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -1848,7 +1934,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D3",
               "score": 83.97,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -1857,7 +1944,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D3",
               "score": 87.13,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -1872,6 +1960,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -1960,7 +2049,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "C2",
               "score": 83.17,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g5-j3",
@@ -1969,7 +2059,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "C2",
               "score": 87.88,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -1978,7 +2069,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "C2",
               "score": 81.88,
-              "won": false
+              "won": false,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -1993,6 +2085,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j3",
@@ -2091,7 +2184,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B4",
               "score": 80.87,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g4-j2",
@@ -2100,7 +2194,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B4",
               "score": 79.73,
-              "won": true
+              "won": true,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -2109,7 +2204,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B4",
               "score": 92.17,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -2124,6 +2220,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2",
@@ -2222,7 +2319,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "C1",
               "score": 86.89,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g5-j3",
@@ -2231,7 +2329,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "C1",
               "score": 78.95,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -2240,7 +2339,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "C1",
               "score": 86.45,
-              "won": true
+              "won": true,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -2255,6 +2355,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j3",
@@ -2353,7 +2454,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D4",
               "score": 76.47,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -2362,7 +2464,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D4",
               "score": 88.39,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -2377,6 +2480,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -2465,7 +2569,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B2",
               "score": 78.91,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -2474,7 +2579,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B2",
               "score": 83.05,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -2489,6 +2595,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -2577,7 +2684,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "C1",
               "score": 82.18,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g5-j3",
@@ -2586,7 +2694,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "C1",
               "score": 70.46,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -2595,7 +2704,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "C1",
               "score": 89.97,
-              "won": true
+              "won": true,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -2610,6 +2720,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j3",
@@ -2708,7 +2819,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B2",
               "score": 75.17,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -2717,7 +2829,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B2",
               "score": 86.56,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -2732,6 +2845,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -2820,7 +2934,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B4",
               "score": 74.08,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g4-j2",
@@ -2829,7 +2944,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B4",
               "score": 84.03,
-              "won": true
+              "won": true,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -2838,7 +2954,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B4",
               "score": 80.26,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -2853,6 +2970,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2",
@@ -2951,7 +3069,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B1",
               "score": 71.73,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -2960,7 +3079,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B1",
               "score": 85.64,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -2975,6 +3095,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -3063,7 +3184,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "C2",
               "score": 72.77,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g5-j3",
@@ -3072,7 +3194,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "C2",
               "score": 84.41,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -3087,6 +3210,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g5-j3",
                 "groups-r1g5-j2"
@@ -3175,7 +3299,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B3",
               "score": 80.27,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g4-j2",
@@ -3184,7 +3309,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B3",
               "score": 72.14,
-              "won": false
+              "won": false,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -3193,7 +3319,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B3",
               "score": 83.33,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -3208,6 +3335,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2",
@@ -3306,7 +3434,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "A3",
               "score": 81.59,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g2-j1",
@@ -3315,7 +3444,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "A3",
               "score": 75.28,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -3330,6 +3460,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g2"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g2-j1",
                 "groups-r1g2-j2"
@@ -3418,7 +3549,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D3",
               "score": 65.28,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -3427,7 +3559,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D3",
               "score": 89.96,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -3442,6 +3575,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -3532,7 +3666,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D1",
               "score": 79.94,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -3541,7 +3676,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D1",
               "score": 74.95,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -3556,6 +3692,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2"
@@ -3644,7 +3781,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D1",
               "score": 68.27,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -3653,7 +3791,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D1",
               "score": 86.36,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -3668,6 +3807,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2"
@@ -3756,7 +3896,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "A3",
               "score": 73.01,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g2-j1",
@@ -3765,7 +3906,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "A3",
               "score": 80.83,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -3780,6 +3922,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g2"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g2-j1",
                 "groups-r1g2-j2"
@@ -3868,7 +4011,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "C1",
               "score": 77.21,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g5-j3",
@@ -3877,7 +4021,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "C1",
               "score": 67.3,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -3886,7 +4031,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "C1",
               "score": 83.8,
-              "won": true
+              "won": true,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -3901,6 +4047,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j3",
@@ -3999,7 +4146,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B1",
               "score": 76.57,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -4008,7 +4156,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B1",
               "score": 75.01,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -4023,6 +4172,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -4111,7 +4261,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "C2",
               "score": 97.12,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g5-j3",
@@ -4120,7 +4271,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "C2",
               "score": 64.51,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -4129,7 +4281,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "C2",
               "score": 64.74,
-              "won": false
+              "won": false,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -4144,6 +4297,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j3",
@@ -4242,7 +4396,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "A4",
               "score": 71.7,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g2-j1",
@@ -4251,7 +4406,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "A4",
               "score": 78.78,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -4266,6 +4422,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g2"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g2-j1",
                 "groups-r1g2-j2"
@@ -4354,7 +4511,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D4",
               "score": 72.67,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -4363,7 +4521,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D4",
               "score": 76.8,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -4378,6 +4537,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -4466,7 +4626,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B3",
               "score": 85.73,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g4-j2",
@@ -4475,7 +4636,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B3",
               "score": 69.81,
-              "won": false
+              "won": false,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -4484,7 +4646,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B3",
               "score": 68.63,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -4499,6 +4662,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2",
@@ -4597,7 +4761,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B3",
               "score": 68.05,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g4-j2",
@@ -4606,7 +4771,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B3",
               "score": 66.7,
-              "won": false
+              "won": false,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -4615,7 +4781,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B3",
               "score": 89.17,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -4630,6 +4797,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2",
@@ -4728,7 +4896,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D2",
               "score": 95.96,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -4737,7 +4906,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D2",
               "score": 52.51,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -4752,6 +4922,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2"
@@ -4840,7 +5011,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D4",
               "score": 77.93,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -4849,7 +5021,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D4",
               "score": 69.72,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -4864,6 +5037,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -4952,7 +5126,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "A4",
               "score": 67.4,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g2-j1",
@@ -4961,7 +5136,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "A4",
               "score": 78.41,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -4976,6 +5152,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g2"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g2-j1",
                 "groups-r1g2-j2"
@@ -5064,7 +5241,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D1",
               "score": 84.82,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -5073,7 +5251,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D1",
               "score": 60.67,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -5088,6 +5267,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2"
@@ -5176,7 +5356,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B4",
               "score": 70.78,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g4-j2",
@@ -5185,7 +5366,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B4",
               "score": 75.03,
-              "won": true
+              "won": true,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -5194,7 +5376,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B4",
               "score": 69.96,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -5209,6 +5392,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2",
@@ -5307,7 +5491,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D3",
               "score": 78.29,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -5316,7 +5501,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D3",
               "score": 65.21,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -5331,6 +5517,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -5419,7 +5606,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "C2",
               "score": 64.5,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g5-j3",
@@ -5428,7 +5616,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "C2",
               "score": 86.1,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -5437,7 +5626,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "C2",
               "score": 63.92,
-              "won": false
+              "won": false,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -5452,6 +5642,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j3",
@@ -5550,7 +5741,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B1",
               "score": 74.71,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -5559,7 +5751,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B1",
               "score": 66.7,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -5574,6 +5767,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -5662,7 +5856,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "C1",
               "score": 68.11,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g5-j3",
@@ -5671,7 +5866,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "C1",
               "score": 65.86,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -5680,7 +5876,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "C1",
               "score": 76.44,
-              "won": true
+              "won": true,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -5695,6 +5892,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j3",
@@ -5793,7 +5991,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D2",
               "score": 62.32,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -5802,7 +6001,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D2",
               "score": 77.67,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -5817,6 +6017,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2"
@@ -5905,7 +6106,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D3",
               "score": 59.61,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -5914,7 +6116,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D3",
               "score": 78.11,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -5929,6 +6132,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -6017,7 +6221,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B2",
               "score": 59.74,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -6026,7 +6231,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B2",
               "score": 77.81,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -6041,6 +6247,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -6129,7 +6336,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B1",
               "score": 80.63,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -6138,7 +6346,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B1",
               "score": 56.89,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -6153,6 +6362,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -6241,7 +6451,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "C1",
               "score": 63.23,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g5-j3",
@@ -6250,7 +6461,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "C1",
               "score": 60.58,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -6259,7 +6471,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "C1",
               "score": 81.18,
-              "won": true
+              "won": true,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -6274,6 +6487,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j3",
@@ -6372,7 +6586,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "C2",
               "score": 64.58,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g5-j3",
@@ -6381,7 +6596,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "C2",
               "score": 86.64,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -6390,7 +6606,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "C2",
               "score": 53.1,
-              "won": false
+              "won": false,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -6405,6 +6622,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j3",
@@ -6503,7 +6721,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "A3",
               "score": 69.19,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g2-j1",
@@ -6512,7 +6731,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "A3",
               "score": 65.41,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -6527,6 +6747,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g2"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g2-j1",
                 "groups-r1g2-j2"
@@ -6615,7 +6836,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B3",
               "score": 66.81,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g4-j2",
@@ -6624,7 +6846,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B3",
               "score": 80.08,
-              "won": false
+              "won": false,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -6633,7 +6856,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B3",
               "score": 54.82,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -6648,6 +6872,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2",
@@ -6746,7 +6971,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "C2",
               "score": 67.18,
-              "won": false
+              "won": false,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -6761,6 +6987,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g5-j1"
               ]
@@ -6843,7 +7070,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B2",
               "score": 64.84,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -6852,7 +7080,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B2",
               "score": 68.84,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -6867,6 +7096,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -6955,7 +7185,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D2",
               "score": 64.68,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -6964,7 +7195,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D2",
               "score": 67.45,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -6979,6 +7211,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2"
@@ -7071,7 +7304,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B1",
               "score": 71.26,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -7080,7 +7314,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B1",
               "score": 60.85,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -7095,6 +7330,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -7185,7 +7421,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D2",
               "score": 66.27,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -7194,7 +7431,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D2",
               "score": 65.26,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -7209,6 +7447,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2"
@@ -7297,7 +7536,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D4",
               "score": 64.49,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -7306,7 +7546,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D4",
               "score": 65.52,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -7321,6 +7562,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -7409,7 +7651,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B4",
               "score": 61.58,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g4-j2",
@@ -7418,7 +7661,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B4",
               "score": 81.19,
-              "won": true
+              "won": true,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -7427,7 +7671,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B4",
               "score": 48.36,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -7442,6 +7687,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2",
@@ -7542,7 +7788,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B4",
               "score": 70.6,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g4-j2",
@@ -7551,7 +7798,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B4",
               "score": 59.56,
-              "won": true
+              "won": true,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -7560,7 +7808,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B4",
               "score": 57.42,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -7575,6 +7824,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2",
@@ -7673,7 +7923,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D4",
               "score": 69.52,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -7682,7 +7933,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D4",
               "score": 52.83,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -7697,6 +7949,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -7785,7 +8038,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "A4",
               "score": 62.79,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g2-j1",
@@ -7794,7 +8048,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "A4",
               "score": 55.43,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -7809,6 +8064,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g2"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g2-j1",
                 "groups-r1g2-j2"
@@ -7897,7 +8153,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "A4",
               "score": 57.96,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g2-j1",
@@ -7906,7 +8163,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "A4",
               "score": 57.49,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -7921,6 +8179,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g2"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g2-j1",
                 "groups-r1g2-j2"
@@ -8013,7 +8272,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "A4",
               "score": 53.64,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g2-j1",
@@ -8022,7 +8282,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "A4",
               "score": 44.6,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -8037,6 +8298,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g2"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g2-j1",
                 "groups-r1g2-j2"
@@ -8125,7 +8387,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D2",
               "score": 39.05,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -8134,7 +8397,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D2",
               "score": 58.5,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -8149,6 +8413,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2"
@@ -22228,6 +22493,7 @@ window.LIGA_RK_STATS = {
             "games": 2,
             "wins": 2,
             "losses": 0,
+            "seriesWins": 1,
             "series": [
               "groups-r1g7"
             ],
@@ -22250,6 +22516,7 @@ window.LIGA_RK_STATS = {
             "games": 2,
             "wins": 2,
             "losses": 0,
+            "seriesWins": 1,
             "series": [
               "groups-r1g8"
             ],
@@ -22272,6 +22539,7 @@ window.LIGA_RK_STATS = {
             "games": 2,
             "wins": 2,
             "losses": 0,
+            "seriesWins": 1,
             "series": [
               "groups-r1g8"
             ],
@@ -22294,6 +22562,7 @@ window.LIGA_RK_STATS = {
             "games": 2,
             "wins": 2,
             "losses": 0,
+            "seriesWins": 1,
             "series": [
               "groups-r1g2"
             ],
@@ -22316,6 +22585,7 @@ window.LIGA_RK_STATS = {
             "games": 2,
             "wins": 2,
             "losses": 0,
+            "seriesWins": 1,
             "series": [
               "groups-r1g5"
             ],
@@ -22386,6 +22656,68 @@ window.LIGA_RK_STATS = {
       },
       "teams": [
         {
+          "slot": "B3",
+          "name": "FOFOLETES DO RICK",
+          "tag": "FFLT",
+          "logo": "assets/uploads/equipes_ascensao/fflt.png",
+          "games": 2,
+          "wins": 2,
+          "losses": 0,
+          "averageScore": 84.06,
+          "scoreGames": 10,
+          "winRate": 100,
+          "kills": 42,
+          "deaths": 16,
+          "assists": 96,
+          "kda": 8.63,
+          "killsAvg": 21,
+          "deathsAvg": 8,
+          "assistsAvg": 48,
+          "goldAvg": 59299.5,
+          "gpmAvg": 2061.37,
+          "damageAvg": 77515,
+          "dpmAvg": 2694.58,
+          "towersAvg": 9,
+          "voidGrubsAvg": 3,
+          "heraldsAvg": 1,
+          "dragonsAvg": 3,
+          "elderDragons": 0,
+          "baronsAvg": 1,
+          "avgDuration": "28:46",
+          "avgWinTime": "28:46"
+        },
+        {
+          "slot": "D3",
+          "name": "RAISING DRAGONS",
+          "tag": "RDG",
+          "logo": "assets/uploads/equipes_ascensao/rdg.png",
+          "games": 2,
+          "wins": 2,
+          "losses": 0,
+          "averageScore": 82.74,
+          "scoreGames": 10,
+          "winRate": 100,
+          "kills": 50,
+          "deaths": 21,
+          "assists": 125,
+          "kda": 8.33,
+          "killsAvg": 25,
+          "deathsAvg": 10.5,
+          "assistsAvg": 62.5,
+          "goldAvg": 65763,
+          "gpmAvg": 2024.78,
+          "damageAvg": 96676,
+          "dpmAvg": 2976.57,
+          "towersAvg": 9,
+          "voidGrubsAvg": 1.5,
+          "heraldsAvg": 1,
+          "dragonsAvg": 3.5,
+          "elderDragons": 0,
+          "baronsAvg": 2,
+          "avgDuration": "32:29",
+          "avgWinTime": "32:29"
+        },
+        {
           "slot": "C4",
           "name": "THE KILLERS T7",
           "tag": "TKT7",
@@ -22393,6 +22725,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 2,
           "losses": 0,
+          "averageScore": 81.21,
+          "scoreGames": 10,
           "winRate": 100,
           "kills": 58,
           "deaths": 18,
@@ -22422,6 +22756,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 2,
           "losses": 0,
+          "averageScore": 78.34,
+          "scoreGames": 10,
           "winRate": 100,
           "kills": 52,
           "deaths": 30,
@@ -22444,64 +22780,6 @@ window.LIGA_RK_STATS = {
           "avgWinTime": "27:24"
         },
         {
-          "slot": "C2",
-          "name": "FAVELINHA REFORMED",
-          "tag": "FVLR",
-          "logo": "assets/uploads/equipes_ascensao/fvlr.png",
-          "games": 2,
-          "wins": 2,
-          "losses": 0,
-          "winRate": 100,
-          "kills": 66,
-          "deaths": 36,
-          "assists": 106,
-          "kda": 4.78,
-          "killsAvg": 33,
-          "deathsAvg": 18,
-          "assistsAvg": 53,
-          "goldAvg": 61288,
-          "gpmAvg": 2145.31,
-          "damageAvg": 105085,
-          "dpmAvg": 3678.36,
-          "towersAvg": 8.5,
-          "voidGrubsAvg": 3,
-          "heraldsAvg": 0.5,
-          "dragonsAvg": 3.5,
-          "elderDragons": 0,
-          "baronsAvg": 1.5,
-          "avgDuration": "28:34",
-          "avgWinTime": "28:34"
-        },
-        {
-          "slot": "B3",
-          "name": "FOFOLETES DO RICK",
-          "tag": "FFLT",
-          "logo": "assets/uploads/equipes_ascensao/fflt.png",
-          "games": 2,
-          "wins": 2,
-          "losses": 0,
-          "winRate": 100,
-          "kills": 42,
-          "deaths": 16,
-          "assists": 96,
-          "kda": 8.63,
-          "killsAvg": 21,
-          "deathsAvg": 8,
-          "assistsAvg": 48,
-          "goldAvg": 59299.5,
-          "gpmAvg": 2061.37,
-          "damageAvg": 77515,
-          "dpmAvg": 2694.58,
-          "towersAvg": 9,
-          "voidGrubsAvg": 3,
-          "heraldsAvg": 1,
-          "dragonsAvg": 3,
-          "elderDragons": 0,
-          "baronsAvg": 1,
-          "avgDuration": "28:46",
-          "avgWinTime": "28:46"
-        },
-        {
           "slot": "A1",
           "name": "FAINA",
           "tag": "FIN",
@@ -22509,6 +22787,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 2,
           "losses": 0,
+          "averageScore": 78.17,
+          "scoreGames": 10,
           "winRate": 100,
           "kills": 47,
           "deaths": 28,
@@ -22531,33 +22811,35 @@ window.LIGA_RK_STATS = {
           "avgWinTime": "29:33"
         },
         {
-          "slot": "D3",
-          "name": "RAISING DRAGONS",
-          "tag": "RDG",
-          "logo": "assets/uploads/equipes_ascensao/rdg.png",
+          "slot": "C2",
+          "name": "FAVELINHA REFORMED",
+          "tag": "FVLR",
+          "logo": "assets/uploads/equipes_ascensao/fvlr.png",
           "games": 2,
           "wins": 2,
           "losses": 0,
+          "averageScore": 77.93,
+          "scoreGames": 10,
           "winRate": 100,
-          "kills": 50,
-          "deaths": 21,
-          "assists": 125,
-          "kda": 8.33,
-          "killsAvg": 25,
-          "deathsAvg": 10.5,
-          "assistsAvg": 62.5,
-          "goldAvg": 65763,
-          "gpmAvg": 2024.78,
-          "damageAvg": 96676,
-          "dpmAvg": 2976.57,
-          "towersAvg": 9,
-          "voidGrubsAvg": 1.5,
-          "heraldsAvg": 1,
+          "kills": 66,
+          "deaths": 36,
+          "assists": 106,
+          "kda": 4.78,
+          "killsAvg": 33,
+          "deathsAvg": 18,
+          "assistsAvg": 53,
+          "goldAvg": 61288,
+          "gpmAvg": 2145.31,
+          "damageAvg": 105085,
+          "dpmAvg": 3678.36,
+          "towersAvg": 8.5,
+          "voidGrubsAvg": 3,
+          "heraldsAvg": 0.5,
           "dragonsAvg": 3.5,
           "elderDragons": 0,
-          "baronsAvg": 2,
-          "avgDuration": "32:29",
-          "avgWinTime": "32:29"
+          "baronsAvg": 1.5,
+          "avgDuration": "28:34",
+          "avgWinTime": "28:34"
         },
         {
           "slot": "D2",
@@ -22567,6 +22849,8 @@ window.LIGA_RK_STATS = {
           "games": 3,
           "wins": 2,
           "losses": 1,
+          "averageScore": 75.03,
+          "scoreGames": 15,
           "winRate": 66.67,
           "kills": 76,
           "deaths": 71,
@@ -22596,6 +22880,8 @@ window.LIGA_RK_STATS = {
           "games": 3,
           "wins": 1,
           "losses": 2,
+          "averageScore": 70.52,
+          "scoreGames": 15,
           "winRate": 33.33,
           "kills": 71,
           "deaths": 76,
@@ -22618,93 +22904,6 @@ window.LIGA_RK_STATS = {
           "avgWinTime": "38:19"
         },
         {
-          "slot": "B2",
-          "name": "GANGUE DE GOBLINS",
-          "tag": "GDG",
-          "logo": "assets/uploads/equipes_ascensao/gdg.png",
-          "games": 2,
-          "wins": 0,
-          "losses": 2,
-          "winRate": 0,
-          "kills": 30,
-          "deaths": 52,
-          "assists": 59,
-          "kda": 1.71,
-          "killsAvg": 15,
-          "deathsAvg": 26,
-          "assistsAvg": 29.5,
-          "goldAvg": 46618,
-          "gpmAvg": 1701.34,
-          "damageAvg": 68386.5,
-          "dpmAvg": 2495.79,
-          "towersAvg": 0,
-          "voidGrubsAvg": 0,
-          "heraldsAvg": 0,
-          "dragonsAvg": 1,
-          "elderDragons": 0,
-          "baronsAvg": 0,
-          "avgDuration": "27:24",
-          "avgWinTime": "00:00"
-        },
-        {
-          "slot": "D4",
-          "name": "INAZUMA V",
-          "tag": "INZ",
-          "logo": "assets/uploads/equipes_ascensao/inz.png",
-          "games": 2,
-          "wins": 0,
-          "losses": 2,
-          "winRate": 0,
-          "kills": 21,
-          "deaths": 50,
-          "assists": 43,
-          "kda": 1.28,
-          "killsAvg": 10.5,
-          "deathsAvg": 25,
-          "assistsAvg": 21.5,
-          "goldAvg": 57104,
-          "gpmAvg": 1758.18,
-          "damageAvg": 74589.5,
-          "dpmAvg": 2296.54,
-          "towersAvg": 3.5,
-          "voidGrubsAvg": 1.5,
-          "heraldsAvg": 0,
-          "dragonsAvg": 1,
-          "elderDragons": 0,
-          "baronsAvg": 0,
-          "avgDuration": "32:29",
-          "avgWinTime": "00:00"
-        },
-        {
-          "slot": "C1",
-          "name": "SKY KNIGHTS",
-          "tag": "SKS",
-          "logo": "assets/uploads/equipes_ascensao/sks.png",
-          "games": 2,
-          "wins": 0,
-          "losses": 2,
-          "winRate": 0,
-          "kills": 36,
-          "deaths": 66,
-          "assists": 72,
-          "kda": 1.64,
-          "killsAvg": 18,
-          "deathsAvg": 33,
-          "assistsAvg": 36,
-          "goldAvg": 53307.5,
-          "gpmAvg": 1865.96,
-          "damageAvg": 77976,
-          "dpmAvg": 2729.45,
-          "towersAvg": 2,
-          "voidGrubsAvg": 0,
-          "heraldsAvg": 0.5,
-          "dragonsAvg": 0.5,
-          "elderDragons": 0,
-          "baronsAvg": 0,
-          "avgDuration": "28:34",
-          "avgWinTime": "00:00"
-        },
-        {
           "slot": "A2",
           "name": "SKYLINE",
           "tag": "SKY",
@@ -22712,6 +22911,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 0,
           "losses": 2,
+          "averageScore": 69.89,
+          "scoreGames": 10,
           "winRate": 0,
           "kills": 28,
           "deaths": 47,
@@ -22734,6 +22935,68 @@ window.LIGA_RK_STATS = {
           "avgWinTime": "00:00"
         },
         {
+          "slot": "C1",
+          "name": "SKY KNIGHTS",
+          "tag": "SKS",
+          "logo": "assets/uploads/equipes_ascensao/sks.png",
+          "games": 2,
+          "wins": 0,
+          "losses": 2,
+          "averageScore": 69.09,
+          "scoreGames": 10,
+          "winRate": 0,
+          "kills": 36,
+          "deaths": 66,
+          "assists": 72,
+          "kda": 1.64,
+          "killsAvg": 18,
+          "deathsAvg": 33,
+          "assistsAvg": 36,
+          "goldAvg": 53307.5,
+          "gpmAvg": 1865.96,
+          "damageAvg": 77976,
+          "dpmAvg": 2729.45,
+          "towersAvg": 2,
+          "voidGrubsAvg": 0,
+          "heraldsAvg": 0.5,
+          "dragonsAvg": 0.5,
+          "elderDragons": 0,
+          "baronsAvg": 0,
+          "avgDuration": "28:34",
+          "avgWinTime": "00:00"
+        },
+        {
+          "slot": "D4",
+          "name": "INAZUMA V",
+          "tag": "INZ",
+          "logo": "assets/uploads/equipes_ascensao/inz.png",
+          "games": 2,
+          "wins": 0,
+          "losses": 2,
+          "averageScore": 68.53,
+          "scoreGames": 10,
+          "winRate": 0,
+          "kills": 21,
+          "deaths": 50,
+          "assists": 43,
+          "kda": 1.28,
+          "killsAvg": 10.5,
+          "deathsAvg": 25,
+          "assistsAvg": 21.5,
+          "goldAvg": 57104,
+          "gpmAvg": 1758.18,
+          "damageAvg": 74589.5,
+          "dpmAvg": 2296.54,
+          "towersAvg": 3.5,
+          "voidGrubsAvg": 1.5,
+          "heraldsAvg": 0,
+          "dragonsAvg": 1,
+          "elderDragons": 0,
+          "baronsAvg": 0,
+          "avgDuration": "32:29",
+          "avgWinTime": "00:00"
+        },
+        {
           "slot": "B4",
           "name": "TENEBRA LEVIATHAN",
           "tag": "TNL",
@@ -22741,6 +23004,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 0,
           "losses": 2,
+          "averageScore": 68.33,
+          "scoreGames": 10,
           "winRate": 0,
           "kills": 16,
           "deaths": 42,
@@ -22770,6 +23035,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 0,
           "losses": 2,
+          "averageScore": 65.74,
+          "scoreGames": 10,
           "winRate": 0,
           "kills": 18,
           "deaths": 58,
@@ -22792,6 +23059,37 @@ window.LIGA_RK_STATS = {
           "avgWinTime": "00:00"
         },
         {
+          "slot": "B2",
+          "name": "GANGUE DE GOBLINS",
+          "tag": "GDG",
+          "logo": "assets/uploads/equipes_ascensao/gdg.png",
+          "games": 2,
+          "wins": 0,
+          "losses": 2,
+          "averageScore": 65.49,
+          "scoreGames": 10,
+          "winRate": 0,
+          "kills": 30,
+          "deaths": 52,
+          "assists": 59,
+          "kda": 1.71,
+          "killsAvg": 15,
+          "deathsAvg": 26,
+          "assistsAvg": 29.5,
+          "goldAvg": 46618,
+          "gpmAvg": 1701.34,
+          "damageAvg": 68386.5,
+          "dpmAvg": 2495.79,
+          "towersAvg": 0,
+          "voidGrubsAvg": 0,
+          "heraldsAvg": 0,
+          "dragonsAvg": 1,
+          "elderDragons": 0,
+          "baronsAvg": 0,
+          "avgDuration": "27:24",
+          "avgWinTime": "00:00"
+        },
+        {
           "slot": "A3",
           "name": "BLACK STARS",
           "tag": "BKS",
@@ -22799,6 +23097,8 @@ window.LIGA_RK_STATS = {
           "games": 0,
           "wins": 0,
           "losses": 0,
+          "averageScore": 0,
+          "scoreGames": 0,
           "winRate": 0,
           "kills": 0,
           "deaths": 0,
@@ -22828,6 +23128,8 @@ window.LIGA_RK_STATS = {
           "games": 0,
           "wins": 0,
           "losses": 0,
+          "averageScore": 0,
+          "scoreGames": 0,
           "winRate": 0,
           "kills": 0,
           "deaths": 0,
@@ -22851,6 +23153,68 @@ window.LIGA_RK_STATS = {
         }
       ],
       "teamSummaries": {
+        "B3": {
+          "slot": "B3",
+          "name": "FOFOLETES DO RICK",
+          "tag": "FFLT",
+          "logo": "assets/uploads/equipes_ascensao/fflt.png",
+          "games": 2,
+          "wins": 2,
+          "losses": 0,
+          "averageScore": 84.06,
+          "scoreGames": 10,
+          "winRate": 100,
+          "kills": 42,
+          "deaths": 16,
+          "assists": 96,
+          "kda": 8.63,
+          "killsAvg": 21,
+          "deathsAvg": 8,
+          "assistsAvg": 48,
+          "goldAvg": 59299.5,
+          "gpmAvg": 2061.37,
+          "damageAvg": 77515,
+          "dpmAvg": 2694.58,
+          "towersAvg": 9,
+          "voidGrubsAvg": 3,
+          "heraldsAvg": 1,
+          "dragonsAvg": 3,
+          "elderDragons": 0,
+          "baronsAvg": 1,
+          "avgDuration": "28:46",
+          "avgWinTime": "28:46"
+        },
+        "D3": {
+          "slot": "D3",
+          "name": "RAISING DRAGONS",
+          "tag": "RDG",
+          "logo": "assets/uploads/equipes_ascensao/rdg.png",
+          "games": 2,
+          "wins": 2,
+          "losses": 0,
+          "averageScore": 82.74,
+          "scoreGames": 10,
+          "winRate": 100,
+          "kills": 50,
+          "deaths": 21,
+          "assists": 125,
+          "kda": 8.33,
+          "killsAvg": 25,
+          "deathsAvg": 10.5,
+          "assistsAvg": 62.5,
+          "goldAvg": 65763,
+          "gpmAvg": 2024.78,
+          "damageAvg": 96676,
+          "dpmAvg": 2976.57,
+          "towersAvg": 9,
+          "voidGrubsAvg": 1.5,
+          "heraldsAvg": 1,
+          "dragonsAvg": 3.5,
+          "elderDragons": 0,
+          "baronsAvg": 2,
+          "avgDuration": "32:29",
+          "avgWinTime": "32:29"
+        },
         "C4": {
           "slot": "C4",
           "name": "THE KILLERS T7",
@@ -22859,6 +23223,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 2,
           "losses": 0,
+          "averageScore": 81.21,
+          "scoreGames": 10,
           "winRate": 100,
           "kills": 58,
           "deaths": 18,
@@ -22888,6 +23254,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 2,
           "losses": 0,
+          "averageScore": 78.34,
+          "scoreGames": 10,
           "winRate": 100,
           "kills": 52,
           "deaths": 30,
@@ -22909,64 +23277,6 @@ window.LIGA_RK_STATS = {
           "avgDuration": "27:24",
           "avgWinTime": "27:24"
         },
-        "C2": {
-          "slot": "C2",
-          "name": "FAVELINHA REFORMED",
-          "tag": "FVLR",
-          "logo": "assets/uploads/equipes_ascensao/fvlr.png",
-          "games": 2,
-          "wins": 2,
-          "losses": 0,
-          "winRate": 100,
-          "kills": 66,
-          "deaths": 36,
-          "assists": 106,
-          "kda": 4.78,
-          "killsAvg": 33,
-          "deathsAvg": 18,
-          "assistsAvg": 53,
-          "goldAvg": 61288,
-          "gpmAvg": 2145.31,
-          "damageAvg": 105085,
-          "dpmAvg": 3678.36,
-          "towersAvg": 8.5,
-          "voidGrubsAvg": 3,
-          "heraldsAvg": 0.5,
-          "dragonsAvg": 3.5,
-          "elderDragons": 0,
-          "baronsAvg": 1.5,
-          "avgDuration": "28:34",
-          "avgWinTime": "28:34"
-        },
-        "B3": {
-          "slot": "B3",
-          "name": "FOFOLETES DO RICK",
-          "tag": "FFLT",
-          "logo": "assets/uploads/equipes_ascensao/fflt.png",
-          "games": 2,
-          "wins": 2,
-          "losses": 0,
-          "winRate": 100,
-          "kills": 42,
-          "deaths": 16,
-          "assists": 96,
-          "kda": 8.63,
-          "killsAvg": 21,
-          "deathsAvg": 8,
-          "assistsAvg": 48,
-          "goldAvg": 59299.5,
-          "gpmAvg": 2061.37,
-          "damageAvg": 77515,
-          "dpmAvg": 2694.58,
-          "towersAvg": 9,
-          "voidGrubsAvg": 3,
-          "heraldsAvg": 1,
-          "dragonsAvg": 3,
-          "elderDragons": 0,
-          "baronsAvg": 1,
-          "avgDuration": "28:46",
-          "avgWinTime": "28:46"
-        },
         "A1": {
           "slot": "A1",
           "name": "FAINA",
@@ -22975,6 +23285,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 2,
           "losses": 0,
+          "averageScore": 78.17,
+          "scoreGames": 10,
           "winRate": 100,
           "kills": 47,
           "deaths": 28,
@@ -22996,34 +23308,36 @@ window.LIGA_RK_STATS = {
           "avgDuration": "29:33",
           "avgWinTime": "29:33"
         },
-        "D3": {
-          "slot": "D3",
-          "name": "RAISING DRAGONS",
-          "tag": "RDG",
-          "logo": "assets/uploads/equipes_ascensao/rdg.png",
+        "C2": {
+          "slot": "C2",
+          "name": "FAVELINHA REFORMED",
+          "tag": "FVLR",
+          "logo": "assets/uploads/equipes_ascensao/fvlr.png",
           "games": 2,
           "wins": 2,
           "losses": 0,
+          "averageScore": 77.93,
+          "scoreGames": 10,
           "winRate": 100,
-          "kills": 50,
-          "deaths": 21,
-          "assists": 125,
-          "kda": 8.33,
-          "killsAvg": 25,
-          "deathsAvg": 10.5,
-          "assistsAvg": 62.5,
-          "goldAvg": 65763,
-          "gpmAvg": 2024.78,
-          "damageAvg": 96676,
-          "dpmAvg": 2976.57,
-          "towersAvg": 9,
-          "voidGrubsAvg": 1.5,
-          "heraldsAvg": 1,
+          "kills": 66,
+          "deaths": 36,
+          "assists": 106,
+          "kda": 4.78,
+          "killsAvg": 33,
+          "deathsAvg": 18,
+          "assistsAvg": 53,
+          "goldAvg": 61288,
+          "gpmAvg": 2145.31,
+          "damageAvg": 105085,
+          "dpmAvg": 3678.36,
+          "towersAvg": 8.5,
+          "voidGrubsAvg": 3,
+          "heraldsAvg": 0.5,
           "dragonsAvg": 3.5,
           "elderDragons": 0,
-          "baronsAvg": 2,
-          "avgDuration": "32:29",
-          "avgWinTime": "32:29"
+          "baronsAvg": 1.5,
+          "avgDuration": "28:34",
+          "avgWinTime": "28:34"
         },
         "D2": {
           "slot": "D2",
@@ -23033,6 +23347,8 @@ window.LIGA_RK_STATS = {
           "games": 3,
           "wins": 2,
           "losses": 1,
+          "averageScore": 75.03,
+          "scoreGames": 15,
           "winRate": 66.67,
           "kills": 76,
           "deaths": 71,
@@ -23062,6 +23378,8 @@ window.LIGA_RK_STATS = {
           "games": 3,
           "wins": 1,
           "losses": 2,
+          "averageScore": 70.52,
+          "scoreGames": 15,
           "winRate": 33.33,
           "kills": 71,
           "deaths": 76,
@@ -23083,93 +23401,6 @@ window.LIGA_RK_STATS = {
           "avgDuration": "34:25",
           "avgWinTime": "38:19"
         },
-        "B2": {
-          "slot": "B2",
-          "name": "GANGUE DE GOBLINS",
-          "tag": "GDG",
-          "logo": "assets/uploads/equipes_ascensao/gdg.png",
-          "games": 2,
-          "wins": 0,
-          "losses": 2,
-          "winRate": 0,
-          "kills": 30,
-          "deaths": 52,
-          "assists": 59,
-          "kda": 1.71,
-          "killsAvg": 15,
-          "deathsAvg": 26,
-          "assistsAvg": 29.5,
-          "goldAvg": 46618,
-          "gpmAvg": 1701.34,
-          "damageAvg": 68386.5,
-          "dpmAvg": 2495.79,
-          "towersAvg": 0,
-          "voidGrubsAvg": 0,
-          "heraldsAvg": 0,
-          "dragonsAvg": 1,
-          "elderDragons": 0,
-          "baronsAvg": 0,
-          "avgDuration": "27:24",
-          "avgWinTime": "00:00"
-        },
-        "D4": {
-          "slot": "D4",
-          "name": "INAZUMA V",
-          "tag": "INZ",
-          "logo": "assets/uploads/equipes_ascensao/inz.png",
-          "games": 2,
-          "wins": 0,
-          "losses": 2,
-          "winRate": 0,
-          "kills": 21,
-          "deaths": 50,
-          "assists": 43,
-          "kda": 1.28,
-          "killsAvg": 10.5,
-          "deathsAvg": 25,
-          "assistsAvg": 21.5,
-          "goldAvg": 57104,
-          "gpmAvg": 1758.18,
-          "damageAvg": 74589.5,
-          "dpmAvg": 2296.54,
-          "towersAvg": 3.5,
-          "voidGrubsAvg": 1.5,
-          "heraldsAvg": 0,
-          "dragonsAvg": 1,
-          "elderDragons": 0,
-          "baronsAvg": 0,
-          "avgDuration": "32:29",
-          "avgWinTime": "00:00"
-        },
-        "C1": {
-          "slot": "C1",
-          "name": "SKY KNIGHTS",
-          "tag": "SKS",
-          "logo": "assets/uploads/equipes_ascensao/sks.png",
-          "games": 2,
-          "wins": 0,
-          "losses": 2,
-          "winRate": 0,
-          "kills": 36,
-          "deaths": 66,
-          "assists": 72,
-          "kda": 1.64,
-          "killsAvg": 18,
-          "deathsAvg": 33,
-          "assistsAvg": 36,
-          "goldAvg": 53307.5,
-          "gpmAvg": 1865.96,
-          "damageAvg": 77976,
-          "dpmAvg": 2729.45,
-          "towersAvg": 2,
-          "voidGrubsAvg": 0,
-          "heraldsAvg": 0.5,
-          "dragonsAvg": 0.5,
-          "elderDragons": 0,
-          "baronsAvg": 0,
-          "avgDuration": "28:34",
-          "avgWinTime": "00:00"
-        },
         "A2": {
           "slot": "A2",
           "name": "SKYLINE",
@@ -23178,6 +23409,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 0,
           "losses": 2,
+          "averageScore": 69.89,
+          "scoreGames": 10,
           "winRate": 0,
           "kills": 28,
           "deaths": 47,
@@ -23199,6 +23432,68 @@ window.LIGA_RK_STATS = {
           "avgDuration": "29:33",
           "avgWinTime": "00:00"
         },
+        "C1": {
+          "slot": "C1",
+          "name": "SKY KNIGHTS",
+          "tag": "SKS",
+          "logo": "assets/uploads/equipes_ascensao/sks.png",
+          "games": 2,
+          "wins": 0,
+          "losses": 2,
+          "averageScore": 69.09,
+          "scoreGames": 10,
+          "winRate": 0,
+          "kills": 36,
+          "deaths": 66,
+          "assists": 72,
+          "kda": 1.64,
+          "killsAvg": 18,
+          "deathsAvg": 33,
+          "assistsAvg": 36,
+          "goldAvg": 53307.5,
+          "gpmAvg": 1865.96,
+          "damageAvg": 77976,
+          "dpmAvg": 2729.45,
+          "towersAvg": 2,
+          "voidGrubsAvg": 0,
+          "heraldsAvg": 0.5,
+          "dragonsAvg": 0.5,
+          "elderDragons": 0,
+          "baronsAvg": 0,
+          "avgDuration": "28:34",
+          "avgWinTime": "00:00"
+        },
+        "D4": {
+          "slot": "D4",
+          "name": "INAZUMA V",
+          "tag": "INZ",
+          "logo": "assets/uploads/equipes_ascensao/inz.png",
+          "games": 2,
+          "wins": 0,
+          "losses": 2,
+          "averageScore": 68.53,
+          "scoreGames": 10,
+          "winRate": 0,
+          "kills": 21,
+          "deaths": 50,
+          "assists": 43,
+          "kda": 1.28,
+          "killsAvg": 10.5,
+          "deathsAvg": 25,
+          "assistsAvg": 21.5,
+          "goldAvg": 57104,
+          "gpmAvg": 1758.18,
+          "damageAvg": 74589.5,
+          "dpmAvg": 2296.54,
+          "towersAvg": 3.5,
+          "voidGrubsAvg": 1.5,
+          "heraldsAvg": 0,
+          "dragonsAvg": 1,
+          "elderDragons": 0,
+          "baronsAvg": 0,
+          "avgDuration": "32:29",
+          "avgWinTime": "00:00"
+        },
         "B4": {
           "slot": "B4",
           "name": "TENEBRA LEVIATHAN",
@@ -23207,6 +23502,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 0,
           "losses": 2,
+          "averageScore": 68.33,
+          "scoreGames": 10,
           "winRate": 0,
           "kills": 16,
           "deaths": 42,
@@ -23236,6 +23533,8 @@ window.LIGA_RK_STATS = {
           "games": 2,
           "wins": 0,
           "losses": 2,
+          "averageScore": 65.74,
+          "scoreGames": 10,
           "winRate": 0,
           "kills": 18,
           "deaths": 58,
@@ -23257,6 +23556,37 @@ window.LIGA_RK_STATS = {
           "avgDuration": "25:41",
           "avgWinTime": "00:00"
         },
+        "B2": {
+          "slot": "B2",
+          "name": "GANGUE DE GOBLINS",
+          "tag": "GDG",
+          "logo": "assets/uploads/equipes_ascensao/gdg.png",
+          "games": 2,
+          "wins": 0,
+          "losses": 2,
+          "averageScore": 65.49,
+          "scoreGames": 10,
+          "winRate": 0,
+          "kills": 30,
+          "deaths": 52,
+          "assists": 59,
+          "kda": 1.71,
+          "killsAvg": 15,
+          "deathsAvg": 26,
+          "assistsAvg": 29.5,
+          "goldAvg": 46618,
+          "gpmAvg": 1701.34,
+          "damageAvg": 68386.5,
+          "dpmAvg": 2495.79,
+          "towersAvg": 0,
+          "voidGrubsAvg": 0,
+          "heraldsAvg": 0,
+          "dragonsAvg": 1,
+          "elderDragons": 0,
+          "baronsAvg": 0,
+          "avgDuration": "27:24",
+          "avgWinTime": "00:00"
+        },
         "A3": {
           "slot": "A3",
           "name": "BLACK STARS",
@@ -23265,6 +23595,8 @@ window.LIGA_RK_STATS = {
           "games": 0,
           "wins": 0,
           "losses": 0,
+          "averageScore": 0,
+          "scoreGames": 0,
           "winRate": 0,
           "kills": 0,
           "deaths": 0,
@@ -23294,6 +23626,8 @@ window.LIGA_RK_STATS = {
           "games": 0,
           "wins": 0,
           "losses": 0,
+          "averageScore": 0,
+          "scoreGames": 0,
           "winRate": 0,
           "kills": 0,
           "deaths": 0,
@@ -23362,7 +23696,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D3",
               "score": 95.81,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -23371,7 +23706,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D3",
               "score": 98.18,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -23386,6 +23722,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -23474,7 +23811,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B3",
               "score": 86.54,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -23483,7 +23821,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B3",
               "score": 100,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -23498,6 +23837,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2"
@@ -23586,7 +23926,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B1",
               "score": 88.88,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -23595,7 +23936,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B1",
               "score": 93.74,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -23610,6 +23952,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -23698,7 +24041,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "C4",
               "score": 88.91,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g6-j1",
@@ -23707,7 +24051,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "C4",
               "score": 90.2,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -23722,6 +24067,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g6"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g6-j1",
                 "groups-r1g6-j2"
@@ -23810,7 +24156,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B3",
               "score": 87.67,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -23819,7 +24166,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B3",
               "score": 90.68,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -23834,6 +24182,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2"
@@ -23922,7 +24271,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "C2",
               "score": 86.7,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -23931,7 +24281,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "C2",
               "score": 89.63,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -23946,6 +24297,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j2"
@@ -24034,7 +24386,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D2",
               "score": 93.5,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g7-j2",
@@ -24043,7 +24396,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D2",
               "score": 82.51,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -24052,7 +24406,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D2",
               "score": 82.12,
-              "won": false
+              "won": false,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -24067,6 +24422,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2",
@@ -24165,7 +24521,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D3",
               "score": 85.56,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -24174,7 +24531,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D3",
               "score": 84.7,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -24189,6 +24547,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -24277,7 +24636,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "A1",
               "score": 90.23,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g1-j1",
@@ -24286,7 +24646,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "A1",
               "score": 79.94,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -24301,6 +24662,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g1"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g1-j1",
                 "groups-r1g1-j2"
@@ -24389,7 +24751,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B4",
               "score": 86.86,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -24398,7 +24761,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B4",
               "score": 81.95,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -24413,6 +24777,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2"
@@ -24501,7 +24866,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "C4",
               "score": 82.07,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g6-j1",
@@ -24510,7 +24876,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "C4",
               "score": 85.19,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -24525,6 +24892,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g6"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g6-j1",
                 "groups-r1g6-j2"
@@ -24613,7 +24981,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B3",
               "score": 82.46,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -24622,7 +24991,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B3",
               "score": 83.99,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -24637,6 +25007,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2"
@@ -24725,7 +25096,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B1",
               "score": 76.81,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -24734,7 +25106,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B1",
               "score": 89.41,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -24749,6 +25122,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -24837,7 +25211,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "C2",
               "score": 66.06,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -24846,7 +25221,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "C2",
               "score": 98.83,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -24861,6 +25237,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j2"
@@ -24951,7 +25328,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D3",
               "score": 89.95,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -24960,7 +25338,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D3",
               "score": 72.59,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -24975,6 +25354,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -25063,7 +25443,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D2",
               "score": 80.49,
-              "won": false
+              "won": false,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -25078,6 +25459,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g7-j1"
               ]
@@ -25160,7 +25542,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "C2",
               "score": 86.25,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -25169,7 +25552,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "C2",
               "score": 72.9,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -25184,6 +25568,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j2"
@@ -25272,7 +25657,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "A1",
               "score": 85.89,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g1-j1",
@@ -25281,7 +25667,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "A1",
               "score": 72.91,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -25296,6 +25683,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g1"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g1-j1",
                 "groups-r1g1-j2"
@@ -25384,7 +25772,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B3",
               "score": 70.85,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -25393,7 +25782,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B3",
               "score": 87.24,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -25408,6 +25798,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2"
@@ -25496,7 +25887,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "A1",
               "score": 78.85,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -25511,6 +25903,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g1"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g1-j1"
               ]
@@ -25593,7 +25986,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "A1",
               "score": 85.32,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g1-j1",
@@ -25602,7 +25996,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "A1",
               "score": 72.31,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -25617,6 +26012,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g1"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g1-j1",
                 "groups-r1g1-j2"
@@ -25709,7 +26105,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B1",
               "score": 83.89,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -25718,7 +26115,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B1",
               "score": 73.48,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -25733,6 +26131,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -25821,7 +26220,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "C4",
               "score": 77.91,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g6-j1",
@@ -25830,7 +26230,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "C4",
               "score": 77.89,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -25845,6 +26246,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g6"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g6-j1",
                 "groups-r1g6-j2"
@@ -25933,7 +26335,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D3",
               "score": 78.03,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -25942,7 +26345,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D3",
               "score": 77.25,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -25957,6 +26361,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -26045,7 +26450,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "C4",
               "score": 77.14,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g6-j1",
@@ -26054,7 +26460,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "C4",
               "score": 77.9,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -26069,6 +26476,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g6"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g6-j1",
                 "groups-r1g6-j2"
@@ -26157,7 +26565,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "C4",
               "score": 72.44,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g6-j1",
@@ -26166,7 +26575,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "C4",
               "score": 82.44,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -26181,6 +26591,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g6"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g6-j1",
                 "groups-r1g6-j2"
@@ -26269,7 +26680,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D1",
               "score": 80.93,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g7-j2",
@@ -26278,7 +26690,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D1",
               "score": 60.31,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -26287,7 +26700,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D1",
               "score": 90.43,
-              "won": true
+              "won": true,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -26302,6 +26716,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2",
@@ -26400,7 +26815,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "A2",
               "score": 74.43,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g1-j1",
@@ -26409,7 +26825,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "A2",
               "score": 79.39,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -26424,6 +26841,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g1"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g1-j1",
                 "groups-r1g1-j2"
@@ -26512,7 +26930,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B4",
               "score": 85.17,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -26521,7 +26940,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B4",
               "score": 67.1,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -26536,6 +26956,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2"
@@ -26628,7 +27049,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "C3",
               "score": 70.35,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g6-j1",
@@ -26637,7 +27059,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "C3",
               "score": 81.8,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -26652,6 +27075,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g6"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g6-j1",
                 "groups-r1g6-j2"
@@ -26740,7 +27164,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "A1",
               "score": 70.46,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g1-j1",
@@ -26749,7 +27174,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "A1",
               "score": 81.62,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -26764,6 +27190,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g1"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g1-j1",
                 "groups-r1g1-j2"
@@ -26852,7 +27279,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D4",
               "score": 67.62,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -26861,7 +27289,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D4",
               "score": 83.6,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -26876,6 +27305,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -26964,7 +27394,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D1",
               "score": 60.41,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g7-j2",
@@ -26973,7 +27404,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D1",
               "score": 83.06,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -26982,7 +27414,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D1",
               "score": 83.3,
-              "won": true
+              "won": true,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -26997,6 +27430,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2",
@@ -27099,7 +27533,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B3",
               "score": 71.08,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -27108,7 +27543,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B3",
               "score": 80.08,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -27123,6 +27559,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2"
@@ -27211,7 +27648,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "A2",
               "score": 72.07,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g1-j1",
@@ -27220,7 +27658,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "A2",
               "score": 78.22,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -27235,6 +27674,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g1"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g1-j1",
                 "groups-r1g1-j2"
@@ -27323,7 +27763,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D2",
               "score": 97.98,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g7-j2",
@@ -27332,7 +27773,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D2",
               "score": 74.14,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -27341,7 +27783,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D2",
               "score": 52.94,
-              "won": false
+              "won": false,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -27356,6 +27799,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2",
@@ -27454,7 +27898,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D1",
               "score": 71.25,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g7-j2",
@@ -27463,7 +27908,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D1",
               "score": 69.11,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -27472,7 +27918,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D1",
               "score": 83.19,
-              "won": true
+              "won": true,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -27487,6 +27934,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2",
@@ -27585,7 +28033,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B1",
               "score": 77.78,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -27594,7 +28043,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B1",
               "score": 70.49,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -27609,6 +28059,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -27697,7 +28148,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B2",
               "score": 70.8,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -27706,7 +28158,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B2",
               "score": 76.31,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -27721,6 +28174,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -27809,7 +28263,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B2",
               "score": 66.78,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -27818,7 +28273,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B2",
               "score": 78.71,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -27833,6 +28289,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -27921,7 +28378,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D3",
               "score": 69.4,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -27930,7 +28388,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D3",
               "score": 75.92,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -27945,6 +28404,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -28033,7 +28493,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "C2",
               "score": 77.18,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -28042,7 +28503,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "C2",
               "score": 67.7,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -28057,6 +28519,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j2"
@@ -28145,7 +28608,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "C1",
               "score": 72.02,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -28154,7 +28618,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "C1",
               "score": 72.44,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -28169,6 +28634,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j2"
@@ -28257,7 +28723,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "A2",
               "score": 70.13,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g1-j1",
@@ -28266,7 +28733,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "A2",
               "score": 74.09,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -28281,6 +28749,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g1"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g1-j1",
                 "groups-r1g1-j2"
@@ -28369,7 +28838,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D2",
               "score": 79.32,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g7-j2",
@@ -28378,7 +28848,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D2",
               "score": 71.44,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -28387,7 +28858,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D2",
               "score": 64.47,
-              "won": false
+              "won": false,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -28402,6 +28874,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2",
@@ -28500,7 +28973,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D4",
               "score": 64.99,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -28509,7 +28983,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D4",
               "score": 78.44,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -28524,6 +28999,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -28612,7 +29088,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "C3",
               "score": 76.91,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g6-j1",
@@ -28621,7 +29098,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "C3",
               "score": 65.12,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -28636,6 +29114,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g6"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g6-j1",
                 "groups-r1g6-j2"
@@ -28724,7 +29203,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "C1",
               "score": 72.66,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -28733,7 +29213,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "C1",
               "score": 69.14,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -28748,6 +29229,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j2"
@@ -28836,7 +29318,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "C1",
               "score": 56.68,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -28845,7 +29328,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "C1",
               "score": 83.82,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -28860,6 +29344,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j2"
@@ -28952,7 +29437,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D4",
               "score": 60.25,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -28961,7 +29447,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "D4",
               "score": 79.32,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -28976,6 +29463,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -29064,7 +29552,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D2",
               "score": 58.6,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g7-j2",
@@ -29073,7 +29562,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D2",
               "score": 77.59,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -29082,7 +29572,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D2",
               "score": 73.07,
-              "won": false
+              "won": false,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -29097,6 +29588,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2",
@@ -29195,7 +29687,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "C3",
               "score": 69.1,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -29210,6 +29703,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g6"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g6-j2"
               ]
@@ -29288,7 +29782,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B2",
               "score": 62.46,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -29297,7 +29792,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B2",
               "score": 74.85,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -29312,6 +29808,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -29400,7 +29897,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B4",
               "score": 74.73,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -29409,7 +29907,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "B4",
               "score": 62.56,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -29424,6 +29923,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2"
@@ -29512,7 +30012,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D2",
               "score": 61.13,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g7-j2",
@@ -29521,7 +30022,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "D2",
               "score": 76.14,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -29536,6 +30038,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g7-j2",
                 "groups-r1g7-j3"
@@ -29624,7 +30127,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "C3",
               "score": 75.99,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g6-j1",
@@ -29633,7 +30137,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "C3",
               "score": 60.94,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -29648,6 +30153,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g6"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g6-j1",
                 "groups-r1g6-j2"
@@ -29736,7 +30242,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "C1",
               "score": 82.1,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -29745,7 +30252,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "C1",
               "score": 54.35,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -29760,6 +30268,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j2"
@@ -29848,7 +30357,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D4",
               "score": 61.32,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -29857,7 +30367,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "D4",
               "score": 73.12,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -29872,6 +30383,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -29962,7 +30474,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "C2",
               "score": 71.77,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -29971,7 +30484,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "C2",
               "score": 62.32,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -29986,6 +30500,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j2"
@@ -30074,7 +30589,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D1",
               "score": 56.72,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g7-j2",
@@ -30083,7 +30599,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D1",
               "score": 75.95,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -30092,7 +30609,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "D1",
               "score": 63.47,
-              "won": true
+              "won": true,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -30107,6 +30625,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2",
@@ -30205,7 +30724,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B1",
               "score": 69.02,
-              "won": true
+              "won": true,
+              "seriesWon": true
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -30214,7 +30734,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "B1",
               "score": 59.87,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -30229,6 +30750,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -30317,7 +30839,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "A1",
               "score": 64.2,
-              "won": true
+              "won": true,
+              "seriesWon": true
             }
           ],
           "roundRatings": [
@@ -30332,6 +30855,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g1"
               ],
+              "seriesWins": 1,
               "matches": [
                 "groups-r1g1-j2"
               ]
@@ -30410,7 +30934,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "A2",
               "score": 64.89,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g1-j1",
@@ -30419,7 +30944,8 @@ window.LIGA_RK_STATS = {
               "position": "SUP",
               "teamSlot": "A2",
               "score": 63.35,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -30434,6 +30960,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g1"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g1-j1",
                 "groups-r1g1-j2"
@@ -30522,7 +31049,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "C1",
               "score": 76.35,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g5-j1",
@@ -30531,7 +31059,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "C1",
               "score": 51.37,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -30546,6 +31075,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g5"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g5-j1",
                 "groups-r1g5-j2"
@@ -30634,7 +31164,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "A2",
               "score": 59.85,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g1-j1",
@@ -30643,7 +31174,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "A2",
               "score": 62.52,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -30658,6 +31190,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g1"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g1-j1",
                 "groups-r1g1-j2"
@@ -30750,7 +31283,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B2",
               "score": 64.22,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -30759,7 +31293,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B2",
               "score": 57.59,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -30774,6 +31309,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -30862,7 +31398,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D1",
               "score": 48.97,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g7-j2",
@@ -30871,7 +31408,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D1",
               "score": 54.13,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g7-j1",
@@ -30880,7 +31418,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D1",
               "score": 76.62,
-              "won": true
+              "won": true,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -30895,6 +31434,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g7"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g7-j1",
                 "groups-r1g7-j2",
@@ -30993,7 +31533,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B4",
               "score": 56.23,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -31002,7 +31543,8 @@ window.LIGA_RK_STATS = {
               "position": "JG",
               "teamSlot": "B4",
               "score": 61.33,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -31017,6 +31559,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2"
@@ -31105,7 +31648,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D4",
               "score": 69.03,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g8-j1",
@@ -31114,7 +31658,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "D4",
               "score": 47.64,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -31129,6 +31674,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g8"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
@@ -31217,7 +31763,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B4",
               "score": 58.52,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g4-j1",
@@ -31226,7 +31773,8 @@ window.LIGA_RK_STATS = {
               "position": "TOP",
               "teamSlot": "B4",
               "score": 48.87,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -31241,6 +31789,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g4"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2"
@@ -31329,7 +31878,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "C3",
               "score": 57.95,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g6-j1",
@@ -31338,7 +31888,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "C3",
               "score": 46.85,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -31353,6 +31904,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g6"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g6-j1",
                 "groups-r1g6-j2"
@@ -31441,7 +31993,8 @@ window.LIGA_RK_STATS = {
               "position": "MID",
               "teamSlot": "C3",
               "score": 52.36,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -31456,6 +32009,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g6"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g6-j1"
               ]
@@ -31538,7 +32092,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B2",
               "score": 50.75,
-              "won": false
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r1g3-j1",
@@ -31547,7 +32102,8 @@ window.LIGA_RK_STATS = {
               "position": "ADC",
               "teamSlot": "B2",
               "score": 52.42,
-              "won": false
+              "won": false,
+              "seriesWon": false
             }
           ],
           "roundRatings": [
@@ -31562,6 +32118,7 @@ window.LIGA_RK_STATS = {
               "series": [
                 "groups-r1g3"
               ],
+              "seriesWins": 0,
               "matches": [
                 "groups-r1g3-j1",
                 "groups-r1g3-j2"
@@ -46169,6 +46726,7 @@ window.LIGA_RK_STATS = {
             "games": 2,
             "wins": 2,
             "losses": 0,
+            "seriesWins": 1,
             "series": [
               "groups-r1g4"
             ],
@@ -46191,6 +46749,7 @@ window.LIGA_RK_STATS = {
             "games": 2,
             "wins": 2,
             "losses": 0,
+            "seriesWins": 1,
             "series": [
               "groups-r1g8"
             ],
@@ -46213,6 +46772,7 @@ window.LIGA_RK_STATS = {
             "games": 2,
             "wins": 2,
             "losses": 0,
+            "seriesWins": 1,
             "series": [
               "groups-r1g6"
             ],
@@ -46235,6 +46795,7 @@ window.LIGA_RK_STATS = {
             "games": 2,
             "wins": 2,
             "losses": 0,
+            "seriesWins": 1,
             "series": [
               "groups-r1g3"
             ],
@@ -46257,6 +46818,7 @@ window.LIGA_RK_STATS = {
             "games": 2,
             "wins": 2,
             "losses": 0,
+            "seriesWins": 1,
             "series": [
               "groups-r1g8"
             ],
