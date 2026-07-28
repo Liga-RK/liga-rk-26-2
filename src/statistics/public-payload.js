@@ -11,7 +11,15 @@ function createPublicPayload(computed) {
       teamSummaries: value.teamSummaries || {},
       players: value.players || [],
       champions: value.champions || [],
-      matches: value.matches || []
+      matches: value.matches || [],
+      teamOfWeek: value.teamOfWeek || {
+        round: 1,
+        label: "RODADA 1",
+        selection: [],
+        highlightPlayerId: "",
+        highlightRole: "",
+        highlightScore: 0
+      }
     }]))
   };
 }

@@ -55,17 +55,19 @@ Jogadores e equipes cadastrados podem abrir seus perfis antes da primeira partid
 
 ## 3. Seleção da Semana
 
-**A Seleção da Semana não é calculada automaticamente pelas estatísticas. Ela é escolhida por votação popular.**
+**A Seleção da Semana é calculada automaticamente pelas notas dos replays confirmados da rodada ativa.**
 
-A votação deve ser realizada nos canais oficiais definidos pela organização. Depois do encerramento da votação, a administração registra no editor:
+O sistema separa os jogadores por posição e considera somente as partidas pertencentes à rodada ativa. Em seguida:
 
-- jogador escolhido para cada uma das cinco posições;
-- equipe de cada jogador;
-- foto do jogador;
-- logo da equipe;
-- destaque principal da semana.
+1. calcula a nota de `0` a `100` de cada jogador em cada mapa;
+2. calcula a média das notas que o jogador recebeu na rodada;
+3. elimina da disputa quem jogou menos de dois mapas ou não venceu nenhum mapa na rodada;
+4. escolhe a maior média entre os TOPs, JGs, MIDs, ADCs e SUPs elegíveis;
+5. compara os cinco selecionados e define como Destaque da Semana aquele que tiver a maior nota média.
 
-Portanto, desempenho estatístico pode ajudar o público a votar, mas não substitui a votação. O resultado exibido no site representa a decisão popular publicada pela organização.
+Enquanto a Rodada 1 estiver ativa, resultados de outras rodadas não interferem nessa seleção. Na mudança de rodada, a organização atualiza o número da rodada ativa no agregador e gera novamente as estatísticas públicas.
+
+Se uma posição ainda não tiver jogador com pelo menos dois replays confirmados e uma vitória de mapa na rodada, ela fica sem representante até existirem dados suficientes. O conteúdo manual do editor não substitui esse critério.
 
 ## 4. Como um replay vira estatística
 
@@ -279,9 +281,9 @@ O **MVP da partida é calculado automaticamente**, mas apenas os cinco jogadores
 
 O LoL Esports não publica uma fórmula matemática única para seus MVPs: a escolha oficial é feita por votação ou por um painel. Por isso, a Liga RK utiliza um modelo próprio, transparente e reproduzível, inspirado nos mesmos eixos de avaliação: desempenho individual, trabalho em equipe, impacto no mapa e execução da função.
 
-### Pontuação normalizada
+### Nota de desempenho
 
-Cada candidato recebe uma pontuação de `0` a `100`. Para impedir que uma função seja favorecida apenas pela escala bruta de seus números, o sistema trabalha principalmente com:
+Todos os dez participantes recebem uma nota de `0` a `100` em cada mapa. Para impedir que uma função seja favorecida apenas pela escala bruta de seus números, o sistema trabalha principalmente com:
 
 - participação nos números da própria equipe;
 - comparação direta com o adversário da mesma posição;
@@ -289,6 +291,24 @@ Cada candidato recebe uma pontuação de `0` a `100`. Para impedir que uma funç
 - KDA, participação em abates e sobrevivência;
 - dano, ouro, visão, sentinelas e torres;
 - participação em larvas, arautos, dragões, Dragão Ancião e Barão.
+
+Depois da combinação ponderada, o impacto bruto é calibrado para uma escala esportiva de leitura simples:
+
+```text
+nota = limitar(25 + impacto bruto × 1,05, entre 0 e 100)
+```
+
+A calibração não altera a ordem dos desempenhos; ela apenas distribui melhor as notas na faixa visual de `0` a `100`.
+
+As cores usadas no site são:
+
+| Nota | Cor |
+| --- | --- |
+| 90 a 100 | azul-claro |
+| 80 a 89,99 | verde-claro |
+| 70 a 79,99 | amarelo |
+| 60 a 69,99 | laranja |
+| abaixo de 60 | vermelho |
 
 ### Pesos por função
 
@@ -342,9 +362,19 @@ Barão = 4
 
 Além da contribuição dentro da própria equipe, cada jogador é comparado com o adversário da mesma função. Essa comparação considera um conjunto específico por posição. Para um caçador, por exemplo, objetivos e controle de mapa têm mais peso; para um ADC, dano, ouro, abates e torres são mais relevantes; para um suporte, visão, sentinelas, assistências e KP ganham prioridade.
 
-O vencedor entre os cinco candidatos recebe um MVP. Em caso de empate na pontuação, o sistema desempata por maior KP, menos mortes, maior dano a campeões e, por último, pela ordem estável dos participantes no replay.
+O jogador com a maior nota entre os cinco integrantes da equipe vencedora recebe o MVP. Os jogadores derrotados continuam recebendo suas notas normalmente, mas não são elegíveis ao MVP daquela partida. Em caso de empate na pontuação, o sistema desempata por maior KP, menos mortes, maior dano a campeões e, por último, pela ordem estável dos participantes no replay.
 
 O resultado também armazena a versão do modelo, a pontuação final e o detalhamento das métricas usadas. Assim, uma alteração futura de pesos pode ser auditada sem confundir modelos diferentes. Os MVPs acumulados no perfil representam quantas partidas o jogador venceu nesse cálculo automático.
+
+### Nota média e ranking
+
+A nota média do jogador é a média aritmética das notas recebidas em todos os mapas confirmados:
+
+```text
+nota média = soma das notas dos mapas / quantidade de mapas
+```
+
+Ela aparece antes do KDA no perfil individual e é o critério padrão de ordenação do Ranking de Jogadores. O usuário ainda pode ordenar a tabela por outras colunas quando quiser analisar KDA, jogos, KP, DPM, GPM, visão ou MVPs.
 
 ## 11. Playoffs
 
@@ -410,8 +440,8 @@ Ao final da rodada:
 1. confira se todas as séries foram concluídas;
 2. revise a classificação dos grupos;
 3. publique os destaques estatísticos;
-4. realize a votação popular da Seleção da Semana;
-5. registre no editor os cinco vencedores da votação;
+4. confira os cinco jogadores escolhidos automaticamente para a Seleção da Semana;
+5. confira o Destaque da Semana, definido pela maior nota entre os cinco selecionados;
 6. publique a atualização do site.
 
 ## 14. Resumo das decisões automáticas e humanas
@@ -424,6 +454,8 @@ Ao final da rodada:
 | Estatísticas | Cálculo automático dos replays |
 | MVP da partida | Fórmula automática de impacto |
 | Destaques estatísticos | Maiores valores calculados |
-| Seleção da Semana | **Votação popular** |
-| Destaque da Semana | Resultado popular registrado pela organização |
+| Nota por mapa | Fórmula automática de impacto por função |
+| Ranking de jogadores | Maior nota média |
+| Seleção da Semana | Maior nota média por posição na rodada ativa |
+| Destaque da Semana | Maior nota entre os cinco selecionados |
 | Correções excepcionais | Administração da Liga RK |

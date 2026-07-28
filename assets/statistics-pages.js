@@ -92,8 +92,9 @@
     const overview = data.overview || {};
     const teams = data.teams || [];
     const players = (data.players || []).slice().sort((left, right) => (
-      numeric(right.kda) - numeric(left.kda) ||
+      numeric(right.averageScore) - numeric(left.averageScore) ||
       numeric(right.games) - numeric(left.games) ||
+      numeric(right.kda) - numeric(left.kda) ||
       numeric(right.winRate) - numeric(left.winRate) ||
       String(left.displayName || "").localeCompare(String(right.displayName || ""), "pt-BR")
     ));
@@ -213,6 +214,7 @@
         </div>
         <div class="stats-player-dashboard-content">
           <section class="stats-player-dashboard-metrics" aria-label="Indicadores do jogador">
+            ${playerProfileMetric("NOTA MÉDIA", formatRating(player.averageScore), `featured-rating ${ratingClass(player.averageScore)}`)}
             ${playerProfileMetric("KDA", formatDecimal(player.kda))}
             ${playerProfileMetric("DPM", formatDecimal(player.dpm))}
             ${playerProfileMetric("KP", `${formatDecimal(player.kp)}%`)}
@@ -410,9 +412,10 @@
   function playerTable(players, division, options = {}) {
     const paginate = Boolean(options.paginate);
     const paginationId = paginate ? `players-${division}` : "";
-    return `<table class="stats-table stats-player-table" data-sortable-table data-default-sort="kda" data-current-sort="kda" data-current-direction="desc"${paginate ? ` data-paginated-table data-page-size="10" data-current-page="1" data-pagination-id="${attribute(paginationId)}"` : ""}><thead><tr>${[
+    return `<table class="stats-table stats-player-table" data-sortable-table data-default-sort="score" data-current-sort="score" data-current-direction="desc"${paginate ? ` data-paginated-table data-page-size="10" data-current-page="1" data-pagination-id="${attribute(paginationId)}"` : ""}><thead><tr>${[
       sortableHeader("Jogador", "player", "text", "asc"),
       sortableHeader("Posi&ccedil;&atilde;o", "position", "number", "asc"),
+      sortableHeader("Nota", "score"),
       sortableHeader("KDA", "kda"),
       sortableHeader("J", "games"),
       sortableHeader("V%", "winrate"),
@@ -426,9 +429,9 @@
       const teamTag = team && (team.tag || team.slot) || "SEM EQUIPE";
       const displayName = String(player.displayName || "");
       return `
-      <tr data-player-row data-search="${attribute(`${displayName} ${player.riotId} ${teamTag}`.toLowerCase())}" data-lane="${attribute(player.mainPosition || "")}" data-team="${attribute((player.teams && player.teams[0] && player.teams[0].slot) || "")}" data-sort-player="${attribute(displayName.toLowerCase())}" data-sort-position="${laneIndex(player.mainPosition)}" data-sort-kda="${numeric(player.kda)}" data-sort-games="${numeric(player.games)}" data-sort-winrate="${numeric(player.winRate)}" data-sort-kp="${numeric(player.kp)}" data-sort-dpm="${numeric(player.dpm)}" data-sort-gpm="${numeric(player.gpm)}" data-sort-vision="${numeric(player.visionScoreAvg)}" data-sort-mvps="${numeric(player.mvps)}">
+      <tr data-player-row data-search="${attribute(`${displayName} ${player.riotId} ${teamTag}`.toLowerCase())}" data-lane="${attribute(player.mainPosition || "")}" data-team="${attribute((player.teams && player.teams[0] && player.teams[0].slot) || "")}" data-sort-player="${attribute(displayName.toLowerCase())}" data-sort-position="${laneIndex(player.mainPosition)}" data-sort-score="${numeric(player.averageScore)}" data-sort-kda="${numeric(player.kda)}" data-sort-games="${numeric(player.games)}" data-sort-winrate="${numeric(player.winRate)}" data-sort-kp="${numeric(player.kp)}" data-sort-dpm="${numeric(player.dpm)}" data-sort-gpm="${numeric(player.gpm)}" data-sort-vision="${numeric(player.visionScoreAvg)}" data-sort-mvps="${numeric(player.mvps)}">
         <td><div class="stats-player-identity">${teamLogo(team)}<a class="stats-entity-link" href="jogador.html?division=${division}&id=${encodeURIComponent(player.id)}"><strong>${text(player.displayName)}</strong><small>${text(teamTag)}</small></a></div></td>
-        <td><span class="stats-lane-cell">${laneIcon(player.mainPosition)}</span></td><td class="stats-kda-cell">${formatDecimal(player.kda)}</td><td>${player.games}</td><td>${formatDecimal(player.winRate)}%</td><td>${formatDecimal(player.kp)}%</td><td>${formatDecimal(player.dpm)}</td><td>${formatDecimal(player.gpm)}</td><td>${formatDecimal(player.visionScoreAvg)}</td><td>${player.mvps}</td>
+        <td><span class="stats-lane-cell">${laneIcon(player.mainPosition)}</span></td><td class="stats-rating-cell ${ratingClass(player.averageScore)}">${formatRating(player.averageScore)}</td><td class="stats-kda-cell">${formatDecimal(player.kda)}</td><td>${player.games}</td><td>${formatDecimal(player.winRate)}%</td><td>${formatDecimal(player.kp)}%</td><td>${formatDecimal(player.dpm)}</td><td>${formatDecimal(player.gpm)}</td><td>${formatDecimal(player.visionScoreAvg)}</td><td>${player.mvps}</td>
       </tr>`;
     }).join("")}</tbody></table>${paginate ? `
       <div class="stats-table-pagination" data-player-pagination="${attribute(paginationId)}" aria-label="Paginar ranking de jogadores">
@@ -464,8 +467,8 @@
     </article>`;
   }
 
-  function playerProfileMetric(label, value) {
-    return `<article class="stats-player-dashboard-metric"><span>${label}</span><strong>${value ?? 0}</strong></article>`;
+  function playerProfileMetric(label, value, className = "") {
+    return `<article class="stats-player-dashboard-metric ${attribute(className)}"><span>${label}</span><strong>${value ?? 0}</strong></article>`;
   }
 
   function matchCard(match, division) {
@@ -504,7 +507,7 @@
       <span class="stats-postgame-lane">${laneIcon(player.position)}</span>
       <div class="stats-postgame-player-name">${identity}<small>${text(displayChampionName(player.champion || "-"))}${isMvp ? " &middot; MVP" : ""}</small></div>
       <div class="stats-postgame-performance">
-        <div><b>${formatCompactNumber(damage)}</b><strong>${numeric(player.kills)}/${numeric(player.deaths)}/${numeric(player.assists)}</strong></div>
+        <div><b>${formatCompactNumber(damage)}</b><em class="stats-match-rating ${ratingClass(player.score)}">NOTA ${formatRating(player.score)}</em><strong>${numeric(player.kills)}/${numeric(player.deaths)}/${numeric(player.assists)}</strong></div>
         <span class="stats-postgame-damage"><i style="width:${width}%"></i></span>
       </div>
     </article>`;
@@ -648,8 +651,9 @@
   }
 
   function comparePlayerRows(left, right) {
-    return numeric(right.getAttribute("data-sort-kda")) - numeric(left.getAttribute("data-sort-kda")) ||
+    return numeric(right.getAttribute("data-sort-score")) - numeric(left.getAttribute("data-sort-score")) ||
       numeric(right.getAttribute("data-sort-games")) - numeric(left.getAttribute("data-sort-games")) ||
+      numeric(right.getAttribute("data-sort-kda")) - numeric(left.getAttribute("data-sort-kda")) ||
       numeric(right.getAttribute("data-sort-winrate")) - numeric(left.getAttribute("data-sort-winrate")) ||
       String(left.getAttribute("data-sort-player") || "").localeCompare(String(right.getAttribute("data-sort-player") || ""), "pt-BR", { numeric: true, sensitivity: "base" });
   }
@@ -935,7 +939,8 @@
       id: playerId, playerId, displayName: player.player || player.name || "JOGADOR",
       riotId: player.riotId || "", opgg: player.opgg || "", games: 0, wins: 0, losses: 0, winRate: 0,
       kills: 0, deaths: 0, assists: 0, kda: 0, kp: 0, gpm: 0, dpm: 0, visionScoreAvg: 0,
-      mvps: 0, mainPosition: player.lane || "", positions: [], teams: [{ slot, count: 0 }], champions: [], matches: []
+      mvps: 0, averageScore: 0, scoreGames: 0, ratings: [], roundRatings: [],
+      mainPosition: player.lane || "", positions: [], teams: [{ slot, count: 0 }], champions: [], matches: []
     };
   }
 
@@ -1075,6 +1080,19 @@
 
   function formatDecimal(value) {
     return new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(numeric(value));
+  }
+
+  function formatRating(value) {
+    return new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(numeric(value));
+  }
+
+  function ratingClass(value) {
+    const score = numeric(value);
+    if (score >= 90) return "rating-90";
+    if (score >= 80) return "rating-80";
+    if (score >= 70) return "rating-70";
+    if (score >= 60) return "rating-60";
+    return "rating-low";
   }
 
   function safeExternalUrl(value) {

@@ -316,8 +316,16 @@
   }
 
   function renderWeekly() {
-    const weeklySelection = content.weeklySelection || division.weeklySelection || [];
-    const highlightIndex = weeklyHighlightIndex(weeklySelection);
+    const fallbackSelection = content.weeklySelection || division.weeklySelection || [];
+    const automaticTeam = replayStats.teamOfWeek || {};
+    const automaticSelection = Array.isArray(automaticTeam.selection) ? automaticTeam.selection : [];
+    const hasAutomaticTeam = Number.isFinite(Number(automaticTeam.round));
+    const weeklySelection = hasAutomaticTeam
+      ? laneOrder.slice(0, 5).map((role) => (
+        automaticSelection.find((player) => String(player.role || "").toUpperCase() === role)
+      )).filter(Boolean)
+      : fallbackSelection;
+    const highlightIndex = weeklyHighlightIndex(weeklySelection, automaticTeam);
 
     return `
       <section class="visual-section weekly-section" id="selecao">
@@ -341,6 +349,7 @@
     return `
       <article class="player-card player-${index + 1} ${highlighted ? "weekly-highlight" : ""}">
         ${highlighted ? `<div class="weekly-highlight-badge">DESTAQUE DA SEMANA</div>` : ""}
+        ${Number(player.games) > 0 ? `<div class="weekly-player-score ${ratingClass(player.averageScore)}"><span>NOTA</span><strong>${formatRating(player.averageScore)}</strong></div>` : ""}
         <div class="player-photo ${player.image ? "" : "player-photo-placeholder"}">${image}</div>
         <div class="player-name">${escapeHtml(player.player || "JOGADOR")}</div>
         <div class="player-meta">
@@ -362,7 +371,13 @@
     return `<span class="weekly-team-logo rk-logo-placeholder"><img src="${escapeAttribute(rkPlaceholderUrl)}" alt="" loading="lazy" /></span>`;
   }
 
-  function weeklyHighlightIndex(weeklySelection) {
+  function weeklyHighlightIndex(weeklySelection, automaticTeam = {}) {
+    const automaticPlayerId = String(automaticTeam.highlightPlayerId || "");
+    if (automaticPlayerId) {
+      const automaticIndex = weeklySelection.findIndex((player) => String(player.playerId || "") === automaticPlayerId);
+      if (automaticIndex >= 0) return automaticIndex;
+    }
+
     const highlightRole = String(content.weeklyHighlight || division.weeklyHighlight || "MID").toUpperCase();
     const roleIndex = weeklySelection.findIndex((player) => String(player.role || "").toUpperCase() === highlightRole);
 
@@ -1182,6 +1197,22 @@
     }
 
     return Number(match[1]) * 60 + Number(match[2]);
+  }
+
+  function ratingClass(value) {
+    const score = Number(value) || 0;
+    if (score >= 90) return "rating-90";
+    if (score >= 80) return "rating-80";
+    if (score >= 70) return "rating-70";
+    if (score >= 60) return "rating-60";
+    return "rating-low";
+  }
+
+  function formatRating(value) {
+    return (Number(value) || 0).toLocaleString("pt-BR", {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1
+    });
   }
 
   function escapeHtml(value) {

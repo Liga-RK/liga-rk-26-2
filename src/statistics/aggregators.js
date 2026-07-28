@@ -4,6 +4,9 @@ const { normalizeRiotId } = require("./player-identity");
 
 const DIVISIONS = ["elite", "ascension"];
 const MVP_MODEL_VERSION = "role-impact-v2";
+const ACTIVE_TEAM_OF_WEEK_ROUND = 1;
+const MIN_TEAM_OF_WEEK_GAMES = 2;
+const COMPETITIVE_LANES = ["TOP", "JG", "MID", "ADC", "SUP"];
 const MVP_ROLE_WEIGHTS = Object.freeze({
   TOP: Object.freeze({ kda: 0.13, kp: 0.10, damage: 0.17, efficiency: 0.08, vision: 0.03, wards: 0.02, towers: 0.15, objectives: 0.05, kills: 0.05, assists: 0.02, survival: 0.08, roleEdge: 0.12 }),
   JG: Object.freeze({ kda: 0.11, kp: 0.18, damage: 0.07, efficiency: 0.04, vision: 0.08, wards: 0.06, towers: 0.03, objectives: 0.20, kills: 0.04, assists: 0.08, survival: 0.04, roleEdge: 0.07 }),
@@ -67,7 +70,12 @@ function aggregateDivision(divisionDatabase, content, fixedData, division) {
       { teamNumber: 100, slot: game.blueTeamSlot, stats: teamStats(match, 100) },
       { teamNumber: 200, slot: game.redTeamSlot, stats: teamStats(match, 200) }
     ];
-    const mvp = selectMvp(match, durationSeconds);
+    const performances = scoreMatchParticipants(match, durationSeconds);
+    const performanceByParticipant = new Map(performances.map((performance) => [
+      Number(performance.participantIndex),
+      performance
+    ]));
+    const mvp = selectMvp(match, durationSeconds, performances);
 
     for (const side of sides) {
       const aggregate = teamAggregates[side.slot] || createTeamAggregate(teams[side.slot] || { slot: side.slot });
@@ -103,6 +111,7 @@ function aggregateDivision(divisionDatabase, content, fixedData, division) {
       const player = playerAggregates.get(identityKey) || createPlayerAggregate(identityKey, participant, registered);
       const participantKp = participation(participant.kills, participant.assists, sideStats.kills);
       const participantDamageShare = damageShare(participant.damageToChampions, sideStats.damageToChampions);
+      const performance = performanceByParticipant.get(Number(participant.participantIndex));
       player.displayName = registered.displayName || participant.displayName || player.displayName || participant.gameName || participant.riotId;
       player.riotIds.add(participant.riotId);
       player.games += 1;
@@ -128,6 +137,19 @@ function aggregateDivision(divisionDatabase, content, fixedData, division) {
       player.champions.set(participant.champion, (player.champions.get(participant.champion) || 0) + 1);
       if (participant.won) player.championWins.set(participant.champion, (player.championWins.get(participant.champion) || 0) + 1);
       player.matches.push(game.id);
+      if (performance) {
+        player.scoreSum += performance.performanceScore;
+        player.scoreGames += 1;
+        player.ratings.push({
+          matchId: game.id,
+          seriesId: game.seriesId || "",
+          round: gameRoundNumber(game),
+          position: normalizePosition(participant.position),
+          teamSlot,
+          score: performance.performanceScore,
+          won: Boolean(participant.won)
+        });
+      }
       if (mvp && mvp.participantIndex === participant.participantIndex) player.mvps += 1;
       playerAggregates.set(identityKey, player);
 
@@ -149,7 +171,7 @@ function aggregateDivision(divisionDatabase, content, fixedData, division) {
       championAggregates.set(championKey, champion);
     }
 
-    matches.push(buildMatchSummary(game, teams, mvp));
+    matches.push(buildMatchSummary(game, teams, mvp, performances));
   }
 
   const teamList = Object.values(teamAggregates).map(summarizeTeam).sort((a, b) => (
@@ -159,12 +181,14 @@ function aggregateDivision(divisionDatabase, content, fixedData, division) {
     a.name.localeCompare(b.name)
   ));
   const players = Array.from(playerAggregates.values()).map(summarizePlayer).sort((a, b) => (
-    b.kda - a.kda ||
+    b.averageScore - a.averageScore ||
     b.games - a.games ||
+    b.kda - a.kda ||
     b.winRate - a.winRate ||
     a.displayName.localeCompare(b.displayName, "pt-BR")
   ));
   const champions = Array.from(championAggregates.values()).map(summarizeChampion).sort((a, b) => b.picks - a.picks || b.wins - a.wins);
+  const teamOfWeek = buildTeamOfWeek(players, teams, ACTIVE_TEAM_OF_WEEK_ROUND);
 
   return {
     hasData: matches.length > 0,
@@ -179,7 +203,8 @@ function aggregateDivision(divisionDatabase, content, fixedData, division) {
     teamSummaries: Object.fromEntries(teamList.map((team) => [team.slot, team])),
     players,
     champions,
-    matches
+    matches,
+    teamOfWeek
   };
 }
 
@@ -214,6 +239,7 @@ function rosterByPlayerId(teams) {
         displayName: player.player || player.name || player.riotId || "JOGADOR",
         riotId: player.riotId || "",
         opgg: player.opgg || "",
+        image: normalizeAssetPath(player.image || player.photo || ""),
         lane: player.lane || "",
         teamSlot: slot
       });
@@ -265,6 +291,7 @@ function createPlayerAggregate(id, participant, registered) {
     displayName: registered.displayName || participant.gameName || participant.riotId || "JOGADOR",
     primaryRiotId: registered.riotId || "",
     opgg: registered.opgg || "",
+    image: registered.image || "",
     riotIds: new Set(),
     games: 0,
     wins: 0,
@@ -285,6 +312,9 @@ function createPlayerAggregate(id, participant, registered) {
     heralds: 0,
     barons: 0,
     mvps: 0,
+    scoreSum: 0,
+    scoreGames: 0,
+    ratings: [],
     positions: new Map(),
     teams: new Map(),
     champions: new Map(),
@@ -357,6 +387,7 @@ function summarizePlayer(player) {
     riotId: player.primaryRiotId || Array.from(player.riotIds)[0] || "",
     alsoPlayedAs: Array.from(player.riotIds).filter((riotId) => riotId && riotId !== player.primaryRiotId),
     opgg: player.opgg,
+    image: player.image,
     games: player.games,
     wins: player.wins,
     losses: player.losses,
@@ -384,6 +415,10 @@ function summarizePlayer(player) {
     heralds: player.heralds,
     barons: player.barons,
     mvps: player.mvps,
+    averageScore: player.scoreGames ? round(player.scoreSum / player.scoreGames) : 0,
+    scoreGames: player.scoreGames,
+    ratings: player.ratings.slice().reverse(),
+    roundRatings: summarizeRoundRatings(player.ratings),
     positions,
     mainPosition: positions[0] ? positions[0].position : "",
     teams,
@@ -417,13 +452,17 @@ function summarizeChampion(champion) {
   };
 }
 
-function buildMatchSummary(game, teams, mvp) {
+function buildMatchSummary(game, teams, mvp, performances = []) {
   const match = game.match;
   const team100 = teamStats(match, 100);
   const team200 = teamStats(match, 200);
   const winnerNumber = Number(match.winnerTeam);
   const winnerSlot = winnerNumber === 100 ? game.blueTeamSlot : game.redTeamSlot;
   const loserSlot = winnerNumber === 100 ? game.redTeamSlot : game.blueTeamSlot;
+  const performanceByParticipant = new Map(performances.map((performance) => [
+    Number(performance.participantIndex),
+    performance
+  ]));
   return {
     id: game.id,
     division: game.division,
@@ -454,7 +493,9 @@ function buildMatchSummary(game, teams, mvp) {
       breakdown: mvp.mvpBreakdown
     } : null,
     teams: { "100": { ...team100, slot: game.blueTeamSlot }, "200": { ...team200, slot: game.redTeamSlot } },
-    participants: (match.participants || []).map((participant) => ({
+    participants: (match.participants || []).map((participant) => {
+      const performance = performanceByParticipant.get(Number(participant.participantIndex));
+      return {
       participantIndex: participant.participantIndex,
       playerId: participant.playerId || "",
       riotId: participant.riotId,
@@ -475,13 +516,61 @@ function buildMatchSummary(game, teams, mvp) {
       wardsKilled: participant.wardsKilled,
       objectives: participant.objectives,
       items: participant.items,
+      score: performance ? performance.performanceScore : 0,
+      scoreModel: performance ? performance.performanceModel : MVP_MODEL_VERSION,
+      scoreBreakdown: performance ? performance.performanceBreakdown : null,
       identificationMethod: participant.identificationMethod || "unresolved"
-    }))
+      };
+    })
   };
 }
 
-function selectMvp(match, durationSeconds) {
+function scoreMatchParticipants(match, durationSeconds) {
   const participants = Array.isArray(match.participants) ? match.participants : [];
+  return participants.map((participant) => scoreParticipant(match, participant, durationSeconds));
+}
+
+function scoreParticipant(match, participant, durationSeconds) {
+  const rawMetrics = mvpMetrics(match, participant, durationSeconds);
+  const role = MVP_ROLE_WEIGHTS[participant.position] ? participant.position : "MID";
+  const metrics = normalizeMvpMetrics(rawMetrics, role);
+  const roleEdge = mvpRoleEdge(match, participant, durationSeconds);
+  const breakdown = { ...metrics, roleEdge };
+  const rawScore = weightedScore(breakdown, MVP_ROLE_WEIGHTS[role]) * 100;
+  const score = performanceGrade(rawScore);
+  return {
+    ...participant,
+    performanceScore: round(score),
+    performanceRawScore: round(rawScore),
+    performanceModel: MVP_MODEL_VERSION,
+    performanceBreakdown: {
+      kda: percentage(metrics.kda),
+      kp: percentage(metrics.kp),
+      damage: percentage(metrics.damage),
+      gold: percentage(metrics.gold),
+      efficiency: percentage(metrics.efficiency),
+      vision: percentage(metrics.vision),
+      wards: percentage(metrics.wards),
+      towers: percentage(metrics.towers),
+      objectives: percentage(metrics.objectives),
+      kills: percentage(metrics.kills),
+      assists: percentage(metrics.assists),
+      survival: percentage(metrics.survival),
+      roleEdge: percentage(roleEdge),
+      dpm: round(rawMetrics.dpm),
+      gpm: round(rawMetrics.gpm)
+    }
+  };
+}
+
+function performanceGrade(rawScore) {
+  return Math.max(0, Math.min(100, 25 + value(rawScore) * 1.05));
+}
+
+function selectMvp(match, durationSeconds, scoredParticipants = null) {
+  const participants = Array.isArray(scoredParticipants)
+    ? scoredParticipants
+    : scoreMatchParticipants(match, durationSeconds);
   const winnerTeam = Number(match.winnerTeam) || Number((participants.find((participant) => participant.won) || {}).team);
   const eligible = participants.filter((participant) => (
     winnerTeam ? Number(participant.team) === winnerTeam : Boolean(participant.won)
@@ -489,33 +578,11 @@ function selectMvp(match, durationSeconds) {
   const candidates = eligible.length ? eligible : participants;
   let best = null;
   for (const participant of candidates) {
-    const rawMetrics = mvpMetrics(match, participant, durationSeconds);
-    const role = MVP_ROLE_WEIGHTS[participant.position] ? participant.position : "MID";
-    const metrics = normalizeMvpMetrics(rawMetrics, role);
-    const roleEdge = mvpRoleEdge(match, participant, durationSeconds);
-    const breakdown = { ...metrics, roleEdge };
-    const score = weightedScore(breakdown, MVP_ROLE_WEIGHTS[role]) * 100;
     const candidate = {
       ...participant,
-      mvpScore: round(score),
-      mvpModel: MVP_MODEL_VERSION,
-      mvpBreakdown: {
-        kda: percentage(metrics.kda),
-        kp: percentage(metrics.kp),
-        damage: percentage(metrics.damage),
-        gold: percentage(metrics.gold),
-        efficiency: percentage(metrics.efficiency),
-        vision: percentage(metrics.vision),
-        wards: percentage(metrics.wards),
-        towers: percentage(metrics.towers),
-        objectives: percentage(metrics.objectives),
-        kills: percentage(metrics.kills),
-        assists: percentage(metrics.assists),
-        survival: percentage(metrics.survival),
-        roleEdge: percentage(roleEdge),
-        dpm: round(rawMetrics.dpm),
-        gpm: round(rawMetrics.gpm)
-      }
+      mvpScore: participant.performanceScore,
+      mvpModel: participant.performanceModel,
+      mvpBreakdown: participant.performanceBreakdown
     };
     if (!best || compareMvpCandidates(candidate, best) < 0) best = candidate;
   }
@@ -651,6 +718,133 @@ function sumValues(items, key) {
   return items.reduce((total, item) => total + value(item[key]), 0);
 }
 
+function gameRoundNumber(game) {
+  const roundText = String(game && game.round || "");
+  const roundMatch = /RODADA\s*(\d+)/i.exec(roundText);
+  if (roundMatch) return Number(roundMatch[1]);
+
+  const seriesText = String(game && game.seriesId || "");
+  const seriesMatch = /(?:^|-)r(\d+)(?:g\d+)?(?:-|$)/i.exec(seriesText);
+  return seriesMatch ? Number(seriesMatch[1]) : 0;
+}
+
+function normalizePosition(position) {
+  const normalized = String(position || "").trim().toUpperCase();
+  const aliases = {
+    JUNGLE: "JG",
+    MIDDLE: "MID",
+    BOTTOM: "ADC",
+    BOT: "ADC",
+    UTILITY: "SUP",
+    SUPPORT: "SUP"
+  };
+  return aliases[normalized] || normalized;
+}
+
+function summarizeRoundRatings(ratings) {
+  const groups = new Map();
+  for (const rating of ratings || []) {
+    const roundNumber = Number(rating.round || 0);
+    const position = normalizePosition(rating.position);
+    const teamSlot = String(rating.teamSlot || "");
+    if (!roundNumber || !COMPETITIVE_LANES.includes(position)) continue;
+    const key = `${roundNumber}:${position}:${teamSlot}`;
+    const current = groups.get(key) || {
+      round: roundNumber,
+      position,
+      teamSlot,
+      scoreSum: 0,
+      games: 0,
+      wins: 0,
+      series: new Set(),
+      matches: []
+    };
+    current.scoreSum += value(rating.score);
+    current.games += 1;
+    current.wins += rating.won ? 1 : 0;
+    if (rating.seriesId) current.series.add(rating.seriesId);
+    if (rating.matchId) current.matches.push(rating.matchId);
+    groups.set(key, current);
+  }
+
+  return Array.from(groups.values()).map((entry) => ({
+    round: entry.round,
+    position: entry.position,
+    teamSlot: entry.teamSlot,
+    averageScore: round(entry.scoreSum / Math.max(1, entry.games)),
+    games: entry.games,
+    wins: entry.wins,
+    losses: entry.games - entry.wins,
+    series: Array.from(entry.series),
+    matches: entry.matches
+  })).sort((left, right) => (
+    left.round - right.round ||
+    COMPETITIVE_LANES.indexOf(left.position) - COMPETITIVE_LANES.indexOf(right.position) ||
+    right.averageScore - left.averageScore
+  ));
+}
+
+function buildTeamOfWeek(players, teams, roundNumber) {
+  const selection = COMPETITIVE_LANES.map((role) => {
+    const candidates = [];
+    for (const player of players || []) {
+      for (const rating of player.roundRatings || []) {
+        if (
+          Number(rating.round) !== Number(roundNumber) ||
+          rating.position !== role ||
+          Number(rating.games) < MIN_TEAM_OF_WEEK_GAMES ||
+          Number(rating.wins) < 1
+        ) continue;
+        candidates.push({ player, rating });
+      }
+    }
+
+    candidates.sort((left, right) => (
+      right.rating.averageScore - left.rating.averageScore ||
+      right.rating.games - left.rating.games ||
+      right.player.kda - left.player.kda ||
+      String(left.player.displayName || "").localeCompare(String(right.player.displayName || ""), "pt-BR")
+    ));
+
+    const winner = candidates[0];
+    if (!winner) return null;
+    const teamSlot = winner.rating.teamSlot || winner.player.teams && winner.player.teams[0] && winner.player.teams[0].slot || "";
+    const team = teams[teamSlot] || { slot: teamSlot, name: teamSlot, tag: teamSlot, logo: "" };
+    return {
+      role,
+      playerId: winner.player.id,
+      player: winner.player.displayName || winner.player.riotId || "JOGADOR",
+      riotId: winner.player.riotId || "",
+      image: winner.player.image || "",
+      team: teamSlot,
+      teamName: team.name || teamSlot,
+      teamTag: team.tag || teamSlot,
+      teamLogo: normalizeAssetPath(team.logo || ""),
+      averageScore: winner.rating.averageScore,
+      games: winner.rating.games,
+      wins: winner.rating.wins,
+      losses: winner.rating.losses,
+      series: winner.rating.series || [],
+      matches: winner.rating.matches || []
+    };
+  }).filter(Boolean);
+
+  const highlight = selection.slice().sort((left, right) => (
+    right.averageScore - left.averageScore ||
+    COMPETITIVE_LANES.indexOf(left.role) - COMPETITIVE_LANES.indexOf(right.role)
+  ))[0] || null;
+
+  return {
+    round: Number(roundNumber),
+    label: `RODADA ${Number(roundNumber)}`,
+    minimumGames: MIN_TEAM_OF_WEEK_GAMES,
+    selection,
+    highlightPlayerId: highlight ? highlight.playerId : "",
+    highlightRole: highlight ? highlight.role : "",
+    highlightScore: highlight ? highlight.averageScore : 0
+  };
+}
+
 function buildHeadlineStatistics(players, champions) {
   if (!players.length || !champions.length) return null;
   const mostPicked = maxBy(champions, (champion) => champion.picks);
@@ -749,4 +943,13 @@ function value(input) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-module.exports = { aggregateDatabase, aggregateDivision, buildHeadlineStatistics, selectMvp, teamsBySlot, temporaryPlayerId };
+module.exports = {
+  aggregateDatabase,
+  aggregateDivision,
+  buildHeadlineStatistics,
+  buildTeamOfWeek,
+  scoreMatchParticipants,
+  selectMvp,
+  teamsBySlot,
+  temporaryPlayerId
+};

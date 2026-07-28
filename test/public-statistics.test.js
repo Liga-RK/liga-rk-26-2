@@ -3,7 +3,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const test = require("node:test");
 const { parseReplay } = require("../src/replay/parser-factory");
-const { aggregateDatabase, selectMvp } = require("../src/statistics/aggregators");
+const { aggregateDatabase, buildTeamOfWeek, scoreMatchParticipants, selectMvp } = require("../src/statistics/aggregators");
 const { assertPublicPayloadSafe, createPublicPayload } = require("../src/statistics/public-payload");
 
 const replayPath = path.resolve(__dirname, "..", "samples", "BR1-3262336523.rofl");
@@ -25,7 +25,7 @@ test("agrega replay e publica somente estatisticas sanitizadas", { skip: !fs.exi
   const database = {
     version: 2,
     divisions: {
-      elite: { games: [{ id: "game-1", division: "elite", seriesId: "serie-1", gameNumber: 1, blueTeamSlot: "A1", redTeamSlot: "A2", parserStatus: "parsed_rofl2", stage: "GRUPOS", round: "R1", sha256: parsed.sha256, storagePath: "C:\\private\\game.rofl", match: parsed }] },
+      elite: { games: [{ id: "game-1", division: "elite", seriesId: "groups-r1g1", gameNumber: 1, blueTeamSlot: "A1", redTeamSlot: "A2", parserStatus: "parsed_rofl2", stage: "GRUPOS", round: "RODADA 1", sha256: parsed.sha256, storagePath: "C:\\private\\game.rofl", match: parsed }] },
       ascension: { games: [] }
     }
   };
@@ -36,9 +36,11 @@ test("agrega replay e publica somente estatisticas sanitizadas", { skip: !fs.exi
   assert.equal(publicPayload.divisions.elite.overview.games, 1);
   assert.equal(publicPayload.divisions.elite.players.length, 10);
   assert.deepEqual(
-    publicPayload.divisions.elite.players.map((player) => player.kda),
-    publicPayload.divisions.elite.players.map((player) => player.kda).slice().sort((left, right) => right - left)
+    publicPayload.divisions.elite.players.map((player) => player.averageScore),
+    publicPayload.divisions.elite.players.map((player) => player.averageScore).slice().sort((left, right) => right - left)
   );
+  assert.ok(publicPayload.divisions.elite.players.every((player) => player.averageScore >= 0 && player.averageScore <= 100));
+  assert.ok(publicPayload.divisions.elite.players.every((player) => player.ratings.length === 1));
   assert.ok(publicPayload.divisions.elite.players.some((player) => player.visionScoreAvg > 0));
   assert.ok(publicPayload.divisions.elite.teams.some((team) => team.dpmAvg > 0));
   const playerChampion = publicPayload.divisions.elite.players[0].champions[0];
@@ -48,6 +50,10 @@ test("agrega replay e publica somente estatisticas sanitizadas", { skip: !fs.exi
   assert.match(playerChampion.image, /^assets\/champions\/.+\.jpg$/);
   assert.equal(publicPayload.divisions.elite.matches[0].participants.length, 10);
   assert.ok(publicPayload.divisions.elite.matches[0].participants.some((participant) => participant.visionScore > 0));
+  assert.ok(publicPayload.divisions.elite.matches[0].participants.every((participant) => participant.score >= 0 && participant.score <= 100));
+  assert.equal(publicPayload.divisions.elite.teamOfWeek.minimumGames, 2);
+  assert.deepEqual(publicPayload.divisions.elite.teamOfWeek.selection, []);
+  assert.equal(publicPayload.divisions.elite.teamOfWeek.highlightScore, 0);
   const serialized = JSON.stringify(publicPayload);
   assert.equal(serialized.includes(parsed.sha256), false);
   assert.equal(serialized.includes("rawMetadata"), false);
@@ -65,6 +71,43 @@ test("gera estado publico vazio sem inventar estatisticas", () => {
   assert.deepEqual(publicPayload.divisions.elite.matches, []);
 });
 
+test("seleciona para a semana somente jogadores com dois jogos e ao menos uma vitoria na rodada", () => {
+  const teams = {
+    A1: { slot: "A1", name: "Elegiveis", tag: "EGL", logo: "" },
+    A2: { slot: "A2", name: "Um Jogo", tag: "UM", logo: "" }
+  };
+  const player = (id, role, averageScore, games, wins, teamSlot) => ({
+    id,
+    displayName: id,
+    riotId: `${id}#BR1`,
+    kda: averageScore / 10,
+    roundRatings: [{
+      round: 1,
+      position: role,
+      teamSlot,
+      averageScore,
+      games,
+      wins,
+      losses: games - wins,
+      series: ["groups-r1g1"],
+      matches: Array.from({ length: games }, (_, index) => `${id}-game-${index + 1}`)
+    }]
+  });
+  const players = [
+    player("top-um-jogo", "TOP", 99, 1, 1, "A2"),
+    player("top-sem-vitoria", "TOP", 98, 2, 0, "A2"),
+    player("top-elegivel", "TOP", 88, 2, 1, "A1"),
+    player("jg-sem-vitoria", "JG", 100, 2, 0, "A2")
+  ];
+
+  const teamOfWeek = buildTeamOfWeek(players, teams, 1);
+
+  assert.equal(teamOfWeek.minimumGames, 2);
+  assert.deepEqual(teamOfWeek.selection.map((entry) => entry.playerId), ["top-elegivel"]);
+  assert.equal(teamOfWeek.selection[0].wins, 1);
+  assert.equal(teamOfWeek.highlightPlayerId, "top-elegivel");
+});
+
 test("publica jogadores inscritos sem partidas com estatisticas zeradas", () => {
   const content = {
     divisions: {
@@ -79,6 +122,7 @@ test("publica jogadores inscritos sem partidas com estatisticas zeradas", () => 
   assert.equal(player.displayName, "Zero");
   assert.equal(player.games, 0);
   assert.equal(player.kda, 0);
+  assert.equal(player.averageScore, 0);
   assert.equal(player.mainPosition, "TOP");
   assert.equal(player.teams[0].slot, "A1");
 });
@@ -145,6 +189,16 @@ test("suporte pode ser MVP por participacao, assistencias e visao", () => {
   assert.ok(mvp.mvpBreakdown.kp > 60);
   assert.ok(mvp.mvpBreakdown.vision > 50);
   assert.ok(mvp.mvpBreakdown.wards > 50);
+});
+
+test("atribui nota de desempenho para todos os jogadores da partida", () => {
+  const match = mvpTestMatch();
+  const scores = scoreMatchParticipants(match, match.durationSeconds);
+
+  assert.equal(scores.length, 10);
+  assert.ok(scores.every((player) => player.performanceScore >= 0 && player.performanceScore <= 100));
+  assert.ok(scores.every((player) => player.performanceModel === "role-impact-v2"));
+  assert.ok(scores.some((player) => player.team === 200 && player.performanceScore > 0));
 });
 
 function playerRecord(participant) {

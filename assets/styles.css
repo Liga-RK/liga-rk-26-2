@@ -510,6 +510,32 @@ a {
   white-space: nowrap;
 }
 
+.weekly-player-score {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  gap: 0.38rem;
+  padding: 0.38rem 0.5rem 0.28rem;
+  background: rgba(3, 5, 7, 0.9);
+  border: 1px solid currentColor;
+  box-shadow: 0 0.45rem 1rem rgba(0, 0, 0, 0.32);
+  line-height: 1;
+}
+
+.weekly-player-score span {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.82rem;
+}
+
+.weekly-player-score strong {
+  color: currentColor;
+  font-size: 1.4rem;
+  font-weight: 400;
+}
+
 .player-name {
   margin-top: 0.65rem;
   padding: 0.45rem 0.6rem 0.35rem;
@@ -3274,6 +3300,49 @@ body[data-statistics-page="player"] .stats-breadcrumb {
   text-align: right;
 }
 
+.stats-player-dashboard-metric.featured-rating {
+  grid-column: 1 / -1;
+  min-height: 5.8rem;
+  background: rgba(2, 6, 8, 0.92);
+  border: 1px solid currentColor;
+  border-top-width: 0.32rem;
+}
+
+.stats-player-dashboard-metric.featured-rating span {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.stats-player-dashboard-metric.featured-rating strong {
+  color: currentColor;
+  font-size: 4.6rem;
+}
+
+.rating-90 {
+  color: #74d9ff;
+}
+
+.rating-80 {
+  color: #7ce69b;
+}
+
+.rating-70 {
+  color: #f5dc62;
+}
+
+.rating-60 {
+  color: #ff9d4d;
+}
+
+.rating-low {
+  color: #ff6470;
+}
+
+.stats-rating-cell {
+  font-size: 1.18rem;
+  font-weight: 400;
+  text-align: center;
+}
+
 .stats-player-champions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3713,6 +3782,18 @@ a.stats-postgame-team-logo:focus-visible {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1;
+}
+
+.stats-match-rating {
+  padding: 0.2rem 0.34rem 0.12rem;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid currentColor;
+  font-family: var(--title-font);
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .stats-postgame-damage {
