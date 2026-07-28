@@ -346,6 +346,7 @@
     const team = teamSlot ? teamsBySlot[teamSlot] : null;
     const teamText = player.teamName || resolveTeamText(player.team || "EQUIPE");
     const teamLogo = player.teamLogo || team && team.logo || rkPlaceholderUrl;
+    const teamTag = String(player.teamTag || team && team.tag || "").trim().toUpperCase();
     const laneIcon = getLaneIcon(normalizeLane(role), role);
     const playerName = player.player || "JOGADOR";
     const playerUrl = player.playerId
@@ -359,7 +360,7 @@
       <article class="player-card player-${index + 1} ${highlighted ? "weekly-highlight" : ""}">
         ${highlighted ? `<div class="weekly-highlight-badge">DESTAQUE DA SEMANA</div>` : ""}
         ${Number(player.games) > 0 ? `<div class="weekly-player-score ${ratingClass(player.averageScore)}"><span>NOTA</span><strong>${formatRating(player.averageScore)}</strong></div>` : ""}
-        <div class="player-photo weekly-team-portrait" data-weekly-team-color>
+        <div class="player-photo weekly-team-portrait" data-weekly-team-color data-weekly-team-tag="${escapeAttribute(teamTag)}">
           <img src="${escapeAttribute(teamLogo)}" alt="${escapeAttribute(teamText)}" loading="lazy" />
         </div>
         <div class="player-name">${playerUrl
@@ -376,7 +377,17 @@
   }
 
   function setupWeeklyTeamColors() {
+    const colorOverrides = {
+      RDG: "#3b070b",
+    };
+
     document.querySelectorAll("[data-weekly-team-color]").forEach((portrait) => {
+      const override = colorOverrides[portrait.dataset.weeklyTeamTag];
+      if (override) {
+        portrait.style.setProperty("--weekly-team-color", override);
+        return;
+      }
+
       const image = portrait.querySelector("img");
       if (!image) return;
       const applyColor = () => {
