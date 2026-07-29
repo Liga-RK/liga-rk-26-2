@@ -2,9 +2,16 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
-import { DatabaseSync } from "node:sqlite";
 import { fileURLToPath } from "node:url";
 import { __test } from "../fantasy-admin.js";
+
+let DatabaseSync;
+try {
+  ({ DatabaseSync } = await import("node:sqlite"));
+} catch {
+  // Node 20 executa os testes sem SQLite; a integração roda em Node 22+.
+}
+const sqliteTest = DatabaseSync ? test : test.skip;
 
 const WORKER_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const REPO_ROOT = path.resolve(WORKER_ROOT, "..");
@@ -238,22 +245,22 @@ test("34 aplicação de preços cria backup antes do batch", () => {
   assert.ok(body.indexOf("createBackupRecord") < body.indexOf("env.DB.batch"));
 });
 
-test("35 migração preserva usuários", () => {
+sqliteTest("35 migração preserva usuários", () => {
   const db = migratedDatabaseWithFixture();
   assert.equal(db.prepare("SELECT username FROM fantasy_users WHERE id='u1'").get().username, "Usuário");
 });
 
-test("36 migração preserva escalações", () => {
+sqliteTest("36 migração preserva escalações", () => {
   const db = migratedDatabaseWithFixture();
   assert.equal(db.prepare("SELECT COUNT(*) AS count FROM fantasy_lineups").get().count, 1);
 });
 
-test("37 migração preserva estatísticas", () => {
+sqliteTest("37 migração preserva estatísticas", () => {
   const db = migratedDatabaseWithFixture();
   assert.equal(db.prepare("SELECT points FROM fantasy_asset_round_scores").get().points, 71.25);
 });
 
-test("38 migração preserva preços atuais", () => {
+sqliteTest("38 migração preserva preços atuais", () => {
   const db = migratedDatabaseWithFixture();
   const price = db.prepare("SELECT price, price_cents FROM fantasy_market").get();
   assert.equal(price.price, 17.27);

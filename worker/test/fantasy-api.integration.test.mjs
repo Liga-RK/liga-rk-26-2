@@ -2,14 +2,21 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
-import { DatabaseSync } from "node:sqlite";
 import { fileURLToPath } from "node:url";
 import { handleAdminRequest } from "../fantasy-admin.js";
+
+let DatabaseSync;
+try {
+  ({ DatabaseSync } = await import("node:sqlite"));
+} catch {
+  // Node 20 valida o restante; a integração SQLite roda em Node 22+.
+}
+const sqliteTest = DatabaseSync ? test : test.skip;
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const BASE_URL = "https://fantasy-rk.example";
 
-test("API administrativa executa login, sync, mercado, importação e valorização", async () => {
+sqliteTest("API administrativa executa login, sync, mercado, importação e valorização", async () => {
   const database = createDatabase();
   seedLegacyProductionState(database);
   const password = "Senha administrativa!";
@@ -183,7 +190,7 @@ test("API administrativa executa login, sync, mercado, importação e valorizaç
   `).get().price_cents, beforeRestorePrice);
 });
 
-test("API administrativa rejeita CSRF inválido e limita senha errada", async () => {
+sqliteTest("API administrativa rejeita CSRF inválido e limita senha errada", async () => {
   const database = createDatabase();
   const env = {
     DB: d1(database),
