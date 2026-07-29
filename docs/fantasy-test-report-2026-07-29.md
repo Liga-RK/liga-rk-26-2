@@ -2,7 +2,7 @@
 
 ## Resultado
 
-- suíte Node: 73 aprovados, 0 falhas, 3 skips antigos dependentes de replay;
+- suíte Node: 74 aprovados, 0 falhas, 3 skips antigos dependentes de replay;
 - cenários obrigatórios: 40/40 aprovados;
 - integração administrativa SQLite/D1: 2/2 aprovadas;
 - sintaxe: 23 arquivos verificados;
@@ -29,6 +29,7 @@ A integração exercitou:
 - criação de backup, alteração de preço e restauração do valor original;
 - limitação de tentativas de senha.
 - avaliação completa do módulo do Worker antes do deploy.
+- configuração de assets sem redirecionamento canônico no painel.
 
 ## Dados gerados pela fonte
 

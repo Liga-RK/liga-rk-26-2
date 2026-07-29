@@ -18,6 +18,7 @@ const REPO_ROOT = path.resolve(WORKER_ROOT, "..");
 const workerSource = fs.readFileSync(path.join(WORKER_ROOT, "fantasy-worker.js"), "utf8");
 const adminSource = fs.readFileSync(path.join(WORKER_ROOT, "fantasy-admin.js"), "utf8");
 const adminCss = fs.readFileSync(path.join(WORKER_ROOT, "public/admin/admin.css"), "utf8");
+const wranglerConfig = fs.readFileSync(path.join(WORKER_ROOT, "wrangler.toml"), "utf8");
 
 test("01 login com usuário e senha corretos", async () => {
   const password = "Senha segura 2026!";
@@ -281,6 +282,11 @@ test("41 módulo do Worker pode ser avaliado sem helpers ausentes", async () => 
   const workerModule = await import("../fantasy-worker.js");
   assert.equal(typeof workerModule.default.fetch, "function");
   assert.equal(typeof workerModule.default.scheduled, "function");
+});
+
+test("42 assets administrativos não entram em redirecionamento canônico", () => {
+  assert.match(wranglerConfig, /html_handling\s*=\s*"none"/);
+  assert.match(workerSource, /serveAdminAsset\(request, env, "\/admin\/index\.html"\)/);
 });
 
 function fakeEnv({ rounds, matches }) {
