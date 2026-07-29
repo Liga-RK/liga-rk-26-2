@@ -7,6 +7,8 @@ import {
   recordError,
   serveAdminAsset
 } from "./fantasy-admin.js";
+var __defProp = Object.defineProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 var COOKIE_NAME = "fantasy_session";
 var OAUTH_STATE_COOKIE = "fantasy_oauth_state";
 var ADMIN_COOKIE_NAME = "fantasy_admin_session";

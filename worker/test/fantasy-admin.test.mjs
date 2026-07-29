@@ -277,6 +277,12 @@ test("40 painel possui grade para computador", () => {
   assert.match(adminCss, /\.two-columns \{ display: grid; grid-template-columns: repeat\(2/);
 });
 
+test("41 módulo do Worker pode ser avaliado sem helpers ausentes", async () => {
+  const workerModule = await import("../fantasy-worker.js");
+  assert.equal(typeof workerModule.default.fetch, "function");
+  assert.equal(typeof workerModule.default.scheduled, "function");
+});
+
 function fakeEnv({ rounds, matches }) {
   return {
     DB: {
