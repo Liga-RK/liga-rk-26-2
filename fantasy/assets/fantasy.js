@@ -10,19 +10,6 @@
     season: "Liga RK 26.2",
     ...(window.FANTASY_RK_CONFIG || {})
   };
-  const officialMarket = window.FANTASY_RK_MARKET || null;
-  const ROUND_ONE_NAME = cleanText(config.roundOneName) || "Rodada 1";
-  const ROUND_ONE_LOCKS_AT = cleanText(config.roundOneLocksAt) || "2026-07-25T19:50:00.000Z";
-  const MANUAL_PRICE_OVERRIDES = new Map(Object.entries({
-    MAYAN: 14,
-    BOTAS: 14,
-    MAYTAS: 13,
-    ERICK: 15,
-    YUJAY: 13,
-    GENGI: 12,
-    KYLLUA: 14,
-    ZAHIR: 17
-  }));
   const AUTH_STORAGE_KEY = "rk-fantasy-session-v1";
   let authToken = readAuthToken();
   let initialAuthMessage = "";
@@ -68,7 +55,7 @@
     popularHighlights: { elite: {}, ascension: {} },
     popularRound: { elite: null, ascension: null },
     closedRanking: { elite: [], ascension: [] },
-    marketOpen: { elite: true, ascension: true },
+    marketOpen: { elite: false, ascension: false },
     roundInfo: { elite: null, ascension: null },
     lineups: { elite: emptyLineup(), ascension: emptyLineup() },
     teamName: "Meu Time RK",
@@ -123,6 +110,7 @@
     rankingHelper: document.getElementById("ranking-helper"),
     marketStatus: document.getElementById("market-status"),
     marketDeadline: document.getElementById("market-deadline"),
+    marketIntro: document.getElementById("market-intro"),
     marketDashboard: document.getElementById("market-dashboard"),
     marketClosed: document.getElementById("market-closed"),
     closedMarketMessage: document.getElementById("closed-market-message"),
@@ -135,6 +123,7 @@
     popularList: document.getElementById("popular-list"),
     popularDivision: document.getElementById("popular-division"),
     closedActions: document.querySelectorAll("[data-closed-action]"),
+    introActions: document.querySelectorAll("[data-intro-action]"),
     roleShortcuts: document.querySelectorAll("[data-role-shortcut]")
   };
 
@@ -173,6 +162,7 @@
     el.roleFilter.addEventListener("input", () => setRoleFilter(el.roleFilter.value, { scroll: false }));
     el.roleShortcuts.forEach((button) => button.addEventListener("click", () => setRoleFilter(button.dataset.roleShortcut)));
     el.closedActions.forEach((button) => button.addEventListener("click", () => handleClosedAction(button.dataset.closedAction)));
+    el.introActions.forEach((button) => button.addEventListener("click", () => handleIntroAction(button.dataset.introAction)));
     el.clearLineup.addEventListener("click", clearLineup);
     el.shareLineup.addEventListener("click", shareLineupImage);
     el.closeShareDialog.addEventListener("click", closeShareDialog);
@@ -256,7 +246,7 @@
       average: roundMoney(item.average),
       recentPoints: normalizeRecentPoints(item.recentPoints)
     }));
-    return mergeOfficialMarket(division, cloudMarket);
+    return cloudMarket;
   }
 
   function buildMarket(division, divisionKey) {
@@ -310,72 +300,7 @@
         });
       });
     });
-    return mergeOfficialMarket(divisionKey, entries);
-  }
-
-  function officialMarketForDivision(division) {
-    const items = officialMarket && officialMarket.divisions && officialMarket.divisions[division];
-    if (!Array.isArray(items)) return [];
-    return items.map(normalizeMarketItem).filter((item) => item.id && item.name && ROLE_ORDER.includes(item.role));
-  }
-
-  function normalizeMarketItem(item) {
-    return {
-      id: String(item.id || ""),
-      type: item.type === "team" ? "team" : "player",
-      role: normalizeRole(item.role),
-      name: cleanText(item.name),
-      teamName: cleanText(item.teamName),
-      teamTag: cleanText(item.teamTag).toUpperCase(),
-      teamSlot: cleanText(item.teamSlot),
-      riotId: cleanText(item.riotId),
-      elo: cleanText(item.elo),
-      tier: cleanText(item.tier),
-      opgg: cleanText(item.opgg),
-      captain: Boolean(item.captain),
-      logo: normalizeAssetPath(item.logo),
-      artwork: normalizeAssetPath(item.artwork),
-      price: Number.isFinite(Number(item.price)) ? Number(item.price) : 0,
-      average: Number.isFinite(Number(item.average)) ? Number(item.average) : 0
-    };
-  }
-
-  function mergeOfficialMarket(division, baseItems) {
-    const officialItems = officialMarketForDivision(division);
-    if (!officialItems.length) return baseItems.map(applyManualPriceOverride);
-    const baseByKey = new Map(baseItems.map((item) => [marketMergeKey(item), item]));
-    const merged = officialItems.map((official) => {
-      const base = baseByKey.get(marketMergeKey(official));
-      return {
-        ...(base || {}),
-        ...official,
-        id: base && base.id ? base.id : official.id,
-        price: roundMoney(official.price),
-        average: roundMoney(Number.isFinite(official.average) ? official.average : (base && base.average))
-      };
-    });
-    return merged
-      .map(applyManualPriceOverride)
-      .sort((a, b) => ROLE_ORDER.indexOf(a.role) - ROLE_ORDER.indexOf(b.role) || a.teamSlot.localeCompare(b.teamSlot, "pt-BR") || a.name.localeCompare(b.name, "pt-BR"));
-  }
-
-  function applyManualPriceOverride(item) {
-    const key = cleanText(item && item.name).toLocaleUpperCase("pt-BR");
-    if (!MANUAL_PRICE_OVERRIDES.has(key)) return item;
-    const price = roundMoney(MANUAL_PRICE_OVERRIDES.get(key));
-    return {
-      ...item,
-      price,
-      previousPrice: price,
-      priceDelta: 0
-    };
-  }
-
-  function marketMergeKey(item) {
-    const type = item && item.type === "team" ? "team" : "player";
-    const role = normalizeRole(item && item.role);
-    const team = cleanText(item && item.teamSlot) || cleanText(item && item.teamTag).toUpperCase();
-    return `${type}:${team}:${role}`;
+    return entries;
   }
 
   function renderMarket() {
@@ -476,6 +401,7 @@
       el.popularStrip.hidden = !open;
       el.popularStrip.classList.toggle("closed-hidden", !open);
     }
+    if (el.marketIntro) el.marketIntro.hidden = !open;
     if (el.marketDashboard) el.marketDashboard.hidden = !open;
     if (el.marketClosed) el.marketClosed.hidden = open;
     if (!open) {
@@ -1125,6 +1051,20 @@
     }
   }
 
+  function handleIntroAction(action) {
+    if (action === "account") {
+      openAccount();
+      return;
+    }
+    if (action === "ranking" || action === "rules") {
+      setView(action);
+      return;
+    }
+    if ((action === "market" || action === "lineup") && el.marketDashboard) {
+      el.marketDashboard.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
   function renameTeam() {
     const next = window.prompt("Nome do seu time no RK Fantasy:", state.teamName);
     if (next === null) return;
@@ -1316,8 +1256,10 @@
       const payload = await response.json().catch(() => ({}));
       const round = normalizeRoundInfo(payload.round);
       if (!response.ok || !round) return;
-      const now = Date.now();
-      const open = round.status === "open" && now >= Date.parse(round.opens_at) && now < Date.parse(round.locks_at);
+      const market = payload.market || payload.data?.market || null;
+      const open = market
+        ? market.status === "open" && Date.now() < Date.parse(market.closesAt)
+        : round.status === "open" && Date.now() < Date.parse(round.locks_at);
       state.roundInfo[division] = round;
       state.marketOpen[division] = open;
       if (division === state.division) {
@@ -1336,11 +1278,9 @@
     if (!round) return null;
     const name = cleanText(round.name);
     const roundNumber = Number(round.round_number || round.roundNumber || round.number || 1);
-    const isRoundOne = roundNumber === 1 || /teste|rodada\s*1/i.test(name);
     return {
       ...round,
-      name: isRoundOne ? ROUND_ONE_NAME : (name || `Rodada ${roundNumber || ""}`.trim()),
-      locks_at: isRoundOne ? ROUND_ONE_LOCKS_AT : round.locks_at
+      name: name || `Rodada ${roundNumber || ""}`.trim()
     };
   }
 

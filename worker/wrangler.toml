@@ -1,0 +1,30 @@
+name = "fantasy-rk"
+main = "fantasy-worker.js"
+compatibility_date = "2026-07-29"
+account_id = "a209575f4a37474a86dbdd51f15a6607"
+workers_dev = true
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/api/*", "/admin", "/admin/*", "/health"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "liga-rk-fantasy"
+database_id = "cefb6791-1501-4ae1-b04d-2984ef6cf163"
+migrations_dir = "./migrations"
+
+[triggers]
+crons = ["* * * * *"]
+
+[vars]
+ADMIN_DISCORD_IDS = "244286189144768523,228178970850492417"
+ADMIN_USERNAME = "Cress Albane"
+SITE_URL = "https://liga-rk.github.io/liga-rk-26-2/fantasy/"
+ALLOWED_ORIGINS = "https://liga-rk.github.io,https://fantasy-rk.vitorskd2.workers.dev"
+CONTENT_API_URL = "https://liga-rk-api.suporteinhouserk.workers.dev/api/content"
+DISCORD_CLIENT_ID = "1529290804353433600"
+DISCORD_REDIRECT_URI = "https://fantasy-rk.vitorskd2.workers.dev/api/fantasy/auth/callback"
+FANTASY_SOURCE_URL = "https://liga-rk.github.io/liga-rk-26-2/assets/fantasy-source.json"
+STATS_JSON_URL = "https://liga-rk.github.io/liga-rk-26-2/assets/stats-content.json"

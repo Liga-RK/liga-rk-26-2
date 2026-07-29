@@ -118,6 +118,55 @@
         </div>
       </section>
 
+      <section id="market-intro" class="fantasy-intro" aria-labelledby="fantasy-intro-title">
+        <div class="fantasy-intro-hero">
+          <div>
+            <span class="eyebrow">Fantasy oficial da Liga RK</span>
+            <h2 id="fantasy-intro-title">Monte seu time. Leia a rodada. Dispute o topo.</h2>
+            <p>Você recebe RK$ 100 para escalar os destaques da Elite ou da Ascensão e competir rodada a rodada. O mercado é único: quando está aberto, as duas divisões ficam disponíveis ao mesmo tempo.</p>
+          </div>
+          <div class="fantasy-intro-actions" aria-label="Começar no Fantasy">
+            <button class="primary-button" type="button" data-intro-action="account">Entrar ou cadastrar-se</button>
+            <button class="secondary-button" type="button" data-intro-action="lineup">Montar ou editar escalação</button>
+            <button class="secondary-button" type="button" data-intro-action="market">Acessar mercado</button>
+            <button class="secondary-button" type="button" data-intro-action="ranking">Ver ranking</button>
+            <button class="secondary-button" type="button" data-intro-action="rules">Ver regras</button>
+          </div>
+        </div>
+        <div class="fantasy-intro-grid">
+          <article>
+            <span>01</span>
+            <h3>Como montar</h3>
+            <p>Escolha TOP, JG, MID, ADC, SUP e uma equipe. O total não pode ultrapassar RK$ 100.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Equilíbrio do elenco</h3>
+            <p>Você pode escalar no máximo dois jogadores da mesma equipe e ainda escolher um reserva para uma posição de jogador.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Pontuação</h3>
+            <p>O desempenho oficial nas partidas gera pontos. Seu capitão recebe multiplicador e a escalação salva vale para a rodada.</p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>Rodadas e mercado</h3>
+            <p>A organização abre cada janela manualmente. Ela fecha para todos 25 minutos antes da primeira partida válida das duas divisões.</p>
+          </article>
+          <article>
+            <span>05</span>
+            <h3>Valorização</h3>
+            <p>Regularidade, pontuação recente, expectativa pelo preço e quantidade de jogos influenciam a valorização ou desvalorização.</p>
+          </article>
+          <article>
+            <span>06</span>
+            <h3>Ranking</h3>
+            <p>Compare pontos da rodada, campeonato, patrimônio e classificação geral combinada entre Elite e Ascensão.</p>
+          </article>
+        </div>
+      </section>
+
       <div id="market-dashboard" class="dashboard-grid">
         <aside class="lineup-panel">
           <div class="panel-heading">
@@ -386,8 +435,7 @@
   </dialog>
 
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/fantasy-market.js?v=20260724-reserve-fallback"></script>
-  <script src="assets/fantasy.js?v=20260724-reserve-fallback"></script>
-  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260724-reserve-fallback");</script>
+  <script src="assets/fantasy.js?v=20260729-global-market"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260729-global-market");</script>
 </body>
 </html>
