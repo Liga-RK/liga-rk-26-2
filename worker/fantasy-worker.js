@@ -1,8 +1,10 @@
 // worker/fantasy-worker.js
 import {
+  closeMarketFromDiscordAdmin,
   ensureAutomaticMarketClose,
   getGlobalMarketState,
   handleAdminRequest,
+  openMarketFromDiscordAdmin,
   publicMarketState,
   recordError,
   serveAdminAsset
@@ -64,6 +66,12 @@ async function route(request, env, requestId) {
   if (url.pathname === "/api/fantasy/me" && request.method === "GET") return getMe(request, env);
   if (url.pathname === "/api/fantasy/config" && request.method === "GET") return getConfig(request, env);
   if (url.pathname === "/api/fantasy/market" && request.method === "GET") return getMarket(request, env);
+  if (url.pathname === "/api/fantasy/market/control/open" && request.method === "POST") {
+    return controlMarketFromDiscord(request, env, requestId, "open");
+  }
+  if (url.pathname === "/api/fantasy/market/control/close" && request.method === "POST") {
+    return controlMarketFromDiscord(request, env, requestId, "close");
+  }
   if (url.pathname === "/api/fantasy/popular" && request.method === "GET") return getPopularPicks(request, env);
   if (url.pathname === "/api/fantasy/lineups/current" && request.method === "GET") return getCurrentLineup(request, env);
   if (url.pathname === "/api/fantasy/lineups/current" && request.method === "PUT") return saveCurrentLineup(request, env);
@@ -171,9 +179,31 @@ async function authLogout(request, env) {
 __name(authLogout, "authLogout");
 async function getMe(request, env) {
   const user = await optionalUser(request, env);
-  return json({ authenticated: Boolean(user), user, isAdmin: user ? adminIds(env).has(String(user.discordId)) : false }, 200, request, env);
+  return json({
+    authenticated: Boolean(user),
+    user,
+    isAdmin: user ? adminIds(env).has(String(user.discordId)) : false,
+    canControlMarket: user ? marketControlIds(env).has(String(user.discordId)) : false
+  }, 200, request, env);
 }
 __name(getMe, "getMe");
+async function controlMarketFromDiscord(request, env, requestId, action) {
+  const origin = request.headers.get("Origin") || "";
+  if (!origin || !allowedOrigins(request, env).has(origin)) {
+    return json({ error: "Origem não autorizada para controlar o mercado." }, 403, request, env);
+  }
+  const user = await requireUser(request, env);
+  if (user.response) return user.response;
+  if (!marketControlIds(env).has(String(user.discordId))) {
+    return json({ error: "Somente o administrador autorizado pode controlar o mercado." }, 403, request, env);
+  }
+  const actor = `${cleanText(user.username) || "Administrador Discord"} (${user.discordId})`;
+  const response = action === "open"
+    ? await openMarketFromDiscordAdmin(request, env, requestId, actor)
+    : await closeMarketFromDiscordAdmin(request, env, requestId, actor);
+  return cors(response, request, env);
+}
+__name(controlMarketFromDiscord, "controlMarketFromDiscord");
 async function listRounds(request, env) {
   const division = validDivision(new URL(request.url).searchParams.get("division") || "elite");
   const rows = await env.DB.prepare("SELECT id, round_number AS roundNumber, name, opens_at AS opensAt, locks_at AS locksAt, status, formula_version AS formulaVersion FROM fantasy_rounds WHERE division = ? ORDER BY round_number DESC").bind(division).all();
@@ -831,6 +861,10 @@ function adminIds(env) {
   return new Set(String(env.ADMIN_DISCORD_IDS || "").split(",").map((value) => value.trim()).filter(Boolean));
 }
 __name(adminIds, "adminIds");
+function marketControlIds(env) {
+  return new Set(String(env.MARKET_CONTROL_DISCORD_IDS || "").split(",").map((value) => value.trim()).filter(Boolean));
+}
+__name(marketControlIds, "marketControlIds");
 function validDivision(value) {
   const division = cleanText(value).toLowerCase();
   if (!["elite", "ascension"].includes(division)) throw new HttpError(400, "Divis\xE3o inv\xE1lida.");

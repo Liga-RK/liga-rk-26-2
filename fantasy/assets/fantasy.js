@@ -60,6 +60,8 @@
     lineups: { elite: emptyLineup(), ascension: emptyLineup() },
     teamName: "Meu Time RK",
     userName: "",
+    canControlMarket: false,
+    marketControlBusy: false,
     loaded: false
   };
 
@@ -111,6 +113,9 @@
     rankingHelper: document.getElementById("ranking-helper"),
     marketStatus: document.getElementById("market-status"),
     marketDeadline: document.getElementById("market-deadline"),
+    marketAdminControl: document.getElementById("market-admin-control"),
+    marketAdminToggle: document.getElementById("market-admin-toggle"),
+    marketAdminFeedback: document.getElementById("market-admin-feedback"),
     marketDashboard: document.getElementById("market-dashboard"),
     marketClosed: document.getElementById("market-closed"),
     closedMarketMessage: document.getElementById("closed-market-message"),
@@ -181,6 +186,7 @@
     el.renameTeam.addEventListener("click", renameTeam);
     el.accountButton.addEventListener("click", handleAccountAction);
     el.homeLoginButton.addEventListener("click", startDiscordLogin);
+    if (el.marketAdminToggle) el.marketAdminToggle.addEventListener("click", toggleMarketFromFantasy);
     el.confirmDemoUser.addEventListener("click", confirmDemoUser);
   }
 
@@ -396,6 +402,7 @@
 
   function renderMarketShell() {
     updateMarketStatus();
+    renderMarketAdminControl();
     const open = isMarketOpen();
     if (el.popularStrip) {
       el.popularStrip.hidden = !open;
@@ -1145,6 +1152,8 @@
   function resetAuthenticatedState() {
     clearAuthToken();
     state.userName = "";
+    state.canControlMarket = false;
+    state.marketControlBusy = false;
     state.teamName = "Meu Time RK";
     state.lineups = { elite: emptyLineup(), ascension: emptyLineup() };
     try { localStorage.removeItem("fantasy-rk-state-v1"); } catch {}
@@ -1167,6 +1176,68 @@
   function renderAccount() {
     el.accountLabel.textContent = state.userName || (config.backendMode === "cloud" ? "Não conectado" : "Modo demonstração");
     el.accountButton.textContent = state.userName ? "Sair" : "Entrar";
+    renderMarketAdminControl();
+  }
+
+  function renderMarketAdminControl() {
+    if (!el.marketAdminControl || !el.marketAdminToggle) return;
+    el.marketAdminControl.hidden = !state.canControlMarket;
+    if (!state.canControlMarket) return;
+    const open = isMarketOpen();
+    el.marketAdminToggle.disabled = state.marketControlBusy;
+    el.marketAdminToggle.classList.toggle("open-action", !open);
+    el.marketAdminToggle.textContent = state.marketControlBusy
+      ? (open ? "Fechando..." : "Abrindo...")
+      : (open ? "Fechar mercado" : "Abrir mercado");
+  }
+
+  async function toggleMarketFromFantasy() {
+    if (!state.canControlMarket || state.marketControlBusy) return;
+    const open = isMarketOpen();
+    const action = open ? "close" : "open";
+    const round = state.roundInfo[state.division];
+    const roundNumber = Math.trunc(Number(round?.round_number || round?.roundNumber));
+    if (!open && (!Number.isInteger(roundNumber) || roundNumber < 1)) {
+      setMarketAdminFeedback("Não foi possível identificar a rodada que deve ser aberta.", true);
+      return;
+    }
+    const confirmed = window.confirm(open
+      ? "Fechar o mercado global agora? Novas escalações e alterações serão bloqueadas nas duas divisões."
+      : `Abrir o mercado global da rodada ${roundNumber} para Elite e Ascensão?`);
+    if (!confirmed) return;
+
+    state.marketControlBusy = true;
+    setMarketAdminFeedback("");
+    renderMarketAdminControl();
+    try {
+      const response = await apiFetch(`/api/fantasy/market/control/${action}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(open
+          ? { reason: "Fechamento manual pelo controle Discord no Fantasy." }
+          : { roundNumber }),
+        cache: "no-store"
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(apiErrorMessage(payload, "Não foi possível alterar o mercado."));
+      await Promise.all([loadCloudConfig("elite"), loadCloudConfig("ascension")]);
+      renderLineup();
+      renderMarketShell();
+      renderMarket();
+      setMarketAdminFeedback(open ? "Mercado fechado nas duas divisões." : "Mercado aberto nas duas divisões.", false, true);
+    } catch (error) {
+      setMarketAdminFeedback(error.message || "Não foi possível alterar o mercado.", true);
+    } finally {
+      state.marketControlBusy = false;
+      renderMarketAdminControl();
+    }
+  }
+
+  function setMarketAdminFeedback(message, isError = false, isSuccess = false) {
+    if (!el.marketAdminFeedback) return;
+    el.marketAdminFeedback.textContent = message || "";
+    el.marketAdminFeedback.classList.toggle("error", Boolean(isError));
+    el.marketAdminFeedback.classList.toggle("success", Boolean(isSuccess));
   }
 
   function renderRanking() {
@@ -1228,8 +1299,10 @@
       const response = await apiFetch("/api/fantasy/me", { cache: "no-store" });
       const payload = await response.json().catch(() => ({}));
       state.userName = response.ok && payload.authenticated && payload.user ? cleanText(payload.user.username) : "";
+      state.canControlMarket = Boolean(response.ok && payload.authenticated && payload.canControlMarket);
       if (!state.userName && authToken) clearAuthToken();
     } catch (error) {
+      state.canControlMarket = false;
       console.warn("Não foi possível consultar a sessão do RK Fantasy.", error);
     }
   }

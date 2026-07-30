@@ -587,6 +587,14 @@ async function adminCloseMarket(request, env, requestId, auth) {
   return success({ market: publicMarketState(after) });
 }
 
+export async function openMarketFromDiscordAdmin(request, env, requestId, username) {
+  return adminOpenMarket(request, env, requestId, { username });
+}
+
+export async function closeMarketFromDiscordAdmin(request, env, requestId, username) {
+  return adminCloseMarket(request, env, requestId, { username });
+}
+
 async function adminMarketStatus(_request, env) {
   await ensureAutomaticMarketClose(env);
   const state = await getGlobalMarketState(env);

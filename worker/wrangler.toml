@@ -21,6 +21,7 @@ crons = ["* * * * *"]
 
 [vars]
 ADMIN_DISCORD_IDS = "244286189144768523,228178970850492417"
+MARKET_CONTROL_DISCORD_IDS = "244286189144768523"
 ADMIN_USERNAME = "Cress Albane"
 SITE_URL = "https://liga-rk.github.io/liga-rk-26-2/fantasy/"
 ALLOWED_ORIGINS = "https://liga-rk.github.io,https://fantasy-rk.vitorskd2.workers.dev"

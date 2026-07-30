@@ -171,6 +171,16 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .hero-status span { font-size: .74rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .hero-status strong { display: block; margin: .18rem 0; color: var(--success); font-size: 2rem; }
 .hero-status small { font-size: .8rem; line-height: 1.4; }
+.market-admin-control { display: grid; gap: .5rem; margin-top: .9rem; padding-top: .85rem; border-top: 1px solid var(--line); }
+.market-admin-control > span { color: #fff; font-size: .66rem; letter-spacing: .1em; }
+.market-admin-toggle { min-height: 42px; border: 1px solid rgba(255, 107, 120, .62); border-radius: .58rem; color: #fff; background: rgba(229, 38, 50, .18); font-weight: 900; }
+.market-admin-toggle:hover:not(:disabled) { border-color: var(--danger); background: rgba(229, 38, 50, .3); }
+.market-admin-toggle.open-action { border-color: rgba(82, 229, 164, .6); background: rgba(82, 229, 164, .13); }
+.market-admin-toggle.open-action:hover:not(:disabled) { border-color: var(--success); background: rgba(82, 229, 164, .22); }
+.market-admin-toggle:disabled { opacity: .5; cursor: wait; }
+.market-admin-feedback { min-height: 1.1rem; color: var(--muted); }
+.market-admin-feedback.error { color: var(--danger); }
+.market-admin-feedback.success { color: var(--success); }
 .division-tabs { display: flex; gap: .55rem; margin-bottom: 1.1rem; padding: .35rem; width: max-content; max-width: 100%; border: 1px solid var(--line); border-radius: .78rem; background: rgba(7, 6, 8, .88); }
 .division-tab { padding: .78rem 1.25rem; border-radius: .52rem; font-weight: 850; }
 .division-tab:hover { color: var(--text); }

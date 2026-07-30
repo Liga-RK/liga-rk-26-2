@@ -69,3 +69,17 @@ test("Reserva pode usar saldo disponível mais o titular mais barato", () => {
     assert.match(html, /saldo disponível após os seis titulares somado ao preço do jogador titular mais barato/);
   }
 });
+
+test("Controle do mercado fica oculto e depende da permissão Discord", () => {
+  for (const relativePath of pages) {
+    const html = fs.readFileSync(path.join(root, relativePath), "utf8");
+    assert.match(html, /id="market-admin-control"[^>]*hidden/);
+    assert.match(html, /id="market-admin-toggle"/);
+  }
+
+  assert.match(script, /state\.canControlMarket = Boolean\(response\.ok && payload\.authenticated && payload\.canControlMarket\)/);
+  assert.match(script, /marketAdminControl\.hidden = !state\.canControlMarket/);
+  assert.match(script, /\/api\/fantasy\/market\/control\/\$\{action\}/);
+  assert.match(workerScript, /MARKET_CONTROL_DISCORD_IDS/);
+  assert.match(workerScript, /Somente o administrador autorizado pode controlar o mercado/);
+});
