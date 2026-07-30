@@ -1309,6 +1309,9 @@
             "id": "953d89dc-d2ac-4e77-bef7-88c66ad248d8",
             "playerId": "953d89dc-d2ac-4e77-bef7-88c66ad248d8",
             "displayName": "TECLAS",
+            "riotId": "LittleTeclas#0402",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/LittleTeclas-0402",
             "mainPosition": "JG",
             "teams": [
               {
@@ -1340,6 +1343,9 @@
             "id": "094a9436-c639-4195-a01b-0fd126ed96fe",
             "playerId": "094a9436-c639-4195-a01b-0fd126ed96fe",
             "displayName": "MIRACLE",
+            "riotId": "lMiracle#BR01",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/lMiracle-BR01",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -1371,6 +1377,9 @@
             "id": "6e241754-e4e8-4f57-9818-b2279e3bd0a6",
             "playerId": "6e241754-e4e8-4f57-9818-b2279e3bd0a6",
             "displayName": "TETEU",
+            "riotId": "TeteuCantoni#BR1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/TeteuCantoni-BR1",
             "mainPosition": "JG",
             "teams": [
               {
@@ -1402,6 +1411,9 @@
             "id": "a25fed6f-9af6-4f75-9b64-381f23c3d4d7",
             "playerId": "a25fed6f-9af6-4f75-9b64-381f23c3d4d7",
             "displayName": "MARONATO",
+            "riotId": "maronato#rat",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/lol/summoners/br/maronato-rat",
             "mainPosition": "JG",
             "teams": [
               {
@@ -1433,6 +1445,9 @@
             "id": "adcf03a3-0794-4ec3-902e-c8894dfdbfc3",
             "playerId": "adcf03a3-0794-4ec3-902e-c8894dfdbfc3",
             "displayName": "SSS",
+            "riotId": "arima#εsεs",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/arima-%CE%B5s%CE%B5s",
             "mainPosition": "JG",
             "teams": [
               {
@@ -1465,6 +1480,9 @@
             "id": "ee09cf39-13a1-4268-a363-dbd28955437b",
             "playerId": "ee09cf39-13a1-4268-a363-dbd28955437b",
             "displayName": "NIHIL",
+            "riotId": "N I H I L メ#CDRP",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/N%20I%20H%20I%20L%20%E3%83%A1-CDRP",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -1496,6 +1514,9 @@
             "id": "7dbf3dbc-e976-4b54-ac60-b233d5c8f3ca",
             "playerId": "7dbf3dbc-e976-4b54-ac60-b233d5c8f3ca",
             "displayName": "MACK",
+            "riotId": "MacK#shhh",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/MacK-shhh",
             "mainPosition": "JG",
             "teams": [
               {
@@ -1527,6 +1548,9 @@
             "id": "a89f54a2-ff64-4647-8738-95c802959a50",
             "playerId": "a89f54a2-ff64-4647-8738-95c802959a50",
             "displayName": "ESTRUPICIO",
+            "riotId": "estrupicio#원숭이",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/estrupicio-%EC%9B%90%EC%88%AD%EC%9D%B4",
             "mainPosition": "MID",
             "teams": [
               {
@@ -1558,6 +1582,9 @@
             "id": "d91655cf-58e0-4430-9bb2-2c12dd273b89",
             "playerId": "d91655cf-58e0-4430-9bb2-2c12dd273b89",
             "displayName": "ZORO",
+            "riotId": "EGO YAMAL#zoro",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/EGO%20YAMAL-zoro",
             "mainPosition": "JG",
             "teams": [
               {
@@ -1589,6 +1616,9 @@
             "id": "387bfab7-c5a6-4f05-a41a-980cb0bf4d42",
             "playerId": "387bfab7-c5a6-4f05-a41a-980cb0bf4d42",
             "displayName": "DYNAS",
+            "riotId": "Dynas#Alone",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Dynas-Alone",
             "mainPosition": "MID",
             "teams": [
               {
@@ -1620,6 +1650,9 @@
             "id": "f9133bce-2d98-4534-9d82-16dd768d7540",
             "playerId": "f9133bce-2d98-4534-9d82-16dd768d7540",
             "displayName": "DEDE",
+            "riotId": "Dede#muy",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Dede-muy",
             "mainPosition": "JG",
             "teams": [
               {
@@ -1652,6 +1685,9 @@
             "id": "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
             "playerId": "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
             "displayName": "AZO",
+            "riotId": "AZØ#AZ0",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/AZ%C3%98-AZ0",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -1684,6 +1720,9 @@
             "id": "f9663a5d-6159-4f40-b0f5-7c9f3467332b",
             "playerId": "f9663a5d-6159-4f40-b0f5-7c9f3467332b",
             "displayName": "HOPE",
+            "riotId": "HOPE#0800",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/HOPE-0800",
             "mainPosition": "MID",
             "teams": [
               {
@@ -1716,6 +1755,9 @@
             "id": "6c07e8dd-9195-49ae-b8a9-8a1c360cf775",
             "playerId": "6c07e8dd-9195-49ae-b8a9-8a1c360cf775",
             "displayName": "VALVERDE",
+            "riotId": "FedeValverde#RM8",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/FedeValverde-RM8",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -1747,6 +1789,9 @@
             "id": "8de67801-d9d0-45c6-ab35-5efaacdacf51",
             "playerId": "8de67801-d9d0-45c6-ab35-5efaacdacf51",
             "displayName": "DAVID",
+            "riotId": "Little David#RBRN",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Little%20David-RBRN",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -1778,6 +1823,9 @@
             "id": "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda",
             "playerId": "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda",
             "displayName": "XAND",
+            "riotId": "Xand#완벽한",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Xand-%EC%99%84%EB%B2%BD%ED%95%9C",
             "mainPosition": "MID",
             "teams": [
               {
@@ -1809,6 +1857,9 @@
             "id": "31fcec05-9dc7-40ce-ba29-8ad9217622fa",
             "playerId": "31fcec05-9dc7-40ce-ba29-8ad9217622fa",
             "displayName": "SHAKA",
+            "riotId": "Shaka#VCB",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Shaka-VCB",
             "mainPosition": "JG",
             "teams": [
               {
@@ -1841,6 +1892,9 @@
             "id": "afd38a2d-4c8e-44fb-b3d1-1c2bf4e8764e",
             "playerId": "afd38a2d-4c8e-44fb-b3d1-1c2bf4e8764e",
             "displayName": "PEPUXO",
+            "riotId": "Abraão do League#Peps",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Abra%C3%A3o%20do%20League-Peps",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -1872,6 +1926,9 @@
             "id": "37d5697c-d21a-4bc1-b104-1f580f396133",
             "playerId": "37d5697c-d21a-4bc1-b104-1f580f396133",
             "displayName": "GAVIN",
+            "riotId": "Gavinzera#BR2",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Gavinzera-BR2",
             "mainPosition": "JG",
             "teams": [
               {
@@ -1904,6 +1961,9 @@
             "id": "5705ef31-f58c-4d36-8fa9-cfedcb8bf2d6",
             "playerId": "5705ef31-f58c-4d36-8fa9-cfedcb8bf2d6",
             "displayName": "BERNAS",
+            "riotId": "Kaydenbreak#br14",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Kaydenbreak-br14",
             "mainPosition": "MID",
             "teams": [
               {
@@ -1935,6 +1995,9 @@
             "id": "e39e7092-a6fa-435d-abd4-5622d8de7d8b",
             "playerId": "e39e7092-a6fa-435d-abd4-5622d8de7d8b",
             "displayName": "JEIKAR",
+            "riotId": "jeikar#XII",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/jeikar-XII",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -1966,6 +2029,9 @@
             "id": "9fe112ee-c33c-474f-9a3e-2beeaa726c48",
             "playerId": "9fe112ee-c33c-474f-9a3e-2beeaa726c48",
             "displayName": "SUNFYRE",
+            "riotId": "Sunfyre#lol",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Sunfyre-lol",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -1998,6 +2064,9 @@
             "id": "fcdcb6c8-dab0-43c7-ba16-b8dbe1453c22",
             "playerId": "fcdcb6c8-dab0-43c7-ba16-b8dbe1453c22",
             "displayName": "GIANZ",
+            "riotId": "GianZ#HOOK",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/lol/summoners/br/GianZ-HOOK",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -2029,6 +2098,9 @@
             "id": "df0e9d12-5f4f-4268-a80d-cefa44c76268",
             "playerId": "df0e9d12-5f4f-4268-a80d-cefa44c76268",
             "displayName": "EPI",
+            "riotId": "epilul#ROX",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/epilul-ROX",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -2060,6 +2132,11 @@
             "id": "8827bd59-7836-4418-b5eb-d33dd8c3bee3",
             "playerId": "8827bd59-7836-4418-b5eb-d33dd8c3bee3",
             "displayName": "VINI",
+            "riotId": "lie 2 me#ccc",
+            "riotIdAliases": [
+              "Rekkles#FJCA"
+            ],
+            "opgg": "https://op.gg/pt/lol/summoners/br/lie%202%20me-ccc",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -2091,6 +2168,9 @@
             "id": "cdb7296d-9960-4a4e-99e8-835f8068f8e7",
             "playerId": "cdb7296d-9960-4a4e-99e8-835f8068f8e7",
             "displayName": "TECHY",
+            "riotId": "Techy#777",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Techy-777",
             "mainPosition": "MID",
             "teams": [
               {
@@ -2122,6 +2202,9 @@
             "id": "8f91a191-c2f0-4f3f-889f-44ac8192e596",
             "playerId": "8f91a191-c2f0-4f3f-889f-44ac8192e596",
             "displayName": "SHYTOZ",
+            "riotId": "ShytOz#br1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/lol/summoners/br/ShytOz-br1",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -2153,6 +2236,9 @@
             "id": "d6ebd900-a337-4789-80f1-dc40a5e18e15",
             "playerId": "d6ebd900-a337-4789-80f1-dc40a5e18e15",
             "displayName": "BLEURIS",
+            "riotId": "bonecos ruins#tierF",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/bonecos%20ruins-tierF",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -2185,6 +2271,9 @@
             "id": "13a72a46-d781-48f7-85cf-2316c9383cf7",
             "playerId": "13a72a46-d781-48f7-85cf-2316c9383cf7",
             "displayName": "KIN",
+            "riotId": "Kin#JP6",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Kin-JP6",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -2216,6 +2305,9 @@
             "id": "d087d8ce-da1b-419b-ac01-27f3d2ad83f5",
             "playerId": "d087d8ce-da1b-419b-ac01-27f3d2ad83f5",
             "displayName": "THIGAS",
+            "riotId": "ZNE Thigas#NATHY",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/ZNE%20Thigas-NATHY",
             "mainPosition": "JG",
             "teams": [
               {
@@ -2247,6 +2339,9 @@
             "id": "8cc6a257-8017-49f5-a803-12300c85f16c",
             "playerId": "8cc6a257-8017-49f5-a803-12300c85f16c",
             "displayName": "GABU",
+            "riotId": "wishes#just",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/wishes-just",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -2279,6 +2374,9 @@
             "id": "1d9ace8e-1f8c-4aba-a11d-1b6c25e2aa2e",
             "playerId": "1d9ace8e-1f8c-4aba-a11d-1b6c25e2aa2e",
             "displayName": "LITTLE NOCTUS",
+            "riotId": "little noctus#gabi",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/little%20noctus-gabi",
             "mainPosition": "JG",
             "teams": [
               {
@@ -2310,6 +2408,9 @@
             "id": "001cfda8-ffe9-4c3d-aabd-964b30402cab",
             "playerId": "001cfda8-ffe9-4c3d-aabd-964b30402cab",
             "displayName": "ROMÁRIO",
+            "riotId": "M7 Romário#BRAM7",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/M7%20Rom%C3%A1rio-BRAM7",
             "mainPosition": "JG",
             "teams": [
               {
@@ -2341,6 +2442,9 @@
             "id": "2371331d-c5cf-4429-98cf-dff6ad161309",
             "playerId": "2371331d-c5cf-4429-98cf-dff6ad161309",
             "displayName": "GUIZÃO",
+            "riotId": "tapom#br1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/tapom-br1",
             "mainPosition": "MID",
             "teams": [
               {
@@ -2373,6 +2477,9 @@
             "id": "3160ff3e-da9b-4538-9162-8a3cfc3f78aa",
             "playerId": "3160ff3e-da9b-4538-9162-8a3cfc3f78aa",
             "displayName": "RM",
+            "riotId": "Asta#mage1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Asta-mage1",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -2405,6 +2512,9 @@
             "id": "593a8ce7-a4c6-44cd-89ce-7abb03f88855",
             "playerId": "593a8ce7-a4c6-44cd-89ce-7abb03f88855",
             "displayName": "ESQUILO",
+            "riotId": "EsquiloTranquilo#br1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/EsquiloTranquilo-br1",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -2436,6 +2546,9 @@
             "id": "af0b0a81-6444-4256-bdb7-a76903d0c717",
             "playerId": "af0b0a81-6444-4256-bdb7-a76903d0c717",
             "displayName": "STARK",
+            "riotId": "Stark#sthe",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Stark-sthe",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -2467,6 +2580,9 @@
             "id": "727c5fde-d079-4a4e-a13c-facce5f2cd00",
             "playerId": "727c5fde-d079-4a4e-a13c-facce5f2cd00",
             "displayName": "RATINHO",
+            "riotId": "mcratão#4252",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/lol/summoners/br/mcrat%C3%A3o-4252",
             "mainPosition": "MID",
             "teams": [
               {
@@ -2498,6 +2614,9 @@
             "id": "f02fe465-ee85-45f5-ac28-7f4722ea3481",
             "playerId": "f02fe465-ee85-45f5-ac28-7f4722ea3481",
             "displayName": "SLEEP",
+            "riotId": "Sleepwalker#Hope",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Sleepwalker-Hope",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -2529,6 +2648,9 @@
             "id": "85c29dba-efdf-44f0-9604-c743f96c49ce",
             "playerId": "85c29dba-efdf-44f0-9604-c743f96c49ce",
             "displayName": "MEC",
+            "riotId": "sing 4 da moment#90210",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/sing%204%20da%20moment-90210",
             "mainPosition": "MID",
             "teams": [
               {
@@ -2561,6 +2683,9 @@
             "id": "60bed61b-e107-41bd-b0cc-943105c6e4c5",
             "playerId": "60bed61b-e107-41bd-b0cc-943105c6e4c5",
             "displayName": "IAN",
+            "riotId": "peido sniffer#6767",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/peido%20sniffer-6767",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -2592,6 +2717,9 @@
             "id": "f69e2f09-ab72-4ec3-ac6f-903f28b5acca",
             "playerId": "f69e2f09-ab72-4ec3-ac6f-903f28b5acca",
             "displayName": "REFFECT",
+            "riotId": "REFFECT#HGB",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/REFFECT-HGB",
             "mainPosition": "MID",
             "teams": [
               {
@@ -2624,6 +2752,9 @@
             "id": "4e3e2af3-1217-4d2c-b525-b196a50878ee",
             "playerId": "4e3e2af3-1217-4d2c-b525-b196a50878ee",
             "displayName": "DIDUSE",
+            "riotId": "DiDuSe#HPL",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/DiDuSe-HPL",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -2655,6 +2786,9 @@
             "id": "f173da50-620b-4b89-90fe-1e49b4bd4a49",
             "playerId": "f173da50-620b-4b89-90fe-1e49b4bd4a49",
             "displayName": "LUISMA",
+            "riotId": "FL Luisma#Luis",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/FL%20Luisma-Luis",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -2687,6 +2821,9 @@
             "id": "b1297dc1-2b88-4dcd-b558-edbf5474030f",
             "playerId": "b1297dc1-2b88-4dcd-b558-edbf5474030f",
             "displayName": "PIPO",
+            "riotId": "Pipo#INTER",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Pipo-INTER",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -2718,6 +2855,9 @@
             "id": "8f58fb63-7765-463b-8688-89c4552fcae5",
             "playerId": "8f58fb63-7765-463b-8688-89c4552fcae5",
             "displayName": "OXOSSI",
+            "riotId": "Oxossi#SDK",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Oxossi-SDK",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -2749,6 +2889,9 @@
             "id": "70581d4b-5e7c-4000-a2de-c15a18bbf91a",
             "playerId": "70581d4b-5e7c-4000-a2de-c15a18bbf91a",
             "displayName": "GUZZ",
+            "riotId": "Guzz#cam",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Guzz-cam",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -2780,6 +2923,9 @@
             "id": "5cfa35d7-d9cb-4188-8f1f-a653f099bdd8",
             "playerId": "5cfa35d7-d9cb-4188-8f1f-a653f099bdd8",
             "displayName": "LEGOLAS",
+            "riotId": "SBK Legolas#SKTT1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/SBK%20Legolas-SKTT1",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -2811,6 +2957,9 @@
             "id": "bc6d8503-d29e-436d-bc14-634243c72720",
             "playerId": "bc6d8503-d29e-436d-bc14-634243c72720",
             "displayName": "PAPEL",
+            "riotId": "NKZ Papel#BR2",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/NKZ%20Papel-BR2",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -2843,6 +2992,9 @@
             "id": "d76b03de-3dc2-4eb3-97c6-73cd5f58015b",
             "playerId": "d76b03de-3dc2-4eb3-97c6-73cd5f58015b",
             "displayName": "MUY",
+            "riotId": "yuM#FVL",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/yuM-FVL",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -2875,6 +3027,9 @@
             "id": "3c6ed950-49ec-40b9-a970-dee831ab5faa",
             "playerId": "3c6ed950-49ec-40b9-a970-dee831ab5faa",
             "displayName": "DESTINY",
+            "riotId": "my destiny#sesh",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/lol/summoners/br/my%20destiny-sesh",
             "mainPosition": "MID",
             "teams": [
               {
@@ -2906,6 +3061,9 @@
             "id": "e324f47c-9a31-4cd4-a5b9-3af94e2f3c38",
             "playerId": "e324f47c-9a31-4cd4-a5b9-3af94e2f3c38",
             "displayName": "SUZUKI",
+            "riotId": "suzuki#2211",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/suzuki-2211",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -2937,6 +3095,9 @@
             "id": "1fb278b9-1a2c-471d-992e-12a930836013",
             "playerId": "1fb278b9-1a2c-471d-992e-12a930836013",
             "displayName": "DAVI",
+            "riotId": "Davi#Blsed",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Davi-Blsed",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -2969,6 +3130,9 @@
             "id": "eb536418-1474-4fd8-83b1-b045a999783c",
             "playerId": "eb536418-1474-4fd8-83b1-b045a999783c",
             "displayName": "AKASHI",
+            "riotId": "Bird of Hermes#AKX",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Bird%20of%20Hermes-AKX",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -2999,6 +3163,9 @@
             "id": "005b1daf-fb8a-4258-b48b-90bde518a76f",
             "playerId": "005b1daf-fb8a-4258-b48b-90bde518a76f",
             "displayName": "LIMA",
+            "riotId": "LIMA IS BACK#LIMA",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/LIMA%20IS%20BACK-LIMA",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -3030,6 +3197,9 @@
             "id": "5ef6dac6-8daf-42e6-b3af-c8896a8554e1",
             "playerId": "5ef6dac6-8daf-42e6-b3af-c8896a8554e1",
             "displayName": "BLEYDAS",
+            "riotId": "Bleyblade#Bleyd",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Bleyblade-Bleyd",
             "mainPosition": "MID",
             "teams": [
               {
@@ -3061,6 +3231,9 @@
             "id": "72611c8f-caec-461e-9f09-a29084433b7b",
             "playerId": "72611c8f-caec-461e-9f09-a29084433b7b",
             "displayName": "LUIS",
+            "riotId": "resenhaxnoclubex#aurax",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/resenhaxnoclubex-aurax",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -3092,6 +3265,11 @@
             "id": "4448fafa-ddb9-4a96-b9da-df67b2919733",
             "playerId": "4448fafa-ddb9-4a96-b9da-df67b2919733",
             "displayName": "TEARS",
+            "riotId": "tears#dude",
+            "riotIdAliases": [
+              "Acessório#br1"
+            ],
+            "opgg": "https://op.gg/pt/lol/summoners/br/tears-dude",
             "mainPosition": "JG",
             "teams": [
               {
@@ -3123,6 +3301,9 @@
             "id": "c0252d66-bd2d-4f35-b210-c03943520a05",
             "playerId": "c0252d66-bd2d-4f35-b210-c03943520a05",
             "displayName": "PEWTZ",
+            "riotId": "Pewtz#Pewtz",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Pewtz-Pewtz",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -3154,6 +3335,9 @@
             "id": "79057b1c-c417-4f7d-9fd3-221be5f705d3",
             "playerId": "79057b1c-c417-4f7d-9fd3-221be5f705d3",
             "displayName": "LUFFY",
+            "riotId": "Luffy#br5",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Luffy-br5",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -3185,6 +3369,9 @@
             "id": "a44b2125-85a3-4f69-9caa-97a385822b0a",
             "playerId": "a44b2125-85a3-4f69-9caa-97a385822b0a",
             "displayName": "LISBOA",
+            "riotId": "Lisboa#TTS",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Lisboa-TTS",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -3217,6 +3404,11 @@
             "id": "dbfbe491-6dba-47a6-b29a-4f6307b4d132",
             "playerId": "dbfbe491-6dba-47a6-b29a-4f6307b4d132",
             "displayName": "ALPACA",
+            "riotId": "Alpacaz#br1",
+            "riotIdAliases": [
+              "lucky day#hyy"
+            ],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Alpacaz-br1",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -3249,6 +3441,9 @@
             "id": "bef3051e-4337-4c3a-a00f-ac557ee3a8d8",
             "playerId": "bef3051e-4337-4c3a-a00f-ac557ee3a8d8",
             "displayName": "MYCHAEL",
+            "riotId": "mychael#2207",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/mychael-2207",
             "mainPosition": "MID",
             "teams": [
               {
@@ -3280,6 +3475,9 @@
             "id": "9a66c938-b464-47e5-8823-447e2dc1ad8e",
             "playerId": "9a66c938-b464-47e5-8823-447e2dc1ad8e",
             "displayName": "THEO",
+            "riotId": "Little Theo#BR1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Little%20Theo-BR1",
             "mainPosition": "JG",
             "teams": [
               {
@@ -3311,6 +3509,9 @@
             "id": "54e50a29-e994-419f-90aa-04a96a22a3cd",
             "playerId": "54e50a29-e994-419f-90aa-04a96a22a3cd",
             "displayName": "BEBETO",
+            "riotId": "M7 Bebeto#BRAM7",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/M7%20Bebeto-BRAM7",
             "mainPosition": "MID",
             "teams": [
               {
@@ -3342,6 +3543,9 @@
             "id": "a2284a68-12d9-47e5-a0a2-4eb8cc7455de",
             "playerId": "a2284a68-12d9-47e5-a0a2-4eb8cc7455de",
             "displayName": "PEDROJAIME",
+            "riotId": "pedrojaime#PJ1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/pedrojaime-PJ1",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -3373,6 +3577,9 @@
             "id": "5a7a70e6-50d8-4117-9403-5842430ee03b",
             "playerId": "5a7a70e6-50d8-4117-9403-5842430ee03b",
             "displayName": "TSUKUYOMI",
+            "riotId": "Tsukuyomi#Jao",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Tsukuyomi-Jao",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -3404,6 +3611,9 @@
             "id": "c113ef85-6838-47a2-b735-75b278b7c8ce",
             "playerId": "c113ef85-6838-47a2-b735-75b278b7c8ce",
             "displayName": "UILIA",
+            "riotId": "OdeioSerJg#BR1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/OdeioSerJg-BR1",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -3435,6 +3645,9 @@
             "id": "ae4fda25-ccc4-437f-ad1b-e4442e1f04e1",
             "playerId": "ae4fda25-ccc4-437f-ad1b-e4442e1f04e1",
             "displayName": "ALFACE",
+            "riotId": "luc1asdb11#sasu1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/luc1asdb11-sasu1",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -3466,6 +3679,9 @@
             "id": "b43b292e-f8b8-4b44-bcf6-806bc7c3afa1",
             "playerId": "b43b292e-f8b8-4b44-bcf6-806bc7c3afa1",
             "displayName": "VIRUSCOSMIC",
+            "riotId": "Víruscosmic#7719",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/V%C3%ADruscosmic-7719",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -3497,6 +3713,9 @@
             "id": "a50ec03a-1b03-4d85-86f8-69cff19d0220",
             "playerId": "a50ec03a-1b03-4d85-86f8-69cff19d0220",
             "displayName": "SAMSARA",
+            "riotId": "Samsara#Fiore",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Samsara-Fiore",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -3528,6 +3747,9 @@
             "id": "ae76fd2f-1c07-44e1-a35e-5f0512f28ebd",
             "playerId": "ae76fd2f-1c07-44e1-a35e-5f0512f28ebd",
             "displayName": "BIEL",
+            "riotId": "부스트 이걸#Karma",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/%EB%B6%80%EC%8A%A4%ED%8A%B8%20%EC%9D%B4%EA%B1%B8-Karma",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3541,6 +3763,9 @@
             "id": "5217aacf-fac1-4c9c-b387-24344e34444e",
             "playerId": "5217aacf-fac1-4c9c-b387-24344e34444e",
             "displayName": "BLADE",
+            "riotId": "qzwq#sleep",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/qzwq-sleep",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -3554,6 +3779,9 @@
             "id": "18387a0b-de6f-42d5-8030-e2d040259380",
             "playerId": "18387a0b-de6f-42d5-8030-e2d040259380",
             "displayName": "BOLOTA",
+            "riotId": "Bolota#3057",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Bolota-3057",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3567,6 +3795,9 @@
             "id": "9e0676fc-f015-47a0-9981-0f4c4c8319b7",
             "playerId": "9e0676fc-f015-47a0-9981-0f4c4c8319b7",
             "displayName": "CADU",
+            "riotId": "BIG XANTARES#TK1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/BIG%20XANTARES-TK1",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -3580,6 +3811,9 @@
             "id": "292cdb20-42b6-4cd9-afd7-41e3be72918f",
             "playerId": "292cdb20-42b6-4cd9-afd7-41e3be72918f",
             "displayName": "COGNATU",
+            "riotId": "单独练级#solo",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/lol/summoners/br/%E5%8D%95%E7%8B%AC%E7%BB%83%E7%BA%A7-solo",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3593,6 +3827,9 @@
             "id": "7cf8af2d-df7f-48b6-b05f-594301e81588",
             "playerId": "7cf8af2d-df7f-48b6-b05f-594301e81588",
             "displayName": "CROSS",
+            "riotId": "Cross#BR62",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Cross-BR62",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3606,6 +3843,9 @@
             "id": "d3bb4f93-1023-42a8-b436-0d86345dfc7a",
             "playerId": "d3bb4f93-1023-42a8-b436-0d86345dfc7a",
             "displayName": "DIVINY",
+            "riotId": "Sanji#KR2",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Sanji-KR2",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3619,6 +3859,9 @@
             "id": "2b2c2ccf-b972-4a0a-bf78-0d8b1ca42c39",
             "playerId": "2b2c2ccf-b972-4a0a-bf78-0d8b1ca42c39",
             "displayName": "FELTRINI",
+            "riotId": "Feltrini#FEM",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Feltrini-FEM",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3632,6 +3875,9 @@
             "id": "cbff23ae-a385-42a1-bf60-472e57ecb700",
             "playerId": "cbff23ae-a385-42a1-bf60-472e57ecb700",
             "displayName": "GALAXY",
+            "riotId": "Tina Cafetina#M2612",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Tina%20Cafetina-M2612",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -3645,6 +3891,9 @@
             "id": "60a4e735-2da3-4fcd-a4d7-9f2d30deb0da",
             "playerId": "60a4e735-2da3-4fcd-a4d7-9f2d30deb0da",
             "displayName": "GUSTA",
+            "riotId": "Hunter1#rfm",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Hunter1-rfm",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3658,6 +3907,9 @@
             "id": "9a333f81-3469-4351-a027-ff51f46e88f0",
             "playerId": "9a333f81-3469-4351-a027-ff51f46e88f0",
             "displayName": "ISTEVO",
+            "riotId": "endlessly#kali",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/endlessly-kali",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3671,6 +3923,9 @@
             "id": "59ae6875-f951-418c-a2b4-209a84330869",
             "playerId": "59ae6875-f951-418c-a2b4-209a84330869",
             "displayName": "JPERSO",
+            "riotId": "peek m0NESY ssj2#jper",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/peek%20m0NESY%20ssj2-jper",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -3684,6 +3939,9 @@
             "id": "4bfa12c2-e92a-4d70-9746-fe847bb89341",
             "playerId": "4bfa12c2-e92a-4d70-9746-fe847bb89341",
             "displayName": "LAST ONE",
+            "riotId": "Kept#Agh",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Kept-Agh",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3697,6 +3955,9 @@
             "id": "d98b2eb2-01a3-4f75-8d3f-f699a8974674",
             "playerId": "d98b2eb2-01a3-4f75-8d3f-f699a8974674",
             "displayName": "MENTALGAP",
+            "riotId": "tonel de bosta#bosta",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/tonel%20de%20bosta-bosta",
             "mainPosition": "JG",
             "teams": [
               {
@@ -3710,6 +3971,9 @@
             "id": "ba719616-83d9-413d-9b47-4065aa9ab157",
             "playerId": "ba719616-83d9-413d-9b47-4065aa9ab157",
             "displayName": "NARU",
+            "riotId": "Miitsukii1#BR1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Miitsukii1-BR1",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -3723,6 +3987,9 @@
             "id": "78038a95-697b-4a49-ba4b-bc4529b38b9b",
             "playerId": "78038a95-697b-4a49-ba4b-bc4529b38b9b",
             "displayName": "NINE",
+            "riotId": "triple T fanboy#RLQ3T",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/triple%20T%20fanboy-RLQ3T",
             "mainPosition": "MID",
             "teams": [
               {
@@ -3736,6 +4003,9 @@
             "id": "58cfdb70-7bdc-4765-a2ee-7046613ca5cc",
             "playerId": "58cfdb70-7bdc-4765-a2ee-7046613ca5cc",
             "displayName": "NOCTA",
+            "riotId": "NKZ Nocta#1105",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/NKZ%20Nocta-1105",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3749,6 +4019,9 @@
             "id": "fe172f4c-38c9-47a2-8a06-5f79bbb4b1c0",
             "playerId": "fe172f4c-38c9-47a2-8a06-5f79bbb4b1c0",
             "displayName": "RANGERZIN",
+            "riotId": "Désiré Doué 7#RaN7",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/D%C3%A9sir%C3%A9%20Dou%C3%A9%207-RaN7",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3762,6 +4035,9 @@
             "id": "9c93edf4-d4a4-443e-a6c3-63b7bd173906",
             "playerId": "9c93edf4-d4a4-443e-a6c3-63b7bd173906",
             "displayName": "RD",
+            "riotId": "Dantas#Klng",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Dantas-Klng",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3775,6 +4051,9 @@
             "id": "80165c7c-806c-4cb3-90f2-a4a969000bfd",
             "playerId": "80165c7c-806c-4cb3-90f2-a4a969000bfd",
             "displayName": "ROD",
+            "riotId": "rod 火#caos",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/lol/summoners/br/rod%20%E7%81%AB-caos",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3788,6 +4067,9 @@
             "id": "e716f2c0-24c9-4aac-a6ff-a3e14b8a61c0",
             "playerId": "e716f2c0-24c9-4aac-a6ff-a3e14b8a61c0",
             "displayName": "ROSA",
+            "riotId": "MACHINE GIRL#自我宽恕1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/MACHINE%20GIRL-自我宽恕1",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -3801,6 +4083,9 @@
             "id": "9392f3eb-5e8b-4059-874e-905daba68b36",
             "playerId": "9392f3eb-5e8b-4059-874e-905daba68b36",
             "displayName": "RYUU",
+            "riotId": "Klein Moretti 小丑#Ryuu",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Klein%20Moretti%20%E5%B0%8F%E4%B8%91-Ryuu",
             "mainPosition": "MID",
             "teams": [
               {
@@ -3814,6 +4099,9 @@
             "id": "c2b79abc-0122-4930-9127-9a977db71ca6",
             "playerId": "c2b79abc-0122-4930-9127-9a977db71ca6",
             "displayName": "THOMINHAS",
+            "riotId": "11 february#bibi",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/11%20february-bibi",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3827,6 +4115,9 @@
             "id": "d9d9c418-c16a-4a24-b475-40de2f2873fe",
             "playerId": "d9d9c418-c16a-4a24-b475-40de2f2873fe",
             "displayName": "TUTU",
+            "riotId": "gol bolinha 2002#2004",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/gol%20bolinha%202002-2004",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -3840,6 +4131,9 @@
             "id": "3c8c148e-d810-473c-a48c-810d733e037f",
             "playerId": "3c8c148e-d810-473c-a48c-810d733e037f",
             "displayName": "VANFY",
+            "riotId": "Vanfy#br1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Vanfy-br1",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3853,6 +4147,9 @@
             "id": "b115ad0f-e41a-43c8-bf5a-f7a9c697c5e3",
             "playerId": "b115ad0f-e41a-43c8-bf5a-f7a9c697c5e3",
             "displayName": "VIPER",
+            "riotId": "Kuwabara 愛#gumie",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Kuwabara%20%E6%84%9B-gumie",
             "mainPosition": "MID",
             "teams": [
               {
@@ -3866,6 +4163,9 @@
             "id": "461313aa-b1c2-4b5d-9d02-098acdc32472",
             "playerId": "461313aa-b1c2-4b5d-9d02-098acdc32472",
             "displayName": "WEEDU",
+            "riotId": "Weedu#ADC",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Weedu-ADC",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3879,6 +4179,9 @@
             "id": "2bfcbe2a-123d-403d-b4ba-9560f16e0d91",
             "playerId": "2bfcbe2a-123d-403d-b4ba-9560f16e0d91",
             "displayName": "WENDY",
+            "riotId": "NKZWendyNamikaze#Dpt",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/NKZWendyNamikaze-Dpt",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -3892,6 +4195,9 @@
             "id": "52bee1c2-bff8-4e7a-a21e-1e81cc6f0edd",
             "playerId": "52bee1c2-bff8-4e7a-a21e-1e81cc6f0edd",
             "displayName": "XK",
+            "riotId": "ericjnobighorpia#hugo",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/ericjnobighorpia-hugo",
             "mainPosition": "JG",
             "teams": [
               {
@@ -3905,6 +4211,9 @@
             "id": "55d5021b-af05-495b-9ed0-7848d81b524a",
             "playerId": "55d5021b-af05-495b-9ed0-7848d81b524a",
             "displayName": "ZEPPELI",
+            "riotId": "Zeppeli#honio",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Zeppeli-honio",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -5625,6 +5934,9 @@
             "id": "b23e9ca5-3abb-4222-9580-5965227b155c",
             "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c",
             "displayName": "DRAGON",
+            "riotId": "RDG Dragon B3#155",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/RDG%20Dragon%20B3-155",
             "mainPosition": "JG",
             "teams": [
               {
@@ -5656,6 +5968,9 @@
             "id": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
             "playerId": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
             "displayName": "MITS",
+            "riotId": "Mits#KIM",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Mits-KIM",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -5687,6 +6002,9 @@
             "id": "b92cbd24-be2e-4c7b-b2dd-86105c87d127",
             "playerId": "b92cbd24-be2e-4c7b-b2dd-86105c87d127",
             "displayName": "HEYTTOR",
+            "riotId": "kylo ren#zed",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/kylo%20ren-zed",
             "mainPosition": "JG",
             "teams": [
               {
@@ -5718,6 +6036,9 @@
             "id": "9ed6c467-f397-4906-9967-63dea851d6c0",
             "playerId": "9ed6c467-f397-4906-9967-63dea851d6c0",
             "displayName": "LATRELL",
+            "riotId": "Latrell Spencer#TBG3",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Latrell%20Spencer-TBG3",
             "mainPosition": "JG",
             "teams": [
               {
@@ -5749,6 +6070,9 @@
             "id": "d0570a3b-415e-4f1c-8e31-ef6a57884ac1",
             "playerId": "d0570a3b-415e-4f1c-8e31-ef6a57884ac1",
             "displayName": "RICK",
+            "riotId": "FFLT Rick#Rick",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/FFLT%20Rick-Rick",
             "mainPosition": "JG",
             "teams": [
               {
@@ -5780,6 +6104,9 @@
             "id": "ba2ec6b1-7544-4200-bb18-13df3ed63a5b",
             "playerId": "ba2ec6b1-7544-4200-bb18-13df3ed63a5b",
             "displayName": "LAMINE",
+            "riotId": "FVLR Lamine#L10",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/lol/summoners/br/FVLR%20Lamine-L10",
             "mainPosition": "JG",
             "teams": [
               {
@@ -5811,6 +6138,9 @@
             "id": "52cc780c-f595-4c45-af66-abc64b44e93b",
             "playerId": "52cc780c-f595-4c45-af66-abc64b44e93b",
             "displayName": "FALSE",
+            "riotId": "false jugking#lala",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/false%20jugking-lala",
             "mainPosition": "JG",
             "teams": [
               {
@@ -5843,6 +6173,9 @@
             "id": "d9b48adc-0878-4579-9fdb-c6c2b45bdf04",
             "playerId": "d9b48adc-0878-4579-9fdb-c6c2b45bdf04",
             "displayName": "GABS MATTOS",
+            "riotId": "Gabs Mattos#GABS",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Gabs%20Mattos-GABS?queue_type=SOLORANKED",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -5874,6 +6207,9 @@
             "id": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39",
             "playerId": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39",
             "displayName": "SEMATARY",
+            "riotId": "qquq#yve",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/qquq-yve ",
             "mainPosition": "JG",
             "teams": [
               {
@@ -5905,6 +6241,9 @@
             "id": "dc3196d7-8120-4cda-84cb-399673ce7087",
             "playerId": "dc3196d7-8120-4cda-84cb-399673ce7087",
             "displayName": "HARRYPOTTAR",
+            "riotId": "Harrypottar#gandl",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Harrypottar-gandl",
             "mainPosition": "MID",
             "teams": [
               {
@@ -5936,6 +6275,9 @@
             "id": "6aa73999-3861-4c5e-95a7-d629b6bc501f",
             "playerId": "6aa73999-3861-4c5e-95a7-d629b6bc501f",
             "displayName": "PEDRIN",
+            "riotId": "Pedrin UwU#br1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Pedrin%20UwU-br1",
             "mainPosition": "MID",
             "teams": [
               {
@@ -5967,6 +6309,9 @@
             "id": "0cc6bb32-e387-4cfe-adcd-6362fd369614",
             "playerId": "0cc6bb32-e387-4cfe-adcd-6362fd369614",
             "displayName": "MAYTAS",
+            "riotId": "FFLT Maytas#2303",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/FFLT%20Maytas-2303",
             "mainPosition": "MID",
             "teams": [
               {
@@ -5998,6 +6343,9 @@
             "id": "271defca-2ef0-4720-b96f-5f68a6ddfeea",
             "playerId": "271defca-2ef0-4720-b96f-5f68a6ddfeea",
             "displayName": "SATOSHI",
+            "riotId": "Just Feeling#Bad",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Just%20Feeling-Bad",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -6029,6 +6377,9 @@
             "id": "4e7d0fdf-44ba-44c9-a9e1-277dcdcc3d4f",
             "playerId": "4e7d0fdf-44ba-44c9-a9e1-277dcdcc3d4f",
             "displayName": "RICHBOY",
+            "riotId": "Fantasma#Rich",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Fantasma-Rich",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -6060,6 +6411,11 @@
             "id": "ff6e177a-0dfe-43fa-ab75-1caff615ac19",
             "playerId": "ff6e177a-0dfe-43fa-ab75-1caff615ac19",
             "displayName": "FLY",
+            "riotId": "SKY Fly#btw",
+            "riotIdAliases": [
+              "RDG Fly#prado"
+            ],
+            "opgg": "https://op.gg/pt/lol/summoners/br/SKY%20Fly-btw",
             "mainPosition": "MID",
             "teams": [
               {
@@ -6091,6 +6447,9 @@
             "id": "286f41d2-24c2-4457-9dcd-d5654ba6049f",
             "playerId": "286f41d2-24c2-4457-9dcd-d5654ba6049f",
             "displayName": "IKARI",
+            "riotId": "midking#ikari",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/midking-ikari",
             "mainPosition": "MID",
             "teams": [
               {
@@ -6121,6 +6480,9 @@
             "id": "3deb513b-3b91-403a-91cd-6ef94bf3a285",
             "playerId": "3deb513b-3b91-403a-91cd-6ef94bf3a285",
             "displayName": "MARX",
+            "riotId": "marx#alone",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/lol/summoners/br/marx-alone",
             "mainPosition": "MID",
             "teams": [
               {
@@ -6152,6 +6514,9 @@
             "id": "013c58e9-130d-4c36-bbf3-1a2e4b8a82a2",
             "playerId": "013c58e9-130d-4c36-bbf3-1a2e4b8a82a2",
             "displayName": "ZAHIR",
+            "riotId": "Zähir#THgod",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Z%C3%A4hir-THgod",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -6183,6 +6548,9 @@
             "id": "93504c7f-3a44-41d4-84ba-7fcdf9c4c202",
             "playerId": "93504c7f-3a44-41d4-84ba-7fcdf9c4c202",
             "displayName": "BOTAS",
+            "riotId": "FFLT Botas#caco",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/FFLT%20Botas-caco",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -6214,6 +6582,9 @@
             "id": "8b0bb211-5bfd-46c2-819f-161c22c494d6",
             "playerId": "8b0bb211-5bfd-46c2-819f-161c22c494d6",
             "displayName": "YELLOW",
+            "riotId": "king of yellow#7178",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/king%20of%20yellow-7178",
             "mainPosition": "MID",
             "teams": [
               {
@@ -6244,6 +6615,9 @@
             "id": "41b3325e-3a2f-4a67-b18a-880c7a0f546f",
             "playerId": "41b3325e-3a2f-4a67-b18a-880c7a0f546f",
             "displayName": "SAVE",
+            "riotId": "bad decisions#void",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/bad%20decisions-void",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -6275,6 +6649,9 @@
             "id": "2f0aee66-029a-4ecb-97ed-b0b0966c7edd",
             "playerId": "2f0aee66-029a-4ecb-97ed-b0b0966c7edd",
             "displayName": "WOJTEK",
+            "riotId": "Shahanshah#NIKA",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Shahanshah-NIKA",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -6306,6 +6683,9 @@
             "id": "b90cfd3f-be97-4c2a-97ff-669620611892",
             "playerId": "b90cfd3f-be97-4c2a-97ff-669620611892",
             "displayName": "ALLANZÃO",
+            "riotId": "CTG Brasil ILS#CTGBR",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/CTG%20Brasil%20ILS-CTGBR",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -6337,6 +6717,9 @@
             "id": "d063fffc-b310-4449-9d66-7a08b97d452a",
             "playerId": "d063fffc-b310-4449-9d66-7a08b97d452a",
             "displayName": "BUBA",
+            "riotId": "Buba#RN1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Buba-RN1",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -6368,6 +6751,9 @@
             "id": "66d1841c-206c-451f-aac8-6e8b1a04ce16",
             "playerId": "66d1841c-206c-451f-aac8-6e8b1a04ce16",
             "displayName": "CHINA",
+            "riotId": "China#0503",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/China-0503",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -6399,6 +6785,9 @@
             "id": "c9245faa-3264-49d5-b6d3-15336567772b",
             "playerId": "c9245faa-3264-49d5-b6d3-15336567772b",
             "displayName": "KYLLUA",
+            "riotId": "Kyllua#KOBE",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Kyllua-KOBE",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -6430,6 +6819,9 @@
             "id": "003f66b9-fa33-4dfa-8213-26dd2949ee79",
             "playerId": "003f66b9-fa33-4dfa-8213-26dd2949ee79",
             "displayName": "GUOLHERME",
+            "riotId": "Guolherme21#BR1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Guolherme21-BR1",
             "mainPosition": "MID",
             "teams": [
               {
@@ -6462,6 +6854,9 @@
             "id": "1e16ae4d-b121-4d24-905d-28089516f1be",
             "playerId": "1e16ae4d-b121-4d24-905d-28089516f1be",
             "displayName": "GUMIS",
+            "riotId": "SKY guMis#rina",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/SKY%20guMis-rina",
             "mainPosition": "MID",
             "teams": [
               {
@@ -6493,6 +6888,9 @@
             "id": "8f9a0f23-33f3-4a50-9050-fa75c77ae99d",
             "playerId": "8f9a0f23-33f3-4a50-9050-fa75c77ae99d",
             "displayName": "YATO",
+            "riotId": "TNB Yato#ADC",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/TNB%20Yato-ADC",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -6528,6 +6926,9 @@
             "id": "1d1dc560-2992-47ec-a7e1-0ecc7f1f2394",
             "playerId": "1d1dc560-2992-47ec-a7e1-0ecc7f1f2394",
             "displayName": "BAFUFA",
+            "riotId": "FofuraUwU#UwU",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/FofuraUwU-UwU",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -6559,6 +6960,9 @@
             "id": "c49312d8-3672-4654-9790-a9cad7f59937",
             "playerId": "c49312d8-3672-4654-9790-a9cad7f59937",
             "displayName": "KAUAN",
+            "riotId": "Red KauanMemes#BA1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Red%20KauanMemes-BA1",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -6590,6 +6994,9 @@
             "id": "41328541-367c-4556-bf01-fb1810cdfc07",
             "playerId": "41328541-367c-4556-bf01-fb1810cdfc07",
             "displayName": "LUCI",
+            "riotId": "luci#sfc",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/luci-sfc",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -6621,6 +7028,9 @@
             "id": "6f77aa43-5ccb-4f3a-a767-faeb1fc00307",
             "playerId": "6f77aa43-5ccb-4f3a-a767-faeb1fc00307",
             "displayName": "JÓQUIS",
+            "riotId": "Jóquis#LOL",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/J%C3%B3quis-LOL",
             "mainPosition": "JG",
             "teams": [
               {
@@ -6653,6 +7063,9 @@
             "id": "4468c885-4c32-4c7e-a749-b74f5d9530cb",
             "playerId": "4468c885-4c32-4c7e-a749-b74f5d9530cb",
             "displayName": "KITTEN",
+            "riotId": "FFLT KitteN#gay",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/FFLT%20KitteN-gay",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -6684,6 +7097,9 @@
             "id": "c8de87cb-5e6e-47ce-afe5-dd3985558a3f",
             "playerId": "c8de87cb-5e6e-47ce-afe5-dd3985558a3f",
             "displayName": "SLASH",
+            "riotId": "Slash SKY#TOP10",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Slash%20SKY-TOP10",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -6715,6 +7131,9 @@
             "id": "2594034c-9394-4b79-8b59-dedbf66482e5",
             "playerId": "2594034c-9394-4b79-8b59-dedbf66482e5",
             "displayName": "KAISER",
+            "riotId": "DarKaiser#CARRY",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/DarKaiser-CARRY",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -6747,6 +7166,9 @@
             "id": "5bbb9ada-61b9-4a9f-a162-1cfd5cb3a9ff",
             "playerId": "5bbb9ada-61b9-4a9f-a162-1cfd5cb3a9ff",
             "displayName": "KUSKA",
+            "riotId": "KuskEndrick#BRA",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/KuskEndrick-BRA",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -6779,6 +7201,9 @@
             "id": "30124aec-f280-4dcd-83d4-f9cda42c5df8",
             "playerId": "30124aec-f280-4dcd-83d4-f9cda42c5df8",
             "displayName": "FREEZY",
+            "riotId": "IIIIIIIIIIIIlIII#Lcpnz",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/IIIIIIIIIIIIlIII-Lcpnz",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -6810,6 +7235,9 @@
             "id": "4b785c1e-f133-481e-9628-2c4d92ac8959",
             "playerId": "4b785c1e-f133-481e-9628-2c4d92ac8959",
             "displayName": "MALDIÇÃO",
+            "riotId": "GDG Maldição#GUI",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/GDG%20Maldi%C3%A7%C3%A3o-GUI",
             "mainPosition": "MID",
             "teams": [
               {
@@ -6841,6 +7269,9 @@
             "id": "c4875740-f916-44f3-b69d-27b65cf58e64",
             "playerId": "c4875740-f916-44f3-b69d-27b65cf58e64",
             "displayName": "DGZIN",
+            "riotId": "Dgzin#Br001",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Dgzin-Br001",
             "mainPosition": "JG",
             "teams": [
               {
@@ -6872,6 +7303,9 @@
             "id": "683b5d91-4778-4fb2-963d-5ff30dc2f763",
             "playerId": "683b5d91-4778-4fb2-963d-5ff30dc2f763",
             "displayName": "ERICK",
+            "riotId": "FVLR DA MORTE#PRET",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/FVLR%20DA%20MORTE-PRET",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -6903,6 +7337,9 @@
             "id": "168a688c-ec26-49b9-ba75-809bd993e2e6",
             "playerId": "168a688c-ec26-49b9-ba75-809bd993e2e6",
             "displayName": "PEN DRIVE",
+            "riotId": "pen drive usb#0000",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/pen%20drive%20usb-0000",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -6934,6 +7371,9 @@
             "id": "9fa40a2e-0327-4d5a-a162-f1dec6a66ddf",
             "playerId": "9fa40a2e-0327-4d5a-a162-f1dec6a66ddf",
             "displayName": "ROWLLF",
+            "riotId": "Rowllf#DDD49",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Rowllf-DDD49",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -6965,6 +7405,9 @@
             "id": "3c03eab2-782e-41cc-85eb-11895824406a",
             "playerId": "3c03eab2-782e-41cc-85eb-11895824406a",
             "displayName": "MAYAN",
+            "riotId": "SKY mayangamerbr#GGG",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/SKY%20mayangamerbr-GGG",
             "mainPosition": "JG",
             "teams": [
               {
@@ -6996,6 +7439,9 @@
             "id": "745a0ee6-ebda-4170-a095-68565c5f425b",
             "playerId": "745a0ee6-ebda-4170-a095-68565c5f425b",
             "displayName": "BURRAXA",
+            "riotId": "FEMBuurraxa#FLU",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/FEMBuurraxa-FLU",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -7028,6 +7474,9 @@
             "id": "9ca85881-b3a9-4d35-b5a5-040d97360711",
             "playerId": "9ca85881-b3a9-4d35-b5a5-040d97360711",
             "displayName": "JOSÉ 3000",
+            "riotId": "josé 3000#zeze",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/jos%C3%A9%203000-zeze",
             "mainPosition": "MID",
             "teams": [
               {
@@ -7059,6 +7508,9 @@
             "id": "f9509952-96c0-46a6-8797-77a580c69200",
             "playerId": "f9509952-96c0-46a6-8797-77a580c69200",
             "displayName": "BRNB",
+            "riotId": "RUN brnb#RUNE",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/RUN%20brnb-RUNE",
             "mainPosition": "JG",
             "teams": [
               {
@@ -7090,6 +7542,9 @@
             "id": "2dabc6b9-a1c4-4d86-ac69-8a19ca900653",
             "playerId": "2dabc6b9-a1c4-4d86-ac69-8a19ca900653",
             "displayName": "GAB",
+            "riotId": "Gab dos prédios#1129",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Gab%20dos%20pr%C3%A9dios-1129",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -7121,6 +7576,9 @@
             "id": "09416e18-233d-42fe-b73e-4292db2668d4",
             "playerId": "09416e18-233d-42fe-b73e-4292db2668d4",
             "displayName": "SANCHEZ",
+            "riotId": "MiniSanchez#Him",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/MiniSanchez-Him",
             "mainPosition": "MID",
             "teams": [
               {
@@ -7152,6 +7610,9 @@
             "id": "78002b34-f80b-46bb-9401-f905c2accbdd",
             "playerId": "78002b34-f80b-46bb-9401-f905c2accbdd",
             "displayName": "MAGIKARP",
+            "riotId": "Magikarp#Jere",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Magikarp-Jere",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -7183,6 +7644,9 @@
             "id": "48b97f8e-3b5e-4219-8828-c916cc35518a",
             "playerId": "48b97f8e-3b5e-4219-8828-c916cc35518a",
             "displayName": "DRAGER",
+            "riotId": "Drager007#TOP",
+            "riotIdAliases": [],
+            "opgg": "htthttps://op.gg/pt/lol/summoners/br/Drager007-TOP",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -7215,6 +7679,9 @@
             "id": "0c657f3b-3f64-4f0f-8233-98b89be507bc",
             "playerId": "0c657f3b-3f64-4f0f-8233-98b89be507bc",
             "displayName": "RAIO",
+            "riotId": "RUN Gralio#Swain",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/RUN%20Gralio-Swain",
             "mainPosition": "MID",
             "teams": [
               {
@@ -7245,6 +7712,9 @@
             "id": "5ed128a9-feae-48d8-b5ce-b5454b0b2126",
             "playerId": "5ed128a9-feae-48d8-b5ce-b5454b0b2126",
             "displayName": "LANCEIRO",
+            "riotId": "GDG Lanceiro#XXT69",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/GDG%20Lanceiro-XXT69",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -7276,6 +7746,9 @@
             "id": "f4829fa0-4a8b-4bf0-b34d-fdaea5256536",
             "playerId": "f4829fa0-4a8b-4bf0-b34d-fdaea5256536",
             "displayName": "ALEEH",
+            "riotId": "Aleeht#BR1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Aleeht-BR1",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -7307,6 +7780,9 @@
             "id": "ac2dcf04-efb7-461d-85ac-dc49214ad466",
             "playerId": "ac2dcf04-efb7-461d-85ac-dc49214ad466",
             "displayName": "MECHANICS",
+            "riotId": "Mechanics#mrn16",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Mechanics-mrn16",
             "mainPosition": "MID",
             "teams": [
               {
@@ -7338,6 +7814,9 @@
             "id": "b235d72d-a626-4ec8-b663-a07f2cdb1458",
             "playerId": "b235d72d-a626-4ec8-b663-a07f2cdb1458",
             "displayName": "MICHEL",
+            "riotId": "smurf pode#bubu",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/smurf%20pode-bubu",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -7369,6 +7848,9 @@
             "id": "066d44b1-1a87-4145-b485-aa0e20845952",
             "playerId": "066d44b1-1a87-4145-b485-aa0e20845952",
             "displayName": "THALITO",
+            "riotId": "Thalito2#BR2",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Thalito2-BR2",
             "mainPosition": "JG",
             "teams": [
               {
@@ -7400,6 +7882,9 @@
             "id": "9cde653a-d2ab-4724-9b0a-274626101703",
             "playerId": "9cde653a-d2ab-4724-9b0a-274626101703",
             "displayName": "KIDO",
+            "riotId": "INZ Kido#BENTO",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/INZ%20Kido-BENTO",
             "mainPosition": "JG",
             "teams": [
               {
@@ -7431,6 +7916,11 @@
             "id": "008016b0-52f1-4045-b24c-2e564c580ba6",
             "playerId": "008016b0-52f1-4045-b24c-2e564c580ba6",
             "displayName": "TAKOPI",
+            "riotId": "shhh vc é roxo#low",
+            "riotIdAliases": [
+              "shhh vc é roxo#low"
+            ],
+            "opgg": "https://www.deeplol.gg/summoner/br/shhh%20vc%20%C3%A9%20roxo-low",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -7462,6 +7952,9 @@
             "id": "9e27d442-9ec4-41c9-a05e-c2c52931094f",
             "playerId": "9e27d442-9ec4-41c9-a05e-c2c52931094f",
             "displayName": "MISS HOLES",
+            "riotId": "Miss Holes#Cvt",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Miss%20Holes-Cvt",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -7494,6 +7987,9 @@
             "id": "ccf6c920-4a2e-40ba-824d-73598fffb378",
             "playerId": "ccf6c920-4a2e-40ba-824d-73598fffb378",
             "displayName": "HITKILLA",
+            "riotId": "HitKilla#0408",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/HitKilla-0408",
             "mainPosition": "MID",
             "teams": [
               {
@@ -7525,6 +8021,9 @@
             "id": "bdfb1dc0-e510-487e-ad1d-71c7aa49d1c2",
             "playerId": "bdfb1dc0-e510-487e-ad1d-71c7aa49d1c2",
             "displayName": "JUNINHO",
+            "riotId": "JuninhoLegal#br1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/JuninhoLegal-br1",
             "mainPosition": "MID",
             "teams": [
               {
@@ -7555,6 +8054,9 @@
             "id": "3fe4398c-3c6e-43cb-a16b-9a1f943c4c8b",
             "playerId": "3fe4398c-3c6e-43cb-a16b-9a1f943c4c8b",
             "displayName": "CIEL",
+            "riotId": "SKY Ciel Winters#Lost",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/SKY%20Ciel%20Winters-Lost",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -7586,6 +8088,9 @@
             "id": "5bf10679-8e08-4849-a5f3-9ee030effacd",
             "playerId": "5bf10679-8e08-4849-a5f3-9ee030effacd",
             "displayName": "PERSALEG",
+            "riotId": "Persaleg1#br1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Persaleg1-br1",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -7617,6 +8122,9 @@
             "id": "a3cacd4b-cea4-4571-9139-9c74125ee524",
             "playerId": "a3cacd4b-cea4-4571-9139-9c74125ee524",
             "displayName": "NATSU",
+            "riotId": "Natsu#1v9",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Natsu-1v9",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -7648,6 +8156,9 @@
             "id": "6385d288-850f-48ed-9020-70ddc683c75b",
             "playerId": "6385d288-850f-48ed-9020-70ddc683c75b",
             "displayName": "GOBLINSTEIN",
+            "riotId": "GDG Goblinstein#2005",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/GDG%20Goblinstein-2005",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -7679,6 +8190,9 @@
             "id": "9dae6be8-5946-42f0-bbe0-5b3c18000b5d",
             "playerId": "9dae6be8-5946-42f0-bbe0-5b3c18000b5d",
             "displayName": "JULIN",
+            "riotId": "DKV Julin#666",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/DKV%20Julin-666",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -7711,6 +8225,9 @@
             "id": "398df2ac-c804-4102-b619-bcd1a99f7f83",
             "playerId": "398df2ac-c804-4102-b619-bcd1a99f7f83",
             "displayName": "ARTHEMIS",
+            "riotId": "Arthemis#Presa",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Arthemis-Presa",
             "mainPosition": "JG",
             "teams": [
               {
@@ -7742,6 +8259,9 @@
             "id": "7e9fa67d-9be1-4a2f-95b0-da3ec6d83b49",
             "playerId": "7e9fa67d-9be1-4a2f-95b0-da3ec6d83b49",
             "displayName": "UEU",
+            "riotId": "Ueu#0204",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Ueu-0204",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -7773,6 +8293,9 @@
             "id": "b809b15f-5792-4fe7-b376-694fcf9391ea",
             "playerId": "b809b15f-5792-4fe7-b376-694fcf9391ea",
             "displayName": "LEKUTAAKA",
+            "riotId": "LeKuTaaká#BR1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/LeKuTaak%C3%A1-BR1",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -7804,6 +8327,9 @@
             "id": "0bd2a5cd-e903-4cde-9172-70f1926fbc54",
             "playerId": "0bd2a5cd-e903-4cde-9172-70f1926fbc54",
             "displayName": "GENGI",
+            "riotId": "PNG gengi#br1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/PNG%20gengi-br1",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -7835,6 +8361,9 @@
             "id": "3f6a4d02-7df4-49d5-b2f9-dcdbc2345239",
             "playerId": "3f6a4d02-7df4-49d5-b2f9-dcdbc2345239",
             "displayName": "PKCASH",
+            "riotId": "PkCashM4#7867",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/PkCashM4-7867",
             "mainPosition": "MID",
             "teams": [
               {
@@ -7865,6 +8394,9 @@
             "id": "57754dd9-8e9e-4180-967b-5f8f286f7c47",
             "playerId": "57754dd9-8e9e-4180-967b-5f8f286f7c47",
             "displayName": "DOUG",
+            "riotId": "Padre Doug#VIT",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Padre%20Doug-VIT",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -7896,6 +8428,9 @@
             "id": "27ef1440-71ad-4036-a5ce-1a8cd159deba",
             "playerId": "27ef1440-71ad-4036-a5ce-1a8cd159deba",
             "displayName": "AAPOLLO",
+            "riotId": "Aapoll0#SUN",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Aapoll0-SUN",
             "mainPosition": "JG",
             "teams": [
               {
@@ -7909,6 +8444,9 @@
             "id": "31703eb4-e78b-43b7-a79f-5d9345aa291c",
             "playerId": "31703eb4-e78b-43b7-a79f-5d9345aa291c",
             "displayName": "BATMAN",
+            "riotId": "Batmam#7368",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Batmam-7368",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -7922,6 +8460,9 @@
             "id": "1a8cb509-0929-44bc-911d-4762ba4d54af",
             "playerId": "1a8cb509-0929-44bc-911d-4762ba4d54af",
             "displayName": "CELIN",
+            "riotId": "CELIN amo GBRs#2306",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/CELIN%20amo%20GBRs-2306",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -7935,6 +8476,9 @@
             "id": "675665f9-2226-4835-a6dc-1dff361afdf9",
             "playerId": "675665f9-2226-4835-a6dc-1dff361afdf9",
             "displayName": "COALA",
+            "riotId": "CoalaFaminto69#fazoL",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/CoalaFaminto69-fazoL",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -7948,6 +8492,9 @@
             "id": "f8fd37c3-904e-4e00-a903-3e4e1d12e624",
             "playerId": "f8fd37c3-904e-4e00-a903-3e4e1d12e624",
             "displayName": "COM DARDO",
+            "riotId": "GDG Com Dardo#BR2",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/GDG%20Com%20Dardo-BR2",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -7961,6 +8508,9 @@
             "id": "4f18ae09-7fe4-466c-bf03-2d76a3b7d077",
             "playerId": "4f18ae09-7fe4-466c-bf03-2d76a3b7d077",
             "displayName": "DRAX",
+            "riotId": "drax#vasco",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/drax-vasco",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -7974,6 +8524,9 @@
             "id": "56e83d57-3d45-40f4-b82e-f7a92b5649a1",
             "playerId": "56e83d57-3d45-40f4-b82e-f7a92b5649a1",
             "displayName": "DUDOU",
+            "riotId": "Dudou#BR01",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Dudou-BR01",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -7987,6 +8540,9 @@
             "id": "fa157405-2b19-4cc2-a6bf-983c6613660f",
             "playerId": "fa157405-2b19-4cc2-a6bf-983c6613660f",
             "displayName": "ECO",
+            "riotId": "Eco Eco#Zyom",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Eco%20Eco-Zyom",
             "mainPosition": "MID",
             "teams": [
               {
@@ -8000,6 +8556,9 @@
             "id": "e339f8ff-30dc-4ccd-baa4-e1caade0daa8",
             "playerId": "e339f8ff-30dc-4ccd-baa4-e1caade0daa8",
             "displayName": "FADU",
+            "riotId": "Fadabalinha#br1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Fadabalinha-br1",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -8013,6 +8572,9 @@
             "id": "4c0cf9b4-dbe8-4894-90ed-69f39315caff",
             "playerId": "4c0cf9b4-dbe8-4894-90ed-69f39315caff",
             "displayName": "FRENZY",
+            "riotId": "Frenzy#Gh0st",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Frenzy-Gh0st",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -8026,6 +8588,9 @@
             "id": "ea366226-8b2c-4a57-b9e5-cd8ccb2061b7",
             "playerId": "ea366226-8b2c-4a57-b9e5-cd8ccb2061b7",
             "displayName": "FROXY",
+            "riotId": "Froxy#knd",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Froxy-knd",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -8039,6 +8604,9 @@
             "id": "9adb1c27-212d-4d3d-b5d0-bf5c8a26f508",
             "playerId": "9adb1c27-212d-4d3d-b5d0-bf5c8a26f508",
             "displayName": "GAUZE",
+            "riotId": "Kacrxty#ezz",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Kacrxty-ezz",
             "mainPosition": "MID",
             "teams": [
               {
@@ -8052,6 +8620,9 @@
             "id": "9df926b0-9e0e-4a12-a2e0-291da35c0e8b",
             "playerId": "9df926b0-9e0e-4a12-a2e0-291da35c0e8b",
             "displayName": "GUGUIVES",
+            "riotId": "Scythe愛#dassa",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Scythe%E6%84%9B-dassa",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -8065,6 +8636,9 @@
             "id": "d0ef75ac-ae3a-47e6-8853-49bb4e89153d",
             "playerId": "d0ef75ac-ae3a-47e6-8853-49bb4e89153d",
             "displayName": "JUREG",
+            "riotId": "",
+            "riotIdAliases": [],
+            "opgg": "https://www.deeplol.gg/summoner/br/Juregkkj-JUREG",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -8078,6 +8652,9 @@
             "id": "b0a21c3e-4ac5-415a-899d-b1999536b992",
             "playerId": "b0a21c3e-4ac5-415a-899d-b1999536b992",
             "displayName": "KEVEN",
+            "riotId": "TNB Squeeze Benz#BENZ",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/TNB%20Squeeze%20Benz-BENZ",
             "mainPosition": "JG",
             "teams": [
               {
@@ -8091,6 +8668,9 @@
             "id": "b156e0e7-0f38-4ff5-8c6c-aae96c85885c",
             "playerId": "b156e0e7-0f38-4ff5-8c6c-aae96c85885c",
             "displayName": "LELEO",
+            "riotId": "Leleo#000",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Leleo-000",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -8104,6 +8684,9 @@
             "id": "c1080ea0-d4ed-4d8a-8648-a33628755c9c",
             "playerId": "c1080ea0-d4ed-4d8a-8648-a33628755c9c",
             "displayName": "LUARSIS",
+            "riotId": "True Silver#RITO",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/True%20Silver-RITO",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -8117,6 +8700,9 @@
             "id": "cd3f5859-81b0-4ac7-a0a9-e8d7fe459ce6",
             "playerId": "cd3f5859-81b0-4ac7-a0a9-e8d7fe459ce6",
             "displayName": "LUCA",
+            "riotId": "PΟRRA GAMES#LUCAO",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/P%CE%9FRRA%20GAMES-LUCAO",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -8130,6 +8716,9 @@
             "id": "f8751650-c959-48a2-9e07-1021ffdecac2",
             "playerId": "f8751650-c959-48a2-9e07-1021ffdecac2",
             "displayName": "MARCÃO",
+            "riotId": "lllllKlllll#br1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/lol/summoners/br/lllllKlllll-br1",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -8143,6 +8732,9 @@
             "id": "42b557a2-13b0-4128-a188-8b817af81590",
             "playerId": "42b557a2-13b0-4128-a188-8b817af81590",
             "displayName": "MAZZINO",
+            "riotId": "Mazzino#YAS",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Mazzino-YAS",
             "mainPosition": "MID",
             "teams": [
               {
@@ -8156,6 +8748,9 @@
             "id": "c04540a0-a25c-490b-bff7-62ebff594338",
             "playerId": "c04540a0-a25c-490b-bff7-62ebff594338",
             "displayName": "MR ALEGRIA",
+            "riotId": "Mr Alegria#COACH",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Mr%20Alegria-COACH",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -8169,6 +8764,9 @@
             "id": "12501bac-9d0e-455a-a6a3-2072a9363055",
             "playerId": "12501bac-9d0e-455a-a6a3-2072a9363055",
             "displayName": "NATAN",
+            "riotId": "ktatau#0107",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/ktatau-0107",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -8182,6 +8780,9 @@
             "id": "a18c3f7f-ecae-45b6-b3c8-fec29db64467",
             "playerId": "a18c3f7f-ecae-45b6-b3c8-fec29db64467",
             "displayName": "OVER",
+            "riotId": "over#killl",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/over-killl",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -8195,6 +8796,9 @@
             "id": "2d450d8c-30cc-40c8-8aa3-d2d7297d370e",
             "playerId": "2d450d8c-30cc-40c8-8aa3-d2d7297d370e",
             "displayName": "PARANOIA",
+            "riotId": "glimpse of us#sady",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/glimpse%20of%20us-sady",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -8208,6 +8812,9 @@
             "id": "ed2a2020-2d1d-422e-9259-2fc35a32b7e1",
             "playerId": "ed2a2020-2d1d-422e-9259-2fc35a32b7e1",
             "displayName": "PITISA",
+            "riotId": "Blue PitisaMemes#001",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Blue%20PitisaMemes-001",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -8221,6 +8828,9 @@
             "id": "73aedc68-0e38-4d08-9688-e7b16672c733",
             "playerId": "73aedc68-0e38-4d08-9688-e7b16672c733",
             "displayName": "POLIGONS",
+            "riotId": "Poligns#Aura",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Poligns-Aura",
             "mainPosition": "TOP",
             "teams": [
               {
@@ -8234,6 +8844,9 @@
             "id": "943575d4-c76b-438e-abbc-434ddb8d1dd2",
             "playerId": "943575d4-c76b-438e-abbc-434ddb8d1dd2",
             "displayName": "PROVÉRBIOS",
+            "riotId": "Provérbios#TOPO",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/lol/summoners/br/Prov%C3%A9rbios-TOPO",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -8247,6 +8860,9 @@
             "id": "80d00648-d3f8-41d0-932f-a256db92774d",
             "playerId": "80d00648-d3f8-41d0-932f-a256db92774d",
             "displayName": "SEYO",
+            "riotId": "",
+            "riotIdAliases": [],
+            "opgg": "https://www.leagueofgraphs.com/pt/summoner/br/seyo-1505",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -8260,6 +8876,9 @@
             "id": "9676fdd6-1dbb-400b-9d40-728ec3ed4897",
             "playerId": "9676fdd6-1dbb-400b-9d40-728ec3ed4897",
             "displayName": "SHASHYCS",
+            "riotId": "Viollunere#Tsuki",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Viollunere-Tsuki",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -8273,6 +8892,9 @@
             "id": "c2e3a850-d035-470b-8d42-288132b0019e",
             "playerId": "c2e3a850-d035-470b-8d42-288132b0019e",
             "displayName": "TIMOR LESTE",
+            "riotId": "FFLTimor Leste#SFC",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/FFLTimor%20Leste-SFC",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -8286,6 +8908,9 @@
             "id": "4d5d426d-5708-44b5-b6b3-d74c1ed2ab57",
             "playerId": "4d5d426d-5708-44b5-b6b3-d74c1ed2ab57",
             "displayName": "VITÃO",
+            "riotId": "Vitão da Trembo#2026",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Vit%C3%A3o%20da%20Trembo-2026",
             "mainPosition": "JG",
             "teams": [
               {
@@ -8299,6 +8924,9 @@
             "id": "af1ead43-619e-44b9-954b-b97d8d8ca99d",
             "playerId": "af1ead43-619e-44b9-954b-b97d8d8ca99d",
             "displayName": "YUJAY",
+            "riotId": "SKY YuJay#ilyN",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/SKY%20YuJay-ilyN",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -8312,6 +8940,9 @@
             "id": "083c1905-6626-48af-bab8-1db2b4a5a6c2",
             "playerId": "083c1905-6626-48af-bab8-1db2b4a5a6c2",
             "displayName": "YUTA",
+            "riotId": "Yuta Okkotsuリカ#xds",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Yuta%20Okkotsu%E3%83%AA%E3%82%AB-xds",
             "mainPosition": "SUB",
             "teams": [
               {
@@ -8325,6 +8956,9 @@
             "id": "42e15e20-724b-4684-adce-d1257b5acab0",
             "playerId": "42e15e20-724b-4684-adce-d1257b5acab0",
             "displayName": "ZEFIROTH",
+            "riotId": "zefiroth#br1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/zefiroth-br1",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -8338,6 +8972,9 @@
             "id": "12a7c569-e0f9-4dcf-9b60-c58794e00dc5",
             "playerId": "12a7c569-e0f9-4dcf-9b60-c58794e00dc5",
             "displayName": "ZILIN",
+            "riotId": "cuco sando#Sla",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/cuco%20sando-Sla",
             "mainPosition": "SUB",
             "teams": [
               {

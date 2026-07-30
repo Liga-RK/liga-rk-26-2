@@ -49,7 +49,7 @@
     division: "elite",
     rankingDivision: "elite",
     rankingScope: "championship",
-    view: "market",
+    view: "home",
     market: { elite: [], ascension: [] },
     popular: { elite: [], ascension: [] },
     popularHighlights: { elite: {}, ascension: {} },
@@ -101,6 +101,7 @@
     fantasyTeamName: document.getElementById("fantasy-team-name"),
     accountButton: document.getElementById("account-button"),
     accountLabel: document.getElementById("account-label"),
+    homeLoginButton: document.getElementById("home-login-button"),
     accountDialog: document.getElementById("account-dialog"),
     demoUserName: document.getElementById("demo-user-name"),
     confirmDemoUser: document.getElementById("confirm-demo-user"),
@@ -110,7 +111,6 @@
     rankingHelper: document.getElementById("ranking-helper"),
     marketStatus: document.getElementById("market-status"),
     marketDeadline: document.getElementById("market-deadline"),
-    marketIntro: document.getElementById("market-intro"),
     marketDashboard: document.getElementById("market-dashboard"),
     marketClosed: document.getElementById("market-closed"),
     closedMarketMessage: document.getElementById("closed-market-message"),
@@ -123,7 +123,6 @@
     popularList: document.getElementById("popular-list"),
     popularDivision: document.getElementById("popular-division"),
     closedActions: document.querySelectorAll("[data-closed-action]"),
-    introActions: document.querySelectorAll("[data-intro-action]"),
     roleShortcuts: document.querySelectorAll("[data-role-shortcut]")
   };
 
@@ -162,7 +161,6 @@
     el.roleFilter.addEventListener("input", () => setRoleFilter(el.roleFilter.value, { scroll: false }));
     el.roleShortcuts.forEach((button) => button.addEventListener("click", () => setRoleFilter(button.dataset.roleShortcut)));
     el.closedActions.forEach((button) => button.addEventListener("click", () => handleClosedAction(button.dataset.closedAction)));
-    el.introActions.forEach((button) => button.addEventListener("click", () => handleIntroAction(button.dataset.introAction)));
     el.clearLineup.addEventListener("click", clearLineup);
     el.shareLineup.addEventListener("click", shareLineupImage);
     el.closeShareDialog.addEventListener("click", closeShareDialog);
@@ -181,7 +179,8 @@
     });
     el.saveLineup.addEventListener("click", saveLineup);
     el.renameTeam.addEventListener("click", renameTeam);
-    el.accountButton.addEventListener("click", openAccount);
+    el.accountButton.addEventListener("click", handleAccountAction);
+    el.homeLoginButton.addEventListener("click", startDiscordLogin);
     el.confirmDemoUser.addEventListener("click", confirmDemoUser);
   }
 
@@ -396,12 +395,10 @@
   function renderMarketShell() {
     updateMarketStatus();
     const open = isMarketOpen();
-    syncNavigationForMarketStatus(open);
     if (el.popularStrip) {
       el.popularStrip.hidden = !open;
       el.popularStrip.classList.toggle("closed-hidden", !open);
     }
-    if (el.marketIntro) el.marketIntro.hidden = !open;
     if (el.marketDashboard) el.marketDashboard.hidden = !open;
     if (el.marketClosed) el.marketClosed.hidden = open;
     if (!open) {
@@ -414,19 +411,6 @@
       renderClosedRanking();
     }
     renderClosedLineups();
-  }
-
-  function syncNavigationForMarketStatus(open) {
-    const marketButton = [...el.navButtons].find((button) => button.dataset.view === "market");
-    if (marketButton) marketButton.textContent = open ? "Mercado" : "Início";
-    el.navButtons.forEach((button) => {
-      if (button.dataset.view !== "market") button.hidden = !open;
-    });
-    if (!open && state.view !== "market") {
-      state.view = "market";
-      el.navButtons.forEach((button) => button.classList.toggle("active", button.dataset.view === "market"));
-      el.views.forEach((section) => section.classList.toggle("active", section.id === "market-view"));
-    }
   }
 
   function renderClosedHighlights() {
@@ -921,7 +905,7 @@
       return;
     }
     if (!state.userName && config.backendMode === "local") {
-      openAccount();
+      handleAccountAction();
       setMessage("Identifique-se antes de salvar.", true);
       return;
     }
@@ -1023,7 +1007,6 @@
   }
 
   function setView(view) {
-    if (!isMarketOpen() && view !== "market") view = "market";
     state.view = view;
     el.navButtons.forEach((button) => button.classList.toggle("active", button.dataset.view === view));
     el.views.forEach((section) => section.classList.toggle("active", section.id === `${view}-view`));
@@ -1051,20 +1034,6 @@
     }
   }
 
-  function handleIntroAction(action) {
-    if (action === "account") {
-      openAccount();
-      return;
-    }
-    if (action === "ranking" || action === "rules") {
-      setView(action);
-      return;
-    }
-    if ((action === "market" || action === "lineup") && el.marketDashboard) {
-      el.marketDashboard.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }
-
   function renameTeam() {
     const next = window.prompt("Nome do seu time no RK Fantasy:", state.teamName);
     if (next === null) return;
@@ -1076,7 +1045,41 @@
     renderLineup();
   }
 
-  function openAccount() {
+  async function handleAccountAction() {
+    if (!state.userName) {
+      startDiscordLogin();
+      return;
+    }
+
+    if (config.backendMode !== "cloud") {
+      resetAuthenticatedState();
+      setView("home");
+      return;
+    }
+
+    el.accountButton.disabled = true;
+    el.accountButton.textContent = "Saindo...";
+    try {
+      const response = await apiFetch("/api/fantasy/auth/logout", {
+        method: "POST",
+        cache: "no-store"
+      });
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(apiErrorMessage(payload, "Não foi possível encerrar a sessão no servidor."));
+      }
+      resetAuthenticatedState();
+      setView("home");
+      setMessage("Você saiu da sua conta.", false, true);
+    } catch (error) {
+      setMessage(error.message || "Não foi possível sair agora.", true);
+    } finally {
+      el.accountButton.disabled = false;
+      renderAccount();
+    }
+  }
+
+  function startDiscordLogin() {
     if (config.backendMode === "cloud") {
       clearAuthToken();
       window.location.href = `${apiBase()}/api/fantasy/auth/login`;
@@ -1084,6 +1087,18 @@
     }
     el.demoUserName.value = state.userName;
     el.accountDialog.showModal();
+  }
+
+  function resetAuthenticatedState() {
+    clearAuthToken();
+    state.userName = "";
+    state.teamName = "Meu Time RK";
+    state.lineups = { elite: emptyLineup(), ascension: emptyLineup() };
+    try { localStorage.removeItem("fantasy-rk-state-v1"); } catch {}
+    renderAccount();
+    renderLineup();
+    renderMarket();
+    renderClosedLineups();
   }
 
   function confirmDemoUser() {
@@ -1098,7 +1113,7 @@
 
   function renderAccount() {
     el.accountLabel.textContent = state.userName || (config.backendMode === "cloud" ? "Não conectado" : "Modo demonstração");
-    el.accountButton.textContent = state.userName ? "Trocar" : "Entrar";
+    el.accountButton.textContent = state.userName ? "Sair" : "Entrar";
   }
 
   function renderRanking() {

@@ -6,11 +6,21 @@
   <meta name="description" content="RK Fantasy — o fantasy oficial da Liga RK 26.2" />
   <meta name="theme-color" content="#e52632" />
   <meta name="referrer" content="no-referrer" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="RK Fantasy | Liga RK 26.2" />
+  <meta property="og:description" content="Monte seu time e dispute o topo do Fantasy RK." />
+  <meta property="og:image" content="https://liga-rk.github.io/liga-rk-26-2/fantasy/assets/branding/og-rk-fantasy.png" />
+  <meta property="og:image:width" content="1731" />
+  <meta property="og:image:height" content="909" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RK Fantasy | Liga RK 26.2" />
+  <meta name="twitter:description" content="Monte seu time e dispute o topo do Fantasy RK." />
+  <meta name="twitter:image" content="https://liga-rk.github.io/liga-rk-26-2/fantasy/assets/branding/og-rk-fantasy.png" />
   <link rel="manifest" href="manifest.webmanifest" />
   <title>RK Fantasy | Liga RK 26.2</title>
   <link rel="icon" type="image/png" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
   <link rel="apple-touch-icon" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
-  <link rel="stylesheet" href="assets/fantasy.css?v=20260724-reserve-fallback" />
+  <link rel="stylesheet" href="assets/fantasy.css?v=20260729-live-roster-home" />
 </head>
 <body>
   <header class="site-header">
@@ -23,7 +33,8 @@
       </a>
     </div>
     <nav class="top-nav" aria-label="Navegação do RK Fantasy">
-      <button class="nav-button active" type="button" data-view="market">Mercado</button>
+      <button class="nav-button active" type="button" data-view="home">Início</button>
+      <button class="nav-button" type="button" data-view="market">Mercado</button>
       <button class="nav-button" type="button" data-view="ranking">Ranking</button>
       <button class="nav-button" type="button" data-view="rules">Regras</button>
     </nav>
@@ -34,20 +45,30 @@
   </header>
 
   <main>
-    <section class="hero">
-      <div class="hero-copy">
-        <span class="eyebrow">Monte seu time. Dispute cada rodada.</span>
-        <h1>O FANTASY DA<br><em>LIGA RK</em></h1>
-        <p>Escolha um jogador de cada posição, respeite o orçamento e acompanhe sua pontuação rodada após rodada.</p>
-      </div>
-      <div class="hero-status" aria-label="Situação do mercado">
-        <span>Mercado da rodada</span>
-        <strong id="market-status">ABERTO</strong>
-        <small id="market-deadline">Carregando prazo da rodada...</small>
-      </div>
+    <section id="home-view" class="app-view active">
+      <section class="home-landing" aria-labelledby="home-title">
+        <div class="home-landing-copy">
+          <span class="eyebrow">Fantasy oficial da Liga RK</span>
+          <h1 id="home-title">MONTE SEU TIME. <em>DISPUTE O TOPO DO FANTASY RK.</em></h1>
+          <p>Você recebe RK$ 100 para escalar os destaques da Elite ou da Ascensão e competir rodada a rodada. O mercado é único: quando está aberto, as duas divisões ficam disponíveis ao mesmo tempo.</p>
+          <button id="home-login-button" class="primary-button home-login-button" type="button">Entrar ou cadastrar-se</button>
+        </div>
+      </section>
     </section>
 
-    <section id="market-view" class="app-view active">
+    <section id="market-view" class="app-view">
+      <section class="market-overview" aria-label="Situação do mercado">
+        <div>
+          <span class="eyebrow">Escalação oficial</span>
+          <h1>Mercado do Fantasy RK</h1>
+          <p>Escolha sua divisão, monte o elenco e salve antes do fechamento global.</p>
+        </div>
+        <div class="hero-status">
+          <span>Mercado da rodada</span>
+          <strong id="market-status">ABERTO</strong>
+          <small id="market-deadline">Carregando prazo da rodada...</small>
+        </div>
+      </section>
       <section class="division-tabs" aria-label="Escolha de divisão">
         <button class="division-tab active" type="button" data-division="elite">Divisão Elite</button>
         <button class="division-tab" type="button" data-division="ascension">Divisão Ascensão</button>
@@ -115,55 +136,6 @@
           <div id="closed-ranking" class="closed-ranking" aria-live="polite">
             <p class="closed-lineup-empty">O ranking aparecerá aqui assim que houver pontuação processada.</p>
           </div>
-        </div>
-      </section>
-
-      <section id="market-intro" class="fantasy-intro" aria-labelledby="fantasy-intro-title">
-        <div class="fantasy-intro-hero">
-          <div>
-            <span class="eyebrow">Fantasy oficial da Liga RK</span>
-            <h2 id="fantasy-intro-title">Monte seu time. Leia a rodada. Dispute o topo.</h2>
-            <p>Você recebe RK$ 100 para escalar os destaques da Elite ou da Ascensão e competir rodada a rodada. O mercado é único: quando está aberto, as duas divisões ficam disponíveis ao mesmo tempo.</p>
-          </div>
-          <div class="fantasy-intro-actions" aria-label="Começar no Fantasy">
-            <button class="primary-button" type="button" data-intro-action="account">Entrar ou cadastrar-se</button>
-            <button class="secondary-button" type="button" data-intro-action="lineup">Montar ou editar escalação</button>
-            <button class="secondary-button" type="button" data-intro-action="market">Acessar mercado</button>
-            <button class="secondary-button" type="button" data-intro-action="ranking">Ver ranking</button>
-            <button class="secondary-button" type="button" data-intro-action="rules">Ver regras</button>
-          </div>
-        </div>
-        <div class="fantasy-intro-grid">
-          <article>
-            <span>01</span>
-            <h3>Como montar</h3>
-            <p>Escolha TOP, JG, MID, ADC, SUP e uma equipe. O total não pode ultrapassar RK$ 100.</p>
-          </article>
-          <article>
-            <span>02</span>
-            <h3>Equilíbrio do elenco</h3>
-            <p>Você pode escalar no máximo dois jogadores da mesma equipe e ainda escolher um reserva para uma posição de jogador.</p>
-          </article>
-          <article>
-            <span>03</span>
-            <h3>Pontuação</h3>
-            <p>O desempenho oficial nas partidas gera pontos. Seu capitão recebe multiplicador e a escalação salva vale para a rodada.</p>
-          </article>
-          <article>
-            <span>04</span>
-            <h3>Rodadas e mercado</h3>
-            <p>A organização abre cada janela manualmente. Ela fecha para todos 25 minutos antes da primeira partida válida das duas divisões.</p>
-          </article>
-          <article>
-            <span>05</span>
-            <h3>Valorização</h3>
-            <p>Regularidade, pontuação recente, expectativa pelo preço e quantidade de jogos influenciam a valorização ou desvalorização.</p>
-          </article>
-          <article>
-            <span>06</span>
-            <h3>Ranking</h3>
-            <p>Compare pontos da rodada, campeonato, patrimônio e classificação geral combinada entre Elite e Ascensão.</p>
-          </article>
         </div>
       </section>
 
@@ -435,7 +407,7 @@
   </dialog>
 
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/fantasy.js?v=20260729-global-market"></script>
-  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260729-global-market");</script>
+  <script src="assets/fantasy.js?v=20260729-live-roster-home"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260729-live-roster-home");</script>
 </body>
 </html>

@@ -92,6 +92,9 @@ for (const division of ["elite", "ascension"]) {
         id: player.id,
         playerId: player.playerId,
         displayName: player.displayName,
+        riotId: player.riotId || "",
+        riotIdAliases: player.alsoPlayedAs || player.riotIdAliases || [],
+        opgg: player.opgg || "",
         mainPosition: player.mainPosition,
         teams: player.teams || [],
         roundRatings: player.roundRatings || []

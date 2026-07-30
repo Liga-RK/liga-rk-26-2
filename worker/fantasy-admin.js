@@ -655,6 +655,10 @@ async function adminSyncApply(request, env, requestId, auth) {
   }
 
   const beforeMarket = await marketPriceState(env);
+  const existingTeamNames = new Map(
+    (await dbAll(env, "SELECT id, division, name FROM fantasy_official_teams"))
+      .map((team) => [`${team.division}:${team.id}`, clean(team.name)])
+  );
   const statements = [
     env.DB.prepare("UPDATE fantasy_official_teams SET active = 0"),
     env.DB.prepare("UPDATE fantasy_official_players SET active = 0"),
@@ -662,6 +666,11 @@ async function adminSyncApply(request, env, requestId, auth) {
   ];
 
   for (const team of snapshot.teams) {
+    const previousTeamName = existingTeamNames.get(`${team.division}:${team.id}`) || "";
+    const teamIdentityChanged = Boolean(
+      previousTeamName &&
+      normalizeEntityName(previousTeamName) !== normalizeEntityName(team.name)
+    );
     statements.push(env.DB.prepare(`
       INSERT INTO fantasy_official_teams
         (id, division, slot, name, tag, logo, active, source_hash, source_payload_json, synced_at)
@@ -696,6 +705,10 @@ async function adminSyncApply(request, env, requestId, auth) {
         team_name = CASE WHEN fantasy_market.manual_override = 1 THEN fantasy_market.team_name ELSE excluded.team_name END,
         team_tag = CASE WHEN fantasy_market.manual_override = 1 THEN fantasy_market.team_tag ELSE excluded.team_tag END,
         logo = CASE WHEN fantasy_market.manual_override = 1 THEN fantasy_market.logo ELSE excluded.logo END,
+        average_points = CASE
+          WHEN fantasy_market.manual_override = 0 AND fantasy_market.display_name <> excluded.display_name THEN 0
+          ELSE fantasy_market.average_points
+        END,
         active = 1, official_status = 'active', is_starter = 1,
         source_hash = excluded.source_hash, updated_at = CURRENT_TIMESTAMP
     `).bind(
@@ -712,6 +725,12 @@ async function adminSyncApply(request, env, requestId, auth) {
       Math.round(initialPrice(team.id, "TEAM") * 100),
       team.sourceHash
     ));
+    if (teamIdentityChanged) {
+      statements.push(env.DB.prepare(`
+        DELETE FROM fantasy_asset_round_scores
+        WHERE division = ? AND asset_id = ?
+      `).bind(team.division, team.id));
+    }
   }
 
   for (const player of snapshot.players) {
@@ -939,6 +958,7 @@ async function adminSyncRuns(request, env) {
 
 async function loadOfficialSource(env, requestedUrl) {
   const sourceUrl = clean(requestedUrl) || clean(env.FANTASY_SOURCE_URL) || DEFAULT_SOURCE_URL;
+  const configuredSourceUrl = clean(env.FANTASY_SOURCE_URL) || DEFAULT_SOURCE_URL;
   let parsed;
   if (
     env.FANTASY_SOURCE_JSON &&
@@ -957,8 +977,82 @@ async function loadOfficialSource(env, requestedUrl) {
   if (!parsed || typeof parsed !== "object" || !parsed.divisions) {
     throw new HttpError(422, "Formato da fonte oficial inválido.");
   }
+  const contentApiUrl = clean(env.CONTENT_API_URL);
+  if (contentApiUrl && (!requestedUrl || sourceUrl === configuredSourceUrl)) {
+    const response = await fetch(`${contentApiUrl}${contentApiUrl.includes("?") ? "&" : "?"}v=${Date.now()}`, {
+      headers: {
+        Accept: "application/json",
+        "Cache-Control": "no-store",
+        "User-Agent": "Fantasy-RK-Sync/3"
+      }
+    });
+    if (!response.ok) {
+      throw new HttpError(502, `O elenco oficial ao vivo respondeu HTTP ${response.status}.`);
+    }
+    const payload = await response.json();
+    const liveContent = payload?.content?.divisions ? payload.content : payload;
+    if (!liveContent?.divisions) {
+      throw new HttpError(422, "Formato do elenco oficial ao vivo inválido.");
+    }
+    parsed = mergeLiveOfficialContent(parsed, liveContent, payload?.updatedAt);
+  }
   Object.defineProperty(parsed, "__sourceUrl", { value: sourceUrl, enumerable: false });
   return parsed;
+}
+
+function mergeLiveOfficialContent(source, liveContent, updatedAt = null) {
+  const merged = {
+    ...source,
+    contentUpdatedAt: isoDate(updatedAt) || clean(updatedAt) || null,
+    divisions: { ...source.divisions }
+  };
+  for (const division of DIVISIONS) {
+    const sourceDivision = source.divisions?.[division] || {};
+    const liveDivision = liveContent.divisions?.[division];
+    if (!liveDivision?.teams) {
+      merged.divisions[division] = sourceDivision;
+      continue;
+    }
+    const teams = Object.entries(liveDivision.teams).map(([rawSlot, rawTeam]) => {
+      const slot = clean(rawSlot).toUpperCase();
+      return {
+        id: `team:${division}:${slot}`,
+        slot,
+        name: clean(rawTeam?.name),
+        tag: clean(rawTeam?.tag) || clean(rawTeam?.name).slice(0, 5).toUpperCase(),
+        logo: normalizeAssetPath(rawTeam?.logo),
+        players: arrayValues(rawTeam?.players)
+          .filter((player) => clean(player?.playerId || player?.id))
+          .map((player) => ({
+            id: clean(player.playerId || player.id),
+            playerId: clean(player.playerId || player.id),
+            name: clean(player.player || player.name),
+            role: clean(player.lane || player.role).toUpperCase(),
+            riotId: clean(player.riotId),
+            riotIdAliases: arrayValues(player.riotIdAliases).map(clean).filter(Boolean),
+            opgg: clean(player.opgg),
+            captain: Boolean(player.captain)
+          }))
+      };
+    });
+    const namesBySlot = new Map(teams.map((team) => [team.slot, team.name]));
+    const rounds = arrayValues(sourceDivision.rounds).map((round) => ({
+      ...round,
+      matches: arrayValues(round.matches).map((match) => ({
+        ...match,
+        homeTeamName: namesBySlot.get(clean(match.homeTeamSlot || match.homeSlot).toUpperCase()) ||
+          clean(match.homeTeamName),
+        awayTeamName: namesBySlot.get(clean(match.awayTeamSlot || match.awaySlot).toUpperCase()) ||
+          clean(match.awayTeamName)
+      }))
+    }));
+    merged.divisions[division] = {
+      ...sourceDivision,
+      teams,
+      rounds
+    };
+  }
+  return merged;
 }
 
 async function normalizeOfficialSource(source) {
@@ -1444,6 +1538,78 @@ async function adminRoundOneImport(request, env, requestId, auth) {
   });
 }
 
+function rosterPlayersForStats(source, division) {
+  return arrayValues(source.divisions?.[division]?.teams).flatMap((team) => {
+    const teamSlot = clean(team.slot).toUpperCase();
+    return arrayValues(team.players).map((player) => ({
+      id: clean(player.playerId || player.id),
+      name: clean(player.displayName || player.name || player.player),
+      role: clean(player.role || player.lane || player.mainPosition).toUpperCase(),
+      teamSlot,
+      riotIds: [
+        clean(player.riotId),
+        ...arrayValues(player.riotIdAliases).flatMap((alias) =>
+          typeof alias === "string"
+            ? [clean(alias)]
+            : [clean(alias?.riotId), clean(alias?.name)]
+        )
+      ].map(normalizeRiotIdentity).filter(Boolean),
+      opgg: normalizeProfileIdentity(player.opgg)
+    })).filter((player) => player.id);
+  });
+}
+
+function resolveStatsPlayerIdentity(player, rating, roster) {
+  const sourceId = clean(player.playerId || player.id);
+  const direct = roster.find((candidate) => candidate.id === sourceId);
+  if (direct) return direct;
+
+  const riotIds = [
+    clean(player.riotId),
+    ...arrayValues(player.riotIdAliases || player.alsoPlayedAs).flatMap((alias) =>
+      typeof alias === "string"
+        ? [clean(alias)]
+        : [clean(alias?.riotId), clean(alias?.name)]
+    )
+  ].map(normalizeRiotIdentity).filter(Boolean);
+  const byRiotId = roster.filter((candidate) =>
+    riotIds.some((riotId) => candidate.riotIds.includes(riotId))
+  );
+  if (byRiotId.length === 1) return byRiotId[0];
+
+  const opgg = normalizeProfileIdentity(player.opgg);
+  const byProfile = opgg ? roster.filter((candidate) => candidate.opgg === opgg) : [];
+  if (byProfile.length === 1) return byProfile[0];
+
+  const name = normalizeEntityName(player.displayName || player.name);
+  const role = clean(rating?.position || player.mainPosition).toUpperCase();
+  const teamSlot = clean(rating?.teamSlot || arrayValues(player.teams)[0]?.slot).toUpperCase();
+  const byRosterContext = roster.filter((candidate) =>
+    normalizeEntityName(candidate.name) === name &&
+    (!role || candidate.role === role) &&
+    (!teamSlot || candidate.teamSlot === teamSlot)
+  );
+  return byRosterContext.length === 1
+    ? byRosterContext[0]
+    : { id: sourceId, name: clean(player.displayName), role, teamSlot };
+}
+
+function normalizeRiotIdentity(value) {
+  return clean(value).normalize("NFKC").toLocaleLowerCase("pt-BR").replace(/\s+/g, "");
+}
+
+function normalizeProfileIdentity(value) {
+  return clean(value).normalize("NFKC").toLocaleLowerCase("pt-BR")
+    .replace(/[?#].*$/, "")
+    .replace(/\/+$/, "");
+}
+
+function normalizeEntityName(value) {
+  return clean(value).normalize("NFKD").replace(/\p{M}/gu, "")
+    .toLocaleLowerCase("pt-BR")
+    .replace(/[^a-z0-9]+/g, "");
+}
+
 async function normalizeRoundStats(source, roundNumber) {
   const items = [];
   const warnings = [];
@@ -1453,12 +1619,21 @@ async function normalizeRoundStats(source, roundNumber) {
       warnings.push(`Estatísticas ausentes para ${division}.`);
       continue;
     }
+    const roster = rosterPlayersForStats(source, division);
     const itemIds = new Set();
     for (const player of arrayValues(stats.players)) {
-      const assetId = clean(player.playerId || player.id);
       const rating = arrayValues(player.roundRatings)
         .find((row) => Number(row.round) === roundNumber);
+      const sourceAssetId = clean(player.playerId || player.id);
+      const resolvedPlayer = resolveStatsPlayerIdentity(player, rating, roster);
+      const assetId = clean(resolvedPlayer.id || sourceAssetId);
       if (!assetId) continue;
+      if (sourceAssetId && sourceAssetId !== assetId) {
+        warnings.push(
+          `Identidade estatística reconciliada em ${division}: ${clean(player.displayName)} ` +
+          `(${sourceAssetId} → ${assetId}).`
+        );
+      }
       if (itemIds.has(assetId)) {
         warnings.push(`Estatística duplicada para ${division}:${assetId}.`);
         continue;
@@ -1494,6 +1669,18 @@ async function normalizeRoundStats(source, roundNumber) {
     for (const team of arrayValues(stats.teams)) {
       const slot = clean(team.slot).toUpperCase();
       if (!slot) continue;
+      const officialTeam = arrayValues(source.divisions?.[division]?.teams)
+        .find((candidate) => clean(candidate.slot).toUpperCase() === slot);
+      if (
+        officialTeam &&
+        normalizeEntityName(officialTeam.name) !== normalizeEntityName(team.name)
+      ) {
+        warnings.push(
+          `Estatística histórica de equipe ignorada em ${division}/${slot}: ` +
+          `${clean(team.name)} não corresponde ao elenco atual ${clean(officialTeam.name)}.`
+        );
+        continue;
+      }
       const matches = arrayValues(stats.matches).filter((match) => {
         const parsedRound = Number(match.roundNumber) ||
           Number(String(match.round || "").match(/RODADA\s*(\d+)/i)?.[1]);
@@ -3641,8 +3828,10 @@ export const __test = {
   decodeBase64,
   hashObject,
   initialPrice,
+  mergeLiveOfficialContent,
   normalizeOfficialSource,
   normalizeRoundStats,
+  normalizeRiotIdentity,
   normalizedWeights,
   publicMarketState,
   resolveMarketWindow,

@@ -221,6 +221,84 @@ test("30 importação da rodada 1 verifica preservação dos preços", () => {
   assert.doesNotMatch(body, /SET\s+price\s*=/);
 });
 
+test("30a elenco ao vivo substitui equipe e jogadores do arquivo estático", () => {
+  const source = sampleSource();
+  const merged = __test.mergeLiveOfficialContent(source, {
+    divisions: {
+      elite: {
+        teams: {
+          A1: {
+            name: "SPACE DUCKS",
+            tag: "SDK",
+            logo: "assets/space-ducks.png",
+            players: [{
+              playerId: "mack-current",
+              player: "MACK",
+              lane: "JG",
+              riotId: "MacK#shhh",
+              opgg: "https://op.gg/pt/lol/summoners/br/MacK-shhh"
+            }]
+          }
+        }
+      },
+      ascension: { teams: {} }
+    }
+  }, "2026-07-29T18:33:06.155Z");
+  assert.equal(merged.divisions.elite.teams[0].name, "SPACE DUCKS");
+  assert.equal(merged.divisions.elite.teams[0].players[0].id, "mack-current");
+  assert.equal(merged.divisions.elite.rounds[0].matches[0].homeTeamName, "SPACE DUCKS");
+  assert.equal(merged.contentUpdatedAt, "2026-07-29T18:33:06.155Z");
+});
+
+test("30b estatística histórica é reconciliada com o jogador atual pelo Riot ID", async () => {
+  const source = sampleSource();
+  source.divisions.elite.teams[0].players = [{
+    id: "mack-current",
+    playerId: "mack-current",
+    name: "MACK",
+    role: "JG",
+    riotId: "MacK#shhh",
+    opgg: "https://op.gg/pt/lol/summoners/br/MacK-shhh"
+  }];
+  source.divisions.elite.stats.players = [{
+    id: "mack-history",
+    playerId: "mack-history",
+    displayName: "MACK",
+    riotId: "mack#SHHH",
+    opgg: "https://op.gg/pt/lol/summoners/br/MacK-shhh",
+    mainPosition: "JG",
+    teams: [{ slot: "A1" }],
+    roundRatings: [{
+      round: 1,
+      position: "JG",
+      teamSlot: "A1",
+      averageScore: 87.34,
+      games: 2,
+      wins: 2,
+      losses: 0,
+      matches: ["elite-map-1", "elite-map-2"]
+    }]
+  }];
+  const stats = await __test.normalizeRoundStats(source, 1);
+  const mack = stats.items.find((item) => item.assetId === "mack-current");
+  assert.ok(mack);
+  assert.equal(mack.points, 87.34);
+  assert.equal(mack.games, 2);
+  assert.match(stats.warnings.join(" "), /reconciliada/);
+});
+
+test("30c estatística de equipe substituída não é atribuída ao novo time", async () => {
+  const source = sampleSource();
+  source.divisions.elite.teams[0].name = "SPACE DUCKS";
+  source.divisions.elite.stats.teams[0].name = "TEAM SOLO BAHIA";
+  const stats = await __test.normalizeRoundStats(source, 1);
+  assert.equal(
+    stats.items.some((item) => item.assetId === "team:elite:A1"),
+    false
+  );
+  assert.match(stats.warnings.join(" "), /não corresponde ao elenco atual/);
+});
+
 test("31 simulação de valorização é determinística", () => {
   const settings = defaultSettings();
   const asset = assetInput({ roundPoints: 92, games: 2 });
