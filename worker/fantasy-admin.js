@@ -1,3 +1,5 @@
+import formulaV2 from "../src/fantasy/formula-v2.cjs";
+
 const ADMIN_COOKIE = "fantasy_admin_session";
 const ADMIN_SESSION_HOURS = 8;
 const LOGIN_WINDOW_MS = 15 * 60 * 1000;
@@ -14,18 +16,24 @@ const ALL_ROLES = [...PLAYER_ROLES, "TEAM"];
 const DEFAULT_SOURCE_URL =
   "https://liga-rk.github.io/liga-rk-26-2/assets/fantasy-source.json";
 const DEFAULT_FORMULA_SETTINGS = Object.freeze({
-  roundWeight: 0.55,
-  averageWeight: 0.25,
-  recentWeight: 0.20,
-  expectationBase: 3.0,
-  expectationPerPrice: 0.62,
-  volatility: 0.34,
-  damping: 0.85,
-  minimumPrice: 4.0,
-  minimumGames: 3,
-  decimals: 2,
+  scoreMinimum: -10,
+  scoreMaximum: 50,
+  captainMultiplier: 1.5,
+  expectedPointsPerPrice: 0.9,
+  priceDeltaDivisor: 7,
+  priceDeltaMinimum: -2,
+  priceDeltaMaximum: 2,
+  priceMinimum: 4,
+  priceMaximum: 30,
+  historyRounds: 3,
   didNotPlay: "hold"
 });
+const {
+  FORMULA_ID,
+  calcularValorizacao,
+  processarRodadaFantasy,
+  calcularPontuacaoEscalacao
+} = formulaV2;
 const BACKUP_TABLES = Object.freeze([
   "d1_migrations",
   "fantasy_users",
@@ -49,6 +57,7 @@ const BACKUP_TABLES = Object.freeze([
   "fantasy_wealth_snapshots",
   "fantasy_asset_map_scores",
   "fantasy_imports",
+  "fantasy_round_processing",
   "fantasy_private_leagues",
   "fantasy_private_league_members",
   "fantasy_formula_settings",
@@ -78,6 +87,7 @@ const RESTORE_TABLES = Object.freeze([
   "fantasy_wealth_snapshots",
   "fantasy_asset_map_scores",
   "fantasy_imports",
+  "fantasy_round_processing",
   "fantasy_private_leagues",
   "fantasy_private_league_members",
   "fantasy_formula_settings",
@@ -114,6 +124,8 @@ export async function handleAdminRequest(request, env, requestId) {
     ["GET", "/api/fantasy/admin/sync/runs", adminSyncRuns],
     ["POST", "/api/fantasy/admin/stats/round-1/preview", adminRoundOnePreview],
     ["POST", "/api/fantasy/admin/stats/round-1/import", adminRoundOneImport],
+    ["POST", "/api/fantasy/admin/stats/round/preview", adminRoundPreviewV2],
+    ["POST", "/api/fantasy/admin/stats/round/process", adminRoundProcessV2],
     ["GET", "/api/fantasy/admin/scores", adminScores],
     ["POST", "/api/fantasy/admin/valuation/simulate", adminValuationSimulate],
     ["POST", "/api/fantasy/admin/valuation/apply", adminValuationApply],
@@ -1538,6 +1550,653 @@ async function adminRoundOneImport(request, env, requestId, auth) {
   });
 }
 
+async function normalizeFormulaV2Round(source, roundNumber, division) {
+  const divisionSource = source.divisions?.[division];
+  if (!divisionSource) throw new HttpError(400, `Divisão ${division} ausente na fonte oficial.`);
+  const scheduledRound = arrayValues(divisionSource.rounds)
+    .find((round) => Number(round.roundNumber || round.number) === roundNumber);
+  if (!scheduledRound) throw new HttpError(404, `Rodada ${roundNumber} não encontrada na fonte oficial.`);
+  const roster = rosterPlayersForStats(source, division);
+  const stats = divisionSource.stats || {};
+  const statsPlayers = arrayValues(stats.players);
+  const identityBySourceId = new Map();
+  for (const player of statsPlayers) {
+    const rating = arrayValues(player.roundRatings)
+      .find((row) => Number(row.round) === roundNumber);
+    const resolved = resolveStatsPlayerIdentity(player, rating, roster);
+    identityBySourceId.set(clean(player.playerId || player.id), clean(resolved.id));
+  }
+  const resolveId = (value) => identityBySourceId.get(clean(value)) || clean(value);
+  const rawMaps = arrayValues(stats.matches)
+    .filter((match) => {
+      const parsedRound = Number(match.roundNumber) ||
+        Number(String(match.round || "").match(/RODADA\s*(\d+)/i)?.[1]);
+      return parsedRound === roundNumber;
+    });
+  const grouped = new Map();
+  for (const rawMap of rawMaps) {
+    const seriesId = clean(rawMap.seriesId);
+    const mapId = clean(rawMap.id || rawMap.matchId);
+    if (!seriesId || !mapId) throw new HttpError(400, "Há mapa oficial sem identificação de série.");
+    const series = grouped.get(seriesId) || {
+      id: seriesId,
+      formato: clean(rawMap.format).toUpperCase() ||
+        (/semi|final/i.test(clean(rawMap.stage)) ? "MD5" : "MD3"),
+      mapas: []
+    };
+    const mvpAtletaId = resolveId(rawMap.mvpPlayerId || rawMap.mvp?.playerId);
+    series.mapas.push({
+      id: mapId,
+      gameNumber: Math.max(1, Math.trunc(Number(rawMap.gameNumber) || series.mapas.length + 1)),
+      blueTeamSlot: clean(rawMap.blueTeamSlot).toUpperCase(),
+      redTeamSlot: clean(rawMap.redTeamSlot).toUpperCase(),
+      winnerSlot: clean(rawMap.winnerSlot).toUpperCase(),
+      mvpAtletaId: mvpAtletaId || null,
+      participantes: arrayValues(rawMap.participants).map((participant) => ({
+        atletaId: resolveId(participant.playerId),
+        teamSlot: clean(participant.teamSlot).toUpperCase(),
+        position: clean(participant.position).toUpperCase(),
+        score: participant.score,
+        won: Boolean(participant.won),
+        deaths: participant.deaths
+      }))
+    });
+    grouped.set(seriesId, series);
+  }
+  const series = [...grouped.values()].map((item) => {
+    item.mapas.sort((left, right) => left.gameNumber - right.gameNumber);
+    const vitorias = new Map();
+    for (const game of item.mapas) {
+      if (game.winnerSlot) vitorias.set(game.winnerSlot, (vitorias.get(game.winnerSlot) || 0) + 1);
+    }
+    const slots = [...new Set(item.mapas.flatMap((game) =>
+      [game.blueTeamSlot, game.redTeamSlot].filter(Boolean)
+    ))];
+    const alvo = item.formato === "MD5" ? 3 : 2;
+    const equipes = {};
+    for (const slot of slots) {
+      const oponente = slots.find((value) => value !== slot);
+      const wins = vitorias.get(slot) || 0;
+      const opponentWins = vitorias.get(oponente) || 0;
+      equipes[slot] = {
+        venceuSerie: wins >= alvo,
+        vitorias: wins,
+        vitoriasAdversario: opponentWins
+      };
+    }
+    return {
+      ...item,
+      concluida: Math.max(0, ...vitorias.values()) >= alvo,
+      equipes
+    };
+  });
+  const scheduledMatches = arrayValues(scheduledRound.matches);
+  const completedSchedule = scheduledMatches.filter((match) => clean(match.status) === "completed");
+  const ready = scheduledMatches.length > 0 &&
+    completedSchedule.length === scheduledMatches.length &&
+    series.length === scheduledMatches.length &&
+    series.every((item) => item.concluida);
+  const normalized = {
+    roundNumber,
+    division,
+    roundId: clean(scheduledRound.id) || `${division}-r${roundNumber}`,
+    expectedSeries: scheduledMatches.length,
+    completedSeries: series.filter((item) => item.concluida).length,
+    ready,
+    series
+  };
+  normalized.hash = await hashObject(normalized);
+  return normalized;
+}
+
+async function adminRoundPreviewV2(request, env, requestId, auth) {
+  const body = await readJson(request);
+  const roundNumber = Math.trunc(Number(body.roundNumber));
+  if (!Number.isInteger(roundNumber) || roundNumber < 2) {
+    return failure(
+      "ROUND_INVALID",
+      "A fórmula v2 vale a partir da rodada 2; a rodada 1 permanece preservada.",
+      400
+    );
+  }
+  const divisions = optionalDivision(body.division) ? [requiredDivision(body.division)] : DIVISIONS;
+  const source = await loadOfficialSource(env, body.sourceUrl);
+  const previews = [];
+  for (const division of divisions) {
+    const normalized = await normalizeFormulaV2Round(source, roundNumber, division);
+    previews.push({
+      division,
+      roundId: normalized.roundId,
+      sourceHash: normalized.hash,
+      ready: normalized.ready,
+      expectedSeries: normalized.expectedSeries,
+      completedSeries: normalized.completedSeries,
+      maps: normalized.series.reduce((total, item) => total + item.mapas.length, 0),
+      players: new Set(normalized.series.flatMap((item) =>
+        item.mapas.flatMap((game) => game.participantes.map((participant) => participant.atletaId))
+      )).size
+    });
+  }
+  const sourceHash = await hashObject(previews.map((item) => ({
+    division: item.division,
+    sourceHash: item.sourceHash
+  })));
+  await audit(env, {
+    actor: auth.username,
+    action: "stats.round.preview.v2",
+    targetType: "round",
+    targetId: String(roundNumber),
+    after: { sourceHash, previews },
+    requestId
+  });
+  return success({
+    formulaVersion: 2,
+    formulaId: FORMULA_ID,
+    roundNumber,
+    sourceHash,
+    ready: previews.every((item) => item.ready),
+    divisions: previews
+  });
+}
+
+async function adminRoundProcessV2(request, env, requestId, auth) {
+  const body = await readJson(request);
+  const roundNumber = Math.trunc(Number(body.roundNumber));
+  if (!Number.isInteger(roundNumber) || roundNumber < 2) {
+    return failure(
+      "ROUND_INVALID",
+      "A fórmula v2 vale a partir da rodada 2; a rodada 1 permanece preservada.",
+      400
+    );
+  }
+  const expectedHash = clean(body.sourceHash);
+  if (!expectedHash) return failure("PREVIEW_REQUIRED", "Confirme o hash exibido na prévia.", 400);
+  const marketState = await getGlobalMarketState(env);
+  if (marketState?.status === "open") {
+    return failure("MARKET_OPEN", "Feche o mercado antes de processar pontuação e preços.", 409);
+  }
+  const divisions = optionalDivision(body.division) ? [requiredDivision(body.division)] : DIVISIONS;
+  const source = await loadOfficialSource(env, body.sourceUrl);
+  const normalizedByDivision = [];
+  for (const division of divisions) {
+    normalizedByDivision.push(await normalizeFormulaV2Round(source, roundNumber, division));
+  }
+  const currentHash = await hashObject(normalizedByDivision.map((item) => ({
+    division: item.division,
+    sourceHash: item.hash
+  })));
+  if (!timingSafeEqual(expectedHash, currentHash)) {
+    return failure(
+      "SOURCE_CHANGED",
+      "As estatísticas mudaram desde a prévia. Gere uma nova prévia.",
+      409,
+      { expectedHash, currentHash }
+    );
+  }
+  const notReady = normalizedByDivision.filter((item) => !item.ready);
+  if (notReady.length) {
+    return failure(
+      "ROUND_NOT_FINALIZED",
+      "Todas as séries da rodada precisam estar oficialmente finalizadas.",
+      409,
+      {
+        divisions: notReady.map((item) => ({
+          division: item.division,
+          expectedSeries: item.expectedSeries,
+          completedSeries: item.completedSeries
+        }))
+      }
+    );
+  }
+
+  const results = [];
+  const processable = [];
+  for (const normalized of normalizedByDivision) {
+    const round = await env.DB.prepare(`
+      SELECT id, division, round_number AS roundNumber, status
+      FROM fantasy_rounds
+      WHERE division = ? AND round_number = ?
+    `).bind(normalized.division, roundNumber).first();
+    if (!round) return failure("ROUND_NOT_FOUND", `Rodada ausente em ${normalized.division}.`, 404);
+    if (["open", "scheduled", "cancelled"].includes(round.status)) {
+      return failure(
+        "ROUND_STATUS_INVALID",
+        `A rodada ${roundNumber} de ${normalized.division} precisa estar fechada.`,
+        409,
+        { status: round.status }
+      );
+    }
+    const prior = await env.DB.prepare(`
+      SELECT source_hash AS sourceHash, status
+      FROM fantasy_round_processing
+      WHERE round_id = ? AND formula_version = ?
+    `).bind(round.id, FORMULA_ID).first();
+    if (prior?.status === "completed") {
+      if (timingSafeEqual(prior.sourceHash, normalized.hash)) {
+        results.push({
+          division: normalized.division,
+          roundId: round.id,
+          idempotent: true,
+          sourceHash: normalized.hash
+        });
+        continue;
+      }
+      return failure(
+        "ROUND_ALREADY_VALUED_SOURCE_CHANGED",
+        `A rodada ${roundNumber} de ${normalized.division} já teve os preços aplicados com outra fonte.`,
+        409
+      );
+    }
+    processable.push({ normalized, round });
+  }
+  if (!processable.length) {
+    return success({
+      formulaVersion: 2,
+      formulaId: FORMULA_ID,
+      roundNumber,
+      sourceHash: currentHash,
+      idempotent: true,
+      divisions: results
+    });
+  }
+
+  const backupId = await createBackupRecord(
+    env,
+    auth.username,
+    `Antes do processamento Fantasy v2 da rodada ${roundNumber}`
+  );
+  for (const { normalized, round } of processable) {
+    const market = await dbAll(env, `
+      SELECT asset_id AS assetId, asset_type AS assetType, role,
+             team_slot AS teamSlot, price_cents AS priceCents
+      FROM fantasy_market
+      WHERE division = ? AND active = 1
+      ORDER BY asset_type, asset_id
+    `, [normalized.division]);
+    const history = await dbAll(env, `
+      SELECT s.asset_id AS assetId, s.points, s.games,
+             r.round_number AS roundNumber,
+             CASE WHEN r.status = 'cancelled' THEN 1 ELSE 0 END AS cancelled,
+             CASE WHEN r.status = 'scored' THEN 1 ELSE 0 END AS finalized
+      FROM fantasy_asset_round_scores s
+      JOIN fantasy_rounds r ON r.id = s.round_id
+      WHERE s.division = ? AND r.round_number < ?
+      ORDER BY r.round_number DESC
+    `, [normalized.division, roundNumber]);
+    const historicos = {};
+    for (const row of history) {
+      const list = historicos[String(row.assetId)] || [];
+      list.push(row);
+      historicos[String(row.assetId)] = list;
+    }
+    const precos = Object.fromEntries(
+      market.filter((item) => item.assetType === "player")
+        .map((item) => [String(item.assetId), Number(item.priceCents) / 100])
+    );
+    const processed = processarRodadaFantasy({
+      rodadaId: round.id,
+      rodadaNumero: roundNumber,
+      divisao: normalized.division,
+      series: normalized.series,
+      precos,
+      historicos
+    });
+    const byPlayer = new Map(processed.pontuacoes.map((item) => [String(item.atletaId), item]));
+    for (const asset of market.filter((item) => item.assetType === "player")) {
+      if (byPlayer.has(String(asset.assetId))) continue;
+      byPlayer.set(String(asset.assetId), {
+        formulaVersion: 2,
+        atletaId: asset.assetId,
+        equipeId: asset.teamSlot,
+        posicao: asset.role,
+        jogou: false,
+        mapasDisputados: 0,
+        totalMapasEquipe: 0,
+        pontuacaoMapas: [],
+        pontuacaoMediaMapas: 0,
+        participacaoSerie: 0,
+        participacaoIntegral: false,
+        bonusVitoriaSerie: 0,
+        bonusSeriePerfeita: 0,
+        bonusConsistencia: 0,
+        bonusMvpSerie: 0,
+        bonusSemMortes: 0,
+        bonusTotal: 0,
+        pontuacaoOficial: 0
+      });
+    }
+    const playerScores = [...byPlayer.values()];
+    const teamScores = market.filter((item) => item.assetType === "team").map((asset) => {
+      const played = playerScores.filter((score) =>
+        score.equipeId === asset.teamSlot && score.jogou
+      );
+      const points = played.length
+        ? roundMoney(played.reduce((sum, score) => sum + score.pontuacaoOficial, 0) / played.length)
+        : 0;
+      return {
+        formulaVersion: 2,
+        assetId: asset.assetId,
+        assetType: "team",
+        role: "TEAM",
+        teamSlot: asset.teamSlot,
+        jogou: played.length > 0,
+        mapasDisputados: Math.max(0, ...played.map((score) => score.totalMapasEquipe || 0)),
+        pontuacaoOficial: points,
+        scoreModel: "team-average-of-player-fantasy-v2",
+        playerScores: played.map((score) => ({
+          atletaId: score.atletaId,
+          pontuacaoOficial: score.pontuacaoOficial
+        }))
+      };
+    });
+    const sourceHash = normalized.hash;
+    const scoreStatements = [];
+    for (const score of playerScores) {
+      scoreStatements.push(env.DB.prepare(`
+        INSERT INTO fantasy_asset_round_scores
+          (round_id, division, asset_id, role, games, points, breakdown_json,
+           formula_version, source_hash, processed_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+        ON CONFLICT(round_id, asset_id) DO UPDATE SET
+          division = excluded.division, role = excluded.role,
+          games = excluded.games, points = excluded.points,
+          breakdown_json = excluded.breakdown_json,
+          formula_version = excluded.formula_version,
+          source_hash = excluded.source_hash,
+          processed_at = CURRENT_TIMESTAMP
+      `).bind(
+        round.id,
+        normalized.division,
+        score.atletaId,
+        score.posicao || "SUB",
+        score.mapasDisputados,
+        score.pontuacaoOficial,
+        JSON.stringify(score),
+        FORMULA_ID,
+        sourceHash
+      ));
+      scoreStatements.push(env.DB.prepare(`
+        UPDATE fantasy_market
+        SET last_score_breakdown_json = ?, updated_at = CURRENT_TIMESTAMP
+        WHERE division = ? AND asset_id = ?
+      `).bind(JSON.stringify(score), normalized.division, score.atletaId));
+      for (const mapScore of score.pontuacaoMapas || []) {
+        scoreStatements.push(env.DB.prepare(`
+          INSERT INTO fantasy_asset_map_scores
+            (round_id, division, match_id, asset_id, asset_type,
+             points_milli, breakdown_json, formula_version)
+          VALUES (?, ?, ?, ?, 'player', ?, ?, ?)
+          ON CONFLICT(round_id, match_id, asset_id) DO UPDATE SET
+            points_milli = excluded.points_milli,
+            breakdown_json = excluded.breakdown_json,
+            formula_version = excluded.formula_version
+        `).bind(
+          round.id,
+          normalized.division,
+          mapScore.mapaId,
+          score.atletaId,
+          Math.round(Number(mapScore.pontuacaoMapa) * 1000),
+          JSON.stringify(mapScore),
+          FORMULA_ID
+        ));
+      }
+    }
+    for (const score of teamScores) {
+      scoreStatements.push(env.DB.prepare(`
+        INSERT INTO fantasy_asset_round_scores
+          (round_id, division, asset_id, role, games, points, breakdown_json,
+           formula_version, source_hash, processed_at)
+        VALUES (?, ?, ?, 'TEAM', ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+        ON CONFLICT(round_id, asset_id) DO UPDATE SET
+          games = excluded.games, points = excluded.points,
+          breakdown_json = excluded.breakdown_json,
+          formula_version = excluded.formula_version,
+          source_hash = excluded.source_hash,
+          processed_at = CURRENT_TIMESTAMP
+      `).bind(
+        round.id,
+        normalized.division,
+        score.assetId,
+        score.mapasDisputados,
+        score.pontuacaoOficial,
+        JSON.stringify(score),
+        FORMULA_ID,
+        sourceHash
+      ));
+    }
+    scoreStatements.push(env.DB.prepare(`
+      INSERT INTO fantasy_round_processing
+        (round_id, division, formula_version, source_hash, status, score_items, details_json)
+      VALUES (?, ?, ?, ?, 'scores_saved', ?, ?)
+      ON CONFLICT(round_id, formula_version) DO UPDATE SET
+        source_hash = excluded.source_hash,
+        status = 'scores_saved',
+        score_items = excluded.score_items,
+        details_json = excluded.details_json,
+        processed_at = CURRENT_TIMESTAMP
+    `).bind(
+      round.id,
+      normalized.division,
+      FORMULA_ID,
+      sourceHash,
+      playerScores.length + teamScores.length,
+      JSON.stringify({ processedBy: auth.username, backupId })
+    ));
+    scoreStatements.push(env.DB.prepare(`
+      UPDATE fantasy_rounds
+      SET status = 'scored', processed_at = CURRENT_TIMESTAMP,
+          formula_version = ?, source_hash = ?
+      WHERE id = ?
+    `).bind(FORMULA_ID, sourceHash, round.id));
+    scoreStatements.push(env.DB.prepare(`
+      INSERT INTO fantasy_imports
+        (id, round_id, division, source_hash, formula_version,
+         match_ids_json, status, details_json)
+      VALUES (?, ?, ?, ?, ?, ?, 'confirmed', ?)
+      ON CONFLICT(round_id, source_hash, formula_version) DO UPDATE SET
+        status = 'confirmed', details_json = excluded.details_json
+    `).bind(
+      `v2:${round.id}:${sourceHash.slice(0, 24)}`,
+      round.id,
+      normalized.division,
+      sourceHash,
+      FORMULA_ID,
+      JSON.stringify(normalized.series.flatMap((item) => item.mapas.map((game) => game.id))),
+      JSON.stringify({ processedBy: auth.username, backupId })
+    ));
+    if (scoreStatements.length) await env.DB.batch(scoreStatements);
+    await recalculateLineupsV2(env, round, normalized.division);
+
+    const formula = { version: FORMULA_ID, settings: DEFAULT_FORMULA_SETTINGS };
+    const valuationItems = await calculateValuation(env, round, formula);
+    const valuationStatements = [];
+    for (const item of valuationItems) {
+      valuationStatements.push(env.DB.prepare(`
+        INSERT INTO fantasy_market_snapshots
+          (round_id, division, asset_id, price_before_cents,
+           price_after_cents, formula_version, breakdown_json)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(round_id, asset_id) DO UPDATE SET
+          price_before_cents = excluded.price_before_cents,
+          price_after_cents = excluded.price_after_cents,
+          formula_version = excluded.formula_version,
+          breakdown_json = excluded.breakdown_json
+      `).bind(
+        round.id,
+        normalized.division,
+        item.assetId,
+        item.currentPriceCents,
+        item.newPriceCents,
+        FORMULA_ID,
+        JSON.stringify(item)
+      ));
+      valuationStatements.push(env.DB.prepare(`
+        UPDATE fantasy_market
+        SET previous_price = price,
+            previous_price_cents = price_cents,
+            price = ?,
+            price_cents = ?,
+            last_valuation_breakdown_json = ?,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE division = ? AND asset_id = ?
+      `).bind(
+        item.newPriceCents / 100,
+        item.newPriceCents,
+        JSON.stringify(item),
+        normalized.division,
+        item.assetId
+      ));
+    }
+    const simulationHash = await hashObject({
+      roundId: round.id,
+      sourceHash,
+      formula: FORMULA_ID,
+      items: valuationItems
+    });
+    valuationStatements.push(env.DB.prepare(`
+      INSERT INTO fantasy_price_simulations
+        (id, round_id, source_hash, formula_version, settings_json,
+         items_json, status, created_by, applied_at)
+      VALUES (?, ?, ?, ?, ?, ?, 'applied', ?, CURRENT_TIMESTAMP)
+      ON CONFLICT(round_id, source_hash, formula_version) DO UPDATE SET
+        items_json = excluded.items_json,
+        status = 'applied',
+        created_by = excluded.created_by,
+        applied_at = CURRENT_TIMESTAMP
+    `).bind(
+      `v2:${round.id}:${simulationHash.slice(0, 24)}`,
+      round.id,
+      sourceHash,
+      FORMULA_ID,
+      JSON.stringify(DEFAULT_FORMULA_SETTINGS),
+      JSON.stringify(valuationItems),
+      auth.username
+    ));
+    valuationStatements.push(env.DB.prepare(`
+      UPDATE fantasy_round_processing
+      SET status = 'completed', price_items = ?,
+          details_json = ?, processed_at = CURRENT_TIMESTAMP
+      WHERE round_id = ? AND formula_version = ?
+    `).bind(
+      valuationItems.length,
+      JSON.stringify({
+        processedBy: auth.username,
+        backupId,
+        scoreItems: playerScores.length + teamScores.length,
+        priceItems: valuationItems.length
+      }),
+      round.id,
+      FORMULA_ID
+    ));
+    if (valuationStatements.length) await env.DB.batch(valuationStatements);
+    await updateMarketAverages(env, normalized.division);
+    await updateWealthAfterValuation(env, round.id, normalized.division, valuationItems);
+    results.push({
+      division: normalized.division,
+      roundId: round.id,
+      sourceHash,
+      idempotent: false,
+      scores: playerScores.length + teamScores.length,
+      maps: processed.mapasProcessados,
+      prices: valuationSummary(valuationItems)
+    });
+  }
+  await audit(env, {
+    actor: auth.username,
+    action: "stats.round.process.v2",
+    targetType: "round",
+    targetId: String(roundNumber),
+    before: { backupId },
+    after: { sourceHash: currentHash, divisions: results },
+    requestId
+  });
+  return success({
+    formulaVersion: 2,
+    formulaId: FORMULA_ID,
+    roundNumber,
+    sourceHash: currentHash,
+    backupId,
+    idempotent: false,
+    divisions: results
+  });
+}
+
+async function recalculateLineupsV2(env, round, division) {
+  const rows = await dbAll(env, `
+    SELECT l.id AS lineupId, l.fantasy_team_id AS fantasyTeamId,
+           l.captain_asset_id AS captainAssetId,
+           p.asset_id AS assetId, p.role,
+           lr.asset_id AS reserveAssetId, lr.role AS reserveRole
+    FROM fantasy_lineups l
+    JOIN fantasy_teams t ON t.id = l.fantasy_team_id
+    JOIN fantasy_lineup_picks p ON p.lineup_id = l.id
+    LEFT JOIN fantasy_lineup_reserves lr ON lr.lineup_id = l.id
+    WHERE l.round_id = ? AND t.division = ?
+    ORDER BY l.id, p.role
+  `, [round.id, division]);
+  const scores = await dbAll(env, `
+    SELECT asset_id AS assetId, points, games
+    FROM fantasy_asset_round_scores
+    WHERE round_id = ?
+  `, [round.id]);
+  const scoreMap = new Map(scores.map((score) => [String(score.assetId), score]));
+  const grouped = new Map();
+  for (const row of rows) {
+    const item = grouped.get(row.lineupId) || {
+      fantasyTeamId: row.fantasyTeamId,
+      capitaoId: row.captainAssetId,
+      titulares: [],
+      reserva: row.reserveAssetId
+        ? { assetId: row.reserveAssetId, role: row.reserveRole }
+        : null
+    };
+    item.titulares.push({ assetId: row.assetId, role: row.role });
+    grouped.set(row.lineupId, item);
+  }
+  const statements = [];
+  for (const lineup of grouped.values()) {
+    const score = calcularPontuacaoEscalacao({
+      titulares: lineup.titulares,
+      capitaoId: lineup.capitaoId,
+      reserva: lineup.reserva,
+      pontuacoes: scoreMap
+    });
+    statements.push(env.DB.prepare(`
+      INSERT INTO fantasy_team_round_scores
+        (fantasy_team_id, round_id, points, breakdown_json)
+      VALUES (?, ?, ?, ?)
+      ON CONFLICT(fantasy_team_id, round_id) DO UPDATE SET
+        points = excluded.points,
+        breakdown_json = excluded.breakdown_json,
+        created_at = CURRENT_TIMESTAMP
+    `).bind(
+      lineup.fantasyTeamId,
+      round.id,
+      score.pontuacaoTotal,
+      JSON.stringify({ formulaVersion: 2, ...score })
+    ));
+  }
+  if (statements.length) await env.DB.batch(statements);
+  return grouped.size;
+}
+
+async function updateMarketAverages(env, division) {
+  await env.DB.prepare(`
+    UPDATE fantasy_market
+    SET average_points = COALESCE((
+      SELECT ROUND(AVG(s.points), 2)
+      FROM fantasy_asset_round_scores s
+      JOIN fantasy_rounds r ON r.id = s.round_id
+      WHERE s.division = fantasy_market.division
+        AND s.asset_id = fantasy_market.asset_id
+        AND s.games > 0
+        AND r.status = 'scored'
+    ), 0),
+    updated_at = CURRENT_TIMESTAMP
+    WHERE division = ?
+  `).bind(division).run();
+}
+
 function rosterPlayersForStats(source, division) {
   return arrayValues(source.divisions?.[division]?.teams).flatMap((team) => {
     const teamSlot = clean(team.slot).toUpperCase();
@@ -1827,6 +2486,26 @@ async function adminValuationSimulate(request, env, requestId, auth) {
 
   const simulations = [];
   for (const round of rounds) {
+    const alreadyApplied = await env.DB.prepare(`
+      SELECT id, source_hash AS sourceHash, items_json AS itemsJson
+      FROM fantasy_price_simulations
+      WHERE round_id = ? AND formula_version = ? AND status = 'applied'
+      ORDER BY applied_at DESC LIMIT 1
+    `).bind(round.id, formula.version).first();
+    if (alreadyApplied) {
+      const items = safeJson(alreadyApplied.itemsJson, []);
+      simulations.push({
+        id: alreadyApplied.id,
+        round,
+        sourceHash: alreadyApplied.sourceHash,
+        formulaVersion: formula.version,
+        status: "applied",
+        idempotent: true,
+        summary: valuationSummary(items),
+        items
+      });
+      continue;
+    }
     const items = await calculateValuation(env, round, formula);
     const sourceHash = await hashObject({
       roundId: round.id,
@@ -1953,19 +2632,21 @@ async function adminValuationApply(request, env, requestId, auth) {
     statements.push(env.DB.prepare(`
       INSERT INTO fantasy_market_snapshots
         (round_id, division, asset_id, price_before_cents,
-         price_after_cents, formula_version)
-      VALUES (?, ?, ?, ?, ?, ?)
+         price_after_cents, formula_version, breakdown_json)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(round_id, asset_id) DO UPDATE SET
         price_before_cents = excluded.price_before_cents,
         price_after_cents = excluded.price_after_cents,
-        formula_version = excluded.formula_version
+        formula_version = excluded.formula_version,
+        breakdown_json = excluded.breakdown_json
     `).bind(
       simulation.round_id,
       simulation.division,
       item.assetId,
       item.currentPriceCents,
       item.newPriceCents,
-      simulation.formula_version
+      simulation.formula_version,
+      JSON.stringify(item)
     ));
     statements.push(env.DB.prepare(`
       UPDATE fantasy_market
@@ -1973,11 +2654,13 @@ async function adminValuationApply(request, env, requestId, auth) {
           previous_price_cents = price_cents,
           price = ?,
           price_cents = ?,
+          last_valuation_breakdown_json = ?,
           updated_at = CURRENT_TIMESTAMP
       WHERE division = ? AND asset_id = ?
     `).bind(
       item.newPriceCents / 100,
       item.newPriceCents,
+      JSON.stringify(item),
       simulation.division,
       item.assetId
     ));
@@ -2069,7 +2752,9 @@ async function calculateValuation(env, round, formula) {
     ORDER BY m.role, m.display_name
   `, [round.id, round.division]);
   const history = await dbAll(env, `
-    SELECT s.asset_id AS assetId, s.points, s.games, r.round_number AS roundNumber
+    SELECT s.asset_id AS assetId, s.points, s.games, r.round_number AS roundNumber,
+           CASE WHEN r.status = 'scored' THEN 1 ELSE 0 END AS finalized,
+           CASE WHEN r.status = 'cancelled' THEN 1 ELSE 0 END AS cancelled
     FROM fantasy_asset_round_scores s
     JOIN fantasy_rounds r ON r.id = s.round_id
     WHERE s.division = ? AND r.round_number < ?
@@ -2078,7 +2763,13 @@ async function calculateValuation(env, round, formula) {
   const historyByAsset = new Map();
   for (const row of history) {
     const list = historyByAsset.get(String(row.assetId)) || [];
-    list.push({ points: Number(row.points) || 0, games: Number(row.games) || 0 });
+    list.push({
+      points: Number(row.points) || 0,
+      games: Number(row.games) || 0,
+      roundNumber: Number(row.roundNumber),
+      finalized: Boolean(row.finalized),
+      cancelled: Boolean(row.cancelled)
+    });
     historyByAsset.set(String(row.assetId), list);
   }
   return market.map((asset) => valuationItem(asset, historyByAsset.get(String(asset.assetId)) || [], formula.settings));
@@ -2088,43 +2779,40 @@ function valuationItem(asset, history, settings) {
   const price = Number(asset.currentPriceCents) / 100;
   const roundPoints = Number(asset.roundPoints) || 0;
   const games = Math.max(0, Math.trunc(Number(asset.games) || 0));
-  const playedHistory = history.filter((row) => row.games > 0);
-  const historicalAverage = playedHistory.length
-    ? average(playedHistory.map((row) => row.points))
-    : Number(settings.expectationBase) + Number(settings.expectationPerPrice) * price;
-  const recentPrevious = playedHistory.slice(0, 2).map((row) => row.points);
-  const recentValues = games > 0 ? [roundPoints, ...recentPrevious] : recentPrevious;
-  const recentAverage = recentValues.length ? average(recentValues) : historicalAverage;
-  const expected = Number(settings.expectationBase) + Number(settings.expectationPerPrice) * price;
-  const weights = normalizedWeights(settings);
-  const signal = weights.round * (roundPoints - expected) +
-    weights.average * (historicalAverage - expected) +
-    weights.recent * (recentAverage - expected);
-  const totalGames = games + playedHistory.reduce((sum, row) => sum + row.games, 0);
-  const confidence = 1 - Math.exp(-totalGames / Math.max(1, Number(settings.minimumGames)));
-  const deviation = standardDeviation(recentValues);
-  const regularity = 1 / (1 + deviation / (Math.abs(recentAverage) + 10));
-  const normalizedSignal = signal / (Math.abs(expected) + 8);
-  const damping = Math.max(0.05, Number(settings.damping));
-  const dampedSignal = Math.sign(normalizedSignal) *
-    (1 - Math.exp(-Math.abs(normalizedSignal) / damping));
-  let delta = price * Number(settings.volatility) * dampedSignal * confidence *
-    (0.65 + 0.35 * regularity);
-  if (games === 0 && settings.didNotPlay === "hold") delta = 0;
-  const decimals = clamp(Math.trunc(Number(settings.decimals)), 0, 2);
-  const factor = 10 ** decimals;
-  const minimumPrice = Number(settings.minimumPrice);
-  const newPrice = Math.max(minimumPrice, Math.round((price + delta) * factor) / factor);
-  const newPriceCents = Math.round(newPrice * 100);
-  const previousSum = recentPrevious.reduce((sum, value) => sum + value, 0);
-  const recentCount = recentPrevious.length + 1;
-  const coefficient = weights.round + weights.recent / recentCount;
-  const constantTerm =
-    -weights.round * expected +
-    weights.average * (historicalAverage - expected) +
-    weights.recent * (previousSum / recentCount - expected);
-  const necessaryScore = coefficient > 0 ? Math.max(0, -constantTerm / coefficient) : expected;
+  if (asset.assetType === "team") {
+    return {
+      formulaVersion: 2,
+      formulaId: FORMULA_ID,
+      assetId: asset.assetId,
+      assetType: asset.assetType,
+      role: asset.role,
+      name: asset.name,
+      teamName: asset.teamName,
+      currentPriceCents: Number(asset.currentPriceCents),
+      newPriceCents: Number(asset.currentPriceCents),
+      deltaCents: 0,
+      currentPrice: roundMoney(price),
+      newPrice: roundMoney(price),
+      delta: 0,
+      roundPoints: roundMoney(roundPoints),
+      historicalAverage: null,
+      recentAverage: null,
+      expectedScore: null,
+      games,
+      played: games > 0,
+      heldReason: "A fórmula v2 de valorização é individual; o ativo de equipe mantém o preço."
+    };
+  }
+  const valuation = calcularValorizacao({
+    precoAtual: price,
+    pontuacaoRodada: roundPoints,
+    historico: history,
+    jogou: games > 0
+  });
+  const newPriceCents = Math.round(valuation.precoNovo * 100);
   return {
+    formulaVersion: 2,
+    formulaId: FORMULA_ID,
     assetId: asset.assetId,
     assetType: asset.assetType,
     role: asset.role,
@@ -2134,19 +2822,20 @@ function valuationItem(asset, history, settings) {
     newPriceCents,
     deltaCents: newPriceCents - Number(asset.currentPriceCents),
     currentPrice: roundMoney(price),
-    newPrice: roundMoney(newPrice),
-    delta: roundMoney(newPrice - price),
+    newPrice: valuation.precoNovo,
+    delta: valuation.variacaoMercado,
     roundPoints: roundMoney(roundPoints),
-    historicalAverage: roundMoney(historicalAverage),
-    recentAverage: roundMoney(recentAverage),
-    expectedScore: roundMoney(expected),
-    necessaryScore: roundMoney(necessaryScore),
+    historicalAverage: valuation.mediaUltimasTres,
+    recentAverage: valuation.mediaUltimasTres,
+    expectedPriceScore: valuation.pontuacaoEsperadaPreco,
+    expectedScore: valuation.pontuacaoEsperada,
+    scoreDifference: valuation.diferenca,
+    rawVariation: valuation.variacaoBruta,
+    marketVariation: valuation.variacaoMercado,
     games,
-    totalGames,
-    confidence: roundMoney(confidence),
-    regularity: roundMoney(regularity),
-    signal: roundMoney(signal),
-    played: games > 0
+    totalGames: history.filter((row) => Number(row.games) > 0).length + (games > 0 ? 1 : 0),
+    played: games > 0,
+    breakdown: valuation
   };
 }
 
@@ -2170,8 +2859,12 @@ async function adminUpdateFormula(request, env, requestId, auth) {
   const before = await getFormula(env);
   const version = clean(body.version);
   const settings = validateFormulaSettings(body.settings);
-  if (!version || version.length > 80) {
-    return failure("FORMULA_VERSION_INVALID", "Versão da fórmula inválida.", 400);
+  if (version !== FORMULA_ID) {
+    return failure(
+      "FORMULA_VERSION_INVALID",
+      "A fórmula oficial ativa é fantasy-v2 e seus parâmetros são fixos.",
+      400
+    );
   }
   await env.DB.prepare(`
     UPDATE fantasy_formula_settings
@@ -2195,7 +2888,7 @@ async function adminResetFormula(_request, env, requestId, auth) {
   const before = await getFormula(env);
   await env.DB.prepare(`
     UPDATE fantasy_formula_settings
-    SET version = 'rk-value-v2', settings_json = ?,
+    SET version = 'fantasy-v2', settings_json = ?,
         updated_by = ?, updated_at = CURRENT_TIMESTAMP
     WHERE id = 'global'
   `).bind(JSON.stringify(DEFAULT_FORMULA_SETTINGS), auth.username).run();
@@ -2229,32 +2922,29 @@ async function getFormula(env) {
 function validateFormulaSettings(input) {
   const source = input && typeof input === "object" ? input : {};
   const settings = {
-    roundWeight: finiteBetween(source.roundWeight, 0, 1),
-    averageWeight: finiteBetween(source.averageWeight, 0, 1),
-    recentWeight: finiteBetween(source.recentWeight, 0, 1),
-    expectationBase: finiteBetween(source.expectationBase, -100, 100),
-    expectationPerPrice: finiteBetween(source.expectationPerPrice, 0, 20),
-    volatility: finiteBetween(source.volatility, 0.001, 5),
-    damping: finiteBetween(source.damping, 0.05, 20),
-    minimumPrice: finiteBetween(source.minimumPrice, 4, 1000),
-    minimumGames: finiteBetween(source.minimumGames, 1, 100),
-    decimals: clamp(Math.trunc(Number(source.decimals)), 0, 2),
+    scoreMinimum: finiteBetween(source.scoreMinimum, -10, -10),
+    scoreMaximum: finiteBetween(source.scoreMaximum, 50, 50),
+    captainMultiplier: finiteBetween(source.captainMultiplier, 1.5, 1.5),
+    expectedPointsPerPrice: finiteBetween(source.expectedPointsPerPrice, 0.9, 0.9),
+    priceDeltaDivisor: finiteBetween(source.priceDeltaDivisor, 7, 7),
+    priceDeltaMinimum: finiteBetween(source.priceDeltaMinimum, -2, -2),
+    priceDeltaMaximum: finiteBetween(source.priceDeltaMaximum, 2, 2),
+    priceMinimum: finiteBetween(source.priceMinimum, 4, 4),
+    priceMaximum: finiteBetween(source.priceMaximum, 30, 30),
+    historyRounds: finiteBetween(source.historyRounds, 3, 3),
     didNotPlay: source.didNotPlay === "hold" ? "hold" : "hold"
   };
-  if (settings.roundWeight + settings.averageWeight + settings.recentWeight <= 0) {
-    throw new HttpError(400, "Ao menos um peso da fórmula deve ser maior que zero.");
-  }
   return settings;
 }
 
 function normalizedWeights(settings) {
-  const total = Number(settings.roundWeight) +
-    Number(settings.averageWeight) +
-    Number(settings.recentWeight);
+  const total = Number(settings.roundWeight ?? 0.55) +
+    Number(settings.averageWeight ?? 0.25) +
+    Number(settings.recentWeight ?? 0.20);
   return {
-    round: Number(settings.roundWeight) / total,
-    average: Number(settings.averageWeight) / total,
-    recent: Number(settings.recentWeight) / total
+    round: Number(settings.roundWeight ?? 0.55) / total,
+    average: Number(settings.averageWeight ?? 0.25) / total,
+    recent: Number(settings.recentWeight ?? 0.20) / total
   };
 }
 
@@ -2262,7 +2952,10 @@ async function updateWealthAfterValuation(env, roundId, division, items) {
   const priceMap = new Map(items.map((item) => [String(item.assetId), Number(item.newPriceCents)]));
   const rows = await dbAll(env, `
     SELECT l.fantasy_team_id AS fantasyTeamId, l.id AS lineupId,
-           p.asset_id AS assetId, COALESCE(w.cash_cents, 0) AS cashCents
+           p.asset_id AS assetId, l.total_cost AS totalCost,
+           COALESCE(w.initial_cents, 10000) AS initialCents,
+           COALESCE(w.purchases_cents, CAST(ROUND(l.total_cost * 100) AS INTEGER)) AS purchasesCents,
+           COALESCE(w.cash_cents, 10000 - CAST(ROUND(l.total_cost * 100) AS INTEGER)) AS cashCents
     FROM fantasy_lineups l
     JOIN fantasy_teams t ON t.id = l.fantasy_team_id
     JOIN fantasy_lineup_picks p ON p.lineup_id = l.id
@@ -2273,6 +2966,8 @@ async function updateWealthAfterValuation(env, roundId, division, items) {
   const grouped = new Map();
   for (const row of rows) {
     const entry = grouped.get(row.fantasyTeamId) || {
+      initialCents: Number(row.initialCents) || 10000,
+      purchasesCents: Number(row.purchasesCents) || 0,
       cashCents: Number(row.cashCents) || 0,
       assetsCents: 0
     };
@@ -2281,10 +2976,26 @@ async function updateWealthAfterValuation(env, roundId, division, items) {
   }
   const statements = [...grouped.entries()].map(([fantasyTeamId, value]) =>
     env.DB.prepare(`
-      UPDATE fantasy_wealth_snapshots
-      SET final_cents = ?
-      WHERE fantasy_team_id = ? AND round_id = ?
-    `).bind(value.cashCents + value.assetsCents, fantasyTeamId, roundId)
+      INSERT INTO fantasy_wealth_snapshots
+        (fantasy_team_id, round_id, initial_cents, purchases_cents,
+         cash_cents, final_cents, formula_version)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(fantasy_team_id, round_id) DO UPDATE SET
+        initial_cents = excluded.initial_cents,
+        purchases_cents = excluded.purchases_cents,
+        cash_cents = excluded.cash_cents,
+        final_cents = excluded.final_cents,
+        formula_version = excluded.formula_version,
+        created_at = CURRENT_TIMESTAMP
+    `).bind(
+      fantasyTeamId,
+      roundId,
+      value.initialCents,
+      value.purchasesCents,
+      value.cashCents,
+      value.cashCents + value.assetsCents,
+      FORMULA_ID
+    )
   );
   if (statements.length) await env.DB.batch(statements);
 }
@@ -3802,6 +4513,7 @@ function clamp(value, minimum, maximum) {
 }
 
 function initialPrice(id, role) {
+  if (PLAYER_ROLES.includes(clean(role).toUpperCase())) return 12;
   let hash = 2166136261;
   for (const character of `${id}:${role}`) {
     hash ^= character.charCodeAt(0);

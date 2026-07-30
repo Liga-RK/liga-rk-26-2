@@ -21,6 +21,7 @@
     activePanel: "overview",
     syncPreview: null,
     statsPreview: null,
+    roundPreview: null,
     simulations: [],
     scores: [],
     lineups: [],
@@ -47,6 +48,8 @@
     el.syncApplyButton.addEventListener("click", applySync);
     el.statsPreviewButton.addEventListener("click", previewStats);
     el.statsImportButton.addEventListener("click", importStats);
+    el.roundPreviewButton.addEventListener("click", previewRoundV2);
+    el.roundProcessButton.addEventListener("click", processRoundV2);
     el.roundForm.addEventListener("submit", saveRound);
     el.formulaForm.addEventListener("submit", saveFormula);
     el.valuationForm.addEventListener("submit", simulateValuation);
@@ -307,6 +310,34 @@
     });
   }
 
+  async function previewRoundV2() {
+    await action(async () => {
+      const body = formObject(el.roundProcessForm);
+      body.roundNumber = Number(body.roundNumber);
+      state.roundPreview = await api("/stats/round/preview", { method: "POST", body });
+      el.roundProcessButton.disabled = !state.roundPreview.ready;
+      el.roundProcessPreview.textContent = JSON.stringify(state.roundPreview, null, 2);
+    });
+  }
+
+  async function processRoundV2() {
+    if (!state.roundPreview || !state.roundPreview.ready) return;
+    const roundNumber = Number(state.roundPreview.roundNumber);
+    if (!confirm(
+      `Processar oficialmente a rodada ${roundNumber}? Isso calculará pontos, escalações, patrimônio e preços.`
+    )) return;
+    await action(async () => {
+      const body = formObject(el.roundProcessForm);
+      body.roundNumber = roundNumber;
+      body.sourceHash = state.roundPreview.sourceHash;
+      const data = await api("/stats/round/process", { method: "POST", body });
+      el.roundProcessPreview.textContent = JSON.stringify(data, null, 2);
+      el.roundProcessButton.disabled = true;
+      state.roundPreview = null;
+      await loadScores();
+    });
+  }
+
   async function loadScores() {
     const query = queryString({
       division: el.scoreDivision.value,
@@ -373,16 +404,16 @@
     const data = await api("/formula");
     const formula = data.formula;
     const labels = {
-      roundWeight: "Peso da rodada",
-      averageWeight: "Peso da média histórica",
-      recentWeight: "Peso das recentes",
-      expectationBase: "Base da expectativa",
-      expectationPerPrice: "Expectativa por RK$",
-      volatility: "Volatilidade",
-      damping: "Amortecimento natural",
-      minimumPrice: "Preço mínimo",
-      minimumGames: "Jogos para confiança",
-      decimals: "Casas decimais"
+      scoreMinimum: "Pontuação mínima",
+      scoreMaximum: "Pontuação máxima",
+      captainMultiplier: "Multiplicador do capitão",
+      expectedPointsPerPrice: "Expectativa por RK$",
+      priceDeltaDivisor: "Divisor da variação",
+      priceDeltaMinimum: "Variação mínima",
+      priceDeltaMaximum: "Variação máxima",
+      priceMinimum: "Preço mínimo",
+      priceMaximum: "Preço máximo",
+      historyRounds: "Rodadas no M3"
     };
     el.formulaForm.innerHTML = `
       <label class="wide">Versão<input name="version" value="${escapeAttr(formula.version)}" required maxlength="80"></label>

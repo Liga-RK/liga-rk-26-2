@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "schema": "fantasy-rk-official-source-v1",
+  "version": 2,
+  "schema": "fantasy-rk-official-source-v2",
   "generatedAt": "2026-07-29T01:18:02.449Z",
   "season": "Liga RK 26.2",
   "timezone": "America/Sao_Paulo",
@@ -937,6 +937,7 @@
               "awayTeamName": "BANDO DO ROSA",
               "startsAt": "2026-07-26T19:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -952,6 +953,7 @@
               "awayTeamName": "QUANTUM RABBITS",
               "startsAt": "2026-07-26T19:00:00.000Z",
               "status": "completed",
+              "format": "MD3",
               "homeScore": 2,
               "awayScore": 0,
               "winnerTeamId": "team:elite:A3"
@@ -967,6 +969,7 @@
               "awayTeamName": "LENDINHAS",
               "startsAt": "2026-07-26T20:30:00.000Z",
               "status": "completed",
+              "format": "MD3",
               "homeScore": 0,
               "awayScore": 2,
               "winnerTeamId": "team:elite:B2"
@@ -982,6 +985,7 @@
               "awayTeamName": "TOPEIRAS DO MAU",
               "startsAt": "2026-07-26T20:30:00.000Z",
               "status": "completed",
+              "format": "MD3",
               "homeScore": 2,
               "awayScore": 1,
               "winnerTeamId": "team:elite:B3"
@@ -997,6 +1001,7 @@
               "awayTeamName": "BRONGUINHOS TEAM 67",
               "startsAt": "2026-07-26T22:00:00.000Z",
               "status": "completed",
+              "format": "MD3",
               "homeScore": 1,
               "awayScore": 2,
               "winnerTeamId": "team:elite:C2"
@@ -1012,6 +1017,7 @@
               "awayTeamName": "CASHOUT & TRIMILIQUE LTDA",
               "startsAt": "2026-07-26T22:00:00.000Z",
               "status": "completed",
+              "format": "MD3",
               "homeScore": 0,
               "awayScore": 2,
               "winnerTeamId": "team:elite:C4"
@@ -1027,6 +1033,7 @@
               "awayTeamName": "BORRACHARIA FC",
               "startsAt": "2026-07-26T23:30:00.000Z",
               "status": "completed",
+              "format": "MD3",
               "homeScore": 2,
               "awayScore": 0,
               "winnerTeamId": "team:elite:D1"
@@ -1042,6 +1049,7 @@
               "awayTeamName": "M7 ESPORTS",
               "startsAt": "2026-07-26T23:30:00.000Z",
               "status": "completed",
+              "format": "MD3",
               "homeScore": 2,
               "awayScore": 0,
               "winnerTeamId": "team:elite:D3"
@@ -1064,6 +1072,7 @@
               "awayTeamName": "RAVENCLAW",
               "startsAt": "2026-08-02T19:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -1079,6 +1088,7 @@
               "awayTeamName": "QUANTUM RABBITS",
               "startsAt": "2026-08-02T19:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -1094,6 +1104,7 @@
               "awayTeamName": "PHOENIX GAMING BLUE",
               "startsAt": "2026-08-02T20:30:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -1109,6 +1120,7 @@
               "awayTeamName": "TOPEIRAS DO MAU",
               "startsAt": "2026-08-02T20:30:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -1124,6 +1136,7 @@
               "awayTeamName": "TEAM LEGATI",
               "startsAt": "2026-08-02T22:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -1139,6 +1152,7 @@
               "awayTeamName": "CASHOUT & TRIMILIQUE LTDA",
               "startsAt": "2026-08-02T22:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -1154,6 +1168,7 @@
               "awayTeamName": "TEAM SOLO BAHIA",
               "startsAt": "2026-08-02T23:30:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -1169,6 +1184,7 @@
               "awayTeamName": "M7 ESPORTS",
               "startsAt": "2026-08-02T23:30:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -1191,6 +1207,7 @@
               "awayTeamName": "RAVENCLAW",
               "startsAt": "2026-08-09T19:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -1206,6 +1223,7 @@
               "awayTeamName": "CUPULA DO TRIPLE T",
               "startsAt": "2026-08-09T19:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -1221,6 +1239,7 @@
               "awayTeamName": "PHOENIX GAMING BLUE",
               "startsAt": "2026-08-09T20:30:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -1236,6 +1255,7 @@
               "awayTeamName": "NEW AGS",
               "startsAt": "2026-08-09T20:30:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -1251,6 +1271,7 @@
               "awayTeamName": "TEAM LEGATI",
               "startsAt": "2026-08-09T22:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -1266,6 +1287,7 @@
               "awayTeamName": "NKZ REVENGERS",
               "startsAt": "2026-08-09T22:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -1281,6 +1303,7 @@
               "awayTeamName": "TEAM SOLO BAHIA",
               "startsAt": "2026-08-09T23:30:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -1296,6 +1319,7 @@
               "awayTeamName": "FAVELÃO DO TECHY",
               "startsAt": "2026-08-09T23:30:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -4390,146 +4414,1682 @@
           {
             "id": "groups-r1g3-j1",
             "seriesId": "groups-r1g3",
+            "stage": "grupos",
             "round": "RODADA 1 - AGS x IDL",
             "roundNumber": 1,
+            "gameNumber": 1,
+            "format": "MD3",
             "blueTeamSlot": "B1",
             "redTeamSlot": "B2",
-            "winnerSlot": "B2"
+            "winnerSlot": "B2",
+            "mvpPlayerId": "d91655cf-58e0-4430-9bb2-2c12dd273b89",
+            "participants": [
+              {
+                "playerId": "72611c8f-caec-461e-9f09-a29084433b7b",
+                "riotId": "resenhaxnoclubex#aurax",
+                "teamSlot": "B1",
+                "position": "TOP",
+                "score": 60.85,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "d087d8ce-da1b-419b-ac01-27f3d2ad83f5",
+                "riotId": "ZNE Thigas#NATHY",
+                "teamSlot": "B1",
+                "position": "JG",
+                "score": 75.01,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "5705ef31-f58c-4d36-8fa9-cfedcb8bf2d6",
+                "riotId": "Kaydenbreak#br14",
+                "teamSlot": "B1",
+                "position": "MID",
+                "score": 85.64,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "5cfa35d7-d9cb-4188-8f1f-a653f099bdd8",
+                "riotId": "SBK Legolas#SKTT1",
+                "teamSlot": "B1",
+                "position": "ADC",
+                "score": 56.89,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "4e3e2af3-1217-4d2c-b525-b196a50878ee",
+                "riotId": "DiDuSe#HPL",
+                "teamSlot": "B1",
+                "position": "SUP",
+                "score": 66.7,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "afd38a2d-4c8e-44fb-b3d1-1c2bf4e8764e",
+                "riotId": "Abraão do League#Peps",
+                "teamSlot": "B2",
+                "position": "TOP",
+                "score": 86.56,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "d91655cf-58e0-4430-9bb2-2c12dd273b89",
+                "riotId": "EGO YAMAL#zoro",
+                "teamSlot": "B2",
+                "position": "JG",
+                "score": 95.18,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda",
+                "riotId": "Xand#완벽한",
+                "teamSlot": "B2",
+                "position": "MID",
+                "score": 83.05,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "70581d4b-5e7c-4000-a2de-c15a18bbf91a",
+                "riotId": "Guzz#cam",
+                "teamSlot": "B2",
+                "position": "ADC",
+                "score": 77.81,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "005b1daf-fb8a-4258-b48b-90bde518a76f",
+                "riotId": "LIMA IS BACK#LIMA",
+                "teamSlot": "B2",
+                "position": "SUP",
+                "score": 68.84,
+                "won": true,
+                "deaths": 6
+              }
+            ]
           },
           {
             "id": "groups-r1g3-j2",
             "seriesId": "groups-r1g3",
+            "stage": "grupos",
             "round": "RODADA 1 - AGS x IDL",
             "roundNumber": 1,
+            "gameNumber": 2,
+            "format": "MD3",
             "blueTeamSlot": "B2",
             "redTeamSlot": "B1",
-            "winnerSlot": "B2"
+            "winnerSlot": "B2",
+            "mvpPlayerId": "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda",
+            "participants": [
+              {
+                "playerId": "afd38a2d-4c8e-44fb-b3d1-1c2bf4e8764e",
+                "riotId": "Abraão do League#Peps",
+                "teamSlot": "B2",
+                "position": "TOP",
+                "score": 75.17,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "d91655cf-58e0-4430-9bb2-2c12dd273b89",
+                "riotId": "EGO YAMAL#zoro",
+                "teamSlot": "B2",
+                "position": "JG",
+                "score": 76.6,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda",
+                "riotId": "Xand#완벽한",
+                "teamSlot": "B2",
+                "position": "MID",
+                "score": 78.91,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "70581d4b-5e7c-4000-a2de-c15a18bbf91a",
+                "riotId": "Guzz#cam",
+                "teamSlot": "B2",
+                "position": "ADC",
+                "score": 59.74,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "005b1daf-fb8a-4258-b48b-90bde518a76f",
+                "riotId": "LIMA IS BACK#LIMA",
+                "teamSlot": "B2",
+                "position": "SUP",
+                "score": 64.84,
+                "won": true,
+                "deaths": 9
+              },
+              {
+                "playerId": "72611c8f-caec-461e-9f09-a29084433b7b",
+                "riotId": "resenhaxnoclubex#aurax",
+                "teamSlot": "B1",
+                "position": "TOP",
+                "score": 71.26,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "d087d8ce-da1b-419b-ac01-27f3d2ad83f5",
+                "riotId": "ZNE Thigas#NATHY",
+                "teamSlot": "B1",
+                "position": "JG",
+                "score": 76.57,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "5705ef31-f58c-4d36-8fa9-cfedcb8bf2d6",
+                "riotId": "Kaydenbreak#br14",
+                "teamSlot": "B1",
+                "position": "MID",
+                "score": 71.73,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "5cfa35d7-d9cb-4188-8f1f-a653f099bdd8",
+                "riotId": "SBK Legolas#SKTT1",
+                "teamSlot": "B1",
+                "position": "ADC",
+                "score": 80.63,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "4e3e2af3-1217-4d2c-b525-b196a50878ee",
+                "riotId": "DiDuSe#HPL",
+                "teamSlot": "B1",
+                "position": "SUP",
+                "score": 74.71,
+                "won": false,
+                "deaths": 5
+              }
+            ]
           },
           {
             "id": "groups-r1g5-j1",
             "seriesId": "groups-r1g5",
+            "stage": "grupos",
             "round": "RODADA 1 - NKZ x BG67",
             "roundNumber": 1,
+            "gameNumber": 1,
+            "format": "MD3",
             "blueTeamSlot": "C1",
             "redTeamSlot": "C2",
-            "winnerSlot": "C1"
+            "winnerSlot": "C1",
+            "mvpPlayerId": "31fcec05-9dc7-40ce-ba29-8ad9217622fa",
+            "participants": [
+              {
+                "playerId": "d6ebd900-a337-4789-80f1-dc40a5e18e15",
+                "riotId": "bonecos ruins#tierF",
+                "teamSlot": "C1",
+                "position": "TOP",
+                "score": 83.8,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "31fcec05-9dc7-40ce-ba29-8ad9217622fa",
+                "riotId": "Shaka#VCB",
+                "teamSlot": "C1",
+                "position": "JG",
+                "score": 89.97,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "f9663a5d-6159-4f40-b0f5-7c9f3467332b",
+                "riotId": "HOPE#0800",
+                "teamSlot": "C1",
+                "position": "MID",
+                "score": 86.45,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "bc6d8503-d29e-436d-bc14-634243c72720",
+                "riotId": "NKZ Papel#BR2",
+                "teamSlot": "C1",
+                "position": "ADC",
+                "score": 81.18,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "f173da50-620b-4b89-90fe-1e49b4bd4a49",
+                "riotId": "FL Luisma#Luis",
+                "teamSlot": "C1",
+                "position": "SUP",
+                "score": 76.44,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "d76b03de-3dc2-4eb3-97c6-73cd5f58015b",
+                "riotId": "yuM#FVL",
+                "teamSlot": "C2",
+                "position": "TOP",
+                "score": 53.1,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "f9133bce-2d98-4534-9d82-16dd768d7540",
+                "riotId": "Dede#muy",
+                "teamSlot": "C2",
+                "position": "JG",
+                "score": 81.88,
+                "won": false,
+                "deaths": 2
+              },
+              {
+                "playerId": "f69e2f09-ab72-4ec3-ac6f-903f28b5acca",
+                "riotId": "REFFECT#HGB",
+                "teamSlot": "C2",
+                "position": "MID",
+                "score": 63.92,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "8cc6a257-8017-49f5-a803-12300c85f16c",
+                "riotId": "wishes#just",
+                "teamSlot": "C2",
+                "position": "ADC",
+                "score": 64.74,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "eb536418-1474-4fd8-83b1-b045a999783c",
+                "riotId": "Bird of Hermes#AKX",
+                "teamSlot": "C2",
+                "position": "SUP",
+                "score": 67.18,
+                "won": false,
+                "deaths": 5
+              }
+            ]
           },
           {
             "id": "groups-r1g5-j3",
             "seriesId": "groups-r1g5",
+            "stage": "grupos",
             "round": "RODADA 1 - NKZ x BG67",
             "roundNumber": 1,
+            "gameNumber": 3,
+            "format": "MD3",
             "blueTeamSlot": "C2",
             "redTeamSlot": "C1",
-            "winnerSlot": "C2"
+            "winnerSlot": "C2",
+            "mvpPlayerId": "f9133bce-2d98-4534-9d82-16dd768d7540",
+            "participants": [
+              {
+                "playerId": "d76b03de-3dc2-4eb3-97c6-73cd5f58015b",
+                "riotId": "yuM#FVL",
+                "teamSlot": "C2",
+                "position": "TOP",
+                "score": 86.64,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "f9133bce-2d98-4534-9d82-16dd768d7540",
+                "riotId": "Dede#muy",
+                "teamSlot": "C2",
+                "position": "JG",
+                "score": 87.88,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "f69e2f09-ab72-4ec3-ac6f-903f28b5acca",
+                "riotId": "REFFECT#HGB",
+                "teamSlot": "C2",
+                "position": "MID",
+                "score": 86.1,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "8cc6a257-8017-49f5-a803-12300c85f16c",
+                "riotId": "wishes#just",
+                "teamSlot": "C2",
+                "position": "ADC",
+                "score": 64.51,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "e39e7092-a6fa-435d-abd4-5622d8de7d8b",
+                "riotId": "jeikar#XII",
+                "teamSlot": "C2",
+                "position": "SUP",
+                "score": 84.41,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "d6ebd900-a337-4789-80f1-dc40a5e18e15",
+                "riotId": "bonecos ruins#tierF",
+                "teamSlot": "C1",
+                "position": "TOP",
+                "score": 67.3,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "31fcec05-9dc7-40ce-ba29-8ad9217622fa",
+                "riotId": "Shaka#VCB",
+                "teamSlot": "C1",
+                "position": "JG",
+                "score": 70.46,
+                "won": false,
+                "deaths": 8
+              },
+              {
+                "playerId": "f9663a5d-6159-4f40-b0f5-7c9f3467332b",
+                "riotId": "HOPE#0800",
+                "teamSlot": "C1",
+                "position": "MID",
+                "score": 78.95,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "bc6d8503-d29e-436d-bc14-634243c72720",
+                "riotId": "NKZ Papel#BR2",
+                "teamSlot": "C1",
+                "position": "ADC",
+                "score": 60.58,
+                "won": false,
+                "deaths": 8
+              },
+              {
+                "playerId": "f173da50-620b-4b89-90fe-1e49b4bd4a49",
+                "riotId": "FL Luisma#Luis",
+                "teamSlot": "C1",
+                "position": "SUP",
+                "score": 65.86,
+                "won": false,
+                "deaths": 7
+              }
+            ]
           },
           {
             "id": "groups-r1g5-j2",
             "seriesId": "groups-r1g5",
+            "stage": "grupos",
             "round": "RODADA 1 - NKZ x BG67",
             "roundNumber": 1,
+            "gameNumber": 2,
+            "format": "MD3",
             "blueTeamSlot": "C1",
             "redTeamSlot": "C2",
-            "winnerSlot": "C2"
+            "winnerSlot": "C2",
+            "mvpPlayerId": "8cc6a257-8017-49f5-a803-12300c85f16c",
+            "participants": [
+              {
+                "playerId": "d6ebd900-a337-4789-80f1-dc40a5e18e15",
+                "riotId": "bonecos ruins#tierF",
+                "teamSlot": "C1",
+                "position": "TOP",
+                "score": 77.21,
+                "won": false,
+                "deaths": 10
+              },
+              {
+                "playerId": "31fcec05-9dc7-40ce-ba29-8ad9217622fa",
+                "riotId": "Shaka#VCB",
+                "teamSlot": "C1",
+                "position": "JG",
+                "score": 82.18,
+                "won": false,
+                "deaths": 8
+              },
+              {
+                "playerId": "f9663a5d-6159-4f40-b0f5-7c9f3467332b",
+                "riotId": "HOPE#0800",
+                "teamSlot": "C1",
+                "position": "MID",
+                "score": 86.89,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "bc6d8503-d29e-436d-bc14-634243c72720",
+                "riotId": "NKZ Papel#BR2",
+                "teamSlot": "C1",
+                "position": "ADC",
+                "score": 63.23,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "f173da50-620b-4b89-90fe-1e49b4bd4a49",
+                "riotId": "FL Luisma#Luis",
+                "teamSlot": "C1",
+                "position": "SUP",
+                "score": 68.11,
+                "won": false,
+                "deaths": 8
+              },
+              {
+                "playerId": "d76b03de-3dc2-4eb3-97c6-73cd5f58015b",
+                "riotId": "yuM#FVL",
+                "teamSlot": "C2",
+                "position": "TOP",
+                "score": 64.58,
+                "won": true,
+                "deaths": 6
+              },
+              {
+                "playerId": "f9133bce-2d98-4534-9d82-16dd768d7540",
+                "riotId": "Dede#muy",
+                "teamSlot": "C2",
+                "position": "JG",
+                "score": 83.17,
+                "won": true,
+                "deaths": 6
+              },
+              {
+                "playerId": "f69e2f09-ab72-4ec3-ac6f-903f28b5acca",
+                "riotId": "REFFECT#HGB",
+                "teamSlot": "C2",
+                "position": "MID",
+                "score": 64.5,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "8cc6a257-8017-49f5-a803-12300c85f16c",
+                "riotId": "wishes#just",
+                "teamSlot": "C2",
+                "position": "ADC",
+                "score": 97.12,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "e39e7092-a6fa-435d-abd4-5622d8de7d8b",
+                "riotId": "jeikar#XII",
+                "teamSlot": "C2",
+                "position": "SUP",
+                "score": 72.77,
+                "won": true,
+                "deaths": 7
+              }
+            ]
           },
           {
             "id": "groups-r1g4-j1",
             "seriesId": "groups-r1g4",
+            "stage": "grupos",
             "round": "RODADA 1 - PXB x TOP",
             "roundNumber": 1,
+            "gameNumber": 1,
+            "format": "MD3",
             "blueTeamSlot": "B3",
             "redTeamSlot": "B4",
-            "winnerSlot": "B3"
+            "winnerSlot": "B3",
+            "mvpPlayerId": "adcf03a3-0794-4ec3-902e-c8894dfdbfc3",
+            "participants": [
+              {
+                "playerId": "1fb278b9-1a2c-471d-992e-12a930836013",
+                "riotId": "Davi#Blsed",
+                "teamSlot": "B3",
+                "position": "TOP",
+                "score": 54.82,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "adcf03a3-0794-4ec3-902e-c8894dfdbfc3",
+                "riotId": "arima#εsεs",
+                "teamSlot": "B3",
+                "position": "JG",
+                "score": 98.37,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "2371331d-c5cf-4429-98cf-dff6ad161309",
+                "riotId": "tapom#br1",
+                "teamSlot": "B3",
+                "position": "MID",
+                "score": 68.63,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "3160ff3e-da9b-4538-9162-8a3cfc3f78aa",
+                "riotId": "Asta#mage1",
+                "teamSlot": "B3",
+                "position": "ADC",
+                "score": 89.17,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "9fe112ee-c33c-474f-9a3e-2beeaa726c48",
+                "riotId": "Sunfyre#lol",
+                "teamSlot": "B3",
+                "position": "SUP",
+                "score": 83.33,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
+                "riotId": "AZØ#AZ0",
+                "teamSlot": "B4",
+                "position": "TOP",
+                "score": 92.17,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "37d5697c-d21a-4bc1-b104-1f580f396133",
+                "riotId": "Gavinzera#BR2",
+                "teamSlot": "B4",
+                "position": "JG",
+                "score": 80.26,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "85c29dba-efdf-44f0-9604-c743f96c49ce",
+                "riotId": "sing 4 da moment#90210",
+                "teamSlot": "B4",
+                "position": "MID",
+                "score": 69.96,
+                "won": false,
+                "deaths": 2
+              },
+              {
+                "playerId": "a44b2125-85a3-4f69-9caa-97a385822b0a",
+                "riotId": "Lisboa#TTS",
+                "teamSlot": "B4",
+                "position": "ADC",
+                "score": 48.36,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "dbfbe491-6dba-47a6-b29a-4f6307b4d132",
+                "riotId": "lucky day#hyy",
+                "teamSlot": "B4",
+                "position": "SUP",
+                "score": 57.42,
+                "won": false,
+                "deaths": 5
+              }
+            ]
           },
           {
             "id": "groups-r1g4-j2",
             "seriesId": "groups-r1g4",
+            "stage": "grupos",
             "round": "RODADA 1 - PXB x TOP",
             "roundNumber": 1,
+            "gameNumber": 2,
+            "format": "MD3",
             "blueTeamSlot": "B3",
             "redTeamSlot": "B4",
-            "winnerSlot": "B4"
+            "winnerSlot": "B4",
+            "mvpPlayerId": "37d5697c-d21a-4bc1-b104-1f580f396133",
+            "participants": [
+              {
+                "playerId": "1fb278b9-1a2c-471d-992e-12a930836013",
+                "riotId": "Davi#Blsed",
+                "teamSlot": "B3",
+                "position": "TOP",
+                "score": 80.08,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "adcf03a3-0794-4ec3-902e-c8894dfdbfc3",
+                "riotId": "arima#εsεs",
+                "teamSlot": "B3",
+                "position": "JG",
+                "score": 83.15,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "2371331d-c5cf-4429-98cf-dff6ad161309",
+                "riotId": "tapom#br1",
+                "teamSlot": "B3",
+                "position": "MID",
+                "score": 69.81,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "3160ff3e-da9b-4538-9162-8a3cfc3f78aa",
+                "riotId": "Asta#mage1",
+                "teamSlot": "B3",
+                "position": "ADC",
+                "score": 66.7,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "9fe112ee-c33c-474f-9a3e-2beeaa726c48",
+                "riotId": "Sunfyre#lol",
+                "teamSlot": "B3",
+                "position": "SUP",
+                "score": 72.14,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
+                "riotId": "AZØ#AZ0",
+                "teamSlot": "B4",
+                "position": "TOP",
+                "score": 79.73,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "37d5697c-d21a-4bc1-b104-1f580f396133",
+                "riotId": "Gavinzera#BR2",
+                "teamSlot": "B4",
+                "position": "JG",
+                "score": 84.03,
+                "won": true,
+                "deaths": 6
+              },
+              {
+                "playerId": "85c29dba-efdf-44f0-9604-c743f96c49ce",
+                "riotId": "sing 4 da moment#90210",
+                "teamSlot": "B4",
+                "position": "MID",
+                "score": 75.03,
+                "won": true,
+                "deaths": 6
+              },
+              {
+                "playerId": "a44b2125-85a3-4f69-9caa-97a385822b0a",
+                "riotId": "Lisboa#TTS",
+                "teamSlot": "B4",
+                "position": "ADC",
+                "score": 81.19,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "dbfbe491-6dba-47a6-b29a-4f6307b4d132",
+                "riotId": "lucky day#hyy",
+                "teamSlot": "B4",
+                "position": "SUP",
+                "score": 59.56,
+                "won": true,
+                "deaths": 10
+              }
+            ]
           },
           {
             "id": "groups-r1g4-j3",
             "seriesId": "groups-r1g4",
+            "stage": "grupos",
             "round": "RODADA 1 - PXB x TOP",
             "roundNumber": 1,
+            "gameNumber": 3,
+            "format": "MD3",
             "blueTeamSlot": "B4",
             "redTeamSlot": "B3",
-            "winnerSlot": "B3"
+            "winnerSlot": "B3",
+            "mvpPlayerId": "adcf03a3-0794-4ec3-902e-c8894dfdbfc3",
+            "participants": [
+              {
+                "playerId": "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
+                "riotId": "AZØ#AZ0",
+                "teamSlot": "B4",
+                "position": "TOP",
+                "score": 80.87,
+                "won": false,
+                "deaths": 2
+              },
+              {
+                "playerId": "37d5697c-d21a-4bc1-b104-1f580f396133",
+                "riotId": "Gavinzera#BR2",
+                "teamSlot": "B4",
+                "position": "JG",
+                "score": 74.08,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "85c29dba-efdf-44f0-9604-c743f96c49ce",
+                "riotId": "sing 4 da moment#90210",
+                "teamSlot": "B4",
+                "position": "MID",
+                "score": 70.78,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "a44b2125-85a3-4f69-9caa-97a385822b0a",
+                "riotId": "Lisboa#TTS",
+                "teamSlot": "B4",
+                "position": "ADC",
+                "score": 61.58,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "dbfbe491-6dba-47a6-b29a-4f6307b4d132",
+                "riotId": "lucky day#hyy",
+                "teamSlot": "B4",
+                "position": "SUP",
+                "score": 70.6,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "1fb278b9-1a2c-471d-992e-12a930836013",
+                "riotId": "Davi#Blsed",
+                "teamSlot": "B3",
+                "position": "TOP",
+                "score": 66.81,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "adcf03a3-0794-4ec3-902e-c8894dfdbfc3",
+                "riotId": "arima#εsεs",
+                "teamSlot": "B3",
+                "position": "JG",
+                "score": 88.96,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "2371331d-c5cf-4429-98cf-dff6ad161309",
+                "riotId": "tapom#br1",
+                "teamSlot": "B3",
+                "position": "MID",
+                "score": 85.73,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "3160ff3e-da9b-4538-9162-8a3cfc3f78aa",
+                "riotId": "Asta#mage1",
+                "teamSlot": "B3",
+                "position": "ADC",
+                "score": 68.05,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "9fe112ee-c33c-474f-9a3e-2beeaa726c48",
+                "riotId": "Sunfyre#lol",
+                "teamSlot": "B3",
+                "position": "SUP",
+                "score": 80.27,
+                "won": true,
+                "deaths": 2
+              }
+            ]
           },
           {
             "id": "groups-r1g7-j1",
             "seriesId": "groups-r1g7",
+            "stage": "grupos",
             "round": "RODADA 1 - FVL x BOR",
             "roundNumber": 1,
+            "gameNumber": 1,
+            "format": "MD3",
             "blueTeamSlot": "D1",
             "redTeamSlot": "D2",
-            "winnerSlot": "D1"
+            "winnerSlot": "D1",
+            "mvpPlayerId": "ee09cf39-13a1-4268-a363-dbd28955437b",
+            "participants": [
+              {
+                "playerId": "ee09cf39-13a1-4268-a363-dbd28955437b",
+                "riotId": "N I H I L メ#CDRP",
+                "teamSlot": "D1",
+                "position": "TOP",
+                "score": 97.45,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "6e241754-e4e8-4f57-9818-b2279e3bd0a6",
+                "riotId": "TeteuCantoni#BR1",
+                "teamSlot": "D1",
+                "position": "JG",
+                "score": 95.98,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "cdb7296d-9960-4a4e-99e8-835f8068f8e7",
+                "riotId": "Techy#777",
+                "teamSlot": "D1",
+                "position": "MID",
+                "score": 86.36,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "f02fe465-ee85-45f5-ac28-7f4722ea3481",
+                "riotId": "Sleepwalker#Hope",
+                "teamSlot": "D1",
+                "position": "ADC",
+                "score": 60.67,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "8827bd59-7836-4418-b5eb-d33dd8c3bee3",
+                "riotId": "Rekkles#FJCA",
+                "teamSlot": "D1",
+                "position": "SUP",
+                "score": 74.95,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "593a8ce7-a4c6-44cd-89ce-7abb03f88855",
+                "riotId": "EsquiloTranquilo#br1",
+                "teamSlot": "D2",
+                "position": "TOP",
+                "score": 52.51,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "4448fafa-ddb9-4a96-b9da-df67b2919733",
+                "riotId": "Acessório#br1",
+                "teamSlot": "D2",
+                "position": "JG",
+                "score": 65.26,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "5ef6dac6-8daf-42e6-b3af-c8896a8554e1",
+                "riotId": "Bleyblade#Bleyd",
+                "teamSlot": "D2",
+                "position": "MID",
+                "score": 67.45,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "a50ec03a-1b03-4d85-86f8-69cff19d0220",
+                "riotId": "Samsara#Fiore",
+                "teamSlot": "D2",
+                "position": "ADC",
+                "score": 58.5,
+                "won": false,
+                "deaths": 0
+              },
+              {
+                "playerId": "b1297dc1-2b88-4dcd-b558-edbf5474030f",
+                "riotId": "Pipo#INTER",
+                "teamSlot": "D2",
+                "position": "SUP",
+                "score": 77.67,
+                "won": false,
+                "deaths": 3
+              }
+            ]
           },
           {
             "id": "groups-r1g7-j2",
             "seriesId": "groups-r1g7",
+            "stage": "grupos",
             "round": "RODADA 1 - FVL x BOR",
             "roundNumber": 1,
+            "gameNumber": 2,
+            "format": "MD3",
             "blueTeamSlot": "D1",
             "redTeamSlot": "D2",
-            "winnerSlot": "D1"
+            "winnerSlot": "D1",
+            "mvpPlayerId": "6e241754-e4e8-4f57-9818-b2279e3bd0a6",
+            "participants": [
+              {
+                "playerId": "ee09cf39-13a1-4268-a363-dbd28955437b",
+                "riotId": "N I H I L メ#CDRP",
+                "teamSlot": "D1",
+                "position": "TOP",
+                "score": 77.36,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "6e241754-e4e8-4f57-9818-b2279e3bd0a6",
+                "riotId": "TeteuCantoni#BR1",
+                "teamSlot": "D1",
+                "position": "JG",
+                "score": 90.58,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "cdb7296d-9960-4a4e-99e8-835f8068f8e7",
+                "riotId": "Techy#777",
+                "teamSlot": "D1",
+                "position": "MID",
+                "score": 68.27,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "f02fe465-ee85-45f5-ac28-7f4722ea3481",
+                "riotId": "Sleepwalker#Hope",
+                "teamSlot": "D1",
+                "position": "ADC",
+                "score": 84.82,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "8827bd59-7836-4418-b5eb-d33dd8c3bee3",
+                "riotId": "Rekkles#FJCA",
+                "teamSlot": "D1",
+                "position": "SUP",
+                "score": 79.94,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "593a8ce7-a4c6-44cd-89ce-7abb03f88855",
+                "riotId": "EsquiloTranquilo#br1",
+                "teamSlot": "D2",
+                "position": "TOP",
+                "score": 95.96,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "4448fafa-ddb9-4a96-b9da-df67b2919733",
+                "riotId": "Acessório#br1",
+                "teamSlot": "D2",
+                "position": "JG",
+                "score": 66.27,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "5ef6dac6-8daf-42e6-b3af-c8896a8554e1",
+                "riotId": "Bleyblade#Bleyd",
+                "teamSlot": "D2",
+                "position": "MID",
+                "score": 64.68,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "a50ec03a-1b03-4d85-86f8-69cff19d0220",
+                "riotId": "Samsara#Fiore",
+                "teamSlot": "D2",
+                "position": "ADC",
+                "score": 39.05,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "b1297dc1-2b88-4dcd-b558-edbf5474030f",
+                "riotId": "Pipo#INTER",
+                "teamSlot": "D2",
+                "position": "SUP",
+                "score": 62.32,
+                "won": false,
+                "deaths": 5
+              }
+            ]
           },
           {
             "id": "groups-r1g8-j1",
             "seriesId": "groups-r1g8",
+            "stage": "grupos",
             "round": "RODADA 1 - SDK x M7",
             "roundNumber": 1,
+            "gameNumber": 1,
+            "format": "MD3",
             "blueTeamSlot": "D3",
             "redTeamSlot": "D4",
-            "winnerSlot": "D3"
+            "winnerSlot": "D3",
+            "mvpPlayerId": "953d89dc-d2ac-4e77-bef7-88c66ad248d8",
+            "participants": [
+              {
+                "playerId": "60bed61b-e107-41bd-b0cc-943105c6e4c5",
+                "riotId": "peido sniffer#6767",
+                "teamSlot": "D3",
+                "position": "TOP",
+                "score": 65.21,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "953d89dc-d2ac-4e77-bef7-88c66ad248d8",
+                "riotId": "LittleTeclas#0402",
+                "teamSlot": "D3",
+                "position": "JG",
+                "score": 94.65,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "387bfab7-c5a6-4f05-a41a-980cb0bf4d42",
+                "riotId": "Dynas#Alone",
+                "teamSlot": "D3",
+                "position": "MID",
+                "score": 87.13,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "df0e9d12-5f4f-4268-a80d-cefa44c76268",
+                "riotId": "epilul#ROX",
+                "teamSlot": "D3",
+                "position": "ADC",
+                "score": 89.96,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "8f58fb63-7765-463b-8688-89c4552fcae5",
+                "riotId": "Oxossi#SDK",
+                "teamSlot": "D3",
+                "position": "SUP",
+                "score": 78.11,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "8de67801-d9d0-45c6-ab35-5efaacdacf51",
+                "riotId": "Little David#RBRN",
+                "teamSlot": "D4",
+                "position": "TOP",
+                "score": 88.39,
+                "won": false,
+                "deaths": 1
+              },
+              {
+                "playerId": "001cfda8-ffe9-4c3d-aabd-964b30402cab",
+                "riotId": "M7 Romário#BRAM7",
+                "teamSlot": "D4",
+                "position": "JG",
+                "score": 76.8,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "54e50a29-e994-419f-90aa-04a96a22a3cd",
+                "riotId": "M7 Bebeto#BRAM7",
+                "teamSlot": "D4",
+                "position": "MID",
+                "score": 52.83,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "c0252d66-bd2d-4f35-b210-c03943520a05",
+                "riotId": "Pewtz#Pewtz",
+                "teamSlot": "D4",
+                "position": "ADC",
+                "score": 65.52,
+                "won": false,
+                "deaths": 2
+              },
+              {
+                "playerId": "af0b0a81-6444-4256-bdb7-a76903d0c717",
+                "riotId": "Stark#sthe",
+                "teamSlot": "D4",
+                "position": "SUP",
+                "score": 69.72,
+                "won": false,
+                "deaths": 5
+              }
+            ]
           },
           {
             "id": "groups-r1g8-j2",
             "seriesId": "groups-r1g8",
+            "stage": "grupos",
             "round": "RODADA 1 - SDK x M7",
             "roundNumber": 1,
+            "gameNumber": 2,
+            "format": "MD3",
             "blueTeamSlot": "D4",
             "redTeamSlot": "D3",
-            "winnerSlot": "D3"
+            "winnerSlot": "D3",
+            "mvpPlayerId": "953d89dc-d2ac-4e77-bef7-88c66ad248d8",
+            "participants": [
+              {
+                "playerId": "8de67801-d9d0-45c6-ab35-5efaacdacf51",
+                "riotId": "Little David#RBRN",
+                "teamSlot": "D4",
+                "position": "TOP",
+                "score": 76.47,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "001cfda8-ffe9-4c3d-aabd-964b30402cab",
+                "riotId": "M7 Romário#BRAM7",
+                "teamSlot": "D4",
+                "position": "JG",
+                "score": 72.67,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "54e50a29-e994-419f-90aa-04a96a22a3cd",
+                "riotId": "M7 Bebeto#BRAM7",
+                "teamSlot": "D4",
+                "position": "MID",
+                "score": 69.52,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "c0252d66-bd2d-4f35-b210-c03943520a05",
+                "riotId": "Pewtz#Pewtz",
+                "teamSlot": "D4",
+                "position": "ADC",
+                "score": 64.49,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "af0b0a81-6444-4256-bdb7-a76903d0c717",
+                "riotId": "Stark#sthe",
+                "teamSlot": "D4",
+                "position": "SUP",
+                "score": 77.93,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "60bed61b-e107-41bd-b0cc-943105c6e4c5",
+                "riotId": "peido sniffer#6767",
+                "teamSlot": "D3",
+                "position": "TOP",
+                "score": 78.29,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "953d89dc-d2ac-4e77-bef7-88c66ad248d8",
+                "riotId": "LittleTeclas#0402",
+                "teamSlot": "D3",
+                "position": "JG",
+                "score": 97.39,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "387bfab7-c5a6-4f05-a41a-980cb0bf4d42",
+                "riotId": "Dynas#Alone",
+                "teamSlot": "D3",
+                "position": "MID",
+                "score": 83.97,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "df0e9d12-5f4f-4268-a80d-cefa44c76268",
+                "riotId": "epilul#ROX",
+                "teamSlot": "D3",
+                "position": "ADC",
+                "score": 65.28,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "8f58fb63-7765-463b-8688-89c4552fcae5",
+                "riotId": "Oxossi#SDK",
+                "teamSlot": "D3",
+                "position": "SUP",
+                "score": 59.61,
+                "won": true,
+                "deaths": 11
+              }
+            ]
           },
           {
             "id": "groups-r1g2-j1",
             "seriesId": "groups-r1g2",
+            "stage": "grupos",
             "round": "RODADA 1 - RAVE x QR",
             "roundNumber": 1,
+            "gameNumber": 1,
+            "format": "MD3",
             "blueTeamSlot": "A3",
             "redTeamSlot": "A4",
-            "winnerSlot": "A3"
+            "winnerSlot": "A3",
+            "mvpPlayerId": "094a9436-c639-4195-a01b-0fd126ed96fe",
+            "participants": [
+              {
+                "playerId": "8f91a191-c2f0-4f3f-889f-44ac8192e596",
+                "riotId": "ShytOz#br1",
+                "teamSlot": "A3",
+                "position": "TOP",
+                "score": 80.83,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "a25fed6f-9af6-4f75-9b64-381f23c3d4d7",
+                "riotId": "maronato#rat",
+                "teamSlot": "A3",
+                "position": "JG",
+                "score": 94.64,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "3c6ed950-49ec-40b9-a970-dee831ab5faa",
+                "riotId": "my destiny#sesh",
+                "teamSlot": "A3",
+                "position": "MID",
+                "score": 65.41,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "094a9436-c639-4195-a01b-0fd126ed96fe",
+                "riotId": "lMiracle#BR01",
+                "teamSlot": "A3",
+                "position": "ADC",
+                "score": 95.63,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "fcdcb6c8-dab0-43c7-ba16-b8dbe1453c22",
+                "riotId": "GianZ#HOOK",
+                "teamSlot": "A3",
+                "position": "SUP",
+                "score": 75.28,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "a2284a68-12d9-47e5-a0a2-4eb8cc7455de",
+                "riotId": "pedrojaime#PJ1",
+                "teamSlot": "A4",
+                "position": "TOP",
+                "score": 55.43,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "1d9ace8e-1f8c-4aba-a11d-1b6c25e2aa2e",
+                "riotId": "little noctus#gabi",
+                "teamSlot": "A4",
+                "position": "JG",
+                "score": 78.78,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "727c5fde-d079-4a4e-a13c-facce5f2cd00",
+                "riotId": "mcratão#4252",
+                "teamSlot": "A4",
+                "position": "MID",
+                "score": 78.41,
+                "won": false,
+                "deaths": 2
+              },
+              {
+                "playerId": "b43b292e-f8b8-4b44-bcf6-806bc7c3afa1",
+                "riotId": "Víruscosmic#7719",
+                "teamSlot": "A4",
+                "position": "ADC",
+                "score": 44.6,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "5a7a70e6-50d8-4117-9403-5842430ee03b",
+                "riotId": "Tsukuyomi#Jao",
+                "teamSlot": "A4",
+                "position": "SUP",
+                "score": 57.49,
+                "won": false,
+                "deaths": 7
+              }
+            ]
           },
           {
             "id": "groups-r1g2-j2",
             "seriesId": "groups-r1g2",
+            "stage": "grupos",
             "round": "RODADA 1 - RAVE x QR",
             "roundNumber": 1,
+            "gameNumber": 2,
+            "format": "MD3",
             "blueTeamSlot": "A3",
             "redTeamSlot": "A4",
-            "winnerSlot": "A3"
+            "winnerSlot": "A3",
+            "mvpPlayerId": "094a9436-c639-4195-a01b-0fd126ed96fe",
+            "participants": [
+              {
+                "playerId": "8f91a191-c2f0-4f3f-889f-44ac8192e596",
+                "riotId": "ShytOz#br1",
+                "teamSlot": "A3",
+                "position": "TOP",
+                "score": 73.01,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "a25fed6f-9af6-4f75-9b64-381f23c3d4d7",
+                "riotId": "maronato#rat",
+                "teamSlot": "A3",
+                "position": "JG",
+                "score": 88.05,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "3c6ed950-49ec-40b9-a970-dee831ab5faa",
+                "riotId": "my destiny#sesh",
+                "teamSlot": "A3",
+                "position": "MID",
+                "score": 69.19,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "094a9436-c639-4195-a01b-0fd126ed96fe",
+                "riotId": "lMiracle#BR01",
+                "teamSlot": "A3",
+                "position": "ADC",
+                "score": 93.04,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "fcdcb6c8-dab0-43c7-ba16-b8dbe1453c22",
+                "riotId": "GianZ#HOOK",
+                "teamSlot": "A3",
+                "position": "SUP",
+                "score": 81.59,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "a2284a68-12d9-47e5-a0a2-4eb8cc7455de",
+                "riotId": "pedrojaime#PJ1",
+                "teamSlot": "A4",
+                "position": "TOP",
+                "score": 62.79,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "1d9ace8e-1f8c-4aba-a11d-1b6c25e2aa2e",
+                "riotId": "little noctus#gabi",
+                "teamSlot": "A4",
+                "position": "JG",
+                "score": 71.7,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "727c5fde-d079-4a4e-a13c-facce5f2cd00",
+                "riotId": "mcratão#4252",
+                "teamSlot": "A4",
+                "position": "MID",
+                "score": 67.4,
+                "won": false,
+                "deaths": 2
+              },
+              {
+                "playerId": "b43b292e-f8b8-4b44-bcf6-806bc7c3afa1",
+                "riotId": "Víruscosmic#7719",
+                "teamSlot": "A4",
+                "position": "ADC",
+                "score": 53.64,
+                "won": false,
+                "deaths": 8
+              },
+              {
+                "playerId": "5a7a70e6-50d8-4117-9403-5842430ee03b",
+                "riotId": "Tsukuyomi#Jao",
+                "teamSlot": "A4",
+                "position": "SUP",
+                "score": 57.96,
+                "won": false,
+                "deaths": 10
+              }
+            ]
           },
           {
             "id": "groups-r1g6-j1",
             "seriesId": "groups-r1g6",
+            "stage": "grupos",
             "round": "RODADA 1 - LEGA x CASH",
             "roundNumber": 1,
+            "gameNumber": 1,
+            "format": "MD3",
             "blueTeamSlot": "C3",
             "redTeamSlot": "C4",
-            "winnerSlot": "C4"
+            "winnerSlot": "C4",
+            "mvpPlayerId": "7dbf3dbc-e976-4b54-ac60-b233d5c8f3ca",
+            "participants": [
+              {
+                "playerId": "79057b1c-c417-4f7d-9fd3-221be5f705d3",
+                "riotId": "Luffy#br5",
+                "teamSlot": "C3",
+                "position": "TOP",
+                "score": 50.08,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "9a66c938-b464-47e5-8823-447e2dc1ad8e",
+                "riotId": "Little Theo#BR1",
+                "teamSlot": "C3",
+                "position": "JG",
+                "score": 57.16,
+                "won": false,
+                "deaths": 8
+              },
+              {
+                "playerId": "bef3051e-4337-4c3a-a00f-ac557ee3a8d8",
+                "riotId": "mychael#2207",
+                "teamSlot": "C3",
+                "position": "MID",
+                "score": 51.53,
+                "won": false,
+                "deaths": 8
+              },
+              {
+                "playerId": "ae4fda25-ccc4-437f-ad1b-e4442e1f04e1",
+                "riotId": "luc1asdb11#sasu1",
+                "teamSlot": "C3",
+                "position": "ADC",
+                "score": 57.05,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "c113ef85-6838-47a2-b735-75b278b7c8ce",
+                "riotId": "OdeioSerJg#BR1",
+                "teamSlot": "C3",
+                "position": "SUP",
+                "score": 61.88,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "13a72a46-d781-48f7-85cf-2316c9383cf7",
+                "riotId": "Kin#JP6",
+                "teamSlot": "C4",
+                "position": "TOP",
+                "score": 84.02,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "7dbf3dbc-e976-4b54-ac60-b233d5c8f3ca",
+                "riotId": "MacK#shhh",
+                "teamSlot": "C4",
+                "position": "JG",
+                "score": 92.89,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "a89f54a2-ff64-4647-8738-95c802959a50",
+                "riotId": "estrupicio#원숭이",
+                "teamSlot": "C4",
+                "position": "MID",
+                "score": 87.76,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "e324f47c-9a31-4cd4-a5b9-3af94e2f3c38",
+                "riotId": "suzuki#2211",
+                "teamSlot": "C4",
+                "position": "ADC",
+                "score": 68.94,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "6c07e8dd-9195-49ae-b8a9-8a1c360cf775",
+                "riotId": "FedeValverde#RM8",
+                "teamSlot": "C4",
+                "position": "SUP",
+                "score": 80.88,
+                "won": true,
+                "deaths": 1
+              }
+            ]
           },
           {
             "id": "groups-r1g6-j2",
             "seriesId": "groups-r1g6",
+            "stage": "grupos",
             "round": "RODADA 1 - LEGA x CASH",
             "roundNumber": 1,
+            "gameNumber": 2,
+            "format": "MD3",
             "blueTeamSlot": "C4",
             "redTeamSlot": "C3",
-            "winnerSlot": "C4"
+            "winnerSlot": "C4",
+            "mvpPlayerId": "a89f54a2-ff64-4647-8738-95c802959a50",
+            "participants": [
+              {
+                "playerId": "13a72a46-d781-48f7-85cf-2316c9383cf7",
+                "riotId": "Kin#JP6",
+                "teamSlot": "C4",
+                "position": "TOP",
+                "score": 68.02,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "7dbf3dbc-e976-4b54-ac60-b233d5c8f3ca",
+                "riotId": "MacK#shhh",
+                "teamSlot": "C4",
+                "position": "JG",
+                "score": 81.78,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "a89f54a2-ff64-4647-8738-95c802959a50",
+                "riotId": "estrupicio#원숭이",
+                "teamSlot": "C4",
+                "position": "MID",
+                "score": 86.82,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "e324f47c-9a31-4cd4-a5b9-3af94e2f3c38",
+                "riotId": "suzuki#2211",
+                "teamSlot": "C4",
+                "position": "ADC",
+                "score": 65.58,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "6c07e8dd-9195-49ae-b8a9-8a1c360cf775",
+                "riotId": "FedeValverde#RM8",
+                "teamSlot": "C4",
+                "position": "SUP",
+                "score": 86.63,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "79057b1c-c417-4f7d-9fd3-221be5f705d3",
+                "riotId": "Luffy#br5",
+                "teamSlot": "C3",
+                "position": "TOP",
+                "score": 79.31,
+                "won": false,
+                "deaths": 1
+              },
+              {
+                "playerId": "9a66c938-b464-47e5-8823-447e2dc1ad8e",
+                "riotId": "Little Theo#BR1",
+                "teamSlot": "C3",
+                "position": "JG",
+                "score": 65.42,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "bef3051e-4337-4c3a-a00f-ac557ee3a8d8",
+                "riotId": "mychael#2207",
+                "teamSlot": "C3",
+                "position": "MID",
+                "score": 71.68,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "ae4fda25-ccc4-437f-ad1b-e4442e1f04e1",
+                "riotId": "luc1asdb11#sasu1",
+                "teamSlot": "C3",
+                "position": "ADC",
+                "score": 47.63,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "c113ef85-6838-47a2-b735-75b278b7c8ce",
+                "riotId": "OdeioSerJg#BR1",
+                "teamSlot": "C3",
+                "position": "SUP",
+                "score": 53.08,
+                "won": false,
+                "deaths": 6
+              }
+            ]
           }
         ]
       }
@@ -5562,6 +7122,7 @@
               "awayTeamName": "SKYLINE",
               "startsAt": "2026-07-25T19:00:00.000Z",
               "status": "completed",
+              "format": "MD3",
               "homeScore": 2,
               "awayScore": 0,
               "winnerTeamId": "team:ascension:A1"
@@ -5577,6 +7138,7 @@
               "awayTeamName": "TENEBRA BEHEMOT",
               "startsAt": "2026-07-25T19:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -5592,6 +7154,7 @@
               "awayTeamName": "GANGUE DE GOBLINS",
               "startsAt": "2026-07-25T20:30:00.000Z",
               "status": "completed",
+              "format": "MD3",
               "homeScore": 2,
               "awayScore": 0,
               "winnerTeamId": "team:ascension:B1"
@@ -5607,6 +7170,7 @@
               "awayTeamName": "TENEBRA LEVIATHAN",
               "startsAt": "2026-07-25T20:30:00.000Z",
               "status": "completed",
+              "format": "MD3",
               "homeScore": 2,
               "awayScore": 0,
               "winnerTeamId": "team:ascension:B3"
@@ -5622,6 +7186,7 @@
               "awayTeamName": "FAVELINHA REFORMED",
               "startsAt": "2026-07-25T22:00:00.000Z",
               "status": "completed",
+              "format": "MD3",
               "homeScore": 0,
               "awayScore": 2,
               "winnerTeamId": "team:ascension:C2"
@@ -5637,6 +7202,7 @@
               "awayTeamName": "THE KILLERS T7",
               "startsAt": "2026-07-25T22:00:00.000Z",
               "status": "completed",
+              "format": "MD3",
               "homeScore": 0,
               "awayScore": 2,
               "winnerTeamId": "team:ascension:C4"
@@ -5652,6 +7218,7 @@
               "awayTeamName": "RENEGADOS",
               "startsAt": "2026-07-25T23:30:00.000Z",
               "status": "completed",
+              "format": "MD3",
               "homeScore": 1,
               "awayScore": 2,
               "winnerTeamId": "team:ascension:D2"
@@ -5667,6 +7234,7 @@
               "awayTeamName": "INAZUMA V",
               "startsAt": "2026-07-25T23:30:00.000Z",
               "status": "completed",
+              "format": "MD3",
               "homeScore": 2,
               "awayScore": 0,
               "winnerTeamId": "team:ascension:D3"
@@ -5689,6 +7257,7 @@
               "awayTeamName": "BLACK STARS",
               "startsAt": "2026-08-01T19:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -5704,6 +7273,7 @@
               "awayTeamName": "TENEBRA BEHEMOT",
               "startsAt": "2026-08-01T19:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -5719,6 +7289,7 @@
               "awayTeamName": "FOFOLETES DO RICK",
               "startsAt": "2026-08-01T20:30:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -5734,6 +7305,7 @@
               "awayTeamName": "TENEBRA LEVIATHAN",
               "startsAt": "2026-08-01T20:30:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -5749,6 +7321,7 @@
               "awayTeamName": "UBERS",
               "startsAt": "2026-08-01T22:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -5764,6 +7337,7 @@
               "awayTeamName": "THE KILLERS T7",
               "startsAt": "2026-08-01T22:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -5779,6 +7353,7 @@
               "awayTeamName": "RAISING DRAGONS",
               "startsAt": "2026-08-01T23:30:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -5794,6 +7369,7 @@
               "awayTeamName": "INAZUMA V",
               "startsAt": "2026-08-01T23:30:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -5816,6 +7392,7 @@
               "awayTeamName": "BLACK STARS",
               "startsAt": "2026-08-08T19:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -5831,6 +7408,7 @@
               "awayTeamName": "FAINA",
               "startsAt": "2026-08-08T19:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -5846,6 +7424,7 @@
               "awayTeamName": "FOFOLETES DO RICK",
               "startsAt": "2026-08-08T20:30:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -5861,6 +7440,7 @@
               "awayTeamName": "PHOENIX GAMING",
               "startsAt": "2026-08-08T20:30:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -5876,6 +7456,7 @@
               "awayTeamName": "UBERS",
               "startsAt": "2026-08-08T22:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -5891,6 +7472,7 @@
               "awayTeamName": "SKY KNIGHTS",
               "startsAt": "2026-08-08T22:00:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -5906,6 +7488,7 @@
               "awayTeamName": "RAISING DRAGONS",
               "startsAt": "2026-08-08T23:30:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -5921,6 +7504,7 @@
               "awayTeamName": "BASTARD",
               "startsAt": "2026-08-08T23:30:00.000Z",
               "status": "scheduled",
+              "format": "MD3",
               "homeScore": null,
               "awayScore": null,
               "winnerTeamId": null
@@ -9151,137 +10735,1577 @@
           {
             "id": "groups-r1g1-j1",
             "seriesId": "groups-r1g1",
+            "stage": "grupos",
             "round": "RODADA 1 - FIN x SKY",
             "roundNumber": 1,
+            "gameNumber": 1,
+            "format": "MD3",
             "blueTeamSlot": "A1",
             "redTeamSlot": "A2",
-            "winnerSlot": "A1"
+            "winnerSlot": "A1",
+            "mvpPlayerId": "c49312d8-3672-4654-9790-a9cad7f59937",
+            "participants": [
+              {
+                "playerId": "c49312d8-3672-4654-9790-a9cad7f59937",
+                "riotId": "Red KauanMemes#BA1",
+                "teamSlot": "A1",
+                "position": "TOP",
+                "score": 81.62,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39",
+                "riotId": "qquq#yve",
+                "teamSlot": "A1",
+                "position": "JG",
+                "score": 79.94,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "8b0bb211-5bfd-46c2-819f-161c22c494d6",
+                "riotId": "king of yellow#7178",
+                "teamSlot": "A1",
+                "position": "MID",
+                "score": 78.85,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "41b3325e-3a2f-4a67-b18a-880c7a0f546f",
+                "riotId": "bad decisions#void",
+                "teamSlot": "A1",
+                "position": "ADC",
+                "score": 72.31,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "013c58e9-130d-4c36-bbf3-1a2e4b8a82a2",
+                "riotId": "Zähir#THgod",
+                "teamSlot": "A1",
+                "position": "SUP",
+                "score": 72.91,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "c8de87cb-5e6e-47ce-afe5-dd3985558a3f",
+                "riotId": "Slash SKY#TOP10",
+                "teamSlot": "A2",
+                "position": "TOP",
+                "score": 78.22,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "3c03eab2-782e-41cc-85eb-11895824406a",
+                "riotId": "SKY mayangamerbr#GGG",
+                "teamSlot": "A2",
+                "position": "JG",
+                "score": 74.09,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "1e16ae4d-b121-4d24-905d-28089516f1be",
+                "riotId": "SKY guMis#rina",
+                "teamSlot": "A2",
+                "position": "MID",
+                "score": 79.39,
+                "won": false,
+                "deaths": 2
+              },
+              {
+                "playerId": "a3cacd4b-cea4-4571-9139-9c74125ee524",
+                "riotId": "Natsu#1v9",
+                "teamSlot": "A2",
+                "position": "ADC",
+                "score": 62.52,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "3fe4398c-3c6e-43cb-a16b-9a1f943c4c8b",
+                "riotId": "SKY Ciel Winters#Lost",
+                "teamSlot": "A2",
+                "position": "SUP",
+                "score": 63.35,
+                "won": false,
+                "deaths": 3
+              }
+            ]
           },
           {
             "id": "groups-r1g1-j2",
             "seriesId": "groups-r1g1",
+            "stage": "grupos",
             "round": "RODADA 1 - FIN x SKY",
             "roundNumber": 1,
+            "gameNumber": 2,
+            "format": "MD3",
             "blueTeamSlot": "A2",
             "redTeamSlot": "A1",
-            "winnerSlot": "A1"
+            "winnerSlot": "A1",
+            "mvpPlayerId": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39",
+            "participants": [
+              {
+                "playerId": "c8de87cb-5e6e-47ce-afe5-dd3985558a3f",
+                "riotId": "Slash SKY#TOP10",
+                "teamSlot": "A2",
+                "position": "TOP",
+                "score": 72.07,
+                "won": false,
+                "deaths": 0
+              },
+              {
+                "playerId": "3c03eab2-782e-41cc-85eb-11895824406a",
+                "riotId": "SKY mayangamerbr#GGG",
+                "teamSlot": "A2",
+                "position": "JG",
+                "score": 70.13,
+                "won": false,
+                "deaths": 8
+              },
+              {
+                "playerId": "1e16ae4d-b121-4d24-905d-28089516f1be",
+                "riotId": "SKY guMis#rina",
+                "teamSlot": "A2",
+                "position": "MID",
+                "score": 74.43,
+                "won": false,
+                "deaths": 1
+              },
+              {
+                "playerId": "a3cacd4b-cea4-4571-9139-9c74125ee524",
+                "riotId": "Natsu#1v9",
+                "teamSlot": "A2",
+                "position": "ADC",
+                "score": 59.85,
+                "won": false,
+                "deaths": 11
+              },
+              {
+                "playerId": "3fe4398c-3c6e-43cb-a16b-9a1f943c4c8b",
+                "riotId": "SKY Ciel Winters#Lost",
+                "teamSlot": "A2",
+                "position": "SUP",
+                "score": 64.89,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "c49312d8-3672-4654-9790-a9cad7f59937",
+                "riotId": "Red KauanMemes#BA1",
+                "teamSlot": "A1",
+                "position": "TOP",
+                "score": 70.46,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39",
+                "riotId": "qquq#yve",
+                "teamSlot": "A1",
+                "position": "JG",
+                "score": 90.23,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "bdfb1dc0-e510-487e-ad1d-71c7aa49d1c2",
+                "riotId": "JuninhoLegal#br1",
+                "teamSlot": "A1",
+                "position": "MID",
+                "score": 64.2,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "41b3325e-3a2f-4a67-b18a-880c7a0f546f",
+                "riotId": "bad decisions#void",
+                "teamSlot": "A1",
+                "position": "ADC",
+                "score": 85.32,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "013c58e9-130d-4c36-bbf3-1a2e4b8a82a2",
+                "riotId": "Zähir#THgod",
+                "teamSlot": "A1",
+                "position": "SUP",
+                "score": 85.89,
+                "won": true,
+                "deaths": 3
+              }
+            ]
           },
           {
             "id": "groups-r1g3-j1",
             "seriesId": "groups-r1g3",
+            "stage": "grupos",
             "round": "RODADA 1 - PXG x GDG",
             "roundNumber": 1,
+            "gameNumber": 1,
+            "format": "MD3",
             "blueTeamSlot": "B1",
             "redTeamSlot": "B2",
-            "winnerSlot": "B1"
+            "winnerSlot": "B1",
+            "mvpPlayerId": "b92cbd24-be2e-4c7b-b2dd-86105c87d127",
+            "participants": [
+              {
+                "playerId": "2f0aee66-029a-4ecb-97ed-b0b0966c7edd",
+                "riotId": "Shahanshah#NIKA",
+                "teamSlot": "B1",
+                "position": "TOP",
+                "score": 73.48,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "b92cbd24-be2e-4c7b-b2dd-86105c87d127",
+                "riotId": "kylo ren#zed",
+                "teamSlot": "B1",
+                "position": "JG",
+                "score": 93.74,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "ccf6c920-4a2e-40ba-824d-73598fffb378",
+                "riotId": "HitKilla#0408",
+                "teamSlot": "B1",
+                "position": "MID",
+                "score": 59.87,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "271defca-2ef0-4720-b96f-5f68a6ddfeea",
+                "riotId": "Just Feeling#Bad",
+                "teamSlot": "B1",
+                "position": "ADC",
+                "score": 89.41,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "30124aec-f280-4dcd-83d4-f9cda42c5df8",
+                "riotId": "IIIIIIIIIIIIlIII#Lcpnz",
+                "teamSlot": "B1",
+                "position": "SUP",
+                "score": 70.49,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "6385d288-850f-48ed-9020-70ddc683c75b",
+                "riotId": "GDG Goblinstein#2005",
+                "teamSlot": "B2",
+                "position": "TOP",
+                "score": 57.59,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "c4875740-f916-44f3-b69d-27b65cf58e64",
+                "riotId": "Dgzin#Br001",
+                "teamSlot": "B2",
+                "position": "JG",
+                "score": 78.71,
+                "won": false,
+                "deaths": 9
+              },
+              {
+                "playerId": "4b785c1e-f133-481e-9628-2c4d92ac8959",
+                "riotId": "GDG Maldição#GUI",
+                "teamSlot": "B2",
+                "position": "MID",
+                "score": 76.31,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "57754dd9-8e9e-4180-967b-5f8f286f7c47",
+                "riotId": "Padre Doug#VIT",
+                "teamSlot": "B2",
+                "position": "ADC",
+                "score": 52.42,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "5ed128a9-feae-48d8-b5ce-b5454b0b2126",
+                "riotId": "GDG Lanceiro#XXT69",
+                "teamSlot": "B2",
+                "position": "SUP",
+                "score": 74.85,
+                "won": false,
+                "deaths": 6
+              }
+            ]
           },
           {
             "id": "groups-r1g3-j2",
             "seriesId": "groups-r1g3",
+            "stage": "grupos",
             "round": "RODADA 1 - PXG x GDG",
             "roundNumber": 1,
+            "gameNumber": 2,
+            "format": "MD3",
             "blueTeamSlot": "B1",
             "redTeamSlot": "B2",
-            "winnerSlot": "B1"
+            "winnerSlot": "B1",
+            "mvpPlayerId": "b92cbd24-be2e-4c7b-b2dd-86105c87d127",
+            "participants": [
+              {
+                "playerId": "2f0aee66-029a-4ecb-97ed-b0b0966c7edd",
+                "riotId": "Shahanshah#NIKA",
+                "teamSlot": "B1",
+                "position": "TOP",
+                "score": 83.89,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "b92cbd24-be2e-4c7b-b2dd-86105c87d127",
+                "riotId": "kylo ren#zed",
+                "teamSlot": "B1",
+                "position": "JG",
+                "score": 88.88,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "ccf6c920-4a2e-40ba-824d-73598fffb378",
+                "riotId": "HitKilla#0408",
+                "teamSlot": "B1",
+                "position": "MID",
+                "score": 69.02,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "271defca-2ef0-4720-b96f-5f68a6ddfeea",
+                "riotId": "Just Feeling#Bad",
+                "teamSlot": "B1",
+                "position": "ADC",
+                "score": 76.81,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "30124aec-f280-4dcd-83d4-f9cda42c5df8",
+                "riotId": "IIIIIIIIIIIIlIII#Lcpnz",
+                "teamSlot": "B1",
+                "position": "SUP",
+                "score": 77.78,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "6385d288-850f-48ed-9020-70ddc683c75b",
+                "riotId": "GDG Goblinstein#2005",
+                "teamSlot": "B2",
+                "position": "TOP",
+                "score": 64.22,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "c4875740-f916-44f3-b69d-27b65cf58e64",
+                "riotId": "Dgzin#Br001",
+                "teamSlot": "B2",
+                "position": "JG",
+                "score": 66.78,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "4b785c1e-f133-481e-9628-2c4d92ac8959",
+                "riotId": "GDG Maldição#GUI",
+                "teamSlot": "B2",
+                "position": "MID",
+                "score": 70.8,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "57754dd9-8e9e-4180-967b-5f8f286f7c47",
+                "riotId": "Padre Doug#VIT",
+                "teamSlot": "B2",
+                "position": "ADC",
+                "score": 50.75,
+                "won": false,
+                "deaths": 2
+              },
+              {
+                "playerId": "5ed128a9-feae-48d8-b5ce-b5454b0b2126",
+                "riotId": "GDG Lanceiro#XXT69",
+                "teamSlot": "B2",
+                "position": "SUP",
+                "score": 62.46,
+                "won": false,
+                "deaths": 4
+              }
+            ]
           },
           {
             "id": "groups-r1g4-j1",
             "seriesId": "groups-r1g4",
+            "stage": "grupos",
             "round": "RODADA 1 - FFLT x TNL",
             "roundNumber": 1,
+            "gameNumber": 1,
+            "format": "MD3",
             "blueTeamSlot": "B3",
             "redTeamSlot": "B4",
-            "winnerSlot": "B3"
+            "winnerSlot": "B3",
+            "mvpPlayerId": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
+            "participants": [
+              {
+                "playerId": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
+                "riotId": "Mits#KIM",
+                "teamSlot": "B3",
+                "position": "TOP",
+                "score": 100,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "d0570a3b-415e-4f1c-8e31-ef6a57884ac1",
+                "riotId": "FFLT Rick#Rick",
+                "teamSlot": "B3",
+                "position": "JG",
+                "score": 90.68,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "0cc6bb32-e387-4cfe-adcd-6362fd369614",
+                "riotId": "FFLT Maytas#2303",
+                "teamSlot": "B3",
+                "position": "MID",
+                "score": 83.99,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "4468c885-4c32-4c7e-a749-b74f5d9530cb",
+                "riotId": "FFLT KitteN#gay",
+                "teamSlot": "B3",
+                "position": "ADC",
+                "score": 80.08,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "93504c7f-3a44-41d4-84ba-7fcdf9c4c202",
+                "riotId": "FFLT Botas#caco",
+                "teamSlot": "B3",
+                "position": "SUP",
+                "score": 87.24,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "b809b15f-5792-4fe7-b376-694fcf9391ea",
+                "riotId": "LeKuTaaká#BR1",
+                "teamSlot": "B4",
+                "position": "TOP",
+                "score": 48.87,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "398df2ac-c804-4102-b619-bcd1a99f7f83",
+                "riotId": "Arthemis#Presa",
+                "teamSlot": "B4",
+                "position": "JG",
+                "score": 61.33,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "dc3196d7-8120-4cda-84cb-399673ce7087",
+                "riotId": "Harrypottar#gandl",
+                "teamSlot": "B4",
+                "position": "MID",
+                "score": 81.95,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "8f9a0f23-33f3-4a50-9050-fa75c77ae99d",
+                "riotId": "TNB Yato#ADC",
+                "teamSlot": "B4",
+                "position": "ADC",
+                "score": 67.1,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "f4829fa0-4a8b-4bf0-b34d-fdaea5256536",
+                "riotId": "Aleeht#BR1",
+                "teamSlot": "B4",
+                "position": "SUP",
+                "score": 62.56,
+                "won": false,
+                "deaths": 5
+              }
+            ]
           },
           {
             "id": "groups-r1g4-j2",
             "seriesId": "groups-r1g4",
+            "stage": "grupos",
             "round": "RODADA 1 - FFLT x TNL",
             "roundNumber": 1,
+            "gameNumber": 2,
+            "format": "MD3",
             "blueTeamSlot": "B4",
             "redTeamSlot": "B3",
-            "winnerSlot": "B3"
+            "winnerSlot": "B3",
+            "mvpPlayerId": "d0570a3b-415e-4f1c-8e31-ef6a57884ac1",
+            "participants": [
+              {
+                "playerId": "b809b15f-5792-4fe7-b376-694fcf9391ea",
+                "riotId": "LeKuTaaká#BR1",
+                "teamSlot": "B4",
+                "position": "TOP",
+                "score": 58.52,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "398df2ac-c804-4102-b619-bcd1a99f7f83",
+                "riotId": "Arthemis#Presa",
+                "teamSlot": "B4",
+                "position": "JG",
+                "score": 56.23,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "dc3196d7-8120-4cda-84cb-399673ce7087",
+                "riotId": "Harrypottar#gandl",
+                "teamSlot": "B4",
+                "position": "MID",
+                "score": 86.86,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "8f9a0f23-33f3-4a50-9050-fa75c77ae99d",
+                "riotId": "TNB Yato#ADC",
+                "teamSlot": "B4",
+                "position": "ADC",
+                "score": 85.17,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "f4829fa0-4a8b-4bf0-b34d-fdaea5256536",
+                "riotId": "Aleeht#BR1",
+                "teamSlot": "B4",
+                "position": "SUP",
+                "score": 74.73,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
+                "riotId": "Mits#KIM",
+                "teamSlot": "B3",
+                "position": "TOP",
+                "score": 86.54,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "d0570a3b-415e-4f1c-8e31-ef6a57884ac1",
+                "riotId": "FFLT Rick#Rick",
+                "teamSlot": "B3",
+                "position": "JG",
+                "score": 87.67,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "0cc6bb32-e387-4cfe-adcd-6362fd369614",
+                "riotId": "FFLT Maytas#2303",
+                "teamSlot": "B3",
+                "position": "MID",
+                "score": 82.46,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "4468c885-4c32-4c7e-a749-b74f5d9530cb",
+                "riotId": "FFLT KitteN#gay",
+                "teamSlot": "B3",
+                "position": "ADC",
+                "score": 71.08,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "93504c7f-3a44-41d4-84ba-7fcdf9c4c202",
+                "riotId": "FFLT Botas#caco",
+                "teamSlot": "B3",
+                "position": "SUP",
+                "score": 70.85,
+                "won": true,
+                "deaths": 3
+              }
+            ]
           },
           {
             "id": "groups-r1g7-j1",
             "seriesId": "groups-r1g7",
+            "stage": "grupos",
             "round": "RODADA 1 - BST x RNG",
             "roundNumber": 1,
+            "gameNumber": 1,
+            "format": "MD3",
             "blueTeamSlot": "D1",
             "redTeamSlot": "D2",
-            "winnerSlot": "D1"
+            "winnerSlot": "D1",
+            "mvpPlayerId": "003f66b9-fa33-4dfa-8213-26dd2949ee79",
+            "participants": [
+              {
+                "playerId": "9e27d442-9ec4-41c9-a05e-c2c52931094f",
+                "riotId": "Miss Holes#Cvt",
+                "teamSlot": "D1",
+                "position": "TOP",
+                "score": 63.47,
+                "won": true,
+                "deaths": 8
+              },
+              {
+                "playerId": "6f77aa43-5ccb-4f3a-a767-faeb1fc00307",
+                "riotId": "Jóquis#LOL",
+                "teamSlot": "D1",
+                "position": "JG",
+                "score": 83.3,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "003f66b9-fa33-4dfa-8213-26dd2949ee79",
+                "riotId": "Guolherme21#BR1",
+                "teamSlot": "D1",
+                "position": "MID",
+                "score": 90.43,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "9dae6be8-5946-42f0-bbe0-5b3c18000b5d",
+                "riotId": "DKV Julin#666",
+                "teamSlot": "D1",
+                "position": "ADC",
+                "score": 76.62,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "5bbb9ada-61b9-4a9f-a162-1cfd5cb3a9ff",
+                "riotId": "KuskEndrick#BRA",
+                "teamSlot": "D1",
+                "position": "SUP",
+                "score": 83.19,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "48b97f8e-3b5e-4219-8828-c916cc35518a",
+                "riotId": "Drager007#TOP",
+                "teamSlot": "D2",
+                "position": "TOP",
+                "score": 73.07,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "52cc780c-f595-4c45-af66-abc64b44e93b",
+                "riotId": "false jugking#lala",
+                "teamSlot": "D2",
+                "position": "JG",
+                "score": 82.12,
+                "won": false,
+                "deaths": 9
+              },
+              {
+                "playerId": "286f41d2-24c2-4457-9dcd-d5654ba6049f",
+                "riotId": "midking#ikari",
+                "teamSlot": "D2",
+                "position": "MID",
+                "score": 80.49,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "2594034c-9394-4b79-8b59-dedbf66482e5",
+                "riotId": "DarKaiser#CARRY",
+                "teamSlot": "D2",
+                "position": "ADC",
+                "score": 52.94,
+                "won": false,
+                "deaths": 11
+              },
+              {
+                "playerId": "745a0ee6-ebda-4170-a095-68565c5f425b",
+                "riotId": "FEMBuurraxa#FLU",
+                "teamSlot": "D2",
+                "position": "SUP",
+                "score": 64.47,
+                "won": false,
+                "deaths": 9
+              }
+            ]
           },
           {
             "id": "groups-r1g7-j2",
             "seriesId": "groups-r1g7",
+            "stage": "grupos",
             "round": "RODADA 1 - BST x RNG",
             "roundNumber": 1,
+            "gameNumber": 2,
+            "format": "MD3",
             "blueTeamSlot": "D2",
             "redTeamSlot": "D1",
-            "winnerSlot": "D2"
+            "winnerSlot": "D2",
+            "mvpPlayerId": "52cc780c-f595-4c45-af66-abc64b44e93b",
+            "participants": [
+              {
+                "playerId": "48b97f8e-3b5e-4219-8828-c916cc35518a",
+                "riotId": "Drager007#TOP",
+                "teamSlot": "D2",
+                "position": "TOP",
+                "score": 77.59,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "52cc780c-f595-4c45-af66-abc64b44e93b",
+                "riotId": "false jugking#lala",
+                "teamSlot": "D2",
+                "position": "JG",
+                "score": 82.51,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "ac2dcf04-efb7-461d-85ac-dc49214ad466",
+                "riotId": "Mechanics#mrn16",
+                "teamSlot": "D2",
+                "position": "MID",
+                "score": 76.14,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "2594034c-9394-4b79-8b59-dedbf66482e5",
+                "riotId": "DarKaiser#CARRY",
+                "teamSlot": "D2",
+                "position": "ADC",
+                "score": 74.14,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "745a0ee6-ebda-4170-a095-68565c5f425b",
+                "riotId": "FEMBuurraxa#FLU",
+                "teamSlot": "D2",
+                "position": "SUP",
+                "score": 71.44,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "9e27d442-9ec4-41c9-a05e-c2c52931094f",
+                "riotId": "Miss Holes#Cvt",
+                "teamSlot": "D1",
+                "position": "TOP",
+                "score": 75.95,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "6f77aa43-5ccb-4f3a-a767-faeb1fc00307",
+                "riotId": "Jóquis#LOL",
+                "teamSlot": "D1",
+                "position": "JG",
+                "score": 83.06,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "003f66b9-fa33-4dfa-8213-26dd2949ee79",
+                "riotId": "Guolherme21#BR1",
+                "teamSlot": "D1",
+                "position": "MID",
+                "score": 60.31,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "9dae6be8-5946-42f0-bbe0-5b3c18000b5d",
+                "riotId": "DKV Julin#666",
+                "teamSlot": "D1",
+                "position": "ADC",
+                "score": 54.13,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "5bbb9ada-61b9-4a9f-a162-1cfd5cb3a9ff",
+                "riotId": "KuskEndrick#BRA",
+                "teamSlot": "D1",
+                "position": "SUP",
+                "score": 69.11,
+                "won": false,
+                "deaths": 4
+              }
+            ]
           },
           {
             "id": "groups-r1g6-j1",
             "seriesId": "groups-r1g6",
+            "stage": "grupos",
             "round": "RODADA 1 - UBR x TKT7",
             "roundNumber": 1,
+            "gameNumber": 1,
+            "format": "MD3",
             "blueTeamSlot": "C3",
             "redTeamSlot": "C4",
-            "winnerSlot": "C4"
+            "winnerSlot": "C4",
+            "mvpPlayerId": "9ed6c467-f397-4906-9967-63dea851d6c0",
+            "participants": [
+              {
+                "playerId": "1d1dc560-2992-47ec-a7e1-0ecc7f1f2394",
+                "riotId": "FofuraUwU#UwU",
+                "teamSlot": "C3",
+                "position": "TOP",
+                "score": 81.8,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "f9509952-96c0-46a6-8797-77a580c69200",
+                "riotId": "RUN brnb#RUNE",
+                "teamSlot": "C3",
+                "position": "JG",
+                "score": 65.12,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "3f6a4d02-7df4-49d5-b2f9-dcdbc2345239",
+                "riotId": "PkCashM4#7867",
+                "teamSlot": "C3",
+                "position": "MID",
+                "score": 52.36,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "0bd2a5cd-e903-4cde-9172-70f1926fbc54",
+                "riotId": "PNG gengi#br1",
+                "teamSlot": "C3",
+                "position": "ADC",
+                "score": 46.85,
+                "won": false,
+                "deaths": 8
+              },
+              {
+                "playerId": "b235d72d-a626-4ec8-b663-a07f2cdb1458",
+                "riotId": "smurf pode#bubu",
+                "teamSlot": "C3",
+                "position": "SUP",
+                "score": 60.94,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "b90cfd3f-be97-4c2a-97ff-669620611892",
+                "riotId": "CTG Brasil ILS#CTGBR",
+                "teamSlot": "C4",
+                "position": "TOP",
+                "score": 77.89,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "9ed6c467-f397-4906-9967-63dea851d6c0",
+                "riotId": "Latrell Spencer#TBG3",
+                "teamSlot": "C4",
+                "position": "JG",
+                "score": 90.2,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "6aa73999-3861-4c5e-95a7-d629b6bc501f",
+                "riotId": "Pedrin UwU#br1",
+                "teamSlot": "C4",
+                "position": "MID",
+                "score": 85.19,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "c9245faa-3264-49d5-b6d3-15336567772b",
+                "riotId": "Kyllua#KOBE",
+                "teamSlot": "C4",
+                "position": "ADC",
+                "score": 82.44,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "66d1841c-206c-451f-aac8-6e8b1a04ce16",
+                "riotId": "China#0503",
+                "teamSlot": "C4",
+                "position": "SUP",
+                "score": 77.9,
+                "won": true,
+                "deaths": 0
+              }
+            ]
           },
           {
             "id": "groups-r1g6-j2",
             "seriesId": "groups-r1g6",
+            "stage": "grupos",
             "round": "RODADA 1 - UBR x TKT7",
             "roundNumber": 1,
+            "gameNumber": 2,
+            "format": "MD3",
             "blueTeamSlot": "C4",
             "redTeamSlot": "C3",
-            "winnerSlot": "C4"
+            "winnerSlot": "C4",
+            "mvpPlayerId": "9ed6c467-f397-4906-9967-63dea851d6c0",
+            "participants": [
+              {
+                "playerId": "b90cfd3f-be97-4c2a-97ff-669620611892",
+                "riotId": "CTG Brasil ILS#CTGBR",
+                "teamSlot": "C4",
+                "position": "TOP",
+                "score": 77.91,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "9ed6c467-f397-4906-9967-63dea851d6c0",
+                "riotId": "Latrell Spencer#TBG3",
+                "teamSlot": "C4",
+                "position": "JG",
+                "score": 88.91,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "6aa73999-3861-4c5e-95a7-d629b6bc501f",
+                "riotId": "Pedrin UwU#br1",
+                "teamSlot": "C4",
+                "position": "MID",
+                "score": 82.07,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "c9245faa-3264-49d5-b6d3-15336567772b",
+                "riotId": "Kyllua#KOBE",
+                "teamSlot": "C4",
+                "position": "ADC",
+                "score": 72.44,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "66d1841c-206c-451f-aac8-6e8b1a04ce16",
+                "riotId": "China#0503",
+                "teamSlot": "C4",
+                "position": "SUP",
+                "score": 77.14,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "1d1dc560-2992-47ec-a7e1-0ecc7f1f2394",
+                "riotId": "FofuraUwU#UwU",
+                "teamSlot": "C3",
+                "position": "TOP",
+                "score": 70.35,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "f9509952-96c0-46a6-8797-77a580c69200",
+                "riotId": "RUN brnb#RUNE",
+                "teamSlot": "C3",
+                "position": "JG",
+                "score": 76.91,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "0c657f3b-3f64-4f0f-8233-98b89be507bc",
+                "riotId": "RUN Gralio#Swain",
+                "teamSlot": "C3",
+                "position": "MID",
+                "score": 69.1,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "0bd2a5cd-e903-4cde-9172-70f1926fbc54",
+                "riotId": "PNG gengi#br1",
+                "teamSlot": "C3",
+                "position": "ADC",
+                "score": 57.95,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "b235d72d-a626-4ec8-b663-a07f2cdb1458",
+                "riotId": "smurf pode#bubu",
+                "teamSlot": "C3",
+                "position": "SUP",
+                "score": 75.99,
+                "won": false,
+                "deaths": 5
+              }
+            ]
           },
           {
             "id": "groups-r1g7-j3",
             "seriesId": "groups-r1g7",
+            "stage": "grupos",
             "round": "RODADA 1 - BST x RNG",
             "roundNumber": 1,
+            "gameNumber": 3,
+            "format": "MD3",
             "blueTeamSlot": "D2",
             "redTeamSlot": "D1",
-            "winnerSlot": "D2"
+            "winnerSlot": "D2",
+            "mvpPlayerId": "2594034c-9394-4b79-8b59-dedbf66482e5",
+            "participants": [
+              {
+                "playerId": "48b97f8e-3b5e-4219-8828-c916cc35518a",
+                "riotId": "Drager007#TOP",
+                "teamSlot": "D2",
+                "position": "TOP",
+                "score": 58.6,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "52cc780c-f595-4c45-af66-abc64b44e93b",
+                "riotId": "false jugking#lala",
+                "teamSlot": "D2",
+                "position": "JG",
+                "score": 93.5,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "ac2dcf04-efb7-461d-85ac-dc49214ad466",
+                "riotId": "Mechanics#mrn16",
+                "teamSlot": "D2",
+                "position": "MID",
+                "score": 61.13,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "2594034c-9394-4b79-8b59-dedbf66482e5",
+                "riotId": "DarKaiser#CARRY",
+                "teamSlot": "D2",
+                "position": "ADC",
+                "score": 97.98,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "745a0ee6-ebda-4170-a095-68565c5f425b",
+                "riotId": "FEMBuurraxa#FLU",
+                "teamSlot": "D2",
+                "position": "SUP",
+                "score": 79.32,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "9e27d442-9ec4-41c9-a05e-c2c52931094f",
+                "riotId": "Miss Holes#Cvt",
+                "teamSlot": "D1",
+                "position": "TOP",
+                "score": 56.72,
+                "won": false,
+                "deaths": 2
+              },
+              {
+                "playerId": "6f77aa43-5ccb-4f3a-a767-faeb1fc00307",
+                "riotId": "Jóquis#LOL",
+                "teamSlot": "D1",
+                "position": "JG",
+                "score": 60.41,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "003f66b9-fa33-4dfa-8213-26dd2949ee79",
+                "riotId": "Guolherme21#BR1",
+                "teamSlot": "D1",
+                "position": "MID",
+                "score": 80.93,
+                "won": false,
+                "deaths": 2
+              },
+              {
+                "playerId": "9dae6be8-5946-42f0-bbe0-5b3c18000b5d",
+                "riotId": "DKV Julin#666",
+                "teamSlot": "D1",
+                "position": "ADC",
+                "score": 48.97,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "5bbb9ada-61b9-4a9f-a162-1cfd5cb3a9ff",
+                "riotId": "KuskEndrick#BRA",
+                "teamSlot": "D1",
+                "position": "SUP",
+                "score": 71.25,
+                "won": false,
+                "deaths": 6
+              }
+            ]
           },
           {
             "id": "groups-r1g8-j1",
             "seriesId": "groups-r1g8",
+            "stage": "grupos",
             "round": "RODADA 1 - RDG x INZ",
             "roundNumber": 1,
+            "gameNumber": 1,
+            "format": "MD3",
             "blueTeamSlot": "D3",
             "redTeamSlot": "D4",
-            "winnerSlot": "D3"
+            "winnerSlot": "D3",
+            "mvpPlayerId": "b23e9ca5-3abb-4222-9580-5965227b155c",
+            "participants": [
+              {
+                "playerId": "d063fffc-b310-4449-9d66-7a08b97d452a",
+                "riotId": "Buba#RN1",
+                "teamSlot": "D3",
+                "position": "TOP",
+                "score": 77.25,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c",
+                "riotId": "RDG Dragon B3#155",
+                "teamSlot": "D3",
+                "position": "JG",
+                "score": 98.18,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "ff6e177a-0dfe-43fa-ab75-1caff615ac19",
+                "riotId": "RDG Fly#prado",
+                "teamSlot": "D3",
+                "position": "MID",
+                "score": 72.59,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "683b5d91-4778-4fb2-963d-5ff30dc2f763",
+                "riotId": "FVLR DA MORTE#PRET",
+                "teamSlot": "D3",
+                "position": "ADC",
+                "score": 75.92,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "d9b48adc-0878-4579-9fdb-c6c2b45bdf04",
+                "riotId": "Gabs Mattos#GABS",
+                "teamSlot": "D3",
+                "position": "SUP",
+                "score": 84.7,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "41328541-367c-4556-bf01-fb1810cdfc07",
+                "riotId": "luci#sfc",
+                "teamSlot": "D4",
+                "position": "TOP",
+                "score": 83.6,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "9cde653a-d2ab-4724-9b0a-274626101703",
+                "riotId": "INZ Kido#BENTO",
+                "teamSlot": "D4",
+                "position": "JG",
+                "score": 73.12,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "9ca85881-b3a9-4d35-b5a5-040d97360711",
+                "riotId": "josé 3000#zeze",
+                "teamSlot": "D4",
+                "position": "MID",
+                "score": 78.44,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "7e9fa67d-9be1-4a2f-95b0-da3ec6d83b49",
+                "riotId": "Ueu#0204",
+                "teamSlot": "D4",
+                "position": "ADC",
+                "score": 47.64,
+                "won": false,
+                "deaths": 2
+              },
+              {
+                "playerId": "78002b34-f80b-46bb-9401-f905c2accbdd",
+                "riotId": "Magikarp#Jere",
+                "teamSlot": "D4",
+                "position": "SUP",
+                "score": 79.32,
+                "won": false,
+                "deaths": 1
+              }
+            ]
           },
           {
             "id": "groups-r1g8-j2",
             "seriesId": "groups-r1g8",
+            "stage": "grupos",
             "round": "RODADA 1 - RDG x INZ",
             "roundNumber": 1,
+            "gameNumber": 2,
+            "format": "MD3",
             "blueTeamSlot": "D4",
             "redTeamSlot": "D3",
-            "winnerSlot": "D3"
+            "winnerSlot": "D3",
+            "mvpPlayerId": "b23e9ca5-3abb-4222-9580-5965227b155c",
+            "participants": [
+              {
+                "playerId": "41328541-367c-4556-bf01-fb1810cdfc07",
+                "riotId": "luci#sfc",
+                "teamSlot": "D4",
+                "position": "TOP",
+                "score": 67.62,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "9cde653a-d2ab-4724-9b0a-274626101703",
+                "riotId": "INZ Kido#BENTO",
+                "teamSlot": "D4",
+                "position": "JG",
+                "score": 61.32,
+                "won": false,
+                "deaths": 9
+              },
+              {
+                "playerId": "9ca85881-b3a9-4d35-b5a5-040d97360711",
+                "riotId": "josé 3000#zeze",
+                "teamSlot": "D4",
+                "position": "MID",
+                "score": 64.99,
+                "won": false,
+                "deaths": 8
+              },
+              {
+                "playerId": "7e9fa67d-9be1-4a2f-95b0-da3ec6d83b49",
+                "riotId": "Ueu#0204",
+                "teamSlot": "D4",
+                "position": "ADC",
+                "score": 69.03,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "78002b34-f80b-46bb-9401-f905c2accbdd",
+                "riotId": "Magikarp#Jere",
+                "teamSlot": "D4",
+                "position": "SUP",
+                "score": 60.25,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "d063fffc-b310-4449-9d66-7a08b97d452a",
+                "riotId": "Buba#RN1",
+                "teamSlot": "D3",
+                "position": "TOP",
+                "score": 78.03,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c",
+                "riotId": "RDG Dragon B3#155",
+                "teamSlot": "D3",
+                "position": "JG",
+                "score": 95.81,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "ff6e177a-0dfe-43fa-ab75-1caff615ac19",
+                "riotId": "RDG Fly#prado",
+                "teamSlot": "D3",
+                "position": "MID",
+                "score": 89.95,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "683b5d91-4778-4fb2-963d-5ff30dc2f763",
+                "riotId": "FVLR DA MORTE#PRET",
+                "teamSlot": "D3",
+                "position": "ADC",
+                "score": 69.4,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "d9b48adc-0878-4579-9fdb-c6c2b45bdf04",
+                "riotId": "Gabs Mattos#GABS",
+                "teamSlot": "D3",
+                "position": "SUP",
+                "score": 85.56,
+                "won": true,
+                "deaths": 1
+              }
+            ]
           },
           {
             "id": "groups-r1g5-j1",
             "seriesId": "groups-r1g5",
+            "stage": "grupos",
             "round": "RODADA 1 - SKS x FVLR",
             "roundNumber": 1,
+            "gameNumber": 1,
+            "format": "MD3",
             "blueTeamSlot": "C1",
             "redTeamSlot": "C2",
-            "winnerSlot": "C2"
+            "winnerSlot": "C2",
+            "mvpPlayerId": "4e7d0fdf-44ba-44c9-a9e1-277dcdcc3d4f",
+            "participants": [
+              {
+                "playerId": "5bf10679-8e08-4849-a5f3-9ee030effacd",
+                "riotId": "Persaleg1#br1",
+                "teamSlot": "C1",
+                "position": "TOP",
+                "score": 51.37,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "066d44b1-1a87-4145-b485-aa0e20845952",
+                "riotId": "Thalito2#BR2",
+                "teamSlot": "C1",
+                "position": "JG",
+                "score": 54.35,
+                "won": false,
+                "deaths": 8
+              },
+              {
+                "playerId": "09416e18-233d-42fe-b73e-4292db2668d4",
+                "riotId": "MiniSanchez#Him",
+                "teamSlot": "C1",
+                "position": "MID",
+                "score": 83.82,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "2dabc6b9-a1c4-4d86-ac69-8a19ca900653",
+                "riotId": "Gab dos prédios#1129",
+                "teamSlot": "C1",
+                "position": "ADC",
+                "score": 69.14,
+                "won": false,
+                "deaths": 9
+              },
+              {
+                "playerId": "9fa40a2e-0327-4d5a-a162-f1dec6a66ddf",
+                "riotId": "Rowllf#DDD49",
+                "teamSlot": "C1",
+                "position": "SUP",
+                "score": 72.44,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "4e7d0fdf-44ba-44c9-a9e1-277dcdcc3d4f",
+                "riotId": "Fantasma#Rich",
+                "teamSlot": "C2",
+                "position": "TOP",
+                "score": 98.83,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "ba2ec6b1-7544-4200-bb18-13df3ed63a5b",
+                "riotId": "FVLR Lamine#L10",
+                "teamSlot": "C2",
+                "position": "JG",
+                "score": 89.63,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "3deb513b-3b91-403a-91cd-6ef94bf3a285",
+                "riotId": "marx#alone",
+                "teamSlot": "C2",
+                "position": "MID",
+                "score": 72.9,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "008016b0-52f1-4045-b24c-2e564c580ba6",
+                "riotId": "shhh vc é roxo#low",
+                "teamSlot": "C2",
+                "position": "ADC",
+                "score": 62.32,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "168a688c-ec26-49b9-ba75-809bd993e2e6",
+                "riotId": "pen drive usb#0000",
+                "teamSlot": "C2",
+                "position": "SUP",
+                "score": 67.7,
+                "won": true,
+                "deaths": 6
+              }
+            ]
           },
           {
             "id": "groups-r1g5-j2",
             "seriesId": "groups-r1g5",
+            "stage": "grupos",
             "round": "RODADA 1 - SKS x FVLR",
             "roundNumber": 1,
+            "gameNumber": 2,
+            "format": "MD3",
             "blueTeamSlot": "C2",
             "redTeamSlot": "C1",
-            "winnerSlot": "C2"
+            "winnerSlot": "C2",
+            "mvpPlayerId": "ba2ec6b1-7544-4200-bb18-13df3ed63a5b",
+            "participants": [
+              {
+                "playerId": "4e7d0fdf-44ba-44c9-a9e1-277dcdcc3d4f",
+                "riotId": "Fantasma#Rich",
+                "teamSlot": "C2",
+                "position": "TOP",
+                "score": 66.06,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "ba2ec6b1-7544-4200-bb18-13df3ed63a5b",
+                "riotId": "FVLR Lamine#L10",
+                "teamSlot": "C2",
+                "position": "JG",
+                "score": 86.7,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "3deb513b-3b91-403a-91cd-6ef94bf3a285",
+                "riotId": "marx#alone",
+                "teamSlot": "C2",
+                "position": "MID",
+                "score": 86.25,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "008016b0-52f1-4045-b24c-2e564c580ba6",
+                "riotId": "shhh vc é roxo#low",
+                "teamSlot": "C2",
+                "position": "ADC",
+                "score": 71.77,
+                "won": true,
+                "deaths": 6
+              },
+              {
+                "playerId": "168a688c-ec26-49b9-ba75-809bd993e2e6",
+                "riotId": "pen drive usb#0000",
+                "teamSlot": "C2",
+                "position": "SUP",
+                "score": 77.18,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "5bf10679-8e08-4849-a5f3-9ee030effacd",
+                "riotId": "Persaleg1#br1",
+                "teamSlot": "C1",
+                "position": "TOP",
+                "score": 76.35,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "066d44b1-1a87-4145-b485-aa0e20845952",
+                "riotId": "Thalito2#BR2",
+                "teamSlot": "C1",
+                "position": "JG",
+                "score": 82.1,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "09416e18-233d-42fe-b73e-4292db2668d4",
+                "riotId": "MiniSanchez#Him",
+                "teamSlot": "C1",
+                "position": "MID",
+                "score": 56.68,
+                "won": false,
+                "deaths": 9
+              },
+              {
+                "playerId": "2dabc6b9-a1c4-4d86-ac69-8a19ca900653",
+                "riotId": "Gab dos prédios#1129",
+                "teamSlot": "C1",
+                "position": "ADC",
+                "score": 72.66,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "9fa40a2e-0327-4d5a-a162-f1dec6a66ddf",
+                "riotId": "Rowllf#DDD49",
+                "teamSlot": "C1",
+                "position": "SUP",
+                "score": 72.02,
+                "won": false,
+                "deaths": 7
+              }
+            ]
           }
         ]
       }

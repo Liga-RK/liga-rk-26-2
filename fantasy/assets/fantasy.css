@@ -340,6 +340,38 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .reserve-button:disabled { cursor: not-allowed; opacity: .45; }
 .player-card.reserve-selected { border-color: rgba(255, 194, 75, .72); box-shadow: 0 0 24px rgba(255, 194, 75, .12); }
 .team-market-section .market-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.fantasy-breakdown {
+  margin-top: .55rem;
+  border-top: 1px solid rgba(255, 255, 255, .09);
+  padding-top: .5rem;
+  color: var(--muted);
+}
+.fantasy-breakdown summary {
+  cursor: pointer;
+  color: #ff929d;
+  font-size: .74rem;
+  font-weight: 800;
+}
+.fantasy-breakdown > strong {
+  display: block;
+  margin-top: .65rem;
+  color: #fff;
+  font-size: .75rem;
+}
+.fantasy-breakdown ul { margin: .3rem 0 0; padding: 0; list-style: none; }
+.fantasy-breakdown li {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .18rem 0;
+  font-size: .72rem;
+}
+.fantasy-breakdown li b { color: #fff; white-space: nowrap; }
+.fantasy-breakdown .breakdown-total {
+  margin-top: .2rem;
+  border-top: 1px solid rgba(255, 255, 255, .08);
+  padding-top: .35rem;
+}
 .team-market-section .player-card { min-height: 116px; background: linear-gradient(145deg, rgba(229, 38, 50, .09), rgba(255, 255, 255, .018)); }
 .empty-state { padding: 4rem 1rem; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: .85rem; }
 

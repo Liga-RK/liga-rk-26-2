@@ -346,6 +346,20 @@ sqliteTest("38 migração preserva preços atuais", () => {
   assert.equal(price.price_cents, 1727);
 });
 
+sqliteTest("38a migração v2 preserva histórico e adiciona versão segura", () => {
+  const db = migratedDatabaseWithFixture();
+  const score = db.prepare(`
+    SELECT points, formula_version AS formulaVersion
+    FROM fantasy_asset_round_scores
+  `).get();
+  assert.equal(score.points, 71.25);
+  assert.equal(score.formulaVersion, "stats-only-v1");
+  assert.equal(
+    db.prepare("SELECT version FROM fantasy_formula_settings WHERE id='global'").get().version,
+    "fantasy-v2"
+  );
+});
+
 test("39 painel possui layout responsivo para celular", () => {
   assert.match(adminCss, /@media \(max-width: 560px\)/);
   assert.match(adminCss, /\.compact-form \{ grid-template-columns: 1fr; \}/);
@@ -559,6 +573,7 @@ function migratedDatabaseWithFixture() {
       VALUES('elite-r1','elite','p1','TOP',2,71.25);
   `);
   db.exec(migrationText("0005_admin_global_market.sql"));
+  db.exec(migrationText("0006_fantasy_formula_v2.sql"));
   return db;
 }
 

@@ -10,8 +10,8 @@ const stats = loadWindowValue("assets/stats-content.js", "LIGA_RK_STATS");
 const generatedYear = new Date(stats.generatedAt || Date.now()).getUTCFullYear();
 
 const output = {
-  version: 1,
-  schema: "fantasy-rk-official-source-v1",
+  version: 2,
+  schema: "fantasy-rk-official-source-v2",
   generatedAt: stats.generatedAt || new Date().toISOString(),
   season: stats.season || "Liga RK 26.2",
   timezone: "America/Sao_Paulo",
@@ -60,6 +60,9 @@ for (const division of ["elite", "ascension"]) {
       const winnerSlot = homeScore === awayScore
         ? ""
         : homeScore > awayScore ? homeTeamSlot : awayTeamSlot;
+      const format = inferSeriesFormat(statMatches[0]?.stage || "groups");
+      const winTarget = format === "MD5" ? 3 : 2;
+      const completed = Math.max(homeScore || 0, awayScore || 0) >= winTarget;
       return {
         id: `schedule:${division}:${sourceId}`,
         sourceId,
@@ -70,7 +73,8 @@ for (const division of ["elite", "ascension"]) {
         homeTeamName: teamBySlot.get(homeTeamSlot)?.name || "",
         awayTeamName: teamBySlot.get(awayTeamSlot)?.name || "",
         startsAt: brazilDateToIso(round.date, time, generatedYear),
-        status: statMatches.length ? "completed" : "scheduled",
+        status: completed ? "completed" : statMatches.length ? "live" : "scheduled",
+        format,
         homeScore,
         awayScore,
         winnerTeamId: winnerSlot ? `team:${division}:${winnerSlot}` : null
@@ -112,11 +116,24 @@ for (const division of ["elite", "ascension"]) {
       matches: (statsDivision.matches || []).map((match) => ({
         id: match.id,
         seriesId: match.seriesId,
+        stage: match.stage,
         round: match.round,
         roundNumber: extractRoundNumber(match.round),
+        gameNumber: match.gameNumber,
+        format: inferSeriesFormat(match.stage),
         blueTeamSlot: match.blueTeamSlot,
         redTeamSlot: match.redTeamSlot,
-        winnerSlot: match.winnerSlot
+        winnerSlot: match.winnerSlot,
+        mvpPlayerId: match.mvp?.playerId || null,
+        participants: (match.participants || []).map((participant) => ({
+          playerId: participant.playerId,
+          riotId: participant.riotId || "",
+          teamSlot: participant.teamSlot,
+          position: participant.position,
+          score: participant.score,
+          won: Boolean(participant.won),
+          deaths: participant.deaths
+        }))
       }))
     }
   };
@@ -151,4 +168,8 @@ function brazilDateToIso(date, time, year) {
 
 function extractRoundNumber(value) {
   return Number(String(value || "").match(/RODADA\s*(\d+)/i)?.[1]) || null;
+}
+
+function inferSeriesFormat(stage) {
+  return /semi|final/i.test(String(stage || "")) ? "MD5" : "MD3";
 }

@@ -243,7 +243,9 @@
       opponentSlot: cleanText(item.opponentSlot),
       matchup: cleanText(item.matchup),
       average: roundMoney(item.average),
-      recentPoints: normalizeRecentPoints(item.recentPoints)
+      recentPoints: normalizeRecentPoints(item.recentPoints),
+      scoreDetails: objectValue(item.scoreDetails),
+      valuationDetails: objectValue(item.valuationDetails)
     }));
     return cloudMarket;
   }
@@ -592,6 +594,8 @@
       : "aguardando rodada";
     stats.innerHTML = `<span>Média: ${formatNumber(item.average)}</span><span>Performance recente: ${escapeHtml(recent)}</span>`;
     meta.append(name, team, matchup, stats);
+    const breakdown = fantasyBreakdown(item);
+    if (breakdown) meta.appendChild(breakdown);
 
     const price = document.createElement("div");
     price.className = "player-price";
@@ -621,6 +625,55 @@
 
     card.append(logo, meta, price, actions);
     return card;
+  }
+
+  function fantasyBreakdown(item) {
+    const score = objectValue(item.scoreDetails);
+    const valuation = objectValue(item.valuationDetails);
+    if (Number(score.formulaVersion) !== 2 && Number(valuation.formulaVersion) !== 2) return null;
+    const details = document.createElement("details");
+    details.className = "fantasy-breakdown";
+    const summary = document.createElement("summary");
+    summary.textContent = "Ver cálculo da última rodada";
+    details.appendChild(summary);
+    if (Number(score.formulaVersion) === 2) {
+      const title = document.createElement("strong");
+      title.textContent = "Pontuação da rodada";
+      const list = document.createElement("ul");
+      appendBreakdownLine(list, "Média dos mapas", formatNumber(score.pontuacaoMediaMapas));
+      appendBreakdownLine(list, "Vitória da série", signedNumber(score.bonusVitoriaSerie));
+      appendBreakdownLine(list, "Série perfeita", signedNumber(score.bonusSeriePerfeita));
+      appendBreakdownLine(list, "Consistência", signedNumber(score.bonusConsistencia));
+      appendBreakdownLine(list, "Domínio de MVP", signedNumber(score.bonusMvpSerie));
+      appendBreakdownLine(list, "Série sem mortes", signedNumber(score.bonusSemMortes));
+      appendBreakdownLine(list, "Total oficial", formatNumber(score.pontuacaoOficial), true);
+      details.append(title, list);
+    }
+    if (Number(valuation.formulaVersion) === 2 && item.type === "player") {
+      const title = document.createElement("strong");
+      title.textContent = "Mercado";
+      const list = document.createElement("ul");
+      appendBreakdownLine(list, "Preço anterior", `RK$ ${formatMoney(valuation.currentPrice)}`);
+      appendBreakdownLine(list, "Pontuação esperada", formatNumber(valuation.expectedScore));
+      appendBreakdownLine(list, "Média histórica (M3)",
+        valuation.historicalAverage == null ? "sem histórico" : formatNumber(valuation.historicalAverage));
+      appendBreakdownLine(list, "Pontuação realizada", formatNumber(valuation.roundPoints));
+      appendBreakdownLine(list, "Variação", signedMoney(valuation.delta));
+      appendBreakdownLine(list, "Novo preço", `RK$ ${formatMoney(valuation.newPrice)}`, true);
+      details.append(title, list);
+    }
+    return details;
+  }
+
+  function appendBreakdownLine(list, label, value, total = false) {
+    const line = document.createElement("li");
+    if (total) line.className = "breakdown-total";
+    const name = document.createElement("span");
+    name.textContent = label;
+    const result = document.createElement("b");
+    result.textContent = value;
+    line.append(name, result);
+    list.appendChild(line);
   }
 
   function matchupLabel(item) {
@@ -2057,6 +2110,21 @@
   function formatMoney(value) {
     const number = Number(value || 0);
     return number.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function signedNumber(value) {
+    const number = Number(value || 0);
+    return `${number > 0 ? "+" : ""}${formatNumber(number)}`;
+  }
+
+  function signedMoney(value) {
+    const number = Number(value || 0);
+    if (number < 0) return `-RK$ ${formatMoney(Math.abs(number))}`;
+    return `${number > 0 ? "+" : ""}RK$ ${formatMoney(number)}`;
+  }
+
+  function objectValue(value) {
+    return value && typeof value === "object" && !Array.isArray(value) ? value : {};
   }
 
   function formatDateTime(value) {

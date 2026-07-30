@@ -141,6 +141,16 @@
             <div id="stats-preview" class="result-box">Aguardando prévia.</div>
           </article>
           <article class="card">
+            <div class="card-heading"><div><span class="eyebrow">Fórmula oficial v2</span><h2>Processar rodada</h2></div></div>
+            <form id="round-process-form" class="compact-form">
+              <label>Rodada<input name="roundNumber" type="number" min="2" value="2" required></label>
+              <label>Divisão<select name="division"><option value="">Ambas</option><option value="elite">Elite</option><option value="ascension">Ascensão</option></select></label>
+              <button id="round-preview-button" class="primary" type="button">Gerar prévia v2</button>
+              <button id="round-process-button" class="danger" type="button" disabled>Processar pontos e preços</button>
+            </form>
+            <div id="round-process-preview" class="result-box">Aguardando prévia da rodada.</div>
+          </article>
+          <article class="card">
             <div class="card-heading"><h2>Filtros de pontuação</h2></div>
             <div class="filters"><select id="score-division"><option value="">Todas</option><option value="elite">Elite</option><option value="ascension">Ascensão</option></select><input id="score-round" type="number" min="1" value="1" placeholder="Rodada"></div>
           </article>

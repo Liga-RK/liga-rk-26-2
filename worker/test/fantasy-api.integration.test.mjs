@@ -125,6 +125,43 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
   assert.equal(duplicate.payload.data.idempotent, true);
   assert.equal(database.prepare("SELECT GROUP_CONCAT(price_cents, ',') AS prices FROM fantasy_market ORDER BY division,asset_id").get().prices, pricesAfterStats);
 
+  const v2Preview = await call(env, "/stats/round/preview", {
+    method: "POST",
+    body: { roundNumber: 2 },
+    cookie,
+    csrf
+  });
+  assert.equal(v2Preview.response.status, 200);
+  assert.equal(v2Preview.payload.data.ready, true);
+  const v2Processed = await call(env, "/stats/round/process", {
+    method: "POST",
+    body: { roundNumber: 2, sourceHash: v2Preview.payload.data.sourceHash },
+    cookie,
+    csrf
+  });
+  assert.equal(v2Processed.response.status, 200);
+  assert.equal(v2Processed.payload.data.formulaVersion, 2);
+  const scoresAfterV2 = database.prepare(
+    "SELECT COUNT(*) AS count FROM fantasy_asset_round_scores WHERE formula_version='fantasy-v2'"
+  ).get().count;
+  const pricesAfterV2 = database.prepare(
+    "SELECT GROUP_CONCAT(price_cents, ',') AS prices FROM fantasy_market ORDER BY division,asset_id"
+  ).get().prices;
+  const v2Repeated = await call(env, "/stats/round/process", {
+    method: "POST",
+    body: { roundNumber: 2, sourceHash: v2Preview.payload.data.sourceHash },
+    cookie,
+    csrf
+  });
+  assert.equal(v2Repeated.response.status, 200);
+  assert.equal(v2Repeated.payload.data.idempotent, true);
+  assert.equal(database.prepare(
+    "SELECT COUNT(*) AS count FROM fantasy_asset_round_scores WHERE formula_version='fantasy-v2'"
+  ).get().count, scoresAfterV2);
+  assert.equal(database.prepare(
+    "SELECT GROUP_CONCAT(price_cents, ',') AS prices FROM fantasy_market ORDER BY division,asset_id"
+  ).get().prices, pricesAfterV2);
+
   const simulated = await call(env, "/valuation/simulate", {
     method: "POST",
     body: { roundNumber: 1, division: "elite" },
@@ -150,7 +187,7 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
     method: "POST", body: {}, cookie, csrf
   });
   assert.equal(formulaReset.response.status, 200);
-  assert.equal(formulaReset.payload.data.formula.version, "rk-value-v2");
+  assert.equal(formulaReset.payload.data.formula.version, "fantasy-v2");
 
   const beforeRestorePrice = database.prepare(`
     SELECT price_cents FROM fantasy_market
@@ -243,7 +280,8 @@ function createDatabase() {
     "0002_production_model.sql",
     "0003_github_pages_auth.sql",
     "0004_lineup_reserves.sql",
-    "0005_admin_global_market.sql"
+    "0005_admin_global_market.sql",
+    "0006_fantasy_formula_v2.sql"
   ]) {
     database.exec(fs.readFileSync(path.join(ROOT, "migrations", file), "utf8"));
     database.prepare("INSERT INTO d1_migrations(name) VALUES(?)").run(file);
@@ -333,7 +371,7 @@ function sourceFixture() {
         homeTeamSlot: "A1",
         awayTeamSlot: "A2",
         startsAt: roundNumber === 2 ? date : "2026-07-25T19:00:00.000Z",
-        status: roundNumber === 1 ? "completed" : "scheduled"
+        status: "completed"
       }]
     })),
     stats: {
@@ -370,6 +408,44 @@ function sourceFixture() {
         roundNumber: 1,
         blueTeamSlot: "A1",
         redTeamSlot: "A2"
+      }, {
+        id: `${division}-r2-map-1`,
+        seriesId: "groups-r2g1",
+        round: "RODADA 2",
+        roundNumber: 2,
+        gameNumber: 1,
+        format: "MD3",
+        blueTeamSlot: "A1",
+        redTeamSlot: "A2",
+        winnerSlot: "A1",
+        mvpPlayerId: playerId,
+        participants: [{
+          playerId,
+          teamSlot: "A1",
+          position: "TOP",
+          score: 92,
+          won: true,
+          deaths: 0
+        }]
+      }, {
+        id: `${division}-r2-map-2`,
+        seriesId: "groups-r2g1",
+        round: "RODADA 2",
+        roundNumber: 2,
+        gameNumber: 2,
+        format: "MD3",
+        blueTeamSlot: "A1",
+        redTeamSlot: "A2",
+        winnerSlot: "A1",
+        mvpPlayerId: playerId,
+        participants: [{
+          playerId,
+          teamSlot: "A1",
+          position: "TOP",
+          score: 90,
+          won: true,
+          deaths: 0
+        }]
       }]
     }
   });

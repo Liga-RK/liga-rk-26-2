@@ -223,7 +223,9 @@ async function getMarket(request, env) {
   const result = await env.DB.prepare(`
     SELECT asset_id AS id, asset_type AS type, role, display_name AS name, team_slot AS teamSlot,
            team_name AS teamName, team_tag AS teamTag, logo, price, previous_price AS previousPrice,
-           average_points AS average
+           average_points AS average,
+           last_score_breakdown_json AS scoreDetailsJson,
+           last_valuation_breakdown_json AS valuationDetailsJson
     FROM fantasy_market WHERE division = ? AND active = 1 ORDER BY role, price DESC, display_name
   `).bind(division).all();
   const recentResult = await env.DB.prepare(`
@@ -254,7 +256,11 @@ async function getMarket(request, env) {
       opponentTag: opponent?.teamTag || "",
       opponentSlot: opponent?.teamSlot || "",
       matchup: opponent ? `vs ${opponent.teamTag || opponent.teamName}` : "Confronto a definir",
-      recentPoints: recent.get(String(row.id)) || []
+      recentPoints: recent.get(String(row.id)) || [],
+      scoreDetails: parseJsonObject(row.scoreDetailsJson),
+      valuationDetails: parseJsonObject(row.valuationDetailsJson),
+      scoreDetailsJson: undefined,
+      valuationDetailsJson: undefined
     };
   });
   return json({ division, market, marketState: publicMarketState(marketState) }, 200, request, env);
@@ -925,6 +931,7 @@ function timingSafeEqual(a, b) {
 }
 __name(timingSafeEqual, "timingSafeEqual");
 function initialPrice(id, role) {
+  if (PLAYER_ROLES.includes(cleanText(role).toUpperCase())) return 12;
   let hash = 2166136261;
   for (const char of `${id}:${role}`) {
     hash ^= char.charCodeAt(0);
@@ -953,6 +960,15 @@ function cleanText(value) {
   return String(value == null ? "" : value).trim();
 }
 __name(cleanText, "cleanText");
+function parseJsonObject(value) {
+  try {
+    const parsed = JSON.parse(String(value || "{}"));
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+__name(parseJsonObject, "parseJsonObject");
 function isoDate(value) {
   const time = Date.parse(value);
   return Number.isFinite(time) ? new Date(time).toISOString() : "";
