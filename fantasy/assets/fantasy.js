@@ -1640,7 +1640,8 @@
   function reserveBudget(lineup) {
     const players = starterPlayers(lineup);
     const cheapestPlayer = players.length ? Math.min(...players.map((item) => Number(item.price) || 0)) : 0;
-    return roundMoney(cheapestPlayer);
+    const remainingBudget = lineupCash(lineup);
+    return roundMoney(remainingBudget + cheapestPlayer);
   }
 
   function reserveValidationMessage(item, lineup) {
