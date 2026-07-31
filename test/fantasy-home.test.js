@@ -27,6 +27,22 @@ test("Fantasy account action signs out instead of switching accounts", () => {
   assert.doesNotMatch(script, /state\.userName \? "Trocar"/);
 });
 
+test("Login pelo Discord abre o mercado depois da autenticação", () => {
+  assert.match(script, /initialViewAfterLogin = "market"/);
+  assert.match(script, /if \(initialViewAfterLogin\) setView\(initialViewAfterLogin\)/);
+  assert.doesNotMatch(
+    script.match(/if \(loginError\) \{[\s\S]*?\n    \}/)?.[0] || "",
+    /initialViewAfterLogin/
+  );
+});
+
+test("Fechamento do mercado recarrega os destaques com suas contagens", () => {
+  const controlSource = script.match(/async function toggleMarketFromFantasy\(\) \{[\s\S]*?\n  \}/)?.[0] || "";
+  assert.match(controlSource, /loadCloudPopular\("elite"\)/);
+  assert.match(controlSource, /loadCloudPopular\("ascension"\)/);
+  assert.match(script, /picks === 1 \? "escalação" : "escalações"/);
+});
+
 test("Home, ranking and rules remain available while the market is closed", () => {
   assert.match(script, /view: "home"/);
   assert.doesNotMatch(script, /if \(!isMarketOpen\(\) && view !== "market"\)/);

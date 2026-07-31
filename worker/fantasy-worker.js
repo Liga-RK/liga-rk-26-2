@@ -320,7 +320,8 @@ function buildRoundMatchups(marketRows, round) {
 __name(buildRoundMatchups, "buildRoundMatchups");
 async function getPopularPicks(request, env) {
   const division = validDivision(new URL(request.url).searchParams.get("division") || "elite");
-  const round = await currentRound(env, division);
+  const marketState = await getGlobalMarketState(env);
+  const round = await currentRound(env, division, marketState?.lock_round_number);
   if (!round) return json({ division, round: null, popular: [] }, 200, request, env);
   const result = await env.DB.prepare(`
     WITH counts AS (
@@ -337,7 +338,7 @@ async function getPopularPicks(request, env) {
       FROM counts c
       JOIN fantasy_market m ON m.division = ? AND m.asset_id = c.asset_id
     )
-    SELECT r.role, r.asset_id AS id, m.display_name AS name, m.team_name AS teamName,
+    SELECT r.role, r.asset_id AS id, r.picks, m.display_name AS name, m.team_name AS teamName,
            m.team_tag AS teamTag, m.team_slot AS teamSlot, m.logo, m.price, m.average_points AS average
     FROM ranked r
     JOIN fantasy_market m ON m.division = ? AND m.asset_id = r.asset_id

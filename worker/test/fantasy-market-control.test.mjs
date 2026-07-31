@@ -101,6 +101,31 @@ sqliteTest("controle do mercado aparece e funciona somente para Cress Albane", a
   );
 });
 
+sqliteTest("destaques usam a rodada vinculada ao mercado mesmo com a próxima agendada", async () => {
+  const database = createDatabase();
+  seedPopularRound(database);
+  const env = {
+    DB: d1(database),
+    SITE_URL: `${SITE_ORIGIN}/liga-rk-26-2/fantasy/`,
+    ALLOWED_ORIGINS: SITE_ORIGIN
+  };
+
+  const result = await call(env, "/api/fantasy/popular?division=elite");
+
+  assert.equal(result.response.status, 200);
+  assert.equal(result.payload.round.round_number, 2);
+  assert.deepEqual(
+    result.payload.popular.map(({ role, name, picks }) => ({ role, name, picks })),
+    [{ role: "TOP", name: "Mack", picks: 2 }]
+  );
+  assert.equal(result.payload.highlights.player.name, "Mack");
+  assert.equal(result.payload.highlights.player.picks, 2);
+  assert.equal(result.payload.highlights.captain.name, "Mack");
+  assert.equal(result.payload.highlights.captain.picks, 2);
+  assert.equal(result.payload.highlights.team.name, "CASHOUT & TRIMILIQUE LTDA");
+  assert.equal(result.payload.highlights.team.picks, 2);
+});
+
 async function call(env, pathname, {
   method = "GET",
   token = "",
@@ -173,6 +198,50 @@ async function seed(database, controllerToken, otherAdminToken) {
   database.prepare(
     "INSERT INTO fantasy_sessions(token_hash,user_id,expires_at) VALUES(?,?,?)"
   ).run(await hash(otherAdminToken), `discord:${OTHER_ADMIN_ID}`, "2099-12-31T23:59:59.000Z");
+}
+
+function seedPopularRound(database) {
+  database.exec(`
+    INSERT INTO fantasy_users(id, discord_id, username)
+    VALUES
+      ('manager:one', 'popular-manager-1', 'Manager 1'),
+      ('manager:two', 'popular-manager-2', 'Manager 2');
+
+    INSERT INTO fantasy_rounds(id, division, round_number, name, opens_at, locks_at, status)
+    VALUES
+      ('elite-r2', 'elite', 2, 'Rodada 2', '2026-07-30T00:00:00.000Z', '2026-08-01T18:35:00.000Z', 'locked'),
+      ('elite-r3', 'elite', 3, 'Rodada 3', '2026-08-05T00:00:00.000Z', '2026-08-08T18:35:00.000Z', 'scheduled');
+
+    INSERT INTO fantasy_market(
+      division, asset_id, asset_type, role, display_name, team_slot,
+      team_name, team_tag, price, previous_price
+    ) VALUES
+      ('elite', 'elite:COT:TOP', 'player', 'TOP', 'Mack', 'A1',
+       'CASHOUT & TRIMILIQUE LTDA', 'COT', 12, 12),
+      ('elite', 'elite:COT:TEAM', 'team', 'TEAM', 'CASHOUT & TRIMILIQUE LTDA', 'A1',
+       'CASHOUT & TRIMILIQUE LTDA', 'COT', 10, 10);
+
+    INSERT INTO fantasy_teams(id, user_id, division, name)
+    VALUES
+      ('team:one', 'manager:one', 'elite', 'Time 1'),
+      ('team:two', 'manager:two', 'elite', 'Time 2');
+
+    INSERT INTO fantasy_lineups(id, fantasy_team_id, round_id, captain_asset_id, total_cost)
+    VALUES
+      ('lineup:one', 'team:one', 'elite-r2', 'elite:COT:TOP', 22),
+      ('lineup:two', 'team:two', 'elite-r2', 'elite:COT:TOP', 22);
+
+    INSERT INTO fantasy_lineup_picks(lineup_id, role, asset_id, price_paid, team_slot)
+    VALUES
+      ('lineup:one', 'TOP', 'elite:COT:TOP', 12, 'A1'),
+      ('lineup:one', 'TEAM', 'elite:COT:TEAM', 10, 'A1'),
+      ('lineup:two', 'TOP', 'elite:COT:TOP', 12, 'A1'),
+      ('lineup:two', 'TEAM', 'elite:COT:TEAM', 10, 'A1');
+
+    UPDATE fantasy_market_state
+    SET status='closed', lock_round_number=2, version=1
+    WHERE id='global';
+  `);
 }
 
 function marketState(database) {

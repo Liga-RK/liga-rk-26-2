@@ -14,6 +14,7 @@
   let authToken = readAuthToken();
   let initialAuthMessage = "";
   let initialAuthError = false;
+  let initialViewAfterLogin = "";
 
   const ROLE_LABELS = {
     TOP: "TOP",
@@ -154,6 +155,7 @@
       renderMarketShell();
       renderMarket();
     }
+    if (initialViewAfterLogin) setView(initialViewAfterLogin);
     if (initialAuthMessage) setMessage(initialAuthMessage, initialAuthError, !initialAuthError);
   }
 
@@ -456,9 +458,12 @@
     const strong = document.createElement("strong");
     strong.textContent = item.name;
     const small = document.createElement("small");
-    small.textContent = item.role === "TEAM"
+    const itemMeta = item.role === "TEAM"
       ? cleanText(item.teamName || item.teamTag)
       : `${ROLE_LABELS[item.role] || item.role} · ${item.teamTag}`;
+    const picks = Math.max(0, Math.trunc(Number(item.picks) || 0));
+    const picksLabel = picks ? `${picks} ${picks === 1 ? "escalação" : "escalações"}` : "";
+    small.textContent = [picksLabel, itemMeta].filter(Boolean).join(" · ");
     info.append(labelEl, strong, small);
     card.append(logo, info);
     return card;
@@ -1221,6 +1226,7 @@
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(apiErrorMessage(payload, "Não foi possível alterar o mercado."));
       await Promise.all([loadCloudConfig("elite"), loadCloudConfig("ascension")]);
+      await Promise.all([loadCloudPopular("elite"), loadCloudPopular("ascension")]);
       renderLineup();
       renderMarketShell();
       renderMarket();
@@ -1439,11 +1445,11 @@
       state.popularRound[division] = payload.round || null;
       state.popular[division] = (payload.popular || []).map((item) => {
         const marketItem = state.market[division].find((asset) => asset.id === String(item.id));
-        return marketItem || marketLikeItem(item);
+        return marketItem ? { ...marketItem, picks: normalizePickCount(item.picks) } : marketLikeItem(item);
       });
       state.popularHighlights[division] = Object.fromEntries(Object.entries(payload.highlights || {}).map(([key, item]) => {
         const marketItem = item && state.market[division].find((asset) => asset.id === String(item.id));
-        return [key, marketItem || (item ? marketLikeItem(item) : null)];
+        return [key, marketItem ? { ...marketItem, picks: normalizePickCount(item.picks) } : (item ? marketLikeItem(item) : null)];
       }));
       if (!state.popularHighlights[division].team && payload.team) state.popularHighlights[division].team = marketLikeItem(payload.team);
     } catch (error) {
@@ -1459,20 +1465,25 @@
 
   function marketLikeItem(item) {
     return {
-          id: String(item.id),
-          type: item.type === "team" || normalizeRole(item.role) === "TEAM" ? "team" : "player",
-          role: normalizeRole(item.role),
-          name: cleanText(item.name),
-          teamName: cleanText(item.teamName),
-          teamTag: cleanText(item.teamTag).toUpperCase(),
-          teamSlot: cleanText(item.teamSlot),
-          logo: normalizeAssetPath(item.logo),
-          price: roundMoney(item.price),
-          previousPrice: Number.isFinite(Number(item.previousPrice)) ? roundMoney(item.previousPrice) : roundMoney(item.price),
-          priceDelta: roundMoney(Number(item.price) - Number(Number.isFinite(Number(item.previousPrice)) ? item.previousPrice : item.price)),
-          average: roundMoney(item.average),
-          recentPoints: normalizeRecentPoints(item.recentPoints)
+      id: String(item.id),
+      type: item.type === "team" || normalizeRole(item.role) === "TEAM" ? "team" : "player",
+      role: normalizeRole(item.role),
+      name: cleanText(item.name),
+      teamName: cleanText(item.teamName),
+      teamTag: cleanText(item.teamTag).toUpperCase(),
+      teamSlot: cleanText(item.teamSlot),
+      logo: normalizeAssetPath(item.logo),
+      price: roundMoney(item.price),
+      previousPrice: Number.isFinite(Number(item.previousPrice)) ? roundMoney(item.previousPrice) : roundMoney(item.price),
+      priceDelta: roundMoney(Number(item.price) - Number(Number.isFinite(Number(item.previousPrice)) ? item.previousPrice : item.price)),
+      average: roundMoney(item.average),
+      recentPoints: normalizeRecentPoints(item.recentPoints),
+      picks: normalizePickCount(item.picks)
     };
+  }
+
+  function normalizePickCount(value) {
+    return Math.max(0, Math.trunc(Number(value) || 0));
   }
 
   async function loadCloudClosedRanking(division) {
@@ -1541,6 +1552,7 @@
       if (!response.ok || !token) throw new Error(apiErrorMessage(payload, "Não foi possível concluir o login."));
       saveAuthToken(token);
       initialAuthMessage = "Login realizado com sucesso.";
+      initialViewAfterLogin = "market";
     } catch (error) {
       clearAuthToken();
       initialAuthMessage = error.message || "Não foi possível concluir o login pelo Discord.";
