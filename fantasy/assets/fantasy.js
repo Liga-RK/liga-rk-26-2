@@ -129,7 +129,8 @@
     popularList: document.getElementById("popular-list"),
     popularDivision: document.getElementById("popular-division"),
     closedActions: document.querySelectorAll("[data-closed-action]"),
-    roleShortcuts: document.querySelectorAll("[data-role-shortcut]")
+    roleShortcuts: document.querySelectorAll("[data-role-shortcut]"),
+    backToTop: document.getElementById("back-to-top")
   };
 
   init();
@@ -195,6 +196,25 @@
     el.homeLoginButton.addEventListener("click", startDiscordLogin);
     if (el.marketAdminToggle) el.marketAdminToggle.addEventListener("click", toggleMarketFromFantasy);
     el.confirmDemoUser.addEventListener("click", confirmDemoUser);
+    if (el.backToTop) {
+      el.backToTop.addEventListener("click", scrollBackToTop);
+      window.addEventListener("scroll", updateBackToTopVisibility, { passive: true });
+      updateBackToTopVisibility();
+    }
+  }
+
+  function updateBackToTopVisibility() {
+    if (el.backToTop) el.backToTop.hidden = window.scrollY < 420;
+  }
+
+  function scrollBackToTop() {
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+    const divisionTabs = state.view === "market" ? document.querySelector(".division-tabs") : null;
+    if (divisionTabs) {
+      divisionTabs.scrollIntoView({ behavior, block: "start" });
+      return;
+    }
+    window.scrollTo({ top: 0, behavior });
   }
 
   async function loadMarket() {

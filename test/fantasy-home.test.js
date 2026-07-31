@@ -6,6 +6,7 @@ const test = require("node:test");
 const root = path.resolve(__dirname, "..");
 const pages = ["fantasy/index.html", "fantasy/fantasy.html"];
 const script = fs.readFileSync(path.join(root, "fantasy/assets/fantasy.js"), "utf8");
+const styles = fs.readFileSync(path.join(root, "fantasy/assets/fantasy.css"), "utf8");
 const workerScript = fs.readFileSync(path.join(root, "worker/fantasy-worker.js"), "utf8");
 
 test("Fantasy opens on a separate, minimal Início view", () => {
@@ -48,6 +49,20 @@ test("Fechamento do mercado recarrega os destaques com suas contagens", () => {
   assert.match(controlSource, /loadCloudPopular\("elite"\)/);
   assert.match(controlSource, /loadCloudPopular\("ascension"\)/);
   assert.match(script, /picks === 1 \? "escalação" : "escalações"/);
+});
+
+test("Botão flutuante retorna às divisões no topo do mercado", () => {
+  for (const relativePath of pages) {
+    const html = fs.readFileSync(path.join(root, relativePath), "utf8");
+    assert.match(html, /id="back-to-top"[^>]*aria-label="Voltar ao topo e às divisões"[^>]*hidden/);
+    assert.match(html, /<span>Topo<\/span>/);
+  }
+
+  assert.match(script, /window\.addEventListener\("scroll", updateBackToTopVisibility, \{ passive: true \}\)/);
+  assert.match(script, /divisionTabs\.scrollIntoView\(\{ behavior, block: "start" \}\)/);
+  assert.match(script, /prefers-reduced-motion: reduce/);
+  assert.match(styles, /\.back-to-top\s*\{[\s\S]*?position: fixed;/);
+  assert.match(styles, /\.division-tabs \{ scroll-margin-top: 152px; \}/);
 });
 
 test("Home, ranking and rules remain available while the market is closed", () => {

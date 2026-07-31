@@ -20,7 +20,7 @@
   <title>RK Fantasy | Liga RK 26.2</title>
   <link rel="icon" type="image/png" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
   <link rel="apple-touch-icon" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
-  <link rel="stylesheet" href="assets/fantasy.css?v=20260730-login-market-immediate" />
+  <link rel="stylesheet" href="assets/fantasy.css?v=20260730-back-to-top" />
 </head>
 <body>
   <header class="site-header">
@@ -347,6 +347,11 @@
     </footer>
   </main>
 
+  <button id="back-to-top" class="back-to-top" type="button" aria-label="Voltar ao topo e às divisões" title="Voltar ao topo" hidden>
+    <span class="back-to-top-arrow" aria-hidden="true">↑</span>
+    <span>Topo</span>
+  </button>
+
   <dialog id="account-dialog">
     <form method="dialog" class="dialog-card">
       <button class="dialog-close" value="cancel" aria-label="Fechar">×</button>
@@ -394,7 +399,7 @@
   </dialog>
 
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/fantasy.js?v=20260730-login-market-immediate"></script>
-  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260730-login-market-immediate");</script>
+  <script src="assets/fantasy.js?v=20260730-back-to-top"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260730-back-to-top");</script>
 </body>
 </html>
