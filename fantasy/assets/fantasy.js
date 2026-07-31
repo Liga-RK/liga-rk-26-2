@@ -14,7 +14,7 @@
   let authToken = readAuthToken();
   let initialAuthMessage = "";
   let initialAuthError = false;
-  let initialViewAfterLogin = "";
+  let initialViewAfterLogin = initialViewFromUrl();
 
   const ROLE_LABELS = {
     TOP: "TOP",
@@ -135,7 +135,9 @@
   init();
 
   async function init() {
+    if (initialViewAfterLogin) setView(initialViewAfterLogin);
     await completeCloudLogin();
+    if (initialViewAfterLogin) setView(initialViewAfterLogin);
     restoreLocalState();
     bindEvents();
     marketStatusTimer = window.setInterval(renderMarketShell, 30000);
@@ -155,8 +157,11 @@
       renderMarketShell();
       renderMarket();
     }
-    if (initialViewAfterLogin) setView(initialViewAfterLogin);
     if (initialAuthMessage) setMessage(initialAuthMessage, initialAuthError, !initialAuthError);
+  }
+
+  function initialViewFromUrl() {
+    return new URLSearchParams(String(location.search || "")).get("view") === "market" ? "market" : "";
   }
 
   function bindEvents() {
@@ -1532,7 +1537,10 @@
     const loginError = cleanText(params.get("loginError"));
     if (!loginCode && !loginError) return;
 
-    history.replaceState(null, "", `${location.pathname}${location.search}`);
+    const cleanUrl = new URL(location.href);
+    cleanUrl.hash = "";
+    cleanUrl.searchParams.delete("view");
+    history.replaceState(null, "", `${cleanUrl.pathname}${cleanUrl.search}`);
     if (loginError) {
       initialAuthMessage = loginError;
       initialAuthError = true;
@@ -1553,6 +1561,7 @@
       saveAuthToken(token);
       initialAuthMessage = "Login realizado com sucesso.";
       initialViewAfterLogin = "market";
+      setView("market");
     } catch (error) {
       clearAuthToken();
       initialAuthMessage = error.message || "Não foi possível concluir o login pelo Discord.";

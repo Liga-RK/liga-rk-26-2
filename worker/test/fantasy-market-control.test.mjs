@@ -126,6 +126,46 @@ sqliteTest("destaques usam a rodada vinculada ao mercado mesmo com a próxima ag
   assert.equal(result.payload.highlights.team.picks, 2);
 });
 
+sqliteTest("callback do Discord retorna diretamente para a tela do mercado", async () => {
+  const database = createDatabase();
+  const env = {
+    DB: d1(database),
+    SITE_URL: `${SITE_ORIGIN}/liga-rk-26-2/fantasy/`,
+    ALLOWED_ORIGINS: SITE_ORIGIN,
+    DISCORD_CLIENT_ID: "fantasy-client",
+    DISCORD_CLIENT_SECRET: "fantasy-secret",
+    DISCORD_REDIRECT_URI: "https://fantasy-rk.example/api/fantasy/auth/callback"
+  };
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (input) => {
+    const url = String(input);
+    if (url === "https://discord.com/api/oauth2/token") {
+      return Response.json({ access_token: "discord-access-token" });
+    }
+    if (url === "https://discord.com/api/users/@me") {
+      return Response.json({ id: "login-user", username: "Jogador Login", avatar: null });
+    }
+    throw new Error(`Requisição externa inesperada: ${url}`);
+  };
+
+  try {
+    const response = await fantasyWorker.fetch(new Request(
+      "https://fantasy-rk.example/api/fantasy/auth/callback?code=discord-code&state=oauth-state",
+      { headers: { Cookie: "fantasy_oauth_state=oauth-state" } }
+    ), env);
+    const target = new URL(response.headers.get("location"));
+
+    assert.equal(response.status, 302);
+    assert.equal(target.origin, SITE_ORIGIN);
+    assert.equal(target.pathname, "/liga-rk-26-2/fantasy/");
+    assert.equal(target.searchParams.get("view"), "market");
+    assert.ok(new URLSearchParams(target.hash.slice(1)).get("loginCode"));
+    assert.equal(database.prepare("SELECT COUNT(*) AS count FROM fantasy_login_codes").get().count, 1);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 async function call(env, pathname, {
   method = "GET",
   token = "",

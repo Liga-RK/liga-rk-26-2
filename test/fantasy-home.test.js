@@ -28,8 +28,15 @@ test("Fantasy account action signs out instead of switching accounts", () => {
 });
 
 test("Login pelo Discord abre o mercado depois da autenticação", () => {
+  const initSource = script.match(/async function init\(\) \{[\s\S]*?\n  \}/)?.[0] || "";
+  const loginSource = script.match(/async function completeCloudLogin\(\) \{[\s\S]*?\n  \}/)?.[0] || "";
+
+  assert.match(script, /initialViewFromUrl\(\)/);
   assert.match(script, /initialViewAfterLogin = "market"/);
   assert.match(script, /if \(initialViewAfterLogin\) setView\(initialViewAfterLogin\)/);
+  assert.ok(initSource.indexOf("setView(initialViewAfterLogin)") < initSource.indexOf("loadCloudAccount()"));
+  assert.match(loginSource, /initialViewAfterLogin = "market";\s*setView\("market"\)/);
+  assert.match(workerScript, /target\.searchParams\.set\("view", "market"\)/);
   assert.doesNotMatch(
     script.match(/if \(loginError\) \{[\s\S]*?\n    \}/)?.[0] || "",
     /initialViewAfterLogin/

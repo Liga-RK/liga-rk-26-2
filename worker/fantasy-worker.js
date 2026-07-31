@@ -150,6 +150,7 @@ async function authCallback(request, env) {
   await env.DB.prepare("DELETE FROM fantasy_login_codes WHERE expires_at <= ?").bind((/* @__PURE__ */ new Date()).toISOString()).run();
   await env.DB.prepare("INSERT INTO fantasy_login_codes (code_hash, session_token, expires_at) VALUES (?, ?, ?)").bind(loginCodeHash, sessionToken2, loginCodeExpiresAt).run();
   const target = siteEntryUrl(env);
+  target.searchParams.set("view", "market");
   target.hash = new URLSearchParams({ loginCode }).toString();
   const headers = new Headers({ Location: target.toString() });
   headers.append("Set-Cookie", cookie(OAUTH_STATE_COOKIE, "", { maxAge: 0, httpOnly: true }));
