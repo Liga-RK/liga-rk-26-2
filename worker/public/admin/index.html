@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Painel Fantasy Liga RK</title>
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+  <main id="login-view" class="login-shell">
+    <form id="login-form" class="login-card">
+      <span class="eyebrow">Área restrita</span>
+      <h1>Fantasy Liga RK</h1>
+      <p>Entre com as credenciais administrativas configuradas no Worker.</p>
+      <label>Usuário
+        <input id="login-username" name="username" autocomplete="username" required maxlength="120">
+      </label>
+      <label>Senha
+        <input id="login-password" name="password" type="password" autocomplete="current-password" required maxlength="512">
+      </label>
+      <button class="primary" type="submit">Entrar com segurança</button>
+      <p id="login-message" class="message" role="alert"></p>
+    </form>
+  </main>
+
+  <div id="admin-view" class="admin-shell" hidden>
+    <aside class="sidebar">
+      <div class="brand">
+        <span>RK</span>
+        <div><strong>Fantasy</strong><small>Painel administrativo</small></div>
+      </div>
+      <nav aria-label="Seções administrativas">
+        <button class="nav active" data-panel="overview">Visão geral</button>
+        <button class="nav" data-panel="market">Mercado global</button>
+        <button class="nav" data-panel="sync">Sincronização</button>
+        <button class="nav" data-panel="rounds">Rodadas e partidas</button>
+        <button class="nav" data-panel="stats">Estatísticas e pontos</button>
+        <button class="nav" data-panel="valuation">Valorização</button>
+        <button class="nav" data-panel="players">Jogadores</button>
+        <button class="nav" data-panel="teams">Equipes</button>
+        <button class="nav" data-panel="users">Usuários</button>
+        <button class="nav" data-panel="lineups">Escalações</button>
+        <button class="nav" data-panel="operations">Auditoria e backups</button>
+      </nav>
+      <div class="session">
+        <small>Conectado como</small>
+        <strong id="session-user">—</strong>
+        <button id="logout-button" class="ghost" type="button">Sair</button>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="workspace-header">
+        <div>
+          <span class="eyebrow">Administração operacional</span>
+          <h1 id="panel-title">Visão geral</h1>
+        </div>
+        <div class="header-actions">
+          <span id="global-market-badge" class="badge">Mercado —</span>
+          <button id="refresh-button" class="ghost" type="button">Atualizar</button>
+        </div>
+      </header>
+      <p id="global-message" class="message" role="status"></p>
+
+      <section id="panel-overview" class="panel active">
+        <div id="overview-cards" class="metric-grid"></div>
+        <article class="card">
+          <div class="card-heading"><div><span class="eyebrow">Segurança operacional</span><h2>Estado atual</h2></div></div>
+          <div id="overview-state" class="details-grid"></div>
+        </article>
+      </section>
+
+      <section id="panel-market" class="panel">
+        <div class="two-columns">
+          <article class="card">
+            <div class="card-heading"><div><span class="eyebrow">Único para as duas divisões</span><h2>Controle do mercado</h2></div></div>
+            <div id="market-state" class="state-box"></div>
+            <form id="market-open-form" class="compact-form">
+              <label>Rodada global
+                <input name="roundNumber" type="number" min="1" value="2" required>
+              </label>
+              <button class="primary" type="submit">Abrir Elite + Ascensão</button>
+            </form>
+            <form id="market-close-form" class="compact-form">
+              <label>Motivo do fechamento
+                <input name="reason" maxlength="300" value="Fechamento manual pelo administrador">
+              </label>
+              <button class="danger" type="submit">Fechar mercado global</button>
+            </form>
+          </article>
+          <article class="card">
+            <div class="card-heading"><div><span class="eyebrow">25 minutos antes</span><h2>Janela automática</h2></div></div>
+            <div id="market-schedule" class="stack"></div>
+          </article>
+        </div>
+        <article class="card"><div class="card-heading"><h2>Histórico do mercado</h2></div><div id="market-history" class="table-wrap"></div></article>
+      </section>
+
+      <section id="panel-sync" class="panel">
+        <article class="card">
+          <div class="card-heading"><div><span class="eyebrow">IDs estáveis</span><h2>Sincronizar site oficial</h2></div></div>
+          <div class="actions">
+            <button id="sync-preview-button" class="primary" type="button">Gerar prévia</button>
+            <button id="sync-apply-button" class="danger" type="button" disabled>Aplicar prévia confirmada</button>
+          </div>
+          <div id="sync-preview" class="result-box">Nenhuma prévia gerada.</div>
+        </article>
+        <article class="card"><div class="card-heading"><h2>Execuções recentes</h2></div><div id="sync-runs" class="table-wrap"></div></article>
+      </section>
+
+      <section id="panel-rounds" class="panel">
+        <article class="card">
+          <div class="card-heading"><h2>Criar ou editar rodada</h2></div>
+          <form id="round-form" class="form-grid">
+            <label>Divisão<select name="division"><option value="elite">Elite</option><option value="ascension">Ascensão</option></select></label>
+            <label>Número<input name="roundNumber" type="number" min="1" required></label>
+            <label>Nome<input name="name" maxlength="120"></label>
+            <label>Status<select name="status"><option value="scheduled">Agendada</option><option value="locked">Fechada</option><option value="scored">Pontuada</option></select></label>
+            <label>Abertura técnica<input name="opensAt" type="datetime-local"></label>
+            <label>Fechamento técnico<input name="locksAt" type="datetime-local"></label>
+            <button class="primary" type="submit">Salvar rodada</button>
+          </form>
+        </article>
+        <article class="card"><div class="card-heading"><h2>Rodadas</h2></div><div id="rounds-table" class="table-wrap"></div></article>
+        <article class="card">
+          <div class="card-heading"><div><h2>Partidas e horários</h2><small>Editar um horário recalcula o fechamento se o mercado ainda estiver aberto.</small></div></div>
+          <div class="filters"><select id="match-division"><option value="">Todas</option><option value="elite">Elite</option><option value="ascension">Ascensão</option></select><input id="match-round" type="number" min="1" placeholder="Rodada"></div>
+          <div id="matches-table" class="table-wrap"></div>
+        </article>
+      </section>
+
+      <section id="panel-stats" class="panel">
+        <div class="two-columns">
+          <article class="card">
+            <div class="card-heading"><div><span class="eyebrow">Sem alterar preços</span><h2>Importar rodada 1</h2></div></div>
+            <div class="actions">
+              <button id="stats-preview-button" class="primary" type="button">Prévia das estatísticas</button>
+              <button id="stats-import-button" class="danger" type="button" disabled>Confirmar importação</button>
+            </div>
+            <div id="stats-preview" class="result-box">Aguardando prévia.</div>
+          </article>
+          <article class="card">
+            <div class="card-heading"><div><span class="eyebrow">Fórmula oficial v2</span><h2>Processar rodada</h2></div></div>
+            <form id="round-process-form" class="compact-form">
+              <label>Rodada<input name="roundNumber" type="number" min="2" value="2" required></label>
+              <label>Divisão<select name="division"><option value="">Ambas</option><option value="elite">Elite</option><option value="ascension">Ascensão</option></select></label>
+              <button id="round-preview-button" class="primary" type="button">Gerar prévia v2</button>
+              <button id="round-process-button" class="danger" type="button" disabled>Processar pontos e preços</button>
+            </form>
+            <div id="round-process-preview" class="result-box">Aguardando prévia da rodada.</div>
+          </article>
+          <article class="card">
+            <div class="card-heading"><h2>Filtros de pontuação</h2></div>
+            <div class="filters"><select id="score-division"><option value="">Todas</option><option value="elite">Elite</option><option value="ascension">Ascensão</option></select><input id="score-round" type="number" min="1" value="1" placeholder="Rodada"></div>
+          </article>
+        </div>
+        <article class="card"><div class="card-heading"><h2>Pontos por ativo</h2></div><div id="scores-table" class="table-wrap"></div></article>
+      </section>
+
+      <section id="panel-valuation" class="panel">
+        <div class="two-columns">
+          <article class="card">
+            <div class="card-heading"><div><span class="eyebrow">Determinística e configurável</span><h2>Fórmula</h2></div></div>
+            <form id="formula-form" class="formula-grid"></form>
+          </article>
+          <article class="card">
+            <div class="card-heading"><div><span class="eyebrow">Prévia obrigatória</span><h2>Atualizar mercado</h2></div></div>
+            <form id="valuation-form" class="compact-form">
+              <label>Rodada<input name="roundNumber" type="number" min="1" value="1" required></label>
+              <label>Divisão<select name="division"><option value="">Ambas</option><option value="elite">Elite</option><option value="ascension">Ascensão</option></select></label>
+              <button class="primary" type="submit">Simular valorização</button>
+            </form>
+            <div id="valuation-actions" class="actions"></div>
+          </article>
+        </div>
+        <article class="card"><div class="card-heading"><h2>Resultado da simulação</h2></div><div id="valuation-table" class="table-wrap"></div></article>
+        <article class="card"><div class="card-heading"><h2>Histórico de valorizações</h2></div><div id="valuation-history" class="table-wrap"></div></article>
+      </section>
+
+      <section id="panel-players" class="panel">
+        <article class="card"><div class="card-heading"><h2>Jogadores oficiais</h2></div><div class="filters"><select id="player-division"><option value="">Todos</option><option value="elite">Elite</option><option value="ascension">Ascensão</option></select><input id="player-search" type="search" placeholder="Nome, Riot ID ou ID estável"></div><div id="players-table" class="table-wrap"></div></article>
+      </section>
+
+      <section id="panel-teams" class="panel">
+        <article class="card"><div class="card-heading"><h2>Equipes oficiais</h2></div><div class="filters"><select id="team-division"><option value="">Todas</option><option value="elite">Elite</option><option value="ascension">Ascensão</option></select></div><div id="teams-table" class="table-wrap"></div></article>
+      </section>
+
+      <section id="panel-users" class="panel">
+        <article class="card"><div class="card-heading"><h2>Usuários</h2></div><div class="filters"><input id="user-search" type="search" placeholder="Usuário, Discord ou ID"></div><div id="users-table" class="table-wrap"></div></article>
+      </section>
+
+      <section id="panel-lineups" class="panel">
+        <article class="card"><div class="card-heading"><h2>Escalações salvas</h2></div><div class="filters"><select id="lineup-division"><option value="">Todas</option><option value="elite">Elite</option><option value="ascension">Ascensão</option></select><input id="lineup-round" type="number" min="1" placeholder="Rodada"></div><div id="lineups-table" class="table-wrap"></div></article>
+      </section>
+
+      <section id="panel-operations" class="panel">
+        <article class="card">
+          <div class="card-heading"><div><span class="eyebrow">Recuperação</span><h2>Backups internos</h2></div></div>
+          <form id="backup-form" class="compact-form"><label>Motivo<input name="reason" maxlength="300" value="Backup manual antes de operação"></label><button class="primary" type="submit">Criar backup agora</button></form>
+          <div id="backups-table" class="table-wrap"></div>
+        </article>
+        <div class="two-columns">
+          <article class="card"><div class="card-heading"><h2>Auditoria</h2></div><div id="audit-table" class="table-wrap"></div></article>
+          <article class="card"><div class="card-heading"><h2>Erros</h2></div><div id="errors-table" class="table-wrap"></div></article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="edit-dialog">
+    <form method="dialog" class="dialog-card">
+      <button class="dialog-close" value="cancel" aria-label="Fechar">×</button>
+      <span class="eyebrow">Edição administrativa</span>
+      <h2 id="dialog-title">Editar</h2>
+      <div id="dialog-fields" class="dialog-fields"></div>
+      <div class="actions"><button value="cancel" class="ghost">Cancelar</button><button id="dialog-save" value="default" class="primary">Salvar</button></div>
+    </form>
+  </dialog>
+
+  <script src="/admin/admin.js" defer></script>
+</body>
+</html>

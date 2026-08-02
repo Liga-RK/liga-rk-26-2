@@ -10,23 +10,11 @@
     season: "Liga RK 26.2",
     ...(window.FANTASY_RK_CONFIG || {})
   };
-  const officialMarket = window.FANTASY_RK_MARKET || null;
-  const ROUND_ONE_NAME = cleanText(config.roundOneName) || "Rodada 1";
-  const ROUND_ONE_LOCKS_AT = cleanText(config.roundOneLocksAt) || "2026-07-25T19:50:00.000Z";
-  const MANUAL_PRICE_OVERRIDES = new Map(Object.entries({
-    MAYAN: 14,
-    BOTAS: 14,
-    MAYTAS: 13,
-    ERICK: 15,
-    YUJAY: 13,
-    GENGI: 12,
-    KYLLUA: 14,
-    ZAHIR: 17
-  }));
   const AUTH_STORAGE_KEY = "rk-fantasy-session-v1";
   let authToken = readAuthToken();
   let initialAuthMessage = "";
   let initialAuthError = false;
+  let initialViewAfterLogin = initialViewFromUrl();
 
   const ROLE_LABELS = {
     TOP: "TOP",
@@ -62,17 +50,19 @@
     division: "elite",
     rankingDivision: "elite",
     rankingScope: "championship",
-    view: "market",
+    view: "home",
     market: { elite: [], ascension: [] },
     popular: { elite: [], ascension: [] },
     popularHighlights: { elite: {}, ascension: {} },
     popularRound: { elite: null, ascension: null },
     closedRanking: { elite: [], ascension: [] },
-    marketOpen: { elite: true, ascension: true },
+    marketOpen: { elite: false, ascension: false },
     roundInfo: { elite: null, ascension: null },
     lineups: { elite: emptyLineup(), ascension: emptyLineup() },
     teamName: "Meu Time RK",
     userName: "",
+    canControlMarket: false,
+    marketControlBusy: false,
     loaded: false
   };
 
@@ -114,6 +104,7 @@
     fantasyTeamName: document.getElementById("fantasy-team-name"),
     accountButton: document.getElementById("account-button"),
     accountLabel: document.getElementById("account-label"),
+    homeLoginButton: document.getElementById("home-login-button"),
     accountDialog: document.getElementById("account-dialog"),
     demoUserName: document.getElementById("demo-user-name"),
     confirmDemoUser: document.getElementById("confirm-demo-user"),
@@ -123,6 +114,9 @@
     rankingHelper: document.getElementById("ranking-helper"),
     marketStatus: document.getElementById("market-status"),
     marketDeadline: document.getElementById("market-deadline"),
+    marketAdminControl: document.getElementById("market-admin-control"),
+    marketAdminToggle: document.getElementById("market-admin-toggle"),
+    marketAdminFeedback: document.getElementById("market-admin-feedback"),
     marketDashboard: document.getElementById("market-dashboard"),
     marketClosed: document.getElementById("market-closed"),
     closedMarketMessage: document.getElementById("closed-market-message"),
@@ -135,13 +129,16 @@
     popularList: document.getElementById("popular-list"),
     popularDivision: document.getElementById("popular-division"),
     closedActions: document.querySelectorAll("[data-closed-action]"),
-    roleShortcuts: document.querySelectorAll("[data-role-shortcut]")
+    roleShortcuts: document.querySelectorAll("[data-role-shortcut]"),
+    backToTop: document.getElementById("back-to-top")
   };
 
   init();
 
   async function init() {
+    if (initialViewAfterLogin) setView(initialViewAfterLogin);
     await completeCloudLogin();
+    if (initialViewAfterLogin) setView(initialViewAfterLogin);
     restoreLocalState();
     bindEvents();
     marketStatusTimer = window.setInterval(renderMarketShell, 30000);
@@ -162,6 +159,10 @@
       renderMarket();
     }
     if (initialAuthMessage) setMessage(initialAuthMessage, initialAuthError, !initialAuthError);
+  }
+
+  function initialViewFromUrl() {
+    return new URLSearchParams(String(location.search || "")).get("view") === "market" ? "market" : "";
   }
 
   function bindEvents() {
@@ -191,8 +192,29 @@
     });
     el.saveLineup.addEventListener("click", saveLineup);
     el.renameTeam.addEventListener("click", renameTeam);
-    el.accountButton.addEventListener("click", openAccount);
+    el.accountButton.addEventListener("click", handleAccountAction);
+    el.homeLoginButton.addEventListener("click", startDiscordLogin);
+    if (el.marketAdminToggle) el.marketAdminToggle.addEventListener("click", toggleMarketFromFantasy);
     el.confirmDemoUser.addEventListener("click", confirmDemoUser);
+    if (el.backToTop) {
+      el.backToTop.addEventListener("click", scrollBackToTop);
+      window.addEventListener("scroll", updateBackToTopVisibility, { passive: true });
+      updateBackToTopVisibility();
+    }
+  }
+
+  function updateBackToTopVisibility() {
+    if (el.backToTop) el.backToTop.hidden = window.scrollY < 420;
+  }
+
+  function scrollBackToTop() {
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+    const divisionTabs = state.view === "market" ? document.querySelector(".division-tabs") : null;
+    if (divisionTabs) {
+      divisionTabs.scrollIntoView({ behavior, block: "start" });
+      return;
+    }
+    window.scrollTo({ top: 0, behavior });
   }
 
   async function loadMarket() {
@@ -254,9 +276,11 @@
       opponentSlot: cleanText(item.opponentSlot),
       matchup: cleanText(item.matchup),
       average: roundMoney(item.average),
-      recentPoints: normalizeRecentPoints(item.recentPoints)
+      recentPoints: normalizeRecentPoints(item.recentPoints),
+      scoreDetails: objectValue(item.scoreDetails),
+      valuationDetails: objectValue(item.valuationDetails)
     }));
-    return mergeOfficialMarket(division, cloudMarket);
+    return cloudMarket;
   }
 
   function buildMarket(division, divisionKey) {
@@ -310,72 +334,7 @@
         });
       });
     });
-    return mergeOfficialMarket(divisionKey, entries);
-  }
-
-  function officialMarketForDivision(division) {
-    const items = officialMarket && officialMarket.divisions && officialMarket.divisions[division];
-    if (!Array.isArray(items)) return [];
-    return items.map(normalizeMarketItem).filter((item) => item.id && item.name && ROLE_ORDER.includes(item.role));
-  }
-
-  function normalizeMarketItem(item) {
-    return {
-      id: String(item.id || ""),
-      type: item.type === "team" ? "team" : "player",
-      role: normalizeRole(item.role),
-      name: cleanText(item.name),
-      teamName: cleanText(item.teamName),
-      teamTag: cleanText(item.teamTag).toUpperCase(),
-      teamSlot: cleanText(item.teamSlot),
-      riotId: cleanText(item.riotId),
-      elo: cleanText(item.elo),
-      tier: cleanText(item.tier),
-      opgg: cleanText(item.opgg),
-      captain: Boolean(item.captain),
-      logo: normalizeAssetPath(item.logo),
-      artwork: normalizeAssetPath(item.artwork),
-      price: Number.isFinite(Number(item.price)) ? Number(item.price) : 0,
-      average: Number.isFinite(Number(item.average)) ? Number(item.average) : 0
-    };
-  }
-
-  function mergeOfficialMarket(division, baseItems) {
-    const officialItems = officialMarketForDivision(division);
-    if (!officialItems.length) return baseItems.map(applyManualPriceOverride);
-    const baseByKey = new Map(baseItems.map((item) => [marketMergeKey(item), item]));
-    const merged = officialItems.map((official) => {
-      const base = baseByKey.get(marketMergeKey(official));
-      return {
-        ...(base || {}),
-        ...official,
-        id: base && base.id ? base.id : official.id,
-        price: roundMoney(official.price),
-        average: roundMoney(Number.isFinite(official.average) ? official.average : (base && base.average))
-      };
-    });
-    return merged
-      .map(applyManualPriceOverride)
-      .sort((a, b) => ROLE_ORDER.indexOf(a.role) - ROLE_ORDER.indexOf(b.role) || a.teamSlot.localeCompare(b.teamSlot, "pt-BR") || a.name.localeCompare(b.name, "pt-BR"));
-  }
-
-  function applyManualPriceOverride(item) {
-    const key = cleanText(item && item.name).toLocaleUpperCase("pt-BR");
-    if (!MANUAL_PRICE_OVERRIDES.has(key)) return item;
-    const price = roundMoney(MANUAL_PRICE_OVERRIDES.get(key));
-    return {
-      ...item,
-      price,
-      previousPrice: price,
-      priceDelta: 0
-    };
-  }
-
-  function marketMergeKey(item) {
-    const type = item && item.type === "team" ? "team" : "player";
-    const role = normalizeRole(item && item.role);
-    const team = cleanText(item && item.teamSlot) || cleanText(item && item.teamTag).toUpperCase();
-    return `${type}:${team}:${role}`;
+    return entries;
   }
 
   function renderMarket() {
@@ -470,8 +429,8 @@
 
   function renderMarketShell() {
     updateMarketStatus();
+    renderMarketAdminControl();
     const open = isMarketOpen();
-    syncNavigationForMarketStatus(open);
     if (el.popularStrip) {
       el.popularStrip.hidden = !open;
       el.popularStrip.classList.toggle("closed-hidden", !open);
@@ -488,19 +447,6 @@
       renderClosedRanking();
     }
     renderClosedLineups();
-  }
-
-  function syncNavigationForMarketStatus(open) {
-    const marketButton = [...el.navButtons].find((button) => button.dataset.view === "market");
-    if (marketButton) marketButton.textContent = open ? "Mercado" : "Início";
-    el.navButtons.forEach((button) => {
-      if (button.dataset.view !== "market") button.hidden = !open;
-    });
-    if (!open && state.view !== "market") {
-      state.view = "market";
-      el.navButtons.forEach((button) => button.classList.toggle("active", button.dataset.view === "market"));
-      el.views.forEach((section) => section.classList.toggle("active", section.id === "market-view"));
-    }
   }
 
   function renderClosedHighlights() {
@@ -537,9 +483,12 @@
     const strong = document.createElement("strong");
     strong.textContent = item.name;
     const small = document.createElement("small");
-    small.textContent = item.role === "TEAM"
+    const itemMeta = item.role === "TEAM"
       ? cleanText(item.teamName || item.teamTag)
       : `${ROLE_LABELS[item.role] || item.role} · ${item.teamTag}`;
+    const picks = Math.max(0, Math.trunc(Number(item.picks) || 0));
+    const picksLabel = picks ? `${picks} ${picks === 1 ? "escalação" : "escalações"}` : "";
+    small.textContent = [picksLabel, itemMeta].filter(Boolean).join(" · ");
     info.append(labelEl, strong, small);
     card.append(logo, info);
     return card;
@@ -682,6 +631,8 @@
       : "aguardando rodada";
     stats.innerHTML = `<span>Média: ${formatNumber(item.average)}</span><span>Performance recente: ${escapeHtml(recent)}</span>`;
     meta.append(name, team, matchup, stats);
+    const breakdown = fantasyBreakdown(item);
+    if (breakdown) meta.appendChild(breakdown);
 
     const price = document.createElement("div");
     price.className = "player-price";
@@ -711,6 +662,55 @@
 
     card.append(logo, meta, price, actions);
     return card;
+  }
+
+  function fantasyBreakdown(item) {
+    const score = objectValue(item.scoreDetails);
+    const valuation = objectValue(item.valuationDetails);
+    if (Number(score.formulaVersion) !== 2 && Number(valuation.formulaVersion) !== 2) return null;
+    const details = document.createElement("details");
+    details.className = "fantasy-breakdown";
+    const summary = document.createElement("summary");
+    summary.textContent = "Ver cálculo da última rodada";
+    details.appendChild(summary);
+    if (Number(score.formulaVersion) === 2) {
+      const title = document.createElement("strong");
+      title.textContent = "Pontuação da rodada";
+      const list = document.createElement("ul");
+      appendBreakdownLine(list, "Média dos mapas", formatNumber(score.pontuacaoMediaMapas));
+      appendBreakdownLine(list, "Vitória da série", signedNumber(score.bonusVitoriaSerie));
+      appendBreakdownLine(list, "Série perfeita", signedNumber(score.bonusSeriePerfeita));
+      appendBreakdownLine(list, "Consistência", signedNumber(score.bonusConsistencia));
+      appendBreakdownLine(list, "Domínio de MVP", signedNumber(score.bonusMvpSerie));
+      appendBreakdownLine(list, "Série sem mortes", signedNumber(score.bonusSemMortes));
+      appendBreakdownLine(list, "Total oficial", formatNumber(score.pontuacaoOficial), true);
+      details.append(title, list);
+    }
+    if (Number(valuation.formulaVersion) === 2 && item.type === "player") {
+      const title = document.createElement("strong");
+      title.textContent = "Mercado";
+      const list = document.createElement("ul");
+      appendBreakdownLine(list, "Preço anterior", `RK$ ${formatMoney(valuation.currentPrice)}`);
+      appendBreakdownLine(list, "Pontuação esperada", formatNumber(valuation.expectedScore));
+      appendBreakdownLine(list, "Média histórica (M3)",
+        valuation.historicalAverage == null ? "sem histórico" : formatNumber(valuation.historicalAverage));
+      appendBreakdownLine(list, "Pontuação realizada", formatNumber(valuation.roundPoints));
+      appendBreakdownLine(list, "Variação", signedMoney(valuation.delta));
+      appendBreakdownLine(list, "Novo preço", `RK$ ${formatMoney(valuation.newPrice)}`, true);
+      details.append(title, list);
+    }
+    return details;
+  }
+
+  function appendBreakdownLine(list, label, value, total = false) {
+    const line = document.createElement("li");
+    if (total) line.className = "breakdown-total";
+    const name = document.createElement("span");
+    name.textContent = label;
+    const result = document.createElement("b");
+    result.textContent = value;
+    line.append(name, result);
+    list.appendChild(line);
   }
 
   function matchupLabel(item) {
@@ -995,7 +995,7 @@
       return;
     }
     if (!state.userName && config.backendMode === "local") {
-      openAccount();
+      handleAccountAction();
       setMessage("Identifique-se antes de salvar.", true);
       return;
     }
@@ -1097,7 +1097,6 @@
   }
 
   function setView(view) {
-    if (!isMarketOpen() && view !== "market") view = "market";
     state.view = view;
     el.navButtons.forEach((button) => button.classList.toggle("active", button.dataset.view === view));
     el.views.forEach((section) => section.classList.toggle("active", section.id === `${view}-view`));
@@ -1136,7 +1135,41 @@
     renderLineup();
   }
 
-  function openAccount() {
+  async function handleAccountAction() {
+    if (!state.userName) {
+      startDiscordLogin();
+      return;
+    }
+
+    if (config.backendMode !== "cloud") {
+      resetAuthenticatedState();
+      setView("home");
+      return;
+    }
+
+    el.accountButton.disabled = true;
+    el.accountButton.textContent = "Saindo...";
+    try {
+      const response = await apiFetch("/api/fantasy/auth/logout", {
+        method: "POST",
+        cache: "no-store"
+      });
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(apiErrorMessage(payload, "Não foi possível encerrar a sessão no servidor."));
+      }
+      resetAuthenticatedState();
+      setView("home");
+      setMessage("Você saiu da sua conta.", false, true);
+    } catch (error) {
+      setMessage(error.message || "Não foi possível sair agora.", true);
+    } finally {
+      el.accountButton.disabled = false;
+      renderAccount();
+    }
+  }
+
+  function startDiscordLogin() {
     if (config.backendMode === "cloud") {
       clearAuthToken();
       window.location.href = `${apiBase()}/api/fantasy/auth/login`;
@@ -1144,6 +1177,20 @@
     }
     el.demoUserName.value = state.userName;
     el.accountDialog.showModal();
+  }
+
+  function resetAuthenticatedState() {
+    clearAuthToken();
+    state.userName = "";
+    state.canControlMarket = false;
+    state.marketControlBusy = false;
+    state.teamName = "Meu Time RK";
+    state.lineups = { elite: emptyLineup(), ascension: emptyLineup() };
+    try { localStorage.removeItem("fantasy-rk-state-v1"); } catch {}
+    renderAccount();
+    renderLineup();
+    renderMarket();
+    renderClosedLineups();
   }
 
   function confirmDemoUser() {
@@ -1158,7 +1205,70 @@
 
   function renderAccount() {
     el.accountLabel.textContent = state.userName || (config.backendMode === "cloud" ? "Não conectado" : "Modo demonstração");
-    el.accountButton.textContent = state.userName ? "Trocar" : "Entrar";
+    el.accountButton.textContent = state.userName ? "Sair" : "Entrar";
+    renderMarketAdminControl();
+  }
+
+  function renderMarketAdminControl() {
+    if (!el.marketAdminControl || !el.marketAdminToggle) return;
+    el.marketAdminControl.hidden = !state.canControlMarket;
+    if (!state.canControlMarket) return;
+    const open = isMarketOpen();
+    el.marketAdminToggle.disabled = state.marketControlBusy;
+    el.marketAdminToggle.classList.toggle("open-action", !open);
+    el.marketAdminToggle.textContent = state.marketControlBusy
+      ? (open ? "Fechando..." : "Abrindo...")
+      : (open ? "Fechar mercado" : "Abrir mercado");
+  }
+
+  async function toggleMarketFromFantasy() {
+    if (!state.canControlMarket || state.marketControlBusy) return;
+    const open = isMarketOpen();
+    const action = open ? "close" : "open";
+    const round = state.roundInfo[state.division];
+    const roundNumber = Math.trunc(Number(round?.round_number || round?.roundNumber));
+    if (!open && (!Number.isInteger(roundNumber) || roundNumber < 1)) {
+      setMarketAdminFeedback("Não foi possível identificar a rodada que deve ser aberta.", true);
+      return;
+    }
+    const confirmed = window.confirm(open
+      ? "Fechar o mercado global agora? Novas escalações e alterações serão bloqueadas nas duas divisões."
+      : `Abrir o mercado global da rodada ${roundNumber} para Elite e Ascensão?`);
+    if (!confirmed) return;
+
+    state.marketControlBusy = true;
+    setMarketAdminFeedback("");
+    renderMarketAdminControl();
+    try {
+      const response = await apiFetch(`/api/fantasy/market/control/${action}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(open
+          ? { reason: "Fechamento manual pelo controle Discord no Fantasy." }
+          : { roundNumber }),
+        cache: "no-store"
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(apiErrorMessage(payload, "Não foi possível alterar o mercado."));
+      await Promise.all([loadCloudConfig("elite"), loadCloudConfig("ascension")]);
+      await Promise.all([loadCloudPopular("elite"), loadCloudPopular("ascension")]);
+      renderLineup();
+      renderMarketShell();
+      renderMarket();
+      setMarketAdminFeedback(open ? "Mercado fechado nas duas divisões." : "Mercado aberto nas duas divisões.", false, true);
+    } catch (error) {
+      setMarketAdminFeedback(error.message || "Não foi possível alterar o mercado.", true);
+    } finally {
+      state.marketControlBusy = false;
+      renderMarketAdminControl();
+    }
+  }
+
+  function setMarketAdminFeedback(message, isError = false, isSuccess = false) {
+    if (!el.marketAdminFeedback) return;
+    el.marketAdminFeedback.textContent = message || "";
+    el.marketAdminFeedback.classList.toggle("error", Boolean(isError));
+    el.marketAdminFeedback.classList.toggle("success", Boolean(isSuccess));
   }
 
   function renderRanking() {
@@ -1220,8 +1330,10 @@
       const response = await apiFetch("/api/fantasy/me", { cache: "no-store" });
       const payload = await response.json().catch(() => ({}));
       state.userName = response.ok && payload.authenticated && payload.user ? cleanText(payload.user.username) : "";
+      state.canControlMarket = Boolean(response.ok && payload.authenticated && payload.canControlMarket);
       if (!state.userName && authToken) clearAuthToken();
     } catch (error) {
+      state.canControlMarket = false;
       console.warn("Não foi possível consultar a sessão do RK Fantasy.", error);
     }
   }
@@ -1316,8 +1428,10 @@
       const payload = await response.json().catch(() => ({}));
       const round = normalizeRoundInfo(payload.round);
       if (!response.ok || !round) return;
-      const now = Date.now();
-      const open = round.status === "open" && now >= Date.parse(round.opens_at) && now < Date.parse(round.locks_at);
+      const market = payload.market || payload.data?.market || null;
+      const open = market
+        ? market.status === "open" && Date.now() < Date.parse(market.closesAt)
+        : round.status === "open" && Date.now() < Date.parse(round.locks_at);
       state.roundInfo[division] = round;
       state.marketOpen[division] = open;
       if (division === state.division) {
@@ -1336,11 +1450,9 @@
     if (!round) return null;
     const name = cleanText(round.name);
     const roundNumber = Number(round.round_number || round.roundNumber || round.number || 1);
-    const isRoundOne = roundNumber === 1 || /teste|rodada\s*1/i.test(name);
     return {
       ...round,
-      name: isRoundOne ? ROUND_ONE_NAME : (name || `Rodada ${roundNumber || ""}`.trim()),
-      locks_at: isRoundOne ? ROUND_ONE_LOCKS_AT : round.locks_at
+      name: name || `Rodada ${roundNumber || ""}`.trim()
     };
   }
 
@@ -1358,11 +1470,11 @@
       state.popularRound[division] = payload.round || null;
       state.popular[division] = (payload.popular || []).map((item) => {
         const marketItem = state.market[division].find((asset) => asset.id === String(item.id));
-        return marketItem || marketLikeItem(item);
+        return marketItem ? { ...marketItem, picks: normalizePickCount(item.picks) } : marketLikeItem(item);
       });
       state.popularHighlights[division] = Object.fromEntries(Object.entries(payload.highlights || {}).map(([key, item]) => {
         const marketItem = item && state.market[division].find((asset) => asset.id === String(item.id));
-        return [key, marketItem || (item ? marketLikeItem(item) : null)];
+        return [key, marketItem ? { ...marketItem, picks: normalizePickCount(item.picks) } : (item ? marketLikeItem(item) : null)];
       }));
       if (!state.popularHighlights[division].team && payload.team) state.popularHighlights[division].team = marketLikeItem(payload.team);
     } catch (error) {
@@ -1378,20 +1490,25 @@
 
   function marketLikeItem(item) {
     return {
-          id: String(item.id),
-          type: item.type === "team" || normalizeRole(item.role) === "TEAM" ? "team" : "player",
-          role: normalizeRole(item.role),
-          name: cleanText(item.name),
-          teamName: cleanText(item.teamName),
-          teamTag: cleanText(item.teamTag).toUpperCase(),
-          teamSlot: cleanText(item.teamSlot),
-          logo: normalizeAssetPath(item.logo),
-          price: roundMoney(item.price),
-          previousPrice: Number.isFinite(Number(item.previousPrice)) ? roundMoney(item.previousPrice) : roundMoney(item.price),
-          priceDelta: roundMoney(Number(item.price) - Number(Number.isFinite(Number(item.previousPrice)) ? item.previousPrice : item.price)),
-          average: roundMoney(item.average),
-          recentPoints: normalizeRecentPoints(item.recentPoints)
+      id: String(item.id),
+      type: item.type === "team" || normalizeRole(item.role) === "TEAM" ? "team" : "player",
+      role: normalizeRole(item.role),
+      name: cleanText(item.name),
+      teamName: cleanText(item.teamName),
+      teamTag: cleanText(item.teamTag).toUpperCase(),
+      teamSlot: cleanText(item.teamSlot),
+      logo: normalizeAssetPath(item.logo),
+      price: roundMoney(item.price),
+      previousPrice: Number.isFinite(Number(item.previousPrice)) ? roundMoney(item.previousPrice) : roundMoney(item.price),
+      priceDelta: roundMoney(Number(item.price) - Number(Number.isFinite(Number(item.previousPrice)) ? item.previousPrice : item.price)),
+      average: roundMoney(item.average),
+      recentPoints: normalizeRecentPoints(item.recentPoints),
+      picks: normalizePickCount(item.picks)
     };
+  }
+
+  function normalizePickCount(value) {
+    return Math.max(0, Math.trunc(Number(value) || 0));
   }
 
   async function loadCloudClosedRanking(division) {
@@ -1440,7 +1557,10 @@
     const loginError = cleanText(params.get("loginError"));
     if (!loginCode && !loginError) return;
 
-    history.replaceState(null, "", `${location.pathname}${location.search}`);
+    const cleanUrl = new URL(location.href);
+    cleanUrl.hash = "";
+    cleanUrl.searchParams.delete("view");
+    history.replaceState(null, "", `${cleanUrl.pathname}${cleanUrl.search}`);
     if (loginError) {
       initialAuthMessage = loginError;
       initialAuthError = true;
@@ -1460,6 +1580,8 @@
       if (!response.ok || !token) throw new Error(apiErrorMessage(payload, "Não foi possível concluir o login."));
       saveAuthToken(token);
       initialAuthMessage = "Login realizado com sucesso.";
+      initialViewAfterLogin = "market";
+      setView("market");
     } catch (error) {
       clearAuthToken();
       initialAuthMessage = error.message || "Não foi possível concluir o login pelo Discord.";
@@ -1632,7 +1754,8 @@
   function reserveBudget(lineup) {
     const players = starterPlayers(lineup);
     const cheapestPlayer = players.length ? Math.min(...players.map((item) => Number(item.price) || 0)) : 0;
-    return roundMoney(cheapestPlayer);
+    const remainingBudget = lineupCash(lineup);
+    return roundMoney(remainingBudget + cheapestPlayer);
   }
 
   function reserveValidationMessage(item, lineup) {
@@ -2102,6 +2225,21 @@
   function formatMoney(value) {
     const number = Number(value || 0);
     return number.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function signedNumber(value) {
+    const number = Number(value || 0);
+    return `${number > 0 ? "+" : ""}${formatNumber(number)}`;
+  }
+
+  function signedMoney(value) {
+    const number = Number(value || 0);
+    if (number < 0) return `-RK$ ${formatMoney(Math.abs(number))}`;
+    return `${number > 0 ? "+" : ""}RK$ ${formatMoney(number)}`;
+  }
+
+  function objectValue(value) {
+    return value && typeof value === "object" && !Array.isArray(value) ? value : {};
   }
 
   function formatDateTime(value) {
