@@ -22,7 +22,6 @@
   const rulesPdfUrl = `assets/docs/regulamento-liga-rk-26-2.pdf?v=${assetVersion}`;
   const rkPlaceholderUrl = "assets/logo_rk_placeholder.png";
   const publicSectionLocks = {
-    playoffs: "Disponibilizado após o final da fase de grupos grupos.",
     statistics: "Disponibilizado após o início das rodadas."
   };
   let teamsBySlot = {};

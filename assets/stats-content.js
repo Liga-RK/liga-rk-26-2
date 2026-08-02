@@ -1,6 +1,6 @@
 window.LIGA_RK_STATS = {
   "version": 2,
-  "generatedAt": "2026-08-02T21:53:26.269Z",
+  "generatedAt": "2026-08-02T22:04:01.533Z",
   "season": "Liga RK 26.2",
   "divisions": {
     "elite": {

@@ -4,6 +4,7 @@ const http = require("node:http");
 const path = require("node:path");
 
 const { loadOfficialContent, loadWindowScript } = require("./src/content/official-content");
+const groupStandings = require("./assets/group-standings");
 const { parseReplay } = require("./src/replay/parser-factory");
 const { findReplayDuplicates, validateReplaySelection } = require("./src/replay/replay-validator");
 const { aggregateDatabase, teamsBySlot } = require("./src/statistics/aggregators");
@@ -87,7 +88,7 @@ async function handleApi(request, response) {
       fixedData,
       content: rosterContent,
       db: adminDatabaseView(database),
-      series: buildAllSeries(fixedData),
+      series: buildAllSeries(fixedData, database, computed),
       computed
     });
     return;
@@ -96,6 +97,12 @@ async function handleApi(request, response) {
   if (request.method === "POST" && url.pathname === "/api/admin/replay/preview") {
     const payload = await readJsonBody(request);
     sendJson(response, 200, await previewReplay(payload));
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/admin/replay/swap-sides") {
+    const payload = await readJsonBody(request);
+    sendJson(response, 200, await swapPreviewSides(payload));
     return;
   }
 
@@ -171,18 +178,52 @@ async function previewReplay(payload) {
 
   return {
     ok: true,
-    preview: {
-      previewId,
-      selection,
-      file: { name: fileName, size: buffer.length, sha256Short: parsed.sha256.slice(0, 12) },
-      replay: publicParsedReplay(parsed),
-      teams: {
-        "100": teamAdminView(blueTeam),
-        "200": teamAdminView(redTeam)
-      },
-      suggestions,
-      duplicates
-    }
+    preview: publicPreviewRecord(previewRecord, teams)
+  };
+}
+
+async function swapPreviewSides(payload) {
+  const previewId = safeId(payload.previewId);
+  const preview = readPreview(previewId);
+  if (Date.now() - Date.parse(preview.createdAt) > PREVIEW_TTL_MS) {
+    throw badRequest("A pre-visualizacao expirou. Processe o replay novamente.");
+  }
+
+  const previousBlue = preview.selection.blueTeamSlot;
+  preview.selection.blueTeamSlot = preview.selection.redTeamSlot;
+  preview.selection.redTeamSlot = previousBlue;
+
+  const database = await refreshOfficialContent();
+  const teams = officialTeams(preview.selection.division);
+  preview.suggestions = preview.parsed.participants.map((participant) => {
+    const team = participant.team === 100
+      ? teams[preview.selection.blueTeamSlot]
+      : teams[preview.selection.redTeamSlot];
+    return buildParticipantSuggestion(participant, team, database);
+  });
+  atomicWriteJson(previewJsonPath(previewId), preview);
+
+  return { ok: true, preview: publicPreviewRecord(preview, teams) };
+}
+
+function publicPreviewRecord(preview, teams) {
+  const blueTeam = teams[preview.selection.blueTeamSlot];
+  const redTeam = teams[preview.selection.redTeamSlot];
+  return {
+    previewId: preview.previewId,
+    selection: preview.selection,
+    file: {
+      name: preview.fileName,
+      size: preview.size,
+      sha256Short: preview.parsed.sha256.slice(0, 12)
+    },
+    replay: publicParsedReplay(preview.parsed),
+    teams: {
+      "100": teamAdminView(blueTeam),
+      "200": teamAdminView(redTeam)
+    },
+    suggestions: preview.suggestions,
+    duplicates: preview.duplicates
   };
 }
 
@@ -190,7 +231,7 @@ async function confirmReplay(payload) {
   const previewId = safeId(payload.previewId);
   const preview = readPreview(previewId);
   if (Date.now() - Date.parse(preview.createdAt) > PREVIEW_TTL_MS) throw badRequest("A pre-visualizacao expirou. Processe o replay novamente.");
-  if (!payload.confirmSides) throw badRequest("Confirme explicitamente TEAM 100 e TEAM 200.");
+  if (!payload.confirmSides) throw badRequest("Confirme explicitamente o TIME AZUL e o TIME VERMELHO.");
   if (preview.duplicates.length && !payload.replaceExisting) {
     throw conflictError("Este replay ou esta posicao da serie ja esta cadastrado. Confirme a substituicao para continuar.");
   }
@@ -556,8 +597,16 @@ function findSeries(division, seriesId) {
   return buildSeries(fixedData[division] || {}).find((series) => series.id === seriesId);
 }
 
-function buildAllSeries(data) {
-  return Object.fromEntries(DIVISIONS.map((division) => [division, buildSeries(data[division] || {})]));
+function buildAllSeries(data, database, computed) {
+  return Object.fromEntries(DIVISIONS.map((division) => [
+    division,
+    resolveSeriesTeams(
+      division,
+      buildSeries(data[division] || {}),
+      database,
+      computed && computed.divisions && computed.divisions[division]
+    )
+  ]));
 }
 
 function buildSeries(division) {
@@ -590,6 +639,94 @@ function buildSeries(division) {
     });
   });
   return series;
+}
+
+function resolveSeriesTeams(division, seriesList, database, computedDivision) {
+  const teams = officialTeams(division);
+  const divisionGames = database && database.divisions && database.divisions[division]
+    ? database.divisions[division].games || []
+    : [];
+  const teamSummaries = new Map(((computedDivision && computedDivision.teams) || []).map((team) => [team.slot, team]));
+  const divisionContent = rosterContent && rosterContent.divisions && rosterContent.divisions[division] || {};
+  const divisionFixed = fixedData[division] || {};
+  const standings = groupStandings.compute({
+    rounds: divisionFixed.rounds || [],
+    resolveResult: (roundIndex, gameIndex, game) => {
+      const seriesId = `groups-r${roundIndex + 1}g${gameIndex + 1}`;
+      const stored = divisionContent.results && divisionContent.results[`r${roundIndex + 1}g${gameIndex + 1}`] || {};
+      if (stored.manualOverride) return stored;
+      const automatic = scoreSeries(divisionGames, seriesId, game.home, game.away, 2);
+      return automatic ? { homeScore: automatic.scoreA, awayScore: automatic.scoreB } : stored;
+    },
+    resolveTeam: (slot) => ({
+      ...(teams[slot] || { slot }),
+      avgWinTime: teamSummaries.get(slot) && teamSummaries.get(slot).avgWinTime || "00:00"
+    })
+  });
+  const winners = new Map();
+  const resolved = [];
+
+  for (const series of seriesList) {
+    if (series.stage === "grupos") {
+      resolved.push({ ...series, teamASlot: series.teamARef, teamBSlot: series.teamBRef });
+      continue;
+    }
+
+    const teamASlot = resolvePlayoffSlot(series.teamARef, standings, winners);
+    const teamBSlot = resolvePlayoffSlot(series.teamBRef, standings, winners);
+    const playoffKey = String(series.id).replace(/^playoffs-/, "");
+    const stored = divisionContent.playoffResults && divisionContent.playoffResults[playoffKey] || {};
+    const target = series.maxGames === 5 ? 3 : 2;
+    const automatic = teamASlot && teamBSlot
+      ? scoreSeries(divisionGames, series.id, teamASlot, teamBSlot, target)
+      : null;
+    const scoreA = Number(stored.manualOverride ? stored.teamAScore : automatic ? automatic.scoreA : stored.teamAScore);
+    const scoreB = Number(stored.manualOverride ? stored.teamBScore : automatic ? automatic.scoreB : stored.teamBScore);
+
+    if (teamASlot && scoreA === target && scoreA > scoreB) storePlayoffSlot(winners, series.title, teamASlot);
+    if (teamBSlot && scoreB === target && scoreB > scoreA) storePlayoffSlot(winners, series.title, teamBSlot);
+    resolved.push({ ...series, teamASlot, teamBSlot });
+  }
+
+  return resolved;
+}
+
+function scoreSeries(games, seriesId, preferredTeamA, preferredTeamB, target) {
+  const matches = (games || []).filter((game) => game && game.seriesId === seriesId && game.match);
+  if (!matches.length) return null;
+  const first = matches[0];
+  const teamA = preferredTeamA || first.blueTeamSlot || first.redTeamSlot;
+  const teamB = preferredTeamB || [first.blueTeamSlot, first.redTeamSlot].find((slot) => slot && slot !== teamA);
+  if (!teamA || !teamB || teamA === teamB) return null;
+  return {
+    scoreA: Math.min(target, matches.filter((game) => winnerSlot(game) === teamA).length),
+    scoreB: Math.min(target, matches.filter((game) => winnerSlot(game) === teamB).length)
+  };
+}
+
+function winnerSlot(game) {
+  return Number(game.match && game.match.winnerTeam) === 100
+    ? game.blueTeamSlot
+    : Number(game.match && game.match.winnerTeam) === 200
+      ? game.redTeamSlot
+      : "";
+}
+
+function resolvePlayoffSlot(reference, standings, winners) {
+  const text = String(reference || "").trim();
+  const winnerMatch = /^VENCEDOR\s+(.+)$/i.exec(text);
+  if (winnerMatch) return winners.get(normalizePlayoffTitle(winnerMatch[1])) || "";
+  if (!/^[A-D][1-4]$/.test(text)) return "";
+  const entry = standings[text[0]] && standings[text[0]][Number(text[1]) - 1];
+  return entry && entry.slot || "";
+}
+
+function storePlayoffSlot(winners, title, slot) {
+  winners.set(normalizePlayoffTitle(title), slot);
+}
+
+function normalizePlayoffTitle(value) {
+  return String(value || "").trim().toUpperCase().replace(/\s+/g, " ").replace(/^SEMIS\b/, "SEMI");
 }
 
 function playoffStage(title) {

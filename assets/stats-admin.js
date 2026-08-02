@@ -53,10 +53,8 @@
         <section class="stats-admin-grid">
           <details class="editor-section stats-admin-section" open>
             <summary>Partidas da ${division === "elite" ? "Elite" : "Ascensao"}</summary>
-            <p class="stats-admin-help">Cada espaco representa um jogo da serie. O replay so e salvo depois da pre-visualizacao e da sua confirmacao.</p>
-            <div class="series-list">
-              ${(state.bootstrap.series[division] || []).map((series) => renderSeries(division, series, gamesById)).join("")}
-            </div>
+            <p class="stats-admin-help">Abra a rodada, localize o confronto e envie o replay no jogo correto. Os times sao definidos automaticamente; os lados podem ser invertidos na pre-visualizacao.</p>
+            ${renderSeriesGroups(division, state.bootstrap.series[division] || [], gamesById)}
           </details>
 
           <details class="editor-section stats-admin-section">
@@ -118,6 +116,8 @@
 
   function renderSeries(division, series, gamesById) {
     const teams = teamsForDivision(division);
+    const teamASlot = series.teamASlot || "";
+    const teamBSlot = series.teamBSlot || "";
     return `
       <article class="editor-card series-card">
         <header class="series-card-header">
@@ -125,42 +125,78 @@
             <h3>${escapeHtml(formatSeriesTitle(series, teams))}</h3>
             <span>${escapeHtml(series.subtitle)} | ${escapeHtml(series.stage)} | ate ${series.maxGames} jogos</span>
           </div>
-          <span>${escapeHtml(formatVersus(series.teamARef, series.teamBRef, teams))}</span>
+          <span>${escapeHtml(formatVersus(teamASlot || series.teamARef, teamBSlot || series.teamBRef, teams))}</span>
         </header>
         <div class="series-game-list">
           ${Array.from({ length: series.maxGames }, (_, index) => {
             const gameNumber = index + 1;
-            return renderGameSlot(division, series, gameNumber, gamesById[`${series.id}-j${gameNumber}`]);
+            return renderGameSlot(division, series, gameNumber, gamesById[`${series.id}-j${gameNumber}`], teamASlot, teamBSlot);
           }).join("")}
         </div>
       </article>
     `;
   }
 
-  function renderGameSlot(division, series, gameNumber, game) {
-    const teams = teamsForDivision(division).filter((team) => team.configured);
+  function renderSeriesGroups(division, seriesList, gamesById) {
+    const groups = [];
+    const byKey = new Map();
+    seriesList.forEach((series) => {
+      const descriptor = seriesGroupDescriptor(series);
+      if (!byKey.has(descriptor.key)) {
+        const group = { ...descriptor, series: [] };
+        byKey.set(descriptor.key, group);
+        groups.push(group);
+      }
+      byKey.get(descriptor.key).series.push(series);
+    });
+
+    return `<div class="replay-round-list">${groups.map((group, index) => {
+      const saved = group.series.reduce((total, series) => total + Array.from(
+        { length: series.maxGames },
+        (_, gameIndex) => Boolean(gamesById[`${series.id}-j${gameIndex + 1}`])
+      ).filter(Boolean).length, 0);
+      return `
+        <details class="replay-round-group" ${index === 0 ? "open" : ""}>
+          <summary>
+            <span>${escapeHtml(group.label)}</span>
+            <small>${group.series.length} series | ${saved} replays salvos</small>
+          </summary>
+          <div class="round-series-list">
+            ${group.series.map((series) => renderSeries(division, series, gamesById)).join("")}
+          </div>
+        </details>
+      `;
+    }).join("")}</div>`;
+  }
+
+  function seriesGroupDescriptor(series) {
+    const roundMatch = /^groups-r(\d+)/.exec(String(series.id || ""));
+    if (roundMatch) {
+      const label = String(series.title || "").split(" - ")[0] || `Rodada ${roundMatch[1]}`;
+      return { key: `groups-${roundMatch[1]}`, label };
+    }
+    const labels = { oitavas: "Oitavas de final", quartas: "Quartas de final", semifinal: "Semifinais", final: "Grande final" };
+    return { key: `playoffs-${series.stage}`, label: labels[series.stage] || "Playoffs" };
+  }
+
+  function renderGameSlot(division, series, gameNumber, game, defaultTeamASlot, defaultTeamBSlot) {
+    const blueTeamSlot = game && game.blueTeamSlot || defaultTeamASlot;
+    const redTeamSlot = game && game.redTeamSlot || defaultTeamBSlot;
+    const matchupReady = Boolean(blueTeamSlot && redTeamSlot && blueTeamSlot !== redTeamSlot);
     return `
-      <form class="game-slot rofl-upload-slot" data-game-form data-division="${escapeAttribute(division)}" data-series-id="${escapeAttribute(series.id)}" data-game-number="${gameNumber}">
+      <form class="game-slot rofl-upload-slot" data-game-form data-division="${escapeAttribute(division)}" data-series-id="${escapeAttribute(series.id)}" data-game-number="${gameNumber}" data-blue-team-slot="${escapeAttribute(blueTeamSlot)}" data-red-team-slot="${escapeAttribute(redTeamSlot)}">
         <div class="game-slot-main">
           <strong class="game-slot-number">Jogo ${gameNumber}</strong>
-          <label class="game-slot-blue">
-            <span>TEAM 100 - lado azul</span>
-            <select name="blueTeamSlot" required>${renderTeamOptions(teams, game && game.blueTeamSlot)}</select>
-          </label>
-          <label class="game-slot-red">
-            <span>TEAM 200 - lado vermelho</span>
-            <select name="redTeamSlot" required>${renderTeamOptions(teams, game && game.redTeamSlot)}</select>
-          </label>
           <label class="rofl-dropzone" data-dropzone>
             <span>Arquivo .rofl</span>
             <b>Arraste aqui ou escolha o replay</b>
-            <small data-file-name>${game && game.replay ? game.replay.originalName : "Limite: 40 MB"}</small>
-            <input type="file" name="rofl" accept=".rofl" required />
+            <small data-file-name>${matchupReady ? game && game.replay ? game.replay.originalName : "Limite: 40 MB" : "Aguardando definicao do confronto"}</small>
+            <input type="file" name="rofl" accept=".rofl" required ${matchupReady ? "" : "disabled"} />
           </label>
-          <button class="game-slot-process" type="submit">Processar e revisar</button>
+          <button class="game-slot-process" type="submit" ${matchupReady ? "" : "disabled"}>Processar replay</button>
           ${game ? `<button class="danger-button game-slot-delete" type="button" data-action="delete-game" data-game-id="${escapeAttribute(game.id)}" data-division="${escapeAttribute(division)}">Remover jogo</button>` : ""}
         </div>
-        <div class="game-slot-status">${game ? renderGameStatus(game) : "<span>Nenhum replay salvo neste jogo.</span>"}</div>
+        <div class="game-slot-status">${game ? renderGameStatus(game) : matchupReady ? "<span>Nenhum replay salvo neste jogo.</span>" : "<span class=\"status-warning\">O confronto sera liberado automaticamente quando os classificados forem definidos.</span>"}</div>
       </form>
     `;
   }
@@ -168,6 +204,7 @@
   function renderPreview(preview) {
     const replay = preview.replay;
     const winner = replay.winnerTeam === 100 ? preview.teams["100"].name : preview.teams["200"].name;
+    const winnerFallback = replay.winnerTeam === 100 ? "TIME AZUL" : "TIME VERMELHO";
     return `
       <section class="replay-preview-panel" id="replay-preview">
         <header class="replay-preview-header">
@@ -175,14 +212,17 @@
             <span>Pre-visualizacao nao salva</span>
             <h2>${escapeHtml(preview.file.name)}</h2>
           </div>
-          <button type="button" class="danger-button" data-action="discard-preview">Descartar</button>
+          <div class="replay-preview-actions">
+            <button type="button" data-action="swap-preview-sides">Trocar times de lado</button>
+            <button type="button" class="danger-button" data-action="discard-preview">Descartar</button>
+          </div>
         </header>
 
         <div class="replay-summary-grid">
           ${summaryMetric("Versao", replay.clientVersion || "-")}
           ${summaryMetric("Duracao", formatDuration(replay.durationSeconds))}
           ${summaryMetric("Hash", preview.file.sha256Short)}
-          ${summaryMetric("Vencedor", winner || `TEAM ${replay.winnerTeam}`)}
+          ${summaryMetric("Vencedor", winner || winnerFallback)}
         </div>
 
         ${preview.duplicates.length ? `
@@ -200,7 +240,7 @@
         <div class="replay-confirm-box">
           <label class="captain-toggle">
             <input type="checkbox" data-confirm-sides />
-            Confirmo que TEAM 100 e ${escapeHtml(preview.teams["100"].name)} e TEAM 200 e ${escapeHtml(preview.teams["200"].name)}.
+            Confirmo que o TIME AZUL e ${escapeHtml(preview.teams["100"].name)} e o TIME VERMELHO e ${escapeHtml(preview.teams["200"].name)}.
           </label>
           ${preview.duplicates.length ? `
             <label class="captain-toggle danger-confirm">
@@ -223,7 +263,7 @@
       <article class="replay-side-card ${teamNumber === 100 ? "blue" : "red"}">
         <header>
           ${team.logo ? `<img src="${escapeAttribute(normalizeAssetPath(team.logo))}" alt="" />` : ""}
-          <div><span>TEAM ${teamNumber}</span><strong>${escapeHtml(team.name)}</strong></div>
+          <div><span>${teamNumber === 100 ? "TIME AZUL" : "TIME VERMELHO"}</span><strong>${escapeHtml(team.name)}</strong></div>
           <b>${totals.kills}/${totals.deaths}/${totals.assists}</b>
         </header>
         <div class="replay-team-totals">
@@ -376,6 +416,8 @@
       render();
     } else if (action === "confirm-preview") {
       await confirmPreview();
+    } else if (action === "swap-preview-sides") {
+      await swapPreviewSides();
     } else if (action === "delete-game") {
       await deleteGame(actionButton);
     } else if (action === "delete-alias") {
@@ -431,13 +473,27 @@
         division: form.dataset.division,
         seriesId: form.dataset.seriesId,
         gameNumber: Number(form.dataset.gameNumber),
-        blueTeamSlot: form.elements.blueTeamSlot.value,
-        redTeamSlot: form.elements.redTeamSlot.value,
+        blueTeamSlot: form.dataset.blueTeamSlot,
+        redTeamSlot: form.dataset.redTeamSlot,
         fileName: file.name,
         fileBase64: await fileToBase64(file)
       });
       state.preview = result.preview;
       state.status = "Replay processado. Revise todos os dados antes de confirmar.";
+      render();
+      document.getElementById("replay-preview").scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (error) {
+      setStatus(error.message);
+    }
+  }
+
+  async function swapPreviewSides() {
+    if (!state.preview) return;
+    setStatus("Invertendo os lados e atualizando os jogadores sugeridos...");
+    try {
+      const result = await postJson("/api/admin/replay/swap-sides", { previewId: state.preview.previewId });
+      state.preview = result.preview;
+      state.status = "Lados invertidos. Revise TIME AZUL, TIME VERMELHO e as associacoes dos jogadores.";
       render();
       document.getElementById("replay-preview").scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (error) {
