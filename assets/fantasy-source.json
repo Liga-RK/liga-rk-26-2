@@ -1,7 +1,7 @@
 {
   "version": 2,
   "schema": "fantasy-rk-official-source-v2",
-  "generatedAt": "2026-07-29T01:18:02.449Z",
+  "generatedAt": "2026-08-02T21:31:03.376Z",
   "season": "Liga RK 26.2",
   "timezone": "America/Sao_Paulo",
   "divisions": {
@@ -1087,11 +1087,11 @@
               "homeTeamName": "BANDO DO ROSA",
               "awayTeamName": "QUANTUM RABBITS",
               "startsAt": "2026-08-02T19:00:00.000Z",
-              "status": "scheduled",
+              "status": "completed",
               "format": "MD3",
-              "homeScore": null,
-              "awayScore": null,
-              "winnerTeamId": null
+              "homeScore": 2,
+              "awayScore": 0,
+              "winnerTeamId": "team:elite:A2"
             },
             {
               "id": "schedule:elite:r2g3",
@@ -1119,11 +1119,11 @@
               "homeTeamName": "LENDINHAS",
               "awayTeamName": "TOPEIRAS DO MAU",
               "startsAt": "2026-08-02T20:30:00.000Z",
-              "status": "scheduled",
+              "status": "completed",
               "format": "MD3",
-              "homeScore": null,
-              "awayScore": null,
-              "winnerTeamId": null
+              "homeScore": 0,
+              "awayScore": 2,
+              "winnerTeamId": "team:elite:B4"
             },
             {
               "id": "schedule:elite:r2g5",
@@ -1432,6 +1432,42 @@
             ]
           },
           {
+            "id": "9392f3eb-5e8b-4059-874e-905daba68b36",
+            "playerId": "9392f3eb-5e8b-4059-874e-905daba68b36",
+            "displayName": "RYUU",
+            "riotId": "Klein Moretti 小丑#Ryuu",
+            "riotIdAliases": [
+              "Merlim Hermes#Klein"
+            ],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Klein%20Moretti%20%E5%B0%8F%E4%B8%91-Ryuu",
+            "mainPosition": "MID",
+            "teams": [
+              {
+                "slot": "A2",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "MID",
+                "teamSlot": "A2",
+                "averageScore": 93.11,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
+                ]
+              }
+            ]
+          },
+          {
             "id": "a25fed6f-9af6-4f75-9b64-381f23c3d4d7",
             "playerId": "a25fed6f-9af6-4f75-9b64-381f23c3d4d7",
             "displayName": "MARONATO",
@@ -1461,6 +1497,40 @@
                 "matches": [
                   "groups-r1g2-j1",
                   "groups-r1g2-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "d98b2eb2-01a3-4f75-8d3f-f699a8974674",
+            "playerId": "d98b2eb2-01a3-4f75-8d3f-f699a8974674",
+            "displayName": "MENTALGAP",
+            "riotId": "mygirl#1513",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/mygirl-1513",
+            "mainPosition": "JG",
+            "teams": [
+              {
+                "slot": "A2",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "JG",
+                "teamSlot": "A2",
+                "averageScore": 90.64,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
                 ]
               }
             ]
@@ -1603,40 +1673,6 @@
             ]
           },
           {
-            "id": "d91655cf-58e0-4430-9bb2-2c12dd273b89",
-            "playerId": "d91655cf-58e0-4430-9bb2-2c12dd273b89",
-            "displayName": "ZORO",
-            "riotId": "EGO YAMAL#zoro",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/EGO%20YAMAL-zoro",
-            "mainPosition": "JG",
-            "teams": [
-              {
-                "slot": "B2",
-                "count": 2
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "JG",
-                "teamSlot": "B2",
-                "averageScore": 85.89,
-                "games": 2,
-                "wins": 2,
-                "losses": 0,
-                "series": [
-                  "groups-r1g3"
-                ],
-                "seriesWins": 1,
-                "matches": [
-                  "groups-r1g3-j1",
-                  "groups-r1g3-j2"
-                ]
-              }
-            ]
-          },
-          {
             "id": "387bfab7-c5a6-4f05-a41a-980cb0bf4d42",
             "playerId": "387bfab7-c5a6-4f05-a41a-980cb0bf4d42",
             "displayName": "DYNAS",
@@ -1666,6 +1702,58 @@
                 "matches": [
                   "groups-r1g8-j1",
                   "groups-r1g8-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
+            "playerId": "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
+            "displayName": "AZO",
+            "riotId": "AZØ#AZ0",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/AZ%C3%98-AZ0",
+            "mainPosition": "TOP",
+            "teams": [
+              {
+                "slot": "B4",
+                "count": 5
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "TOP",
+                "teamSlot": "B4",
+                "averageScore": 84.26,
+                "games": 3,
+                "wins": 1,
+                "losses": 2,
+                "series": [
+                  "groups-r1g4"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r1g4-j1",
+                  "groups-r1g4-j2",
+                  "groups-r1g4-j3"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "TOP",
+                "teamSlot": "B4",
+                "averageScore": 85.37,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g4"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g4-j1",
+                  "groups-r2g4-j2"
                 ]
               }
             ]
@@ -1706,47 +1794,14 @@
             ]
           },
           {
-            "id": "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
-            "playerId": "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
-            "displayName": "AZO",
-            "riotId": "AZØ#AZ0",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/AZ%C3%98-AZ0",
-            "mainPosition": "TOP",
-            "teams": [
-              {
-                "slot": "B4",
-                "count": 3
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "TOP",
-                "teamSlot": "B4",
-                "averageScore": 84.26,
-                "games": 3,
-                "wins": 1,
-                "losses": 2,
-                "series": [
-                  "groups-r1g4"
-                ],
-                "seriesWins": 0,
-                "matches": [
-                  "groups-r1g4-j1",
-                  "groups-r1g4-j2",
-                  "groups-r1g4-j3"
-                ]
-              }
-            ]
-          },
-          {
             "id": "f9663a5d-6159-4f40-b0f5-7c9f3467332b",
             "playerId": "f9663a5d-6159-4f40-b0f5-7c9f3467332b",
-            "displayName": "HOPE",
-            "riotId": "HOPE#0800",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/HOPE-0800",
+            "displayName": "STARZ",
+            "riotId": "StarZ#5786",
+            "riotIdAliases": [
+              "HOPE#0800"
+            ],
+            "opgg": "https://op.gg/pt/lol/summoners/br/StarZ-5786",
             "mainPosition": "MID",
             "teams": [
               {
@@ -1810,6 +1865,60 @@
             ]
           },
           {
+            "id": "37d5697c-d21a-4bc1-b104-1f580f396133",
+            "playerId": "37d5697c-d21a-4bc1-b104-1f580f396133",
+            "displayName": "GAVIN",
+            "riotId": "Gavinzera#BR2",
+            "riotIdAliases": [
+              "Gavin#BR2"
+            ],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Gavinzera-BR2",
+            "mainPosition": "JG",
+            "teams": [
+              {
+                "slot": "B4",
+                "count": 5
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "JG",
+                "teamSlot": "B4",
+                "averageScore": 79.46,
+                "games": 3,
+                "wins": 1,
+                "losses": 2,
+                "series": [
+                  "groups-r1g4"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r1g4-j1",
+                  "groups-r1g4-j2",
+                  "groups-r1g4-j3"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "JG",
+                "teamSlot": "B4",
+                "averageScore": 87.85,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g4"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g4-j1",
+                  "groups-r2g4-j2"
+                ]
+              }
+            ]
+          },
+          {
             "id": "8de67801-d9d0-45c6-ab35-5efaacdacf51",
             "playerId": "8de67801-d9d0-45c6-ab35-5efaacdacf51",
             "displayName": "DAVID",
@@ -1839,40 +1948,6 @@
                 "matches": [
                   "groups-r1g8-j1",
                   "groups-r1g8-j2"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda",
-            "playerId": "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda",
-            "displayName": "XAND",
-            "riotId": "Xand#완벽한",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Xand-%EC%99%84%EB%B2%BD%ED%95%9C",
-            "mainPosition": "MID",
-            "teams": [
-              {
-                "slot": "B2",
-                "count": 2
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "MID",
-                "teamSlot": "B2",
-                "averageScore": 80.98,
-                "games": 2,
-                "wins": 2,
-                "losses": 0,
-                "series": [
-                  "groups-r1g3"
-                ],
-                "seriesWins": 1,
-                "matches": [
-                  "groups-r1g3-j1",
-                  "groups-r1g3-j2"
                 ]
               }
             ]
@@ -1908,75 +1983,6 @@
                   "groups-r1g5-j1",
                   "groups-r1g5-j3",
                   "groups-r1g5-j2"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "afd38a2d-4c8e-44fb-b3d1-1c2bf4e8764e",
-            "playerId": "afd38a2d-4c8e-44fb-b3d1-1c2bf4e8764e",
-            "displayName": "PEPUXO",
-            "riotId": "Abraão do League#Peps",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Abra%C3%A3o%20do%20League-Peps",
-            "mainPosition": "TOP",
-            "teams": [
-              {
-                "slot": "B2",
-                "count": 2
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "TOP",
-                "teamSlot": "B2",
-                "averageScore": 80.87,
-                "games": 2,
-                "wins": 2,
-                "losses": 0,
-                "series": [
-                  "groups-r1g3"
-                ],
-                "seriesWins": 1,
-                "matches": [
-                  "groups-r1g3-j1",
-                  "groups-r1g3-j2"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "37d5697c-d21a-4bc1-b104-1f580f396133",
-            "playerId": "37d5697c-d21a-4bc1-b104-1f580f396133",
-            "displayName": "GAVIN",
-            "riotId": "Gavinzera#BR2",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Gavinzera-BR2",
-            "mainPosition": "JG",
-            "teams": [
-              {
-                "slot": "B4",
-                "count": 3
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "JG",
-                "teamSlot": "B4",
-                "averageScore": 79.46,
-                "games": 3,
-                "wins": 1,
-                "losses": 2,
-                "series": [
-                  "groups-r1g4"
-                ],
-                "seriesWins": 0,
-                "matches": [
-                  "groups-r1g4-j1",
-                  "groups-r1g4-j2",
-                  "groups-r1g4-j3"
                 ]
               }
             ]
@@ -2114,6 +2120,58 @@
                 "matches": [
                   "groups-r1g2-j1",
                   "groups-r1g2-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "85c29dba-efdf-44f0-9604-c743f96c49ce",
+            "playerId": "85c29dba-efdf-44f0-9604-c743f96c49ce",
+            "displayName": "MEC",
+            "riotId": "sing 4 da moment#90210",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/sing%204%20da%20moment-90210",
+            "mainPosition": "MID",
+            "teams": [
+              {
+                "slot": "B4",
+                "count": 5
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "MID",
+                "teamSlot": "B4",
+                "averageScore": 71.92,
+                "games": 3,
+                "wins": 1,
+                "losses": 2,
+                "series": [
+                  "groups-r1g4"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r1g4-j1",
+                  "groups-r1g4-j2",
+                  "groups-r1g4-j3"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "MID",
+                "teamSlot": "B4",
+                "averageScore": 86.3,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g4"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g4-j1",
+                  "groups-r2g4-j2"
                 ]
               }
             ]
@@ -2395,35 +2453,103 @@
             ]
           },
           {
-            "id": "1d9ace8e-1f8c-4aba-a11d-1b6c25e2aa2e",
-            "playerId": "1d9ace8e-1f8c-4aba-a11d-1b6c25e2aa2e",
-            "displayName": "LITTLE NOCTUS",
-            "riotId": "little noctus#gabi",
+            "id": "afd38a2d-4c8e-44fb-b3d1-1c2bf4e8764e",
+            "playerId": "afd38a2d-4c8e-44fb-b3d1-1c2bf4e8764e",
+            "displayName": "PEPUXO",
+            "riotId": "Abraão do League#Peps",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/little%20noctus-gabi",
+            "opgg": "https://op.gg/pt/lol/summoners/br/Abra%C3%A3o%20do%20League-Peps",
+            "mainPosition": "TOP",
+            "teams": [
+              {
+                "slot": "B2",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "TOP",
+                "teamSlot": "B2",
+                "averageScore": 80.87,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r1g3"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g3-j1",
+                  "groups-r1g3-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "TOP",
+                "teamSlot": "B2",
+                "averageScore": 69.47,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g4"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g4-j1",
+                  "groups-r2g4-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "d91655cf-58e0-4430-9bb2-2c12dd273b89",
+            "playerId": "d91655cf-58e0-4430-9bb2-2c12dd273b89",
+            "displayName": "ZORO",
+            "riotId": "EGO YAMAL#zoro",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/EGO%20YAMAL-zoro",
             "mainPosition": "JG",
             "teams": [
               {
-                "slot": "A4",
-                "count": 2
+                "slot": "B2",
+                "count": 4
               }
             ],
             "roundRatings": [
               {
                 "round": 1,
                 "position": "JG",
-                "teamSlot": "A4",
-                "averageScore": 75.24,
+                "teamSlot": "B2",
+                "averageScore": 85.89,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r1g3"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g3-j1",
+                  "groups-r1g3-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "JG",
+                "teamSlot": "B2",
+                "averageScore": 63.61,
                 "games": 2,
                 "wins": 0,
                 "losses": 2,
                 "series": [
-                  "groups-r1g2"
+                  "groups-r2g4"
                 ],
                 "seriesWins": 0,
                 "matches": [
-                  "groups-r1g2-j1",
-                  "groups-r1g2-j2"
+                  "groups-r2g4-j1",
+                  "groups-r2g4-j2"
                 ]
               }
             ]
@@ -2601,35 +2727,52 @@
             ]
           },
           {
-            "id": "727c5fde-d079-4a4e-a13c-facce5f2cd00",
-            "playerId": "727c5fde-d079-4a4e-a13c-facce5f2cd00",
-            "displayName": "RATINHO",
-            "riotId": "mcratão#4252",
+            "id": "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda",
+            "playerId": "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda",
+            "displayName": "XAND",
+            "riotId": "Xand#완벽한",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/lol/summoners/br/mcrat%C3%A3o-4252",
+            "opgg": "https://op.gg/pt/lol/summoners/br/Xand-%EC%99%84%EB%B2%BD%ED%95%9C",
             "mainPosition": "MID",
             "teams": [
               {
-                "slot": "A4",
-                "count": 2
+                "slot": "B2",
+                "count": 4
               }
             ],
             "roundRatings": [
               {
                 "round": 1,
                 "position": "MID",
-                "teamSlot": "A4",
-                "averageScore": 72.91,
+                "teamSlot": "B2",
+                "averageScore": 80.98,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r1g3"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g3-j1",
+                  "groups-r1g3-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "MID",
+                "teamSlot": "B2",
+                "averageScore": 66.15,
                 "games": 2,
                 "wins": 0,
                 "losses": 2,
                 "series": [
-                  "groups-r1g2"
+                  "groups-r2g4"
                 ],
                 "seriesWins": 0,
                 "matches": [
-                  "groups-r1g2-j1",
-                  "groups-r1g2-j2"
+                  "groups-r2g4-j1",
+                  "groups-r2g4-j2"
                 ]
               }
             ]
@@ -2664,41 +2807,6 @@
                 "matches": [
                   "groups-r1g7-j1",
                   "groups-r1g7-j2"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "85c29dba-efdf-44f0-9604-c743f96c49ce",
-            "playerId": "85c29dba-efdf-44f0-9604-c743f96c49ce",
-            "displayName": "MEC",
-            "riotId": "sing 4 da moment#90210",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/sing%204%20da%20moment-90210",
-            "mainPosition": "MID",
-            "teams": [
-              {
-                "slot": "B4",
-                "count": 3
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "MID",
-                "teamSlot": "B4",
-                "averageScore": 71.92,
-                "games": 3,
-                "wins": 1,
-                "losses": 2,
-                "series": [
-                  "groups-r1g4"
-                ],
-                "seriesWins": 0,
-                "matches": [
-                  "groups-r1g4-j1",
-                  "groups-r1g4-j2",
-                  "groups-r1g4-j3"
                 ]
               }
             ]
@@ -2807,12 +2915,66 @@
             ]
           },
           {
+            "id": "a44b2125-85a3-4f69-9caa-97a385822b0a",
+            "playerId": "a44b2125-85a3-4f69-9caa-97a385822b0a",
+            "displayName": "LISBOA",
+            "riotId": "Lisboa#TTS",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Lisboa-TTS",
+            "mainPosition": "ADC",
+            "teams": [
+              {
+                "slot": "B4",
+                "count": 5
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "ADC",
+                "teamSlot": "B4",
+                "averageScore": 63.71,
+                "games": 3,
+                "wins": 1,
+                "losses": 2,
+                "series": [
+                  "groups-r1g4"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r1g4-j1",
+                  "groups-r1g4-j2",
+                  "groups-r1g4-j3"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "ADC",
+                "teamSlot": "B4",
+                "averageScore": 80.6,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g4"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g4-j1",
+                  "groups-r2g4-j2"
+                ]
+              }
+            ]
+          },
+          {
             "id": "f173da50-620b-4b89-90fe-1e49b4bd4a49",
             "playerId": "f173da50-620b-4b89-90fe-1e49b4bd4a49",
-            "displayName": "LUISMA",
-            "riotId": "FL Luisma#Luis",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/FL%20Luisma-Luis",
+            "displayName": "PIZA",
+            "riotId": "NKZ Piza#CBLOL",
+            "riotIdAliases": [
+              "FL Luisma#Luis"
+            ],
+            "opgg": "https://op.gg/pt/lol/summoners/br/NKZ%20Piza-CBLOL",
             "mainPosition": "SUP",
             "teams": [
               {
@@ -2876,6 +3038,200 @@
             ]
           },
           {
+            "id": "55d5021b-af05-495b-9ed0-7848d81b524a",
+            "playerId": "55d5021b-af05-495b-9ed0-7848d81b524a",
+            "displayName": "ZEPPELI",
+            "riotId": "Zeppeli#honio",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Zeppeli-honio",
+            "mainPosition": "SUP",
+            "teams": [
+              {
+                "slot": "A2",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "SUP",
+                "teamSlot": "A2",
+                "averageScore": 69.28,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1d9ace8e-1f8c-4aba-a11d-1b6c25e2aa2e",
+            "playerId": "1d9ace8e-1f8c-4aba-a11d-1b6c25e2aa2e",
+            "displayName": "LOIRINHO",
+            "riotId": "Loiiriinhoh#GOAT",
+            "riotIdAliases": [
+              "little noctus#gabi"
+            ],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Loiiriinhoh-GOAT",
+            "mainPosition": "JG",
+            "teams": [
+              {
+                "slot": "A4",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "JG",
+                "teamSlot": "A4",
+                "averageScore": 75.24,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r1g2"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r1g2-j1",
+                  "groups-r1g2-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "JG",
+                "teamSlot": "A4",
+                "averageScore": 63.11,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "005b1daf-fb8a-4258-b48b-90bde518a76f",
+            "playerId": "005b1daf-fb8a-4258-b48b-90bde518a76f",
+            "displayName": "LIMA",
+            "riotId": "Sabotage#nbdy",
+            "riotIdAliases": [
+              "LIMA IS BACK#LIMA"
+            ],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Sabotage-nbdy",
+            "mainPosition": "SUP",
+            "teams": [
+              {
+                "slot": "B2",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "SUP",
+                "teamSlot": "B2",
+                "averageScore": 66.84,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r1g3"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g3-j1",
+                  "groups-r1g3-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "SUP",
+                "teamSlot": "B2",
+                "averageScore": 71.11,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g4"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g4-j1",
+                  "groups-r2g4-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "dbfbe491-6dba-47a6-b29a-4f6307b4d132",
+            "playerId": "dbfbe491-6dba-47a6-b29a-4f6307b4d132",
+            "displayName": "ALPACA",
+            "riotId": "Alpacaz#br1",
+            "riotIdAliases": [
+              "lucky day#hyy"
+            ],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Alpacaz-br1",
+            "mainPosition": "SUP",
+            "teams": [
+              {
+                "slot": "B4",
+                "count": 5
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "SUP",
+                "teamSlot": "B4",
+                "averageScore": 62.53,
+                "games": 3,
+                "wins": 1,
+                "losses": 2,
+                "series": [
+                  "groups-r1g4"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r1g4-j1",
+                  "groups-r1g4-j2",
+                  "groups-r1g4-j3"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "SUP",
+                "teamSlot": "B4",
+                "averageScore": 78.52,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g4"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g4-j1",
+                  "groups-r2g4-j2"
+                ]
+              }
+            ]
+          },
+          {
             "id": "8f58fb63-7765-463b-8688-89c4552fcae5",
             "playerId": "8f58fb63-7765-463b-8688-89c4552fcae5",
             "displayName": "OXOSSI",
@@ -2905,40 +3261,6 @@
                 "matches": [
                   "groups-r1g8-j1",
                   "groups-r1g8-j2"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "70581d4b-5e7c-4000-a2de-c15a18bbf91a",
-            "playerId": "70581d4b-5e7c-4000-a2de-c15a18bbf91a",
-            "displayName": "GUZZ",
-            "riotId": "Guzz#cam",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Guzz-cam",
-            "mainPosition": "ADC",
-            "teams": [
-              {
-                "slot": "B2",
-                "count": 2
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "ADC",
-                "teamSlot": "B2",
-                "averageScore": 68.78,
-                "games": 2,
-                "wins": 2,
-                "losses": 0,
-                "series": [
-                  "groups-r1g3"
-                ],
-                "seriesWins": 1,
-                "matches": [
-                  "groups-r1g3-j1",
-                  "groups-r1g3-j2"
                 ]
               }
             ]
@@ -2980,10 +3302,12 @@
           {
             "id": "bc6d8503-d29e-436d-bc14-634243c72720",
             "playerId": "bc6d8503-d29e-436d-bc14-634243c72720",
-            "displayName": "PAPEL",
+            "displayName": "NKZ Papel",
             "riotId": "NKZ Papel#BR2",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/NKZ%20Papel-BR2",
+            "riotIdAliases": [
+              "NKZ Papel#BR2"
+            ],
+            "opgg": "",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -3184,40 +3508,6 @@
             ]
           },
           {
-            "id": "005b1daf-fb8a-4258-b48b-90bde518a76f",
-            "playerId": "005b1daf-fb8a-4258-b48b-90bde518a76f",
-            "displayName": "LIMA",
-            "riotId": "LIMA IS BACK#LIMA",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/LIMA%20IS%20BACK-LIMA",
-            "mainPosition": "SUP",
-            "teams": [
-              {
-                "slot": "B2",
-                "count": 2
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "SUP",
-                "teamSlot": "B2",
-                "averageScore": 66.84,
-                "games": 2,
-                "wins": 2,
-                "losses": 0,
-                "series": [
-                  "groups-r1g3"
-                ],
-                "seriesWins": 1,
-                "matches": [
-                  "groups-r1g3-j1",
-                  "groups-r1g3-j2"
-                ]
-              }
-            ]
-          },
-          {
             "id": "5ef6dac6-8daf-42e6-b3af-c8896a8554e1",
             "playerId": "5ef6dac6-8daf-42e6-b3af-c8896a8554e1",
             "displayName": "BLEYDAS",
@@ -3254,7 +3544,7 @@
           {
             "id": "72611c8f-caec-461e-9f09-a29084433b7b",
             "playerId": "72611c8f-caec-461e-9f09-a29084433b7b",
-            "displayName": "LUIS",
+            "displayName": "RESENHA",
             "riotId": "resenhaxnoclubex#aurax",
             "riotIdAliases": [],
             "opgg": "https://op.gg/pt/lol/summoners/br/resenhaxnoclubex-aurax",
@@ -3281,6 +3571,57 @@
                 "matches": [
                   "groups-r1g3-j1",
                   "groups-r1g3-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "a2284a68-12d9-47e5-a0a2-4eb8cc7455de",
+            "playerId": "a2284a68-12d9-47e5-a0a2-4eb8cc7455de",
+            "displayName": "PEDROJAIME",
+            "riotId": "pedrojaime#PJ1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/pedrojaime-PJ1",
+            "mainPosition": "TOP",
+            "teams": [
+              {
+                "slot": "A4",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "TOP",
+                "teamSlot": "A4",
+                "averageScore": 59.11,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r1g2"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r1g2-j1",
+                  "groups-r1g2-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "TOP",
+                "teamSlot": "A4",
+                "averageScore": 72.51,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
                 ]
               }
             ]
@@ -3390,73 +3731,139 @@
             ]
           },
           {
-            "id": "a44b2125-85a3-4f69-9caa-97a385822b0a",
-            "playerId": "a44b2125-85a3-4f69-9caa-97a385822b0a",
-            "displayName": "LISBOA",
-            "riotId": "Lisboa#TTS",
+            "id": "70581d4b-5e7c-4000-a2de-c15a18bbf91a",
+            "playerId": "70581d4b-5e7c-4000-a2de-c15a18bbf91a",
+            "displayName": "GUZZ",
+            "riotId": "Guzz#cam",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Lisboa-TTS",
+            "opgg": "https://op.gg/pt/lol/summoners/br/Guzz-cam",
             "mainPosition": "ADC",
             "teams": [
               {
-                "slot": "B4",
-                "count": 3
+                "slot": "B2",
+                "count": 4
               }
             ],
             "roundRatings": [
               {
                 "round": 1,
                 "position": "ADC",
-                "teamSlot": "B4",
-                "averageScore": 63.71,
-                "games": 3,
-                "wins": 1,
+                "teamSlot": "B2",
+                "averageScore": 68.78,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r1g3"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g3-j1",
+                  "groups-r1g3-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "ADC",
+                "teamSlot": "B2",
+                "averageScore": 58.57,
+                "games": 2,
+                "wins": 0,
                 "losses": 2,
                 "series": [
-                  "groups-r1g4"
+                  "groups-r2g4"
                 ],
                 "seriesWins": 0,
                 "matches": [
-                  "groups-r1g4-j1",
-                  "groups-r1g4-j2",
-                  "groups-r1g4-j3"
+                  "groups-r2g4-j1",
+                  "groups-r2g4-j2"
                 ]
               }
             ]
           },
           {
-            "id": "dbfbe491-6dba-47a6-b29a-4f6307b4d132",
-            "playerId": "dbfbe491-6dba-47a6-b29a-4f6307b4d132",
-            "displayName": "ALPACA",
-            "riotId": "Alpacaz#br1",
-            "riotIdAliases": [
-              "lucky day#hyy"
-            ],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Alpacaz-br1",
+            "id": "cbff23ae-a385-42a1-bf60-472e57ecb700",
+            "playerId": "cbff23ae-a385-42a1-bf60-472e57ecb700",
+            "displayName": "GALAXY",
+            "riotId": "Tina Cafetina#M2612",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Tina%20Cafetina-M2612",
             "mainPosition": "SUP",
             "teams": [
               {
-                "slot": "B4",
-                "count": 3
+                "slot": "A4",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "SUP",
+                "teamSlot": "A4",
+                "averageScore": 63.16,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "727c5fde-d079-4a4e-a13c-facce5f2cd00",
+            "playerId": "727c5fde-d079-4a4e-a13c-facce5f2cd00",
+            "displayName": "MATHEUS",
+            "riotId": "Claire Redfield#TRSV",
+            "riotIdAliases": [
+              "mcratão#4252"
+            ],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Claire%20Redfield-TRSV",
+            "mainPosition": "MID",
+            "teams": [
+              {
+                "slot": "A4",
+                "count": 4
               }
             ],
             "roundRatings": [
               {
                 "round": 1,
-                "position": "SUP",
-                "teamSlot": "B4",
-                "averageScore": 62.53,
-                "games": 3,
-                "wins": 1,
+                "position": "MID",
+                "teamSlot": "A4",
+                "averageScore": 72.91,
+                "games": 2,
+                "wins": 0,
                 "losses": 2,
                 "series": [
-                  "groups-r1g4"
+                  "groups-r1g2"
                 ],
                 "seriesWins": 0,
                 "matches": [
-                  "groups-r1g4-j1",
-                  "groups-r1g4-j2",
-                  "groups-r1g4-j3"
+                  "groups-r1g2-j1",
+                  "groups-r1g2-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "MID",
+                "teamSlot": "A4",
+                "averageScore": 53.36,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
                 ]
               }
             ]
@@ -3564,35 +3971,71 @@
             ]
           },
           {
-            "id": "a2284a68-12d9-47e5-a0a2-4eb8cc7455de",
-            "playerId": "a2284a68-12d9-47e5-a0a2-4eb8cc7455de",
-            "displayName": "PEDROJAIME",
-            "riotId": "pedrojaime#PJ1",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/pedrojaime-PJ1",
-            "mainPosition": "TOP",
+            "id": "ba719616-83d9-413d-9b47-4065aa9ab157",
+            "playerId": "ba719616-83d9-413d-9b47-4065aa9ab157",
+            "displayName": "NARU",
+            "riotId": "Miitsukii1#BR1",
+            "riotIdAliases": [
+              "skartercp2#br1"
+            ],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Miitsukii1-BR1",
+            "mainPosition": "ADC",
             "teams": [
               {
-                "slot": "A4",
+                "slot": "A2",
                 "count": 2
               }
             ],
             "roundRatings": [
               {
-                "round": 1,
-                "position": "TOP",
-                "teamSlot": "A4",
-                "averageScore": 59.11,
+                "round": 2,
+                "position": "ADC",
+                "teamSlot": "A2",
+                "averageScore": 59.3,
                 "games": 2,
-                "wins": 0,
-                "losses": 2,
+                "wins": 2,
+                "losses": 0,
                 "series": [
-                  "groups-r1g2"
+                  "groups-r2g2"
                 ],
-                "seriesWins": 0,
+                "seriesWins": 1,
                 "matches": [
-                  "groups-r1g2-j1",
-                  "groups-r1g2-j2"
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "e716f2c0-24c9-4aac-a6ff-a3e14b8a61c0",
+            "playerId": "e716f2c0-24c9-4aac-a6ff-a3e14b8a61c0",
+            "displayName": "ROSA",
+            "riotId": "MACHINE GIRL#自我宽恕1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/MACHINE%20GIRL-自我宽恕1",
+            "mainPosition": "TOP",
+            "teams": [
+              {
+                "slot": "A2",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "TOP",
+                "teamSlot": "A2",
+                "averageScore": 59.24,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
                 ]
               }
             ]
@@ -3666,6 +4109,59 @@
             ]
           },
           {
+            "id": "b43b292e-f8b8-4b44-bcf6-806bc7c3afa1",
+            "playerId": "b43b292e-f8b8-4b44-bcf6-806bc7c3afa1",
+            "displayName": "LUKAS",
+            "riotId": "Cego de verdade#br1",
+            "riotIdAliases": [
+              "Víruscosmic#7719"
+            ],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Cego%20de%20verdade-br1",
+            "mainPosition": "ADC",
+            "teams": [
+              {
+                "slot": "A4",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "ADC",
+                "teamSlot": "A4",
+                "averageScore": 49.12,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r1g2"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r1g2-j1",
+                  "groups-r1g2-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "ADC",
+                "teamSlot": "A4",
+                "averageScore": 63.15,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
+                ]
+              }
+            ]
+          },
+          {
             "id": "ae4fda25-ccc4-437f-ad1b-e4442e1f04e1",
             "playerId": "ae4fda25-ccc4-437f-ad1b-e4442e1f04e1",
             "displayName": "ALFACE",
@@ -3695,40 +4191,6 @@
                 "matches": [
                   "groups-r1g6-j1",
                   "groups-r1g6-j2"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "b43b292e-f8b8-4b44-bcf6-806bc7c3afa1",
-            "playerId": "b43b292e-f8b8-4b44-bcf6-806bc7c3afa1",
-            "displayName": "VIRUSCOSMIC",
-            "riotId": "Víruscosmic#7719",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/V%C3%ADruscosmic-7719",
-            "mainPosition": "ADC",
-            "teams": [
-              {
-                "slot": "A4",
-                "count": 2
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "ADC",
-                "teamSlot": "A4",
-                "averageScore": 49.12,
-                "games": 2,
-                "wins": 0,
-                "losses": 2,
-                "series": [
-                  "groups-r1g2"
-                ],
-                "seriesWins": 0,
-                "matches": [
-                  "groups-r1g2-j1",
-                  "groups-r1g2-j2"
                 ]
               }
             ]
@@ -3896,22 +4358,6 @@
             "roundRatings": []
           },
           {
-            "id": "cbff23ae-a385-42a1-bf60-472e57ecb700",
-            "playerId": "cbff23ae-a385-42a1-bf60-472e57ecb700",
-            "displayName": "GALAXY",
-            "riotId": "Tina Cafetina#M2612",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Tina%20Cafetina-M2612",
-            "mainPosition": "SUP",
-            "teams": [
-              {
-                "slot": "A4",
-                "count": 0
-              }
-            ],
-            "roundRatings": []
-          },
-          {
             "id": "60a4e735-2da3-4fcd-a4d7-9f2d30deb0da",
             "playerId": "60a4e735-2da3-4fcd-a4d7-9f2d30deb0da",
             "displayName": "GUSTA",
@@ -3976,32 +4422,48 @@
             "roundRatings": []
           },
           {
-            "id": "d98b2eb2-01a3-4f75-8d3f-f699a8974674",
-            "playerId": "d98b2eb2-01a3-4f75-8d3f-f699a8974674",
-            "displayName": "MENTALGAP",
-            "riotId": "tonel de bosta#bosta",
+            "id": "51ddf34b-a1bd-49d1-9989-9c36de9c16d5",
+            "playerId": "51ddf34b-a1bd-49d1-9989-9c36de9c16d5",
+            "displayName": "LOSTKING",
+            "riotId": "LOSTKING#MID",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/tonel%20de%20bosta-bosta",
-            "mainPosition": "JG",
+            "opgg": "https://op.gg/pt/lol/summoners/br/LOSTKING-MID",
+            "mainPosition": "MID",
             "teams": [
               {
-                "slot": "A2",
+                "slot": "D4",
                 "count": 0
               }
             ],
             "roundRatings": []
           },
           {
-            "id": "ba719616-83d9-413d-9b47-4065aa9ab157",
-            "playerId": "ba719616-83d9-413d-9b47-4065aa9ab157",
-            "displayName": "NARU",
-            "riotId": "Miitsukii1#BR1",
+            "id": "c1da6103-ee3c-4e46-b938-47eeda4dcdb1",
+            "playerId": "c1da6103-ee3c-4e46-b938-47eeda4dcdb1",
+            "displayName": "MAYURA",
+            "riotId": "SBK Mayura#LBwQ",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Miitsukii1-BR1",
+            "opgg": "https://op.gg/pt/lol/summoners/br/SBK%20Mayura-LBwQ",
+            "mainPosition": "SUB",
+            "teams": [
+              {
+                "slot": "B1",
+                "count": 0
+              }
+            ],
+            "roundRatings": []
+          },
+          {
+            "id": "ad291e6f-ec31-43f7-ad99-9784a14fbfe3",
+            "playerId": "ad291e6f-ec31-43f7-ad99-9784a14fbfe3",
+            "displayName": "MURILIN",
+            "riotId": "NKZ Murilin#2004",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/NKZ%20Murilin-2004",
             "mainPosition": "ADC",
             "teams": [
               {
-                "slot": "A2",
+                "slot": "C1",
                 "count": 0
               }
             ],
@@ -4088,32 +4550,16 @@
             "roundRatings": []
           },
           {
-            "id": "e716f2c0-24c9-4aac-a6ff-a3e14b8a61c0",
-            "playerId": "e716f2c0-24c9-4aac-a6ff-a3e14b8a61c0",
-            "displayName": "ROSA",
-            "riotId": "MACHINE GIRL#自我宽恕1",
+            "id": "87b0b01b-0c1d-44ca-8154-ec59da7b80a3",
+            "playerId": "87b0b01b-0c1d-44ca-8154-ec59da7b80a3",
+            "displayName": "SERENO",
+            "riotId": "Sereno#TOP",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/MACHINE%20GIRL-自我宽恕1",
+            "opgg": "https://op.gg/pt/lol/summoners/br/Sereno-TOP",
             "mainPosition": "TOP",
             "teams": [
               {
-                "slot": "A2",
-                "count": 0
-              }
-            ],
-            "roundRatings": []
-          },
-          {
-            "id": "9392f3eb-5e8b-4059-874e-905daba68b36",
-            "playerId": "9392f3eb-5e8b-4059-874e-905daba68b36",
-            "displayName": "RYUU",
-            "riotId": "Klein Moretti 小丑#Ryuu",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Klein%20Moretti%20%E5%B0%8F%E4%B8%91-Ryuu",
-            "mainPosition": "MID",
-            "teams": [
-              {
-                "slot": "A2",
+                "slot": "D4",
                 "count": 0
               }
             ],
@@ -4200,6 +4646,22 @@
             "roundRatings": []
           },
           {
+            "id": "17dd1651-010a-4fc9-88da-66a1e0d3c0a8",
+            "playerId": "17dd1651-010a-4fc9-88da-66a1e0d3c0a8",
+            "displayName": "WEISS",
+            "riotId": "weiss#neve",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/weiss-neve",
+            "mainPosition": "TOP",
+            "teams": [
+              {
+                "slot": "B1",
+                "count": 0
+              }
+            ],
+            "roundRatings": []
+          },
+          {
             "id": "2bfcbe2a-123d-403d-b4ba-9560f16e0d91",
             "playerId": "2bfcbe2a-123d-403d-b4ba-9560f16e0d91",
             "displayName": "WENDY",
@@ -4226,22 +4688,6 @@
             "teams": [
               {
                 "slot": "A1",
-                "count": 0
-              }
-            ],
-            "roundRatings": []
-          },
-          {
-            "id": "55d5021b-af05-495b-9ed0-7848d81b524a",
-            "playerId": "55d5021b-af05-495b-9ed0-7848d81b524a",
-            "displayName": "ZEPPELI",
-            "riotId": "Zeppeli#honio",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Zeppeli-honio",
-            "mainPosition": "SUP",
-            "teams": [
-              {
-                "slot": "A2",
                 "count": 0
               }
             ],
@@ -4300,14 +4746,14 @@
             "averageScore": 77.07
           },
           {
-            "slot": "B2",
-            "name": "LENDINHAS",
-            "tag": "IDL",
-            "games": 2,
-            "wins": 2,
-            "losses": 0,
-            "winRate": 100,
-            "averageScore": 76.67
+            "slot": "B4",
+            "name": "TOPEIRAS DO MAU",
+            "tag": "TOP",
+            "games": 5,
+            "wins": 3,
+            "losses": 2,
+            "winRate": 60,
+            "averageScore": 76.92
           },
           {
             "slot": "C1",
@@ -4330,14 +4776,14 @@
             "averageScore": 74.83
           },
           {
-            "slot": "B4",
-            "name": "TOPEIRAS DO MAU",
-            "tag": "TOP",
-            "games": 3,
-            "wins": 1,
-            "losses": 2,
-            "winRate": 33.33,
-            "averageScore": 72.37
+            "slot": "A2",
+            "name": "BANDO DO ROSA",
+            "tag": "BDR",
+            "games": 2,
+            "wins": 2,
+            "losses": 0,
+            "winRate": 100,
+            "averageScore": 74.31
           },
           {
             "slot": "B1",
@@ -4360,6 +4806,16 @@
             "averageScore": 71.43
           },
           {
+            "slot": "B2",
+            "name": "LENDINHAS",
+            "tag": "IDL",
+            "games": 4,
+            "wins": 2,
+            "losses": 2,
+            "winRate": 50,
+            "averageScore": 71.23
+          },
+          {
             "slot": "D2",
             "name": "BORRACHARIA FC",
             "tag": "BOR",
@@ -4373,11 +4829,11 @@
             "slot": "A4",
             "name": "QUANTUM RABBITS",
             "tag": "QR",
-            "games": 2,
+            "games": 4,
             "wins": 0,
-            "losses": 2,
+            "losses": 4,
             "winRate": 0,
-            "averageScore": 62.82
+            "averageScore": 62.94
           },
           {
             "slot": "C3",
@@ -4388,16 +4844,6 @@
             "losses": 2,
             "winRate": 0,
             "averageScore": 59.48
-          },
-          {
-            "slot": "A2",
-            "name": "BANDO DO ROSA",
-            "tag": "BDR",
-            "games": 0,
-            "wins": 0,
-            "losses": 0,
-            "winRate": 0,
-            "averageScore": 0
           },
           {
             "slot": "A1",
@@ -6090,6 +6536,426 @@
                 "deaths": 6
               }
             ]
+          },
+          {
+            "id": "groups-r2g4-j1",
+            "seriesId": "groups-r2g4",
+            "stage": "grupos",
+            "round": "RODADA 2 - IDL x TOP",
+            "roundNumber": 2,
+            "gameNumber": 1,
+            "format": "MD3",
+            "blueTeamSlot": "B2",
+            "redTeamSlot": "B4",
+            "winnerSlot": "B4",
+            "mvpPlayerId": "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
+            "participants": [
+              {
+                "playerId": "afd38a2d-4c8e-44fb-b3d1-1c2bf4e8764e",
+                "riotId": "Abraão do League#Peps",
+                "teamSlot": "B2",
+                "position": "TOP",
+                "score": 82.21,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "d91655cf-58e0-4430-9bb2-2c12dd273b89",
+                "riotId": "EGO YAMAL#zoro",
+                "teamSlot": "B2",
+                "position": "JG",
+                "score": 78.1,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda",
+                "riotId": "Xand#완벽한",
+                "teamSlot": "B2",
+                "position": "MID",
+                "score": 71.4,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "70581d4b-5e7c-4000-a2de-c15a18bbf91a",
+                "riotId": "Guzz#cam",
+                "teamSlot": "B2",
+                "position": "ADC",
+                "score": 60.97,
+                "won": false,
+                "deaths": 2
+              },
+              {
+                "playerId": "005b1daf-fb8a-4258-b48b-90bde518a76f",
+                "riotId": "Sabotage#nbdy",
+                "teamSlot": "B2",
+                "position": "SUP",
+                "score": 79.36,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
+                "riotId": "AZØ#AZ0",
+                "teamSlot": "B4",
+                "position": "TOP",
+                "score": 85.15,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "37d5697c-d21a-4bc1-b104-1f580f396133",
+                "riotId": "Gavin#BR2",
+                "teamSlot": "B4",
+                "position": "JG",
+                "score": 81.85,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "85c29dba-efdf-44f0-9604-c743f96c49ce",
+                "riotId": "sing 4 da moment#90210",
+                "teamSlot": "B4",
+                "position": "MID",
+                "score": 78.22,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "a44b2125-85a3-4f69-9caa-97a385822b0a",
+                "riotId": "Lisboa#TTS",
+                "teamSlot": "B4",
+                "position": "ADC",
+                "score": 80.95,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "dbfbe491-6dba-47a6-b29a-4f6307b4d132",
+                "riotId": "lucky day#hyy",
+                "teamSlot": "B4",
+                "position": "SUP",
+                "score": 80.34,
+                "won": true,
+                "deaths": 1
+              }
+            ]
+          },
+          {
+            "id": "groups-r2g4-j2",
+            "seriesId": "groups-r2g4",
+            "stage": "grupos",
+            "round": "RODADA 2 - IDL x TOP",
+            "roundNumber": 2,
+            "gameNumber": 2,
+            "format": "MD3",
+            "blueTeamSlot": "B4",
+            "redTeamSlot": "B2",
+            "winnerSlot": "B4",
+            "mvpPlayerId": "85c29dba-efdf-44f0-9604-c743f96c49ce",
+            "participants": [
+              {
+                "playerId": "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
+                "riotId": "AZØ#AZ0",
+                "teamSlot": "B4",
+                "position": "TOP",
+                "score": 85.58,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "37d5697c-d21a-4bc1-b104-1f580f396133",
+                "riotId": "Gavin#BR2",
+                "teamSlot": "B4",
+                "position": "JG",
+                "score": 93.85,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "85c29dba-efdf-44f0-9604-c743f96c49ce",
+                "riotId": "sing 4 da moment#90210",
+                "teamSlot": "B4",
+                "position": "MID",
+                "score": 94.38,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "a44b2125-85a3-4f69-9caa-97a385822b0a",
+                "riotId": "Lisboa#TTS",
+                "teamSlot": "B4",
+                "position": "ADC",
+                "score": 80.25,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "dbfbe491-6dba-47a6-b29a-4f6307b4d132",
+                "riotId": "lucky day#hyy",
+                "teamSlot": "B4",
+                "position": "SUP",
+                "score": 76.69,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "afd38a2d-4c8e-44fb-b3d1-1c2bf4e8764e",
+                "riotId": "Abraão do League#Peps",
+                "teamSlot": "B2",
+                "position": "TOP",
+                "score": 56.72,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "d91655cf-58e0-4430-9bb2-2c12dd273b89",
+                "riotId": "EGO YAMAL#zoro",
+                "teamSlot": "B2",
+                "position": "JG",
+                "score": 49.11,
+                "won": false,
+                "deaths": 8
+              },
+              {
+                "playerId": "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda",
+                "riotId": "Xand#완벽한",
+                "teamSlot": "B2",
+                "position": "MID",
+                "score": 60.9,
+                "won": false,
+                "deaths": 8
+              },
+              {
+                "playerId": "70581d4b-5e7c-4000-a2de-c15a18bbf91a",
+                "riotId": "Guzz#cam",
+                "teamSlot": "B2",
+                "position": "ADC",
+                "score": 56.17,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "005b1daf-fb8a-4258-b48b-90bde518a76f",
+                "riotId": "Sabotage#nbdy",
+                "teamSlot": "B2",
+                "position": "SUP",
+                "score": 62.87,
+                "won": false,
+                "deaths": 11
+              }
+            ]
+          },
+          {
+            "id": "groups-r2g2-j1",
+            "seriesId": "groups-r2g2",
+            "stage": "grupos",
+            "round": "RODADA 2 - BDR x QR",
+            "roundNumber": 2,
+            "gameNumber": 1,
+            "format": "MD3",
+            "blueTeamSlot": "A2",
+            "redTeamSlot": "A4",
+            "winnerSlot": "A2",
+            "mvpPlayerId": "9392f3eb-5e8b-4059-874e-905daba68b36",
+            "participants": [
+              {
+                "playerId": "e716f2c0-24c9-4aac-a6ff-a3e14b8a61c0",
+                "riotId": "MACHINE GIRL#自我宽恕1",
+                "teamSlot": "A2",
+                "position": "TOP",
+                "score": 60.48,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "d98b2eb2-01a3-4f75-8d3f-f699a8974674",
+                "riotId": "mygirl#1513",
+                "teamSlot": "A2",
+                "position": "JG",
+                "score": 87.93,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "9392f3eb-5e8b-4059-874e-905daba68b36",
+                "riotId": "Merlim Hermes#Klein",
+                "teamSlot": "A2",
+                "position": "MID",
+                "score": 100,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "ba719616-83d9-413d-9b47-4065aa9ab157",
+                "riotId": "skartercp2#br1",
+                "teamSlot": "A2",
+                "position": "ADC",
+                "score": 54.29,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "55d5021b-af05-495b-9ed0-7848d81b524a",
+                "riotId": "Zeppeli#honio",
+                "teamSlot": "A2",
+                "position": "SUP",
+                "score": 72.41,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "a2284a68-12d9-47e5-a0a2-4eb8cc7455de",
+                "riotId": "pedrojaime#PJ1",
+                "teamSlot": "A4",
+                "position": "TOP",
+                "score": 57.46,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "1d9ace8e-1f8c-4aba-a11d-1b6c25e2aa2e",
+                "riotId": "Loiiriinhoh#GOAT",
+                "teamSlot": "A4",
+                "position": "JG",
+                "score": 58.54,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "727c5fde-d079-4a4e-a13c-facce5f2cd00",
+                "riotId": "Claire Redfield#TRSV",
+                "teamSlot": "A4",
+                "position": "MID",
+                "score": 50.93,
+                "won": false,
+                "deaths": 10
+              },
+              {
+                "playerId": "b43b292e-f8b8-4b44-bcf6-806bc7c3afa1",
+                "riotId": "Cego de verdade#br1",
+                "teamSlot": "A4",
+                "position": "ADC",
+                "score": 62.05,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "cbff23ae-a385-42a1-bf60-472e57ecb700",
+                "riotId": "Tina Cafetina#M2612",
+                "teamSlot": "A4",
+                "position": "SUP",
+                "score": 63.14,
+                "won": false,
+                "deaths": 7
+              }
+            ]
+          },
+          {
+            "id": "groups-r2g2-j2",
+            "seriesId": "groups-r2g2",
+            "stage": "grupos",
+            "round": "RODADA 2 - BDR x QR",
+            "roundNumber": 2,
+            "gameNumber": 2,
+            "format": "MD3",
+            "blueTeamSlot": "A2",
+            "redTeamSlot": "A4",
+            "winnerSlot": "A2",
+            "mvpPlayerId": "d98b2eb2-01a3-4f75-8d3f-f699a8974674",
+            "participants": [
+              {
+                "playerId": "e716f2c0-24c9-4aac-a6ff-a3e14b8a61c0",
+                "riotId": "MACHINE GIRL#自我宽恕1",
+                "teamSlot": "A2",
+                "position": "TOP",
+                "score": 58,
+                "won": true,
+                "deaths": 7
+              },
+              {
+                "playerId": "d98b2eb2-01a3-4f75-8d3f-f699a8974674",
+                "riotId": "mygirl#1513",
+                "teamSlot": "A2",
+                "position": "JG",
+                "score": 93.34,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "9392f3eb-5e8b-4059-874e-905daba68b36",
+                "riotId": "Merlim Hermes#Klein",
+                "teamSlot": "A2",
+                "position": "MID",
+                "score": 86.22,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "ba719616-83d9-413d-9b47-4065aa9ab157",
+                "riotId": "skartercp2#br1",
+                "teamSlot": "A2",
+                "position": "ADC",
+                "score": 64.31,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "55d5021b-af05-495b-9ed0-7848d81b524a",
+                "riotId": "Zeppeli#honio",
+                "teamSlot": "A2",
+                "position": "SUP",
+                "score": 66.14,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "a2284a68-12d9-47e5-a0a2-4eb8cc7455de",
+                "riotId": "pedrojaime#PJ1",
+                "teamSlot": "A4",
+                "position": "TOP",
+                "score": 87.55,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "1d9ace8e-1f8c-4aba-a11d-1b6c25e2aa2e",
+                "riotId": "Loiiriinhoh#GOAT",
+                "teamSlot": "A4",
+                "position": "JG",
+                "score": 67.67,
+                "won": false,
+                "deaths": 8
+              },
+              {
+                "playerId": "727c5fde-d079-4a4e-a13c-facce5f2cd00",
+                "riotId": "Claire Redfield#TRSV",
+                "teamSlot": "A4",
+                "position": "MID",
+                "score": 55.78,
+                "won": false,
+                "deaths": 8
+              },
+              {
+                "playerId": "b43b292e-f8b8-4b44-bcf6-806bc7c3afa1",
+                "riotId": "Cego de verdade#br1",
+                "teamSlot": "A4",
+                "position": "ADC",
+                "score": 64.25,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "cbff23ae-a385-42a1-bf60-472e57ecb700",
+                "riotId": "Tina Cafetina#M2612",
+                "teamSlot": "A4",
+                "position": "SUP",
+                "score": 63.17,
+                "won": false,
+                "deaths": 8
+              }
+            ]
           }
         ]
       }
@@ -7256,11 +8122,11 @@
               "homeTeamName": "FAINA",
               "awayTeamName": "BLACK STARS",
               "startsAt": "2026-08-01T19:00:00.000Z",
-              "status": "scheduled",
+              "status": "completed",
               "format": "MD3",
-              "homeScore": null,
-              "awayScore": null,
-              "winnerTeamId": null
+              "homeScore": 2,
+              "awayScore": 0,
+              "winnerTeamId": "team:ascension:A1"
             },
             {
               "id": "schedule:ascension:r2g2",
@@ -7272,11 +8138,11 @@
               "homeTeamName": "SKYLINE",
               "awayTeamName": "TENEBRA BEHEMOT",
               "startsAt": "2026-08-01T19:00:00.000Z",
-              "status": "scheduled",
+              "status": "completed",
               "format": "MD3",
-              "homeScore": null,
-              "awayScore": null,
-              "winnerTeamId": null
+              "homeScore": 0,
+              "awayScore": 2,
+              "winnerTeamId": "team:ascension:A4"
             },
             {
               "id": "schedule:ascension:r2g3",
@@ -7288,11 +8154,11 @@
               "homeTeamName": "PHOENIX GAMING",
               "awayTeamName": "FOFOLETES DO RICK",
               "startsAt": "2026-08-01T20:30:00.000Z",
-              "status": "scheduled",
+              "status": "completed",
               "format": "MD3",
-              "homeScore": null,
-              "awayScore": null,
-              "winnerTeamId": null
+              "homeScore": 2,
+              "awayScore": 0,
+              "winnerTeamId": "team:ascension:B1"
             },
             {
               "id": "schedule:ascension:r2g4",
@@ -7368,11 +8234,11 @@
               "homeTeamName": "RENEGADOS",
               "awayTeamName": "INAZUMA V",
               "startsAt": "2026-08-01T23:30:00.000Z",
-              "status": "scheduled",
+              "status": "completed",
               "format": "MD3",
-              "homeScore": null,
-              "awayScore": null,
-              "winnerTeamId": null
+              "homeScore": 0,
+              "awayScore": 2,
+              "winnerTeamId": "team:ascension:D4"
             }
           ]
         },
@@ -7549,40 +8415,6 @@
             ]
           },
           {
-            "id": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
-            "playerId": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
-            "displayName": "MITS",
-            "riotId": "Mits#KIM",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Mits-KIM",
-            "mainPosition": "TOP",
-            "teams": [
-              {
-                "slot": "B3",
-                "count": 2
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "TOP",
-                "teamSlot": "B3",
-                "averageScore": 93.27,
-                "games": 2,
-                "wins": 2,
-                "losses": 0,
-                "series": [
-                  "groups-r1g4"
-                ],
-                "seriesWins": 1,
-                "matches": [
-                  "groups-r1g4-j1",
-                  "groups-r1g4-j2"
-                ]
-              }
-            ]
-          },
-          {
             "id": "b92cbd24-be2e-4c7b-b2dd-86105c87d127",
             "playerId": "b92cbd24-be2e-4c7b-b2dd-86105c87d127",
             "displayName": "HEYTTOR",
@@ -7593,7 +8425,7 @@
             "teams": [
               {
                 "slot": "B1",
-                "count": 2
+                "count": 4
               }
             ],
             "roundRatings": [
@@ -7612,6 +8444,57 @@
                 "matches": [
                   "groups-r1g3-j1",
                   "groups-r1g3-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "JG",
+                "teamSlot": "B1",
+                "averageScore": 95.05,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g3"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g3-j1",
+                  "groups-r2g3-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "9676fdd6-1dbb-400b-9d40-728ec3ed4897",
+            "playerId": "9676fdd6-1dbb-400b-9d40-728ec3ed4897",
+            "displayName": "SHASHYCS",
+            "riotId": "Viollunere#Tsuki",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Viollunere-Tsuki",
+            "mainPosition": "ADC",
+            "teams": [
+              {
+                "slot": "A4",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "ADC",
+                "teamSlot": "A4",
+                "averageScore": 89.8,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
                 ]
               }
             ]
@@ -7651,35 +8534,69 @@
             ]
           },
           {
-            "id": "d0570a3b-415e-4f1c-8e31-ef6a57884ac1",
-            "playerId": "d0570a3b-415e-4f1c-8e31-ef6a57884ac1",
-            "displayName": "RICK",
-            "riotId": "FFLT Rick#Rick",
+            "id": "51a488ff-00e3-4710-8289-3b87882f9946",
+            "playerId": "51a488ff-00e3-4710-8289-3b87882f9946",
+            "displayName": "AKY",
+            "riotId": "Aky#2666",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/FFLT%20Rick-Rick",
-            "mainPosition": "JG",
+            "opgg": "https://op.gg/pt/lol/summoners/br/Aky-2666",
+            "mainPosition": "ADC",
             "teams": [
               {
-                "slot": "B3",
+                "slot": "D4",
                 "count": 2
               }
             ],
             "roundRatings": [
               {
-                "round": 1,
-                "position": "JG",
-                "teamSlot": "B3",
-                "averageScore": 89.18,
+                "round": 2,
+                "position": "ADC",
+                "teamSlot": "D4",
+                "averageScore": 89.16,
                 "games": 2,
                 "wins": 2,
                 "losses": 0,
                 "series": [
-                  "groups-r1g4"
+                  "groups-r2g8"
                 ],
                 "seriesWins": 1,
                 "matches": [
-                  "groups-r1g4-j1",
-                  "groups-r1g4-j2"
+                  "groups-r2g8-j1",
+                  "groups-r2g8-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "27ef1440-71ad-4036-a5ce-1a8cd159deba",
+            "playerId": "27ef1440-71ad-4036-a5ce-1a8cd159deba",
+            "displayName": "AAPOLLO",
+            "riotId": "Aapoll0#SUN",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Aapoll0-SUN",
+            "mainPosition": "JG",
+            "teams": [
+              {
+                "slot": "A4",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "JG",
+                "teamSlot": "A4",
+                "averageScore": 88.91,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
                 ]
               }
             ]
@@ -7714,6 +8631,57 @@
                 "matches": [
                   "groups-r1g5-j1",
                   "groups-r1g5-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39",
+            "playerId": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39",
+            "displayName": "SEMATARY",
+            "riotId": "qquq#yve",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/qquq-yve ",
+            "mainPosition": "JG",
+            "teams": [
+              {
+                "slot": "A1",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "JG",
+                "teamSlot": "A1",
+                "averageScore": 85.09,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r1g1"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g1-j1",
+                  "groups-r1g1-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "JG",
+                "teamSlot": "A1",
+                "averageScore": 87.58,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g1"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g1-j1",
+                  "groups-r2g1-j2"
                 ]
               }
             ]
@@ -7754,6 +8722,40 @@
             ]
           },
           {
+            "id": "73aedc68-0e38-4d08-9688-e7b16672c733",
+            "playerId": "73aedc68-0e38-4d08-9688-e7b16672c733",
+            "displayName": "POLIGONS",
+            "riotId": "Poligns#Aura",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Poligns-Aura",
+            "mainPosition": "TOP",
+            "teams": [
+              {
+                "slot": "A4",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "TOP",
+                "teamSlot": "A4",
+                "averageScore": 85.77,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
+                ]
+              }
+            ]
+          },
+          {
             "id": "d9b48adc-0878-4579-9fdb-c6c2b45bdf04",
             "playerId": "d9b48adc-0878-4579-9fdb-c6c2b45bdf04",
             "displayName": "GABS MATTOS",
@@ -7783,40 +8785,6 @@
                 "matches": [
                   "groups-r1g8-j1",
                   "groups-r1g8-j2"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39",
-            "playerId": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39",
-            "displayName": "SEMATARY",
-            "riotId": "qquq#yve",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/qquq-yve ",
-            "mainPosition": "JG",
-            "teams": [
-              {
-                "slot": "A1",
-                "count": 2
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "JG",
-                "teamSlot": "A1",
-                "averageScore": 85.09,
-                "games": 2,
-                "wins": 2,
-                "losses": 0,
-                "series": [
-                  "groups-r1g1"
-                ],
-                "seriesWins": 1,
-                "matches": [
-                  "groups-r1g1-j1",
-                  "groups-r1g1-j2"
                 ]
               }
             ]
@@ -7856,6 +8824,56 @@
             ]
           },
           {
+            "id": "286f41d2-24c2-4457-9dcd-d5654ba6049f",
+            "playerId": "286f41d2-24c2-4457-9dcd-d5654ba6049f",
+            "displayName": "IKARI",
+            "riotId": "midking#ikari",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/midking-ikari",
+            "mainPosition": "JG",
+            "teams": [
+              {
+                "slot": "D2",
+                "count": 3
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "MID",
+                "teamSlot": "D2",
+                "averageScore": 80.49,
+                "games": 1,
+                "wins": 0,
+                "losses": 1,
+                "series": [
+                  "groups-r1g7"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g7-j1"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "JG",
+                "teamSlot": "D2",
+                "averageScore": 85.51,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g8"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g8-j1",
+                  "groups-r2g8-j2"
+                ]
+              }
+            ]
+          },
+          {
             "id": "6aa73999-3861-4c5e-95a7-d629b6bc501f",
             "playerId": "6aa73999-3861-4c5e-95a7-d629b6bc501f",
             "displayName": "PEDRIN",
@@ -7890,46 +8908,14 @@
             ]
           },
           {
-            "id": "0cc6bb32-e387-4cfe-adcd-6362fd369614",
-            "playerId": "0cc6bb32-e387-4cfe-adcd-6362fd369614",
-            "displayName": "MAYTAS",
-            "riotId": "FFLT Maytas#2303",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/FFLT%20Maytas-2303",
-            "mainPosition": "MID",
-            "teams": [
-              {
-                "slot": "B3",
-                "count": 2
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "MID",
-                "teamSlot": "B3",
-                "averageScore": 83.23,
-                "games": 2,
-                "wins": 2,
-                "losses": 0,
-                "series": [
-                  "groups-r1g4"
-                ],
-                "seriesWins": 1,
-                "matches": [
-                  "groups-r1g4-j1",
-                  "groups-r1g4-j2"
-                ]
-              }
-            ]
-          },
-          {
             "id": "271defca-2ef0-4720-b96f-5f68a6ddfeea",
             "playerId": "271defca-2ef0-4720-b96f-5f68a6ddfeea",
-            "displayName": "SATOSHI",
+            "displayName": "Just Feeling",
             "riotId": "Just Feeling#Bad",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Just%20Feeling-Bad",
+            "riotIdAliases": [
+              "Just Feeling#Bad"
+            ],
+            "opgg": "",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -8028,34 +9014,135 @@
             ]
           },
           {
-            "id": "286f41d2-24c2-4457-9dcd-d5654ba6049f",
-            "playerId": "286f41d2-24c2-4457-9dcd-d5654ba6049f",
-            "displayName": "IKARI",
-            "riotId": "midking#ikari",
+            "id": "c49312d8-3672-4654-9790-a9cad7f59937",
+            "playerId": "c49312d8-3672-4654-9790-a9cad7f59937",
+            "displayName": "KAUAN",
+            "riotId": "Red KauanMemes#BA1",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/midking-ikari",
+            "opgg": "https://op.gg/pt/lol/summoners/br/Red%20KauanMemes-BA1",
+            "mainPosition": "TOP",
+            "teams": [
+              {
+                "slot": "A1",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "TOP",
+                "teamSlot": "A1",
+                "averageScore": 76.04,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r1g1"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g1-j1",
+                  "groups-r1g1-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "TOP",
+                "teamSlot": "A1",
+                "averageScore": 84.9,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g1"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g1-j1",
+                  "groups-r2g1-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "dce34e4e-90b8-4cf4-a792-432678ad9e16",
+            "playerId": "dce34e4e-90b8-4cf4-a792-432678ad9e16",
+            "displayName": "HERBERTH",
+            "riotId": "Silly dumb cat#OwO",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Silly%20dumb%20cat-OwO",
+            "mainPosition": "ADC",
+            "teams": [
+              {
+                "slot": "A1",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "ADC",
+                "teamSlot": "A1",
+                "averageScore": 80.23,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g1"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g1-j1",
+                  "groups-r2g1-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "8b0bb211-5bfd-46c2-819f-161c22c494d6",
+            "playerId": "8b0bb211-5bfd-46c2-819f-161c22c494d6",
+            "displayName": "YELLOW",
+            "riotId": "king of yellow#7178",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/king%20of%20yellow-7178",
             "mainPosition": "MID",
             "teams": [
               {
-                "slot": "D2",
-                "count": 1
+                "slot": "A1",
+                "count": 2
               }
             ],
             "roundRatings": [
               {
                 "round": 1,
                 "position": "MID",
-                "teamSlot": "D2",
-                "averageScore": 80.49,
+                "teamSlot": "A1",
+                "averageScore": 78.85,
                 "games": 1,
-                "wins": 0,
-                "losses": 1,
+                "wins": 1,
+                "losses": 0,
                 "series": [
-                  "groups-r1g7"
+                  "groups-r1g1"
                 ],
                 "seriesWins": 1,
                 "matches": [
-                  "groups-r1g7-j1"
+                  "groups-r1g1-j1"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "MID",
+                "teamSlot": "A1",
+                "averageScore": 81.22,
+                "games": 1,
+                "wins": 1,
+                "losses": 0,
+                "series": [
+                  "groups-r2g1"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g1-j1"
                 ]
               }
             ]
@@ -8095,102 +9182,103 @@
             ]
           },
           {
-            "id": "013c58e9-130d-4c36-bbf3-1a2e4b8a82a2",
-            "playerId": "013c58e9-130d-4c36-bbf3-1a2e4b8a82a2",
-            "displayName": "ZAHIR",
-            "riotId": "Zähir#THgod",
+            "id": "2f0aee66-029a-4ecb-97ed-b0b0966c7edd",
+            "playerId": "2f0aee66-029a-4ecb-97ed-b0b0966c7edd",
+            "displayName": "WOJTEK",
+            "riotId": "Shahanshah#NIKA",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Z%C3%A4hir-THgod",
+            "opgg": "https://op.gg/pt/lol/summoners/br/Shahanshah-NIKA",
+            "mainPosition": "TOP",
+            "teams": [
+              {
+                "slot": "B1",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "TOP",
+                "teamSlot": "B1",
+                "averageScore": 78.69,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r1g3"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g3-j1",
+                  "groups-r1g3-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "TOP",
+                "teamSlot": "B1",
+                "averageScore": 79.9,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g3"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g3-j1",
+                  "groups-r2g3-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "30124aec-f280-4dcd-83d4-f9cda42c5df8",
+            "playerId": "30124aec-f280-4dcd-83d4-f9cda42c5df8",
+            "displayName": "FREEZY",
+            "riotId": "IIIIIIIIIIIIlIII#Lcpnz",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/IIIIIIIIIIIIlIII-Lcpnz",
             "mainPosition": "SUP",
             "teams": [
               {
-                "slot": "A1",
-                "count": 2
+                "slot": "B1",
+                "count": 4
               }
             ],
             "roundRatings": [
               {
                 "round": 1,
                 "position": "SUP",
-                "teamSlot": "A1",
-                "averageScore": 79.4,
+                "teamSlot": "B1",
+                "averageScore": 74.13,
                 "games": 2,
                 "wins": 2,
                 "losses": 0,
                 "series": [
-                  "groups-r1g1"
+                  "groups-r1g3"
                 ],
                 "seriesWins": 1,
                 "matches": [
-                  "groups-r1g1-j1",
-                  "groups-r1g1-j2"
+                  "groups-r1g3-j1",
+                  "groups-r1g3-j2"
                 ]
-              }
-            ]
-          },
-          {
-            "id": "93504c7f-3a44-41d4-84ba-7fcdf9c4c202",
-            "playerId": "93504c7f-3a44-41d4-84ba-7fcdf9c4c202",
-            "displayName": "BOTAS",
-            "riotId": "FFLT Botas#caco",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/FFLT%20Botas-caco",
-            "mainPosition": "SUP",
-            "teams": [
+              },
               {
-                "slot": "B3",
-                "count": 2
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
+                "round": 2,
                 "position": "SUP",
-                "teamSlot": "B3",
-                "averageScore": 79.04,
+                "teamSlot": "B1",
+                "averageScore": 83.52,
                 "games": 2,
                 "wins": 2,
                 "losses": 0,
                 "series": [
-                  "groups-r1g4"
+                  "groups-r2g3"
                 ],
                 "seriesWins": 1,
                 "matches": [
-                  "groups-r1g4-j1",
-                  "groups-r1g4-j2"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "8b0bb211-5bfd-46c2-819f-161c22c494d6",
-            "playerId": "8b0bb211-5bfd-46c2-819f-161c22c494d6",
-            "displayName": "YELLOW",
-            "riotId": "king of yellow#7178",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/king%20of%20yellow-7178",
-            "mainPosition": "MID",
-            "teams": [
-              {
-                "slot": "A1",
-                "count": 1
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "MID",
-                "teamSlot": "A1",
-                "averageScore": 78.85,
-                "games": 1,
-                "wins": 1,
-                "losses": 0,
-                "series": [
-                  "groups-r1g1"
-                ],
-                "seriesWins": 1,
-                "matches": [
-                  "groups-r1g1-j1"
+                  "groups-r2g3-j1",
+                  "groups-r2g3-j2"
                 ]
               }
             ]
@@ -8198,10 +9286,12 @@
           {
             "id": "41b3325e-3a2f-4a67-b18a-880c7a0f546f",
             "playerId": "41b3325e-3a2f-4a67-b18a-880c7a0f546f",
-            "displayName": "SAVE",
+            "displayName": "bad decisions",
             "riotId": "bad decisions#void",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/bad%20decisions-void",
+            "riotIdAliases": [
+              "bad decisions#void"
+            ],
+            "opgg": "",
             "mainPosition": "ADC",
             "teams": [
               {
@@ -8230,35 +9320,54 @@
             ]
           },
           {
-            "id": "2f0aee66-029a-4ecb-97ed-b0b0966c7edd",
-            "playerId": "2f0aee66-029a-4ecb-97ed-b0b0966c7edd",
-            "displayName": "WOJTEK",
-            "riotId": "Shahanshah#NIKA",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Shahanshah-NIKA",
-            "mainPosition": "TOP",
+            "id": "013c58e9-130d-4c36-bbf3-1a2e4b8a82a2",
+            "playerId": "013c58e9-130d-4c36-bbf3-1a2e4b8a82a2",
+            "displayName": "ZAHIR",
+            "riotId": "Zähir#keria",
+            "riotIdAliases": [
+              "Zähir#THgod"
+            ],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Z%C3%A4hir-keria",
+            "mainPosition": "SUP",
             "teams": [
               {
-                "slot": "B1",
-                "count": 2
+                "slot": "A1",
+                "count": 4
               }
             ],
             "roundRatings": [
               {
                 "round": 1,
-                "position": "TOP",
-                "teamSlot": "B1",
-                "averageScore": 78.69,
+                "position": "SUP",
+                "teamSlot": "A1",
+                "averageScore": 79.4,
                 "games": 2,
                 "wins": 2,
                 "losses": 0,
                 "series": [
-                  "groups-r1g3"
+                  "groups-r1g1"
                 ],
                 "seriesWins": 1,
                 "matches": [
-                  "groups-r1g3-j1",
-                  "groups-r1g3-j2"
+                  "groups-r1g1-j1",
+                  "groups-r1g1-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "SUP",
+                "teamSlot": "A1",
+                "averageScore": 76.93,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g1"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g1-j1",
+                  "groups-r2g1-j2"
                 ]
               }
             ]
@@ -8435,35 +9544,138 @@
             ]
           },
           {
-            "id": "1e16ae4d-b121-4d24-905d-28089516f1be",
-            "playerId": "1e16ae4d-b121-4d24-905d-28089516f1be",
-            "displayName": "GUMIS",
-            "riotId": "SKY guMis#rina",
+            "id": "2594034c-9394-4b79-8b59-dedbf66482e5",
+            "playerId": "2594034c-9394-4b79-8b59-dedbf66482e5",
+            "displayName": "KAISER",
+            "riotId": "DarKaiser#CARRY",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/SKY%20guMis-rina",
-            "mainPosition": "MID",
+            "opgg": "https://op.gg/pt/lol/summoners/br/DarKaiser-CARRY",
+            "mainPosition": "ADC",
             "teams": [
               {
-                "slot": "A2",
-                "count": 2
+                "slot": "D2",
+                "count": 5
               }
             ],
             "roundRatings": [
               {
                 "round": 1,
-                "position": "MID",
-                "teamSlot": "A2",
-                "averageScore": 76.91,
+                "position": "ADC",
+                "teamSlot": "D2",
+                "averageScore": 75.02,
+                "games": 3,
+                "wins": 2,
+                "losses": 1,
+                "series": [
+                  "groups-r1g7"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g7-j1",
+                  "groups-r1g7-j2",
+                  "groups-r1g7-j3"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "ADC",
+                "teamSlot": "D2",
+                "averageScore": 80.13,
                 "games": 2,
                 "wins": 0,
                 "losses": 2,
                 "series": [
-                  "groups-r1g1"
+                  "groups-r2g8"
                 ],
                 "seriesWins": 0,
                 "matches": [
-                  "groups-r1g1-j1",
-                  "groups-r1g1-j2"
+                  "groups-r2g8-j1",
+                  "groups-r2g8-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
+            "playerId": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
+            "displayName": "MITS",
+            "riotId": "Mits#KIM",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Mits-KIM",
+            "mainPosition": "TOP",
+            "teams": [
+              {
+                "slot": "B3",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "TOP",
+                "teamSlot": "B3",
+                "averageScore": 93.27,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r1g4"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g4-j1",
+                  "groups-r1g4-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "TOP",
+                "teamSlot": "B3",
+                "averageScore": 59.32,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g3"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g3-j1",
+                  "groups-r2g3-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "4c0cf9b4-dbe8-4894-90ed-69f39315caff",
+            "playerId": "4c0cf9b4-dbe8-4894-90ed-69f39315caff",
+            "displayName": "FRENZY",
+            "riotId": "TNB Frenzy#BHMTH",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/TNB%20Frenzy-BHMTH",
+            "mainPosition": "SUP",
+            "teams": [
+              {
+                "slot": "A4",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "SUP",
+                "teamSlot": "A4",
+                "averageScore": 76.28,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
                 ]
               }
             ]
@@ -8480,10 +9692,6 @@
               {
                 "slot": "B4",
                 "count": 2
-              },
-              {
-                "slot": "A4",
-                "count": 0
               }
             ],
             "roundRatings": [
@@ -8541,74 +9749,6 @@
             ]
           },
           {
-            "id": "c49312d8-3672-4654-9790-a9cad7f59937",
-            "playerId": "c49312d8-3672-4654-9790-a9cad7f59937",
-            "displayName": "KAUAN",
-            "riotId": "Red KauanMemes#BA1",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Red%20KauanMemes-BA1",
-            "mainPosition": "TOP",
-            "teams": [
-              {
-                "slot": "A1",
-                "count": 2
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "TOP",
-                "teamSlot": "A1",
-                "averageScore": 76.04,
-                "games": 2,
-                "wins": 2,
-                "losses": 0,
-                "series": [
-                  "groups-r1g1"
-                ],
-                "seriesWins": 1,
-                "matches": [
-                  "groups-r1g1-j1",
-                  "groups-r1g1-j2"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "41328541-367c-4556-bf01-fb1810cdfc07",
-            "playerId": "41328541-367c-4556-bf01-fb1810cdfc07",
-            "displayName": "LUCI",
-            "riotId": "luci#sfc",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/luci-sfc",
-            "mainPosition": "TOP",
-            "teams": [
-              {
-                "slot": "D4",
-                "count": 2
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "TOP",
-                "teamSlot": "D4",
-                "averageScore": 75.61,
-                "games": 2,
-                "wins": 0,
-                "losses": 2,
-                "series": [
-                  "groups-r1g8"
-                ],
-                "seriesWins": 0,
-                "matches": [
-                  "groups-r1g8-j1",
-                  "groups-r1g8-j2"
-                ]
-              }
-            ]
-          },
-          {
             "id": "6f77aa43-5ccb-4f3a-a767-faeb1fc00307",
             "playerId": "6f77aa43-5ccb-4f3a-a767-faeb1fc00307",
             "displayName": "JÓQUIS",
@@ -8644,25 +9784,161 @@
             ]
           },
           {
-            "id": "4468c885-4c32-4c7e-a749-b74f5d9530cb",
-            "playerId": "4468c885-4c32-4c7e-a749-b74f5d9530cb",
-            "displayName": "KITTEN",
-            "riotId": "FFLT KitteN#gay",
+            "id": "4d5d426d-5708-44b5-b6b3-d74c1ed2ab57",
+            "playerId": "4d5d426d-5708-44b5-b6b3-d74c1ed2ab57",
+            "displayName": "VITÃO",
+            "riotId": "Vitão da Trembo#2026",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/FFLT%20KitteN-gay",
-            "mainPosition": "ADC",
+            "opgg": "https://op.gg/pt/lol/summoners/br/Vit%C3%A3o%20da%20Trembo-2026",
+            "mainPosition": "JG",
             "teams": [
               {
-                "slot": "B3",
+                "slot": "A3",
                 "count": 2
               }
             ],
             "roundRatings": [
               {
+                "round": 2,
+                "position": "JG",
+                "teamSlot": "A3",
+                "averageScore": 75.16,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g1"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g1-j1",
+                  "groups-r2g1-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "ccf6c920-4a2e-40ba-824d-73598fffb378",
+            "playerId": "ccf6c920-4a2e-40ba-824d-73598fffb378",
+            "displayName": "HITKILLA",
+            "riotId": "HitKilla#0408",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/HitKilla-0408",
+            "mainPosition": "MID",
+            "teams": [
+              {
+                "slot": "B1",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
                 "round": 1,
-                "position": "ADC",
+                "position": "MID",
+                "teamSlot": "B1",
+                "averageScore": 64.44,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r1g3"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g3-j1",
+                  "groups-r1g3-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "MID",
+                "teamSlot": "B1",
+                "averageScore": 85.44,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g3"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g3-j1",
+                  "groups-r2g3-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "9cde653a-d2ab-4724-9b0a-274626101703",
+            "playerId": "9cde653a-d2ab-4724-9b0a-274626101703",
+            "displayName": "KIDO",
+            "riotId": "INZ Kido#BENTO",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/INZ%20Kido-BENTO",
+            "mainPosition": "JG",
+            "teams": [
+              {
+                "slot": "D4",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "JG",
+                "teamSlot": "D4",
+                "averageScore": 67.22,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r1g8"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r1g8-j1",
+                  "groups-r1g8-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "JG",
+                "teamSlot": "D4",
+                "averageScore": 82.54,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g8"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g8-j1",
+                  "groups-r2g8-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "d0570a3b-415e-4f1c-8e31-ef6a57884ac1",
+            "playerId": "d0570a3b-415e-4f1c-8e31-ef6a57884ac1",
+            "displayName": "RICK",
+            "riotId": "FFLT Rick#Rick",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/FFLT%20Rick-Rick",
+            "mainPosition": "JG",
+            "teams": [
+              {
+                "slot": "B3",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "JG",
                 "teamSlot": "B3",
-                "averageScore": 75.58,
+                "averageScore": 89.18,
                 "games": 2,
                 "wins": 2,
                 "losses": 0,
@@ -8674,74 +9950,73 @@
                   "groups-r1g4-j1",
                   "groups-r1g4-j2"
                 ]
+              },
+              {
+                "round": 2,
+                "position": "JG",
+                "teamSlot": "B3",
+                "averageScore": 60.46,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g3"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g3-j1",
+                  "groups-r2g3-j2"
+                ]
               }
             ]
           },
           {
-            "id": "c8de87cb-5e6e-47ce-afe5-dd3985558a3f",
-            "playerId": "c8de87cb-5e6e-47ce-afe5-dd3985558a3f",
-            "displayName": "SLASH",
-            "riotId": "Slash SKY#TOP10",
+            "id": "41328541-367c-4556-bf01-fb1810cdfc07",
+            "playerId": "41328541-367c-4556-bf01-fb1810cdfc07",
+            "displayName": "LUCI",
+            "riotId": "luci#sfc",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Slash%20SKY-TOP10",
+            "opgg": "https://op.gg/pt/lol/summoners/br/luci-sfc",
             "mainPosition": "TOP",
             "teams": [
               {
-                "slot": "A2",
-                "count": 2
+                "slot": "D4",
+                "count": 4
               }
             ],
             "roundRatings": [
               {
                 "round": 1,
                 "position": "TOP",
-                "teamSlot": "A2",
-                "averageScore": 75.15,
+                "teamSlot": "D4",
+                "averageScore": 75.61,
                 "games": 2,
                 "wins": 0,
                 "losses": 2,
                 "series": [
-                  "groups-r1g1"
+                  "groups-r1g8"
                 ],
                 "seriesWins": 0,
                 "matches": [
-                  "groups-r1g1-j1",
-                  "groups-r1g1-j2"
+                  "groups-r1g8-j1",
+                  "groups-r1g8-j2"
                 ]
-              }
-            ]
-          },
-          {
-            "id": "2594034c-9394-4b79-8b59-dedbf66482e5",
-            "playerId": "2594034c-9394-4b79-8b59-dedbf66482e5",
-            "displayName": "KAISER",
-            "riotId": "DarKaiser#CARRY",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/DarKaiser-CARRY",
-            "mainPosition": "ADC",
-            "teams": [
+              },
               {
-                "slot": "D2",
-                "count": 3
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "ADC",
-                "teamSlot": "D2",
-                "averageScore": 75.02,
-                "games": 3,
+                "round": 2,
+                "position": "TOP",
+                "teamSlot": "D4",
+                "averageScore": 73.72,
+                "games": 2,
                 "wins": 2,
-                "losses": 1,
+                "losses": 0,
                 "series": [
-                  "groups-r1g7"
+                  "groups-r2g8"
                 ],
                 "seriesWins": 1,
                 "matches": [
-                  "groups-r1g7-j1",
-                  "groups-r1g7-j2",
-                  "groups-r1g7-j3"
+                  "groups-r2g8-j1",
+                  "groups-r2g8-j2"
                 ]
               }
             ]
@@ -8782,13 +10057,13 @@
             ]
           },
           {
-            "id": "30124aec-f280-4dcd-83d4-f9cda42c5df8",
-            "playerId": "30124aec-f280-4dcd-83d4-f9cda42c5df8",
-            "displayName": "FREEZY",
-            "riotId": "IIIIIIIIIIIIlIII#Lcpnz",
+            "id": "afbe791d-6c49-4fc3-ade7-d00cb9fc5712",
+            "playerId": "afbe791d-6c49-4fc3-ade7-d00cb9fc5712",
+            "displayName": "MISTER",
+            "riotId": "Misterbrx#BR1",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/IIIIIIIIIIIIlIII-Lcpnz",
-            "mainPosition": "SUP",
+            "opgg": "https://op.gg/pt/lol/summoners/br/Misterbrx-BR1",
+            "mainPosition": "ADC",
             "teams": [
               {
                 "slot": "B1",
@@ -8797,20 +10072,20 @@
             ],
             "roundRatings": [
               {
-                "round": 1,
-                "position": "SUP",
+                "round": 2,
+                "position": "ADC",
                 "teamSlot": "B1",
-                "averageScore": 74.13,
+                "averageScore": 73.63,
                 "games": 2,
                 "wins": 2,
                 "losses": 0,
                 "series": [
-                  "groups-r1g3"
+                  "groups-r2g3"
                 ],
                 "seriesWins": 1,
                 "matches": [
-                  "groups-r1g3-j1",
-                  "groups-r1g3-j2"
+                  "groups-r2g3-j1",
+                  "groups-r2g3-j2"
                 ]
               }
             ]
@@ -8845,6 +10120,91 @@
                 "matches": [
                   "groups-r1g3-j1",
                   "groups-r1g3-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "93504c7f-3a44-41d4-84ba-7fcdf9c4c202",
+            "playerId": "93504c7f-3a44-41d4-84ba-7fcdf9c4c202",
+            "displayName": "BOTAS",
+            "riotId": "FFLT Botas#caco",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/FFLT%20Botas-caco",
+            "mainPosition": "SUP",
+            "teams": [
+              {
+                "slot": "B3",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "SUP",
+                "teamSlot": "B3",
+                "averageScore": 79.04,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r1g4"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g4-j1",
+                  "groups-r1g4-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "SUP",
+                "teamSlot": "B3",
+                "averageScore": 66.94,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g3"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g3-j1",
+                  "groups-r2g3-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "083c1905-6626-48af-bab8-1db2b4a5a6c2",
+            "playerId": "083c1905-6626-48af-bab8-1db2b4a5a6c2",
+            "displayName": "YUTA",
+            "riotId": "Yuta Okkotsuリカ#xds",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Yuta%20Okkotsu%E3%83%AA%E3%82%AB-xds",
+            "mainPosition": "MID",
+            "teams": [
+              {
+                "slot": "D4",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "MID",
+                "teamSlot": "D4",
+                "averageScore": 72.78,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g8"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g8-j1",
+                  "groups-r2g8-j2"
                 ]
               }
             ]
@@ -8918,6 +10278,57 @@
             ]
           },
           {
+            "id": "78002b34-f80b-46bb-9401-f905c2accbdd",
+            "playerId": "78002b34-f80b-46bb-9401-f905c2accbdd",
+            "displayName": "MAGIKARP",
+            "riotId": "Magikarp#Jere",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Magikarp-Jere",
+            "mainPosition": "SUP",
+            "teams": [
+              {
+                "slot": "D4",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "SUP",
+                "teamSlot": "D4",
+                "averageScore": 69.79,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r1g8"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r1g8-j1",
+                  "groups-r1g8-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "SUP",
+                "teamSlot": "D4",
+                "averageScore": 75.48,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g8"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g8-j1",
+                  "groups-r2g8-j2"
+                ]
+              }
+            ]
+          },
+          {
             "id": "168a688c-ec26-49b9-ba75-809bd993e2e6",
             "playerId": "168a688c-ec26-49b9-ba75-809bd993e2e6",
             "displayName": "PEN DRIVE",
@@ -8986,70 +10397,52 @@
             ]
           },
           {
-            "id": "3c03eab2-782e-41cc-85eb-11895824406a",
-            "playerId": "3c03eab2-782e-41cc-85eb-11895824406a",
-            "displayName": "MAYAN",
-            "riotId": "SKY mayangamerbr#GGG",
+            "id": "0cc6bb32-e387-4cfe-adcd-6362fd369614",
+            "playerId": "0cc6bb32-e387-4cfe-adcd-6362fd369614",
+            "displayName": "MAYTAS",
+            "riotId": "FFLT Maytas#2303",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/SKY%20mayangamerbr-GGG",
-            "mainPosition": "JG",
+            "opgg": "https://op.gg/pt/lol/summoners/br/FFLT%20Maytas-2303",
+            "mainPosition": "MID",
             "teams": [
               {
-                "slot": "A2",
-                "count": 2
+                "slot": "B3",
+                "count": 4
               }
             ],
             "roundRatings": [
               {
                 "round": 1,
-                "position": "JG",
-                "teamSlot": "A2",
-                "averageScore": 72.11,
+                "position": "MID",
+                "teamSlot": "B3",
+                "averageScore": 83.23,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r1g4"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g4-j1",
+                  "groups-r1g4-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "MID",
+                "teamSlot": "B3",
+                "averageScore": 60.58,
                 "games": 2,
                 "wins": 0,
                 "losses": 2,
                 "series": [
-                  "groups-r1g1"
+                  "groups-r2g3"
                 ],
                 "seriesWins": 0,
                 "matches": [
-                  "groups-r1g1-j1",
-                  "groups-r1g1-j2"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "745a0ee6-ebda-4170-a095-68565c5f425b",
-            "playerId": "745a0ee6-ebda-4170-a095-68565c5f425b",
-            "displayName": "BURRAXA",
-            "riotId": "FEMBuurraxa#FLU",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/FEMBuurraxa-FLU",
-            "mainPosition": "SUP",
-            "teams": [
-              {
-                "slot": "D2",
-                "count": 3
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "SUP",
-                "teamSlot": "D2",
-                "averageScore": 71.74,
-                "games": 3,
-                "wins": 2,
-                "losses": 1,
-                "series": [
-                  "groups-r1g7"
-                ],
-                "seriesWins": 1,
-                "matches": [
-                  "groups-r1g7-j1",
-                  "groups-r1g7-j2",
-                  "groups-r1g7-j3"
+                  "groups-r2g3-j1",
+                  "groups-r2g3-j2"
                 ]
               }
             ]
@@ -9057,7 +10450,7 @@
           {
             "id": "9ca85881-b3a9-4d35-b5a5-040d97360711",
             "playerId": "9ca85881-b3a9-4d35-b5a5-040d97360711",
-            "displayName": "JOSÉ 3000",
+            "displayName": "JOSÉ3000",
             "riotId": "josé 3000#zeze",
             "riotIdAliases": [],
             "opgg": "https://op.gg/pt/lol/summoners/br/jos%C3%A9%203000-zeze",
@@ -9084,6 +10477,40 @@
                 "matches": [
                   "groups-r1g8-j1",
                   "groups-r1g8-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "fa157405-2b19-4cc2-a6bf-983c6613660f",
+            "playerId": "fa157405-2b19-4cc2-a6bf-983c6613660f",
+            "displayName": "ECO",
+            "riotId": "Eco Eco#Zyom",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Eco%20Eco-Zyom",
+            "mainPosition": "MID",
+            "teams": [
+              {
+                "slot": "A4",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "MID",
+                "teamSlot": "A4",
+                "averageScore": 71.59,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
                 ]
               }
             ]
@@ -9157,6 +10584,58 @@
             ]
           },
           {
+            "id": "745a0ee6-ebda-4170-a095-68565c5f425b",
+            "playerId": "745a0ee6-ebda-4170-a095-68565c5f425b",
+            "displayName": "BURRAXA",
+            "riotId": "FEMBuurraxa#FLU",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/FEMBuurraxa-FLU",
+            "mainPosition": "SUP",
+            "teams": [
+              {
+                "slot": "D2",
+                "count": 5
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "SUP",
+                "teamSlot": "D2",
+                "averageScore": 71.74,
+                "games": 3,
+                "wins": 2,
+                "losses": 1,
+                "series": [
+                  "groups-r1g7"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g7-j1",
+                  "groups-r1g7-j2",
+                  "groups-r1g7-j3"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "SUP",
+                "teamSlot": "D2",
+                "averageScore": 69.18,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g8"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g8-j1",
+                  "groups-r2g8-j2"
+                ]
+              }
+            ]
+          },
+          {
             "id": "09416e18-233d-42fe-b73e-4292db2668d4",
             "playerId": "09416e18-233d-42fe-b73e-4292db2668d4",
             "displayName": "SANCHEZ",
@@ -9191,70 +10670,205 @@
             ]
           },
           {
-            "id": "78002b34-f80b-46bb-9401-f905c2accbdd",
-            "playerId": "78002b34-f80b-46bb-9401-f905c2accbdd",
-            "displayName": "MAGIKARP",
-            "riotId": "Magikarp#Jere",
+            "id": "1e16ae4d-b121-4d24-905d-28089516f1be",
+            "playerId": "1e16ae4d-b121-4d24-905d-28089516f1be",
+            "displayName": "GUMIS",
+            "riotId": "SKY guMis#rina",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Magikarp-Jere",
-            "mainPosition": "SUP",
+            "opgg": "https://op.gg/pt/lol/summoners/br/SKY%20guMis-rina",
+            "mainPosition": "MID",
             "teams": [
               {
-                "slot": "D4",
-                "count": 2
+                "slot": "A2",
+                "count": 4
               }
             ],
             "roundRatings": [
               {
                 "round": 1,
-                "position": "SUP",
-                "teamSlot": "D4",
-                "averageScore": 69.79,
+                "position": "MID",
+                "teamSlot": "A2",
+                "averageScore": 76.91,
                 "games": 2,
                 "wins": 0,
                 "losses": 2,
                 "series": [
-                  "groups-r1g8"
+                  "groups-r1g1"
                 ],
                 "seriesWins": 0,
                 "matches": [
-                  "groups-r1g8-j1",
-                  "groups-r1g8-j2"
+                  "groups-r1g1-j1",
+                  "groups-r1g1-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "MID",
+                "teamSlot": "A2",
+                "averageScore": 62.97,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
                 ]
               }
             ]
           },
           {
-            "id": "48b97f8e-3b5e-4219-8828-c916cc35518a",
-            "playerId": "48b97f8e-3b5e-4219-8828-c916cc35518a",
-            "displayName": "DRAGER",
-            "riotId": "Drager007#TOP",
+            "id": "4468c885-4c32-4c7e-a749-b74f5d9530cb",
+            "playerId": "4468c885-4c32-4c7e-a749-b74f5d9530cb",
+            "displayName": "KITTEN",
+            "riotId": "FFLT KitteN#gay",
             "riotIdAliases": [],
-            "opgg": "htthttps://op.gg/pt/lol/summoners/br/Drager007-TOP",
+            "opgg": "https://op.gg/pt/lol/summoners/br/FFLT%20KitteN-gay",
+            "mainPosition": "ADC",
+            "teams": [
+              {
+                "slot": "B3",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "ADC",
+                "teamSlot": "B3",
+                "averageScore": 75.58,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r1g4"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g4-j1",
+                  "groups-r1g4-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "ADC",
+                "teamSlot": "B3",
+                "averageScore": 63.17,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g3"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g3-j1",
+                  "groups-r2g3-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "c8de87cb-5e6e-47ce-afe5-dd3985558a3f",
+            "playerId": "c8de87cb-5e6e-47ce-afe5-dd3985558a3f",
+            "displayName": "SLASH",
+            "riotId": "Slash SKY#TOP10",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Slash%20SKY-TOP10",
             "mainPosition": "TOP",
             "teams": [
               {
-                "slot": "D2",
-                "count": 3
+                "slot": "A2",
+                "count": 4
               }
             ],
             "roundRatings": [
               {
                 "round": 1,
                 "position": "TOP",
-                "teamSlot": "D2",
-                "averageScore": 69.75,
-                "games": 3,
-                "wins": 2,
-                "losses": 1,
+                "teamSlot": "A2",
+                "averageScore": 75.15,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
                 "series": [
-                  "groups-r1g7"
+                  "groups-r1g1"
                 ],
-                "seriesWins": 1,
+                "seriesWins": 0,
                 "matches": [
-                  "groups-r1g7-j1",
-                  "groups-r1g7-j2",
-                  "groups-r1g7-j3"
+                  "groups-r1g1-j1",
+                  "groups-r1g1-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "TOP",
+                "teamSlot": "A2",
+                "averageScore": 63.31,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "3c03eab2-782e-41cc-85eb-11895824406a",
+            "playerId": "3c03eab2-782e-41cc-85eb-11895824406a",
+            "displayName": "MAYAN",
+            "riotId": "SKY mayangamerbr#GGG",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/SKY%20mayangamerbr-GGG",
+            "mainPosition": "JG",
+            "teams": [
+              {
+                "slot": "A2",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "JG",
+                "teamSlot": "A2",
+                "averageScore": 72.11,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r1g1"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r1g1-j1",
+                  "groups-r1g1-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "JG",
+                "teamSlot": "A2",
+                "averageScore": 66.21,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
                 ]
               }
             ]
@@ -9361,16 +10975,16 @@
             ]
           },
           {
-            "id": "ac2dcf04-efb7-461d-85ac-dc49214ad466",
-            "playerId": "ac2dcf04-efb7-461d-85ac-dc49214ad466",
-            "displayName": "MECHANICS",
-            "riotId": "Mechanics#mrn16",
+            "id": "bdfb1dc0-e510-487e-ad1d-71c7aa49d1c2",
+            "playerId": "bdfb1dc0-e510-487e-ad1d-71c7aa49d1c2",
+            "displayName": "JUNINHO",
+            "riotId": "JuninhoLegal#br1",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Mechanics-mrn16",
+            "opgg": "https://op.gg/pt/lol/summoners/br/JuninhoLegal-br1",
             "mainPosition": "MID",
             "teams": [
               {
-                "slot": "D2",
+                "slot": "A1",
                 "count": 2
               }
             ],
@@ -9378,18 +10992,33 @@
               {
                 "round": 1,
                 "position": "MID",
-                "teamSlot": "D2",
-                "averageScore": 68.64,
-                "games": 2,
-                "wins": 2,
+                "teamSlot": "A1",
+                "averageScore": 64.2,
+                "games": 1,
+                "wins": 1,
                 "losses": 0,
                 "series": [
-                  "groups-r1g7"
+                  "groups-r1g1"
                 ],
                 "seriesWins": 1,
                 "matches": [
-                  "groups-r1g7-j2",
-                  "groups-r1g7-j3"
+                  "groups-r1g1-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "MID",
+                "teamSlot": "A1",
+                "averageScore": 72.75,
+                "games": 1,
+                "wins": 1,
+                "losses": 0,
+                "series": [
+                  "groups-r2g1"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r2g1-j2"
                 ]
               }
             ]
@@ -9463,35 +11092,52 @@
             ]
           },
           {
-            "id": "9cde653a-d2ab-4724-9b0a-274626101703",
-            "playerId": "9cde653a-d2ab-4724-9b0a-274626101703",
-            "displayName": "KIDO",
-            "riotId": "INZ Kido#BENTO",
+            "id": "3fe4398c-3c6e-43cb-a16b-9a1f943c4c8b",
+            "playerId": "3fe4398c-3c6e-43cb-a16b-9a1f943c4c8b",
+            "displayName": "CIEL",
+            "riotId": "SKY Ciel Winters#Lost",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/INZ%20Kido-BENTO",
-            "mainPosition": "JG",
+            "opgg": "https://op.gg/pt/lol/summoners/br/SKY%20Ciel%20Winters-Lost",
+            "mainPosition": "SUP",
             "teams": [
               {
-                "slot": "D4",
-                "count": 2
+                "slot": "A2",
+                "count": 4
               }
             ],
             "roundRatings": [
               {
                 "round": 1,
-                "position": "JG",
-                "teamSlot": "D4",
-                "averageScore": 67.22,
+                "position": "SUP",
+                "teamSlot": "A2",
+                "averageScore": 64.12,
                 "games": 2,
                 "wins": 0,
                 "losses": 2,
                 "series": [
-                  "groups-r1g8"
+                  "groups-r1g1"
                 ],
                 "seriesWins": 0,
                 "matches": [
-                  "groups-r1g8-j1",
-                  "groups-r1g8-j2"
+                  "groups-r1g1-j1",
+                  "groups-r1g1-j2"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "SUP",
+                "teamSlot": "A2",
+                "averageScore": 71.03,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
                 ]
               }
             ]
@@ -9533,6 +11179,91 @@
             ]
           },
           {
+            "id": "af1ead43-619e-44b9-954b-b97d8d8ca99d",
+            "playerId": "af1ead43-619e-44b9-954b-b97d8d8ca99d",
+            "displayName": "YUJAY",
+            "riotId": "SKY YuJay#ilyN",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/SKY%20YuJay-ilyN",
+            "mainPosition": "ADC",
+            "teams": [
+              {
+                "slot": "A2",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "ADC",
+                "teamSlot": "A2",
+                "averageScore": 67.04,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g2"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g2-j1",
+                  "groups-r2g2-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "ac2dcf04-efb7-461d-85ac-dc49214ad466",
+            "playerId": "ac2dcf04-efb7-461d-85ac-dc49214ad466",
+            "displayName": "MECHANICS",
+            "riotId": "Mechanics#mrn16",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Mechanics-mrn16",
+            "mainPosition": "MID",
+            "teams": [
+              {
+                "slot": "D2",
+                "count": 4
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 1,
+                "position": "MID",
+                "teamSlot": "D2",
+                "averageScore": 68.64,
+                "games": 2,
+                "wins": 2,
+                "losses": 0,
+                "series": [
+                  "groups-r1g7"
+                ],
+                "seriesWins": 1,
+                "matches": [
+                  "groups-r1g7-j2",
+                  "groups-r1g7-j3"
+                ]
+              },
+              {
+                "round": 2,
+                "position": "MID",
+                "teamSlot": "D2",
+                "averageScore": 62.83,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g8"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g8-j1",
+                  "groups-r2g8-j2"
+                ]
+              }
+            ]
+          },
+          {
             "id": "9e27d442-9ec4-41c9-a05e-c2c52931094f",
             "playerId": "9e27d442-9ec4-41c9-a05e-c2c52931094f",
             "displayName": "MISS HOLES",
@@ -9568,102 +11299,53 @@
             ]
           },
           {
-            "id": "ccf6c920-4a2e-40ba-824d-73598fffb378",
-            "playerId": "ccf6c920-4a2e-40ba-824d-73598fffb378",
-            "displayName": "HITKILLA",
-            "riotId": "HitKilla#0408",
+            "id": "48b97f8e-3b5e-4219-8828-c916cc35518a",
+            "playerId": "48b97f8e-3b5e-4219-8828-c916cc35518a",
+            "displayName": "DRAGER",
+            "riotId": "Drager007#TOP",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/HitKilla-0408",
-            "mainPosition": "MID",
+            "opgg": "htthttps://op.gg/pt/lol/summoners/br/Drager007-TOP",
+            "mainPosition": "TOP",
             "teams": [
               {
-                "slot": "B1",
-                "count": 2
+                "slot": "D2",
+                "count": 5
               }
             ],
             "roundRatings": [
               {
                 "round": 1,
-                "position": "MID",
-                "teamSlot": "B1",
-                "averageScore": 64.44,
-                "games": 2,
+                "position": "TOP",
+                "teamSlot": "D2",
+                "averageScore": 69.75,
+                "games": 3,
                 "wins": 2,
-                "losses": 0,
+                "losses": 1,
                 "series": [
-                  "groups-r1g3"
+                  "groups-r1g7"
                 ],
                 "seriesWins": 1,
                 "matches": [
-                  "groups-r1g3-j1",
-                  "groups-r1g3-j2"
+                  "groups-r1g7-j1",
+                  "groups-r1g7-j2",
+                  "groups-r1g7-j3"
                 ]
-              }
-            ]
-          },
-          {
-            "id": "bdfb1dc0-e510-487e-ad1d-71c7aa49d1c2",
-            "playerId": "bdfb1dc0-e510-487e-ad1d-71c7aa49d1c2",
-            "displayName": "JUNINHO",
-            "riotId": "JuninhoLegal#br1",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/JuninhoLegal-br1",
-            "mainPosition": "MID",
-            "teams": [
+              },
               {
-                "slot": "A1",
-                "count": 1
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "MID",
-                "teamSlot": "A1",
-                "averageScore": 64.2,
-                "games": 1,
-                "wins": 1,
-                "losses": 0,
-                "series": [
-                  "groups-r1g1"
-                ],
-                "seriesWins": 1,
-                "matches": [
-                  "groups-r1g1-j2"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "3fe4398c-3c6e-43cb-a16b-9a1f943c4c8b",
-            "playerId": "3fe4398c-3c6e-43cb-a16b-9a1f943c4c8b",
-            "displayName": "CIEL",
-            "riotId": "SKY Ciel Winters#Lost",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/SKY%20Ciel%20Winters-Lost",
-            "mainPosition": "SUP",
-            "teams": [
-              {
-                "slot": "A2",
-                "count": 2
-              }
-            ],
-            "roundRatings": [
-              {
-                "round": 1,
-                "position": "SUP",
-                "teamSlot": "A2",
-                "averageScore": 64.12,
+                "round": 2,
+                "position": "TOP",
+                "teamSlot": "D2",
+                "averageScore": 57.97,
                 "games": 2,
                 "wins": 0,
                 "losses": 2,
                 "series": [
-                  "groups-r1g1"
+                  "groups-r2g8"
                 ],
                 "seriesWins": 0,
                 "matches": [
-                  "groups-r1g1-j1",
-                  "groups-r1g1-j2"
+                  "groups-r2g8-j1",
+                  "groups-r2g8-j2"
                 ]
               }
             ]
@@ -9698,6 +11380,108 @@
                 "matches": [
                   "groups-r1g5-j1",
                   "groups-r1g5-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "42e15e20-724b-4684-adce-d1257b5acab0",
+            "playerId": "42e15e20-724b-4684-adce-d1257b5acab0",
+            "displayName": "ZEFIROTH",
+            "riotId": "zefiroth#br1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/zefiroth-br1",
+            "mainPosition": "ADC",
+            "teams": [
+              {
+                "slot": "A3",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "ADC",
+                "teamSlot": "A3",
+                "averageScore": 63.69,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g1"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g1-j1",
+                  "groups-r2g1-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "12501bac-9d0e-455a-a6a3-2072a9363055",
+            "playerId": "12501bac-9d0e-455a-a6a3-2072a9363055",
+            "displayName": "NATAN",
+            "riotId": "ktatau#0107",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/ktatau-0107",
+            "mainPosition": "SUP",
+            "teams": [
+              {
+                "slot": "A3",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "SUP",
+                "teamSlot": "A3",
+                "averageScore": 63.54,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g1"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g1-j1",
+                  "groups-r2g1-j2"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "9adb1c27-212d-4d3d-b5d0-bf5c8a26f508",
+            "playerId": "9adb1c27-212d-4d3d-b5d0-bf5c8a26f508",
+            "displayName": "GAUZE",
+            "riotId": "Kacrxty#ezz",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Kacrxty-ezz",
+            "mainPosition": "MID",
+            "teams": [
+              {
+                "slot": "A3",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "MID",
+                "teamSlot": "A3",
+                "averageScore": 61.45,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g1"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g1-j1",
+                  "groups-r2g1-j2"
                 ]
               }
             ]
@@ -9874,6 +11658,40 @@
             ]
           },
           {
+            "id": "e339f8ff-30dc-4ccd-baa4-e1caade0daa8",
+            "playerId": "e339f8ff-30dc-4ccd-baa4-e1caade0daa8",
+            "displayName": "FADU",
+            "riotId": "Fadabalinha#br1",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/Fadabalinha-br1",
+            "mainPosition": "TOP",
+            "teams": [
+              {
+                "slot": "A3",
+                "count": 2
+              }
+            ],
+            "roundRatings": [
+              {
+                "round": 2,
+                "position": "TOP",
+                "teamSlot": "A3",
+                "averageScore": 54.16,
+                "games": 2,
+                "wins": 0,
+                "losses": 2,
+                "series": [
+                  "groups-r2g1"
+                ],
+                "seriesWins": 0,
+                "matches": [
+                  "groups-r2g1-j1",
+                  "groups-r2g1-j2"
+                ]
+              }
+            ]
+          },
+          {
             "id": "b809b15f-5792-4fe7-b376-694fcf9391ea",
             "playerId": "b809b15f-5792-4fe7-b376-694fcf9391ea",
             "displayName": "LEKUTAAKA",
@@ -10009,22 +11827,6 @@
             ]
           },
           {
-            "id": "27ef1440-71ad-4036-a5ce-1a8cd159deba",
-            "playerId": "27ef1440-71ad-4036-a5ce-1a8cd159deba",
-            "displayName": "AAPOLLO",
-            "riotId": "Aapoll0#SUN",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Aapoll0-SUN",
-            "mainPosition": "JG",
-            "teams": [
-              {
-                "slot": "A4",
-                "count": 0
-              }
-            ],
-            "roundRatings": []
-          },
-          {
             "id": "31703eb4-e78b-43b7-a79f-5d9345aa291c",
             "playerId": "31703eb4-e78b-43b7-a79f-5d9345aa291c",
             "displayName": "BATMAN",
@@ -10121,54 +11923,6 @@
             "roundRatings": []
           },
           {
-            "id": "fa157405-2b19-4cc2-a6bf-983c6613660f",
-            "playerId": "fa157405-2b19-4cc2-a6bf-983c6613660f",
-            "displayName": "ECO",
-            "riotId": "Eco Eco#Zyom",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Eco%20Eco-Zyom",
-            "mainPosition": "MID",
-            "teams": [
-              {
-                "slot": "A4",
-                "count": 0
-              }
-            ],
-            "roundRatings": []
-          },
-          {
-            "id": "e339f8ff-30dc-4ccd-baa4-e1caade0daa8",
-            "playerId": "e339f8ff-30dc-4ccd-baa4-e1caade0daa8",
-            "displayName": "FADU",
-            "riotId": "Fadabalinha#br1",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Fadabalinha-br1",
-            "mainPosition": "TOP",
-            "teams": [
-              {
-                "slot": "A3",
-                "count": 0
-              }
-            ],
-            "roundRatings": []
-          },
-          {
-            "id": "4c0cf9b4-dbe8-4894-90ed-69f39315caff",
-            "playerId": "4c0cf9b4-dbe8-4894-90ed-69f39315caff",
-            "displayName": "FRENZY",
-            "riotId": "Frenzy#Gh0st",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Frenzy-Gh0st",
-            "mainPosition": "SUP",
-            "teams": [
-              {
-                "slot": "A4",
-                "count": 0
-              }
-            ],
-            "roundRatings": []
-          },
-          {
             "id": "ea366226-8b2c-4a57-b9e5-cd8ccb2061b7",
             "playerId": "ea366226-8b2c-4a57-b9e5-cd8ccb2061b7",
             "displayName": "FROXY",
@@ -10179,22 +11933,6 @@
             "teams": [
               {
                 "slot": "D1",
-                "count": 0
-              }
-            ],
-            "roundRatings": []
-          },
-          {
-            "id": "9adb1c27-212d-4d3d-b5d0-bf5c8a26f508",
-            "playerId": "9adb1c27-212d-4d3d-b5d0-bf5c8a26f508",
-            "displayName": "GAUZE",
-            "riotId": "Kacrxty#ezz",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Kacrxty-ezz",
-            "mainPosition": "MID",
-            "teams": [
-              {
-                "slot": "A3",
                 "count": 0
               }
             ],
@@ -10345,22 +12083,6 @@
             "roundRatings": []
           },
           {
-            "id": "12501bac-9d0e-455a-a6a3-2072a9363055",
-            "playerId": "12501bac-9d0e-455a-a6a3-2072a9363055",
-            "displayName": "NATAN",
-            "riotId": "ktatau#0107",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/ktatau-0107",
-            "mainPosition": "SUB",
-            "teams": [
-              {
-                "slot": "A3",
-                "count": 0
-              }
-            ],
-            "roundRatings": []
-          },
-          {
             "id": "a18c3f7f-ecae-45b6-b3c8-fec29db64467",
             "playerId": "a18c3f7f-ecae-45b6-b3c8-fec29db64467",
             "displayName": "OVER",
@@ -10393,48 +12115,32 @@
             "roundRatings": []
           },
           {
-            "id": "ed2a2020-2d1d-422e-9259-2fc35a32b7e1",
-            "playerId": "ed2a2020-2d1d-422e-9259-2fc35a32b7e1",
-            "displayName": "PITISA",
-            "riotId": "Blue PitisaMemes#001",
+            "id": "97404de5-5a36-4b7b-aba1-e92dbb09ce5c",
+            "playerId": "97404de5-5a36-4b7b-aba1-e92dbb09ce5c",
+            "displayName": "SALAME",
+            "riotId": "benihime#sasa",
             "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Blue%20PitisaMemes-001",
-            "mainPosition": "ADC",
-            "teams": [
-              {
-                "slot": "A1",
-                "count": 0
-              }
-            ],
-            "roundRatings": []
-          },
-          {
-            "id": "73aedc68-0e38-4d08-9688-e7b16672c733",
-            "playerId": "73aedc68-0e38-4d08-9688-e7b16672c733",
-            "displayName": "POLIGONS",
-            "riotId": "Poligns#Aura",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Poligns-Aura",
-            "mainPosition": "TOP",
-            "teams": [
-              {
-                "slot": "A4",
-                "count": 0
-              }
-            ],
-            "roundRatings": []
-          },
-          {
-            "id": "943575d4-c76b-438e-abbc-434ddb8d1dd2",
-            "playerId": "943575d4-c76b-438e-abbc-434ddb8d1dd2",
-            "displayName": "PROVÉRBIOS",
-            "riotId": "Provérbios#TOPO",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/lol/summoners/br/Prov%C3%A9rbios-TOPO",
+            "opgg": "https://op.gg/pt/lol/summoners/br/benihime-sasa",
             "mainPosition": "SUB",
             "teams": [
               {
                 "slot": "C2",
+                "count": 0
+              }
+            ],
+            "roundRatings": []
+          },
+          {
+            "id": "ed2a2020-2d1d-422e-9259-2fc35a32b7e1",
+            "playerId": "ed2a2020-2d1d-422e-9259-2fc35a32b7e1",
+            "displayName": "SAVE",
+            "riotId": "bad decisions#void",
+            "riotIdAliases": [],
+            "opgg": "https://op.gg/pt/lol/summoners/br/bad%20decisions-void",
+            "mainPosition": "ADC",
+            "teams": [
+              {
+                "slot": "A1",
                 "count": 0
               }
             ],
@@ -10457,22 +12163,6 @@
             "roundRatings": []
           },
           {
-            "id": "9676fdd6-1dbb-400b-9d40-728ec3ed4897",
-            "playerId": "9676fdd6-1dbb-400b-9d40-728ec3ed4897",
-            "displayName": "SHASHYCS",
-            "riotId": "Viollunere#Tsuki",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Viollunere-Tsuki",
-            "mainPosition": "SUB",
-            "teams": [
-              {
-                "slot": "A4",
-                "count": 0
-              }
-            ],
-            "roundRatings": []
-          },
-          {
             "id": "c2e3a850-d035-470b-8d42-288132b0019e",
             "playerId": "c2e3a850-d035-470b-8d42-288132b0019e",
             "displayName": "TIMOR LESTE",
@@ -10483,70 +12173,6 @@
             "teams": [
               {
                 "slot": "B3",
-                "count": 0
-              }
-            ],
-            "roundRatings": []
-          },
-          {
-            "id": "4d5d426d-5708-44b5-b6b3-d74c1ed2ab57",
-            "playerId": "4d5d426d-5708-44b5-b6b3-d74c1ed2ab57",
-            "displayName": "VITÃO",
-            "riotId": "Vitão da Trembo#2026",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Vit%C3%A3o%20da%20Trembo-2026",
-            "mainPosition": "JG",
-            "teams": [
-              {
-                "slot": "A3",
-                "count": 0
-              }
-            ],
-            "roundRatings": []
-          },
-          {
-            "id": "af1ead43-619e-44b9-954b-b97d8d8ca99d",
-            "playerId": "af1ead43-619e-44b9-954b-b97d8d8ca99d",
-            "displayName": "YUJAY",
-            "riotId": "SKY YuJay#ilyN",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/SKY%20YuJay-ilyN",
-            "mainPosition": "ADC",
-            "teams": [
-              {
-                "slot": "A2",
-                "count": 0
-              }
-            ],
-            "roundRatings": []
-          },
-          {
-            "id": "083c1905-6626-48af-bab8-1db2b4a5a6c2",
-            "playerId": "083c1905-6626-48af-bab8-1db2b4a5a6c2",
-            "displayName": "YUTA",
-            "riotId": "Yuta Okkotsuリカ#xds",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/Yuta%20Okkotsu%E3%83%AA%E3%82%AB-xds",
-            "mainPosition": "SUB",
-            "teams": [
-              {
-                "slot": "D4",
-                "count": 0
-              }
-            ],
-            "roundRatings": []
-          },
-          {
-            "id": "42e15e20-724b-4684-adce-d1257b5acab0",
-            "playerId": "42e15e20-724b-4684-adce-d1257b5acab0",
-            "displayName": "ZEFIROTH",
-            "riotId": "zefiroth#br1",
-            "riotIdAliases": [],
-            "opgg": "https://op.gg/pt/lol/summoners/br/zefiroth-br1",
-            "mainPosition": "ADC",
-            "teams": [
-              {
-                "slot": "A3",
                 "count": 0
               }
             ],
@@ -10571,16 +12197,6 @@
         ],
         "teams": [
           {
-            "slot": "B3",
-            "name": "FOFOLETES DO RICK",
-            "tag": "FFLT",
-            "games": 2,
-            "wins": 2,
-            "losses": 0,
-            "winRate": 100,
-            "averageScore": 84.06
-          },
-          {
             "slot": "D3",
             "name": "RAISING DRAGONS",
             "tag": "RDG",
@@ -10589,6 +12205,16 @@
             "losses": 0,
             "winRate": 100,
             "averageScore": 82.74
+          },
+          {
+            "slot": "A4",
+            "name": "TENEBRA BEHEMOT",
+            "tag": "TNB",
+            "games": 2,
+            "wins": 2,
+            "losses": 0,
+            "winRate": 100,
+            "averageScore": 82.47
           },
           {
             "slot": "C4",
@@ -10604,21 +12230,21 @@
             "slot": "B1",
             "name": "PHOENIX GAMING",
             "tag": "PXG",
-            "games": 2,
-            "wins": 2,
+            "games": 4,
+            "wins": 4,
             "losses": 0,
             "winRate": 100,
-            "averageScore": 78.34
+            "averageScore": 80.92
           },
           {
             "slot": "A1",
             "name": "FAINA",
             "tag": "FIN",
-            "games": 2,
-            "wins": 2,
+            "games": 4,
+            "wins": 4,
             "losses": 0,
             "winRate": 100,
-            "averageScore": 78.17
+            "averageScore": 79.75
           },
           {
             "slot": "C2",
@@ -10631,14 +12257,34 @@
             "averageScore": 77.93
           },
           {
+            "slot": "D4",
+            "name": "INAZUMA V",
+            "tag": "INZ",
+            "games": 4,
+            "wins": 2,
+            "losses": 2,
+            "winRate": 50,
+            "averageScore": 73.63
+          },
+          {
             "slot": "D2",
             "name": "RENEGADOS",
             "tag": "RNG",
-            "games": 3,
+            "games": 5,
             "wins": 2,
-            "losses": 1,
-            "winRate": 66.67,
-            "averageScore": 75.03
+            "losses": 3,
+            "winRate": 40,
+            "averageScore": 73.47
+          },
+          {
+            "slot": "B3",
+            "name": "FOFOLETES DO RICK",
+            "tag": "FFLT",
+            "games": 4,
+            "wins": 2,
+            "losses": 2,
+            "winRate": 50,
+            "averageScore": 73.08
           },
           {
             "slot": "D1",
@@ -10651,16 +12297,6 @@
             "averageScore": 70.52
           },
           {
-            "slot": "A2",
-            "name": "SKYLINE",
-            "tag": "SKY",
-            "games": 2,
-            "wins": 0,
-            "losses": 2,
-            "winRate": 0,
-            "averageScore": 69.89
-          },
-          {
             "slot": "C1",
             "name": "SKY KNIGHTS",
             "tag": "SKS",
@@ -10671,16 +12307,6 @@
             "averageScore": 69.09
           },
           {
-            "slot": "D4",
-            "name": "INAZUMA V",
-            "tag": "INZ",
-            "games": 2,
-            "wins": 0,
-            "losses": 2,
-            "winRate": 0,
-            "averageScore": 68.53
-          },
-          {
             "slot": "B4",
             "name": "TENEBRA LEVIATHAN",
             "tag": "TNL",
@@ -10689,6 +12315,16 @@
             "losses": 2,
             "winRate": 0,
             "averageScore": 68.33
+          },
+          {
+            "slot": "A2",
+            "name": "SKYLINE",
+            "tag": "SKY",
+            "games": 4,
+            "wins": 0,
+            "losses": 4,
+            "winRate": 0,
+            "averageScore": 68
           },
           {
             "slot": "C3",
@@ -10714,21 +12350,11 @@
             "slot": "A3",
             "name": "BLACK STARS",
             "tag": "BKS",
-            "games": 0,
+            "games": 2,
             "wins": 0,
-            "losses": 0,
+            "losses": 2,
             "winRate": 0,
-            "averageScore": 0
-          },
-          {
-            "slot": "A4",
-            "name": "TENEBRA BEHEMOT",
-            "tag": "TNB",
-            "games": 0,
-            "wins": 0,
-            "losses": 0,
-            "winRate": 0,
-            "averageScore": 0
+            "averageScore": 63.6
           }
         ],
         "matches": [
@@ -12304,6 +13930,846 @@
                 "score": 72.02,
                 "won": false,
                 "deaths": 7
+              }
+            ]
+          },
+          {
+            "id": "groups-r2g1-j1",
+            "seriesId": "groups-r2g1",
+            "stage": "grupos",
+            "round": "RODADA 2 - FIN x BKS",
+            "roundNumber": 2,
+            "gameNumber": 1,
+            "format": "MD3",
+            "blueTeamSlot": "A1",
+            "redTeamSlot": "A3",
+            "winnerSlot": "A1",
+            "mvpPlayerId": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39",
+            "participants": [
+              {
+                "playerId": "c49312d8-3672-4654-9790-a9cad7f59937",
+                "riotId": "Red KauanMemes#BA1",
+                "teamSlot": "A1",
+                "position": "TOP",
+                "score": 84.45,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39",
+                "riotId": "qquq#yve",
+                "teamSlot": "A1",
+                "position": "JG",
+                "score": 87.42,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "8b0bb211-5bfd-46c2-819f-161c22c494d6",
+                "riotId": "king of yellow#7178",
+                "teamSlot": "A1",
+                "position": "MID",
+                "score": 81.22,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "dce34e4e-90b8-4cf4-a792-432678ad9e16",
+                "riotId": "Silly dumb cat#OwO",
+                "teamSlot": "A1",
+                "position": "ADC",
+                "score": 77.82,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "013c58e9-130d-4c36-bbf3-1a2e4b8a82a2",
+                "riotId": "Zähir#keria",
+                "teamSlot": "A1",
+                "position": "SUP",
+                "score": 78.76,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "e339f8ff-30dc-4ccd-baa4-e1caade0daa8",
+                "riotId": "Fadabalinha#br1",
+                "teamSlot": "A3",
+                "position": "TOP",
+                "score": 61.52,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "4d5d426d-5708-44b5-b6b3-d74c1ed2ab57",
+                "riotId": "Vitão da Trembo#2026",
+                "teamSlot": "A3",
+                "position": "JG",
+                "score": 69.64,
+                "won": false,
+                "deaths": 8
+              },
+              {
+                "playerId": "9adb1c27-212d-4d3d-b5d0-bf5c8a26f508",
+                "riotId": "Kacrxty#ezz",
+                "teamSlot": "A3",
+                "position": "MID",
+                "score": 60.64,
+                "won": false,
+                "deaths": 10
+              },
+              {
+                "playerId": "42e15e20-724b-4684-adce-d1257b5acab0",
+                "riotId": "zefiroth#br1",
+                "teamSlot": "A3",
+                "position": "ADC",
+                "score": 57.95,
+                "won": false,
+                "deaths": 10
+              },
+              {
+                "playerId": "12501bac-9d0e-455a-a6a3-2072a9363055",
+                "riotId": "ktatau#0107",
+                "teamSlot": "A3",
+                "position": "SUP",
+                "score": 56.96,
+                "won": false,
+                "deaths": 12
+              }
+            ]
+          },
+          {
+            "id": "groups-r2g1-j2",
+            "seriesId": "groups-r2g1",
+            "stage": "grupos",
+            "round": "RODADA 2 - FIN x BKS",
+            "roundNumber": 2,
+            "gameNumber": 2,
+            "format": "MD3",
+            "blueTeamSlot": "A3",
+            "redTeamSlot": "A1",
+            "winnerSlot": "A1",
+            "mvpPlayerId": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39",
+            "participants": [
+              {
+                "playerId": "e339f8ff-30dc-4ccd-baa4-e1caade0daa8",
+                "riotId": "Fadabalinha#br1",
+                "teamSlot": "A3",
+                "position": "TOP",
+                "score": 46.79,
+                "won": false,
+                "deaths": 10
+              },
+              {
+                "playerId": "4d5d426d-5708-44b5-b6b3-d74c1ed2ab57",
+                "riotId": "Vitão da Trembo#2026",
+                "teamSlot": "A3",
+                "position": "JG",
+                "score": 80.69,
+                "won": false,
+                "deaths": 11
+              },
+              {
+                "playerId": "9adb1c27-212d-4d3d-b5d0-bf5c8a26f508",
+                "riotId": "Kacrxty#ezz",
+                "teamSlot": "A3",
+                "position": "MID",
+                "score": 62.26,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "42e15e20-724b-4684-adce-d1257b5acab0",
+                "riotId": "zefiroth#br1",
+                "teamSlot": "A3",
+                "position": "ADC",
+                "score": 69.43,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "12501bac-9d0e-455a-a6a3-2072a9363055",
+                "riotId": "ktatau#0107",
+                "teamSlot": "A3",
+                "position": "SUP",
+                "score": 70.11,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "c49312d8-3672-4654-9790-a9cad7f59937",
+                "riotId": "Red KauanMemes#BA1",
+                "teamSlot": "A1",
+                "position": "TOP",
+                "score": 85.35,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39",
+                "riotId": "qquq#yve",
+                "teamSlot": "A1",
+                "position": "JG",
+                "score": 87.73,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "bdfb1dc0-e510-487e-ad1d-71c7aa49d1c2",
+                "riotId": "JuninhoLegal#br1",
+                "teamSlot": "A1",
+                "position": "MID",
+                "score": 72.75,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "dce34e4e-90b8-4cf4-a792-432678ad9e16",
+                "riotId": "Silly dumb cat#OwO",
+                "teamSlot": "A1",
+                "position": "ADC",
+                "score": 82.64,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "013c58e9-130d-4c36-bbf3-1a2e4b8a82a2",
+                "riotId": "Zähir#keria",
+                "teamSlot": "A1",
+                "position": "SUP",
+                "score": 75.1,
+                "won": true,
+                "deaths": 5
+              }
+            ]
+          },
+          {
+            "id": "groups-r2g3-j1",
+            "seriesId": "groups-r2g3",
+            "stage": "grupos",
+            "round": "RODADA 2 - PXG x FFLT",
+            "roundNumber": 2,
+            "gameNumber": 1,
+            "format": "MD3",
+            "blueTeamSlot": "B1",
+            "redTeamSlot": "B3",
+            "winnerSlot": "B1",
+            "mvpPlayerId": "ccf6c920-4a2e-40ba-824d-73598fffb378",
+            "participants": [
+              {
+                "playerId": "2f0aee66-029a-4ecb-97ed-b0b0966c7edd",
+                "riotId": "Shahanshah#NIKA",
+                "teamSlot": "B1",
+                "position": "TOP",
+                "score": 75.05,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "b92cbd24-be2e-4c7b-b2dd-86105c87d127",
+                "riotId": "kylo ren#zed",
+                "teamSlot": "B1",
+                "position": "JG",
+                "score": 93.05,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "ccf6c920-4a2e-40ba-824d-73598fffb378",
+                "riotId": "HitKilla#0408",
+                "teamSlot": "B1",
+                "position": "MID",
+                "score": 93.78,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "afbe791d-6c49-4fc3-ade7-d00cb9fc5712",
+                "riotId": "Misterbrx#BR1",
+                "teamSlot": "B1",
+                "position": "ADC",
+                "score": 73.48,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "30124aec-f280-4dcd-83d4-f9cda42c5df8",
+                "riotId": "IIIIIIIIIIIIlIII#Lcpnz",
+                "teamSlot": "B1",
+                "position": "SUP",
+                "score": 88,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
+                "riotId": "Mits#KIM",
+                "teamSlot": "B3",
+                "position": "TOP",
+                "score": 56.9,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "d0570a3b-415e-4f1c-8e31-ef6a57884ac1",
+                "riotId": "FFLT Rick#Rick",
+                "teamSlot": "B3",
+                "position": "JG",
+                "score": 60.75,
+                "won": false,
+                "deaths": 7
+              },
+              {
+                "playerId": "0cc6bb32-e387-4cfe-adcd-6362fd369614",
+                "riotId": "FFLT Maytas#2303",
+                "teamSlot": "B3",
+                "position": "MID",
+                "score": 59.14,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "4468c885-4c32-4c7e-a749-b74f5d9530cb",
+                "riotId": "FFLT KitteN#gay",
+                "teamSlot": "B3",
+                "position": "ADC",
+                "score": 63.17,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "93504c7f-3a44-41d4-84ba-7fcdf9c4c202",
+                "riotId": "FFLT Botas#caco",
+                "teamSlot": "B3",
+                "position": "SUP",
+                "score": 68.93,
+                "won": false,
+                "deaths": 6
+              }
+            ]
+          },
+          {
+            "id": "groups-r2g3-j2",
+            "seriesId": "groups-r2g3",
+            "stage": "grupos",
+            "round": "RODADA 2 - PXG x FFLT",
+            "roundNumber": 2,
+            "gameNumber": 2,
+            "format": "MD3",
+            "blueTeamSlot": "B3",
+            "redTeamSlot": "B1",
+            "winnerSlot": "B1",
+            "mvpPlayerId": "b92cbd24-be2e-4c7b-b2dd-86105c87d127",
+            "participants": [
+              {
+                "playerId": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
+                "riotId": "Mits#KIM",
+                "teamSlot": "B3",
+                "position": "TOP",
+                "score": 61.73,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "d0570a3b-415e-4f1c-8e31-ef6a57884ac1",
+                "riotId": "FFLT Rick#Rick",
+                "teamSlot": "B3",
+                "position": "JG",
+                "score": 60.16,
+                "won": false,
+                "deaths": 9
+              },
+              {
+                "playerId": "0cc6bb32-e387-4cfe-adcd-6362fd369614",
+                "riotId": "FFLT Maytas#2303",
+                "teamSlot": "B3",
+                "position": "MID",
+                "score": 62.01,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "4468c885-4c32-4c7e-a749-b74f5d9530cb",
+                "riotId": "FFLT KitteN#gay",
+                "teamSlot": "B3",
+                "position": "ADC",
+                "score": 63.17,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "93504c7f-3a44-41d4-84ba-7fcdf9c4c202",
+                "riotId": "FFLT Botas#caco",
+                "teamSlot": "B3",
+                "position": "SUP",
+                "score": 64.96,
+                "won": false,
+                "deaths": 9
+              },
+              {
+                "playerId": "2f0aee66-029a-4ecb-97ed-b0b0966c7edd",
+                "riotId": "Shahanshah#NIKA",
+                "teamSlot": "B1",
+                "position": "TOP",
+                "score": 84.75,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "b92cbd24-be2e-4c7b-b2dd-86105c87d127",
+                "riotId": "kylo ren#zed",
+                "teamSlot": "B1",
+                "position": "JG",
+                "score": 97.04,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "ccf6c920-4a2e-40ba-824d-73598fffb378",
+                "riotId": "HitKilla#0408",
+                "teamSlot": "B1",
+                "position": "MID",
+                "score": 77.09,
+                "won": true,
+                "deaths": 5
+              },
+              {
+                "playerId": "afbe791d-6c49-4fc3-ade7-d00cb9fc5712",
+                "riotId": "Misterbrx#BR1",
+                "teamSlot": "B1",
+                "position": "ADC",
+                "score": 73.78,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "30124aec-f280-4dcd-83d4-f9cda42c5df8",
+                "riotId": "IIIIIIIIIIIIlIII#Lcpnz",
+                "teamSlot": "B1",
+                "position": "SUP",
+                "score": 79.04,
+                "won": true,
+                "deaths": 4
+              }
+            ]
+          },
+          {
+            "id": "groups-r2g8-j1",
+            "seriesId": "groups-r2g8",
+            "stage": "grupos",
+            "round": "RODADA 2 - RNG x INZ",
+            "roundNumber": 2,
+            "gameNumber": 1,
+            "format": "MD3",
+            "blueTeamSlot": "D2",
+            "redTeamSlot": "D4",
+            "winnerSlot": "D4",
+            "mvpPlayerId": "51a488ff-00e3-4710-8289-3b87882f9946",
+            "participants": [
+              {
+                "playerId": "48b97f8e-3b5e-4219-8828-c916cc35518a",
+                "riotId": "Drager007#TOP",
+                "teamSlot": "D2",
+                "position": "TOP",
+                "score": 57.33,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "286f41d2-24c2-4457-9dcd-d5654ba6049f",
+                "riotId": "midking#ikari",
+                "teamSlot": "D2",
+                "position": "JG",
+                "score": 89.84,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "ac2dcf04-efb7-461d-85ac-dc49214ad466",
+                "riotId": "Mechanics#mrn16",
+                "teamSlot": "D2",
+                "position": "MID",
+                "score": 70.24,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "2594034c-9394-4b79-8b59-dedbf66482e5",
+                "riotId": "DarKaiser#CARRY",
+                "teamSlot": "D2",
+                "position": "ADC",
+                "score": 89.67,
+                "won": false,
+                "deaths": 2
+              },
+              {
+                "playerId": "745a0ee6-ebda-4170-a095-68565c5f425b",
+                "riotId": "FEMBuurraxa#FLU",
+                "teamSlot": "D2",
+                "position": "SUP",
+                "score": 65.8,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "41328541-367c-4556-bf01-fb1810cdfc07",
+                "riotId": "luci#sfc",
+                "teamSlot": "D4",
+                "position": "TOP",
+                "score": 80.45,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "9cde653a-d2ab-4724-9b0a-274626101703",
+                "riotId": "INZ Kido#BENTO",
+                "teamSlot": "D4",
+                "position": "JG",
+                "score": 69.88,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "083c1905-6626-48af-bab8-1db2b4a5a6c2",
+                "riotId": "Yuta Okkotsuリカ#xds",
+                "teamSlot": "D4",
+                "position": "MID",
+                "score": 72.06,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "51a488ff-00e3-4710-8289-3b87882f9946",
+                "riotId": "Aky#2666",
+                "teamSlot": "D4",
+                "position": "ADC",
+                "score": 89.91,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "78002b34-f80b-46bb-9401-f905c2accbdd",
+                "riotId": "Magikarp#Jere",
+                "teamSlot": "D4",
+                "position": "SUP",
+                "score": 69.41,
+                "won": true,
+                "deaths": 4
+              }
+            ]
+          },
+          {
+            "id": "groups-r2g8-j2",
+            "seriesId": "groups-r2g8",
+            "stage": "grupos",
+            "round": "RODADA 2 - RNG x INZ",
+            "roundNumber": 2,
+            "gameNumber": 2,
+            "format": "MD3",
+            "blueTeamSlot": "D2",
+            "redTeamSlot": "D4",
+            "winnerSlot": "D4",
+            "mvpPlayerId": "9cde653a-d2ab-4724-9b0a-274626101703",
+            "participants": [
+              {
+                "playerId": "48b97f8e-3b5e-4219-8828-c916cc35518a",
+                "riotId": "Drager007#TOP",
+                "teamSlot": "D2",
+                "position": "TOP",
+                "score": 58.6,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "286f41d2-24c2-4457-9dcd-d5654ba6049f",
+                "riotId": "midking#ikari",
+                "teamSlot": "D2",
+                "position": "JG",
+                "score": 81.18,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "ac2dcf04-efb7-461d-85ac-dc49214ad466",
+                "riotId": "Mechanics#mrn16",
+                "teamSlot": "D2",
+                "position": "MID",
+                "score": 55.42,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "2594034c-9394-4b79-8b59-dedbf66482e5",
+                "riotId": "DarKaiser#CARRY",
+                "teamSlot": "D2",
+                "position": "ADC",
+                "score": 70.6,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "745a0ee6-ebda-4170-a095-68565c5f425b",
+                "riotId": "FEMBuurraxa#FLU",
+                "teamSlot": "D2",
+                "position": "SUP",
+                "score": 72.55,
+                "won": false,
+                "deaths": 6
+              },
+              {
+                "playerId": "41328541-367c-4556-bf01-fb1810cdfc07",
+                "riotId": "luci#sfc",
+                "teamSlot": "D4",
+                "position": "TOP",
+                "score": 66.99,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "9cde653a-d2ab-4724-9b0a-274626101703",
+                "riotId": "INZ Kido#BENTO",
+                "teamSlot": "D4",
+                "position": "JG",
+                "score": 95.2,
+                "won": true,
+                "deaths": 0
+              },
+              {
+                "playerId": "083c1905-6626-48af-bab8-1db2b4a5a6c2",
+                "riotId": "Yuta Okkotsuリカ#xds",
+                "teamSlot": "D4",
+                "position": "MID",
+                "score": 73.5,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "51a488ff-00e3-4710-8289-3b87882f9946",
+                "riotId": "Aky#2666",
+                "teamSlot": "D4",
+                "position": "ADC",
+                "score": 88.4,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "78002b34-f80b-46bb-9401-f905c2accbdd",
+                "riotId": "Magikarp#Jere",
+                "teamSlot": "D4",
+                "position": "SUP",
+                "score": 81.55,
+                "won": true,
+                "deaths": 3
+              }
+            ]
+          },
+          {
+            "id": "groups-r2g2-j1",
+            "seriesId": "groups-r2g2",
+            "stage": "grupos",
+            "round": "RODADA 2 - SKY x TNB",
+            "roundNumber": 2,
+            "gameNumber": 1,
+            "format": "MD3",
+            "blueTeamSlot": "A2",
+            "redTeamSlot": "A4",
+            "winnerSlot": "A4",
+            "mvpPlayerId": "27ef1440-71ad-4036-a5ce-1a8cd159deba",
+            "participants": [
+              {
+                "playerId": "c8de87cb-5e6e-47ce-afe5-dd3985558a3f",
+                "riotId": "Slash SKY#TOP10",
+                "teamSlot": "A2",
+                "position": "TOP",
+                "score": 61.47,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "3c03eab2-782e-41cc-85eb-11895824406a",
+                "riotId": "SKY mayangamerbr#GGG",
+                "teamSlot": "A2",
+                "position": "JG",
+                "score": 71.27,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "1e16ae4d-b121-4d24-905d-28089516f1be",
+                "riotId": "SKY guMis#rina",
+                "teamSlot": "A2",
+                "position": "MID",
+                "score": 64.13,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "af1ead43-619e-44b9-954b-b97d8d8ca99d",
+                "riotId": "SKY YuJay#ilyN",
+                "teamSlot": "A2",
+                "position": "ADC",
+                "score": 83.97,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "3fe4398c-3c6e-43cb-a16b-9a1f943c4c8b",
+                "riotId": "SKY Ciel Winters#Lost",
+                "teamSlot": "A2",
+                "position": "SUP",
+                "score": 70.31,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "73aedc68-0e38-4d08-9688-e7b16672c733",
+                "riotId": "Poligns#Aura",
+                "teamSlot": "A4",
+                "position": "TOP",
+                "score": 84.91,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "27ef1440-71ad-4036-a5ce-1a8cd159deba",
+                "riotId": "Aapoll0#SUN",
+                "teamSlot": "A4",
+                "position": "JG",
+                "score": 96.25,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "fa157405-2b19-4cc2-a6bf-983c6613660f",
+                "riotId": "Eco Eco#Zyom",
+                "teamSlot": "A4",
+                "position": "MID",
+                "score": 70.27,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "9676fdd6-1dbb-400b-9d40-728ec3ed4897",
+                "riotId": "Viollunere#Tsuki",
+                "teamSlot": "A4",
+                "position": "ADC",
+                "score": 88.23,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "4c0cf9b4-dbe8-4894-90ed-69f39315caff",
+                "riotId": "TNB Frenzy#BHMTH",
+                "teamSlot": "A4",
+                "position": "SUP",
+                "score": 79.42,
+                "won": true,
+                "deaths": 3
+              }
+            ]
+          },
+          {
+            "id": "groups-r2g2-j2",
+            "seriesId": "groups-r2g2",
+            "stage": "grupos",
+            "round": "RODADA 2 - SKY x TNB",
+            "roundNumber": 2,
+            "gameNumber": 2,
+            "format": "MD3",
+            "blueTeamSlot": "A4",
+            "redTeamSlot": "A2",
+            "winnerSlot": "A4",
+            "mvpPlayerId": "9676fdd6-1dbb-400b-9d40-728ec3ed4897",
+            "participants": [
+              {
+                "playerId": "73aedc68-0e38-4d08-9688-e7b16672c733",
+                "riotId": "Poligns#Aura",
+                "teamSlot": "A4",
+                "position": "TOP",
+                "score": 86.63,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "27ef1440-71ad-4036-a5ce-1a8cd159deba",
+                "riotId": "Aapoll0#SUN",
+                "teamSlot": "A4",
+                "position": "JG",
+                "score": 81.57,
+                "won": true,
+                "deaths": 3
+              },
+              {
+                "playerId": "fa157405-2b19-4cc2-a6bf-983c6613660f",
+                "riotId": "Eco Eco#Zyom",
+                "teamSlot": "A4",
+                "position": "MID",
+                "score": 72.91,
+                "won": true,
+                "deaths": 2
+              },
+              {
+                "playerId": "9676fdd6-1dbb-400b-9d40-728ec3ed4897",
+                "riotId": "Viollunere#Tsuki",
+                "teamSlot": "A4",
+                "position": "ADC",
+                "score": 91.36,
+                "won": true,
+                "deaths": 1
+              },
+              {
+                "playerId": "4c0cf9b4-dbe8-4894-90ed-69f39315caff",
+                "riotId": "TNB Frenzy#BHMTH",
+                "teamSlot": "A4",
+                "position": "SUP",
+                "score": 73.14,
+                "won": true,
+                "deaths": 4
+              },
+              {
+                "playerId": "c8de87cb-5e6e-47ce-afe5-dd3985558a3f",
+                "riotId": "Slash SKY#TOP10",
+                "teamSlot": "A2",
+                "position": "TOP",
+                "score": 65.15,
+                "won": false,
+                "deaths": 4
+              },
+              {
+                "playerId": "3c03eab2-782e-41cc-85eb-11895824406a",
+                "riotId": "SKY mayangamerbr#GGG",
+                "teamSlot": "A2",
+                "position": "JG",
+                "score": 61.14,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "1e16ae4d-b121-4d24-905d-28089516f1be",
+                "riotId": "SKY guMis#rina",
+                "teamSlot": "A2",
+                "position": "MID",
+                "score": 61.8,
+                "won": false,
+                "deaths": 3
+              },
+              {
+                "playerId": "af1ead43-619e-44b9-954b-b97d8d8ca99d",
+                "riotId": "SKY YuJay#ilyN",
+                "teamSlot": "A2",
+                "position": "ADC",
+                "score": 50.11,
+                "won": false,
+                "deaths": 5
+              },
+              {
+                "playerId": "3fe4398c-3c6e-43cb-a16b-9a1f943c4c8b",
+                "riotId": "SKY Ciel Winters#Lost",
+                "teamSlot": "A2",
+                "position": "SUP",
+                "score": 71.74,
+                "won": false,
+                "deaths": 9
               }
             ]
           }
