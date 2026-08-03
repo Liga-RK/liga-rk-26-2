@@ -919,6 +919,22 @@ a {
   white-space: nowrap;
 }
 
+.match-team-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.match-team-link:hover,
+.match-team-link:focus-visible {
+  color: var(--accent);
+}
+
+.match-placeholder {
+  color: inherit;
+  opacity: 0.56;
+}
+
 .match-score {
   justify-self: end;
 }

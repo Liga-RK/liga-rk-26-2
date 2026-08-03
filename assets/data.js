@@ -159,10 +159,10 @@ window.LIGA_RK_DATA = {
         { title: "OITAVAS 4", date: "16/08", time: "21:30", format: "MD3", teamA: "B2", teamB: "A3" }
       ],
       [
-        { title: "QUARTAS 1", date: "23/08", time: "14:00", format: "MD3", teamA: "A1", teamB: "VENCEDOR OITAVAS 1" },
-        { title: "QUARTAS 2", date: "23/08", time: "16:30", format: "MD3", teamA: "B1", teamB: "VENCEDOR OITAVAS 2" },
-        { title: "QUARTAS 3", date: "23/08", time: "19:00", format: "MD3", teamA: "C1", teamB: "VENCEDOR OITAVAS 3" },
-        { title: "QUARTAS 4", date: "23/08", time: "21:30", format: "MD3", teamA: "D1", teamB: "VENCEDOR OITAVAS 4" }
+        { title: "QUARTAS 1", date: "23/08", time: "14:00", format: "MD5", teamA: "A1", teamB: "VENCEDOR OITAVAS 1" },
+        { title: "QUARTAS 2", date: "23/08", time: "14:00", format: "MD5", teamA: "B1", teamB: "VENCEDOR OITAVAS 2" },
+        { title: "QUARTAS 3", date: "23/08", time: "19:00", format: "MD5", teamA: "C1", teamB: "VENCEDOR OITAVAS 3" },
+        { title: "QUARTAS 4", date: "23/08", time: "19:00", format: "MD5", teamA: "D1", teamB: "VENCEDOR OITAVAS 4" }
       ],
       [
         { title: "SEMIS 1", date: "30/08", time: "15:00", format: "MD5", teamA: "VENCEDOR QUARTAS 1", teamB: "VENCEDOR QUARTAS 2" },
@@ -295,10 +295,10 @@ window.LIGA_RK_DATA = {
         { title: "OITAVAS 4", date: "15/08", time: "21:30", format: "MD3", teamA: "B2", teamB: "A3" }
       ],
       [
-        { title: "QUARTAS 1", date: "22/08", time: "14:00", format: "MD3", teamA: "A1", teamB: "VENCEDOR OITAVAS 1" },
-        { title: "QUARTAS 2", date: "22/08", time: "16:30", format: "MD3", teamA: "B1", teamB: "VENCEDOR OITAVAS 2" },
-        { title: "QUARTAS 3", date: "22/08", time: "19:00", format: "MD3", teamA: "C1", teamB: "VENCEDOR OITAVAS 3" },
-        { title: "QUARTAS 4", date: "22/08", time: "21:30", format: "MD3", teamA: "D1", teamB: "VENCEDOR OITAVAS 4" }
+        { title: "QUARTAS 1", date: "22/08", time: "14:00", format: "MD5", teamA: "A1", teamB: "VENCEDOR OITAVAS 1" },
+        { title: "QUARTAS 2", date: "22/08", time: "14:00", format: "MD5", teamA: "B1", teamB: "VENCEDOR OITAVAS 2" },
+        { title: "QUARTAS 3", date: "22/08", time: "19:00", format: "MD5", teamA: "C1", teamB: "VENCEDOR OITAVAS 3" },
+        { title: "QUARTAS 4", date: "22/08", time: "19:00", format: "MD5", teamA: "D1", teamB: "VENCEDOR OITAVAS 4" }
       ],
       [
         { title: "SEMIS 1", date: "29/08", time: "15:00", format: "MD5", teamA: "VENCEDOR QUARTAS 1", teamB: "VENCEDOR QUARTAS 2" },

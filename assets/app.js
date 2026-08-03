@@ -648,10 +648,16 @@
       classes.push("winner");
     }
 
+    const teamText = String((team && team.text) || "");
+    const teamSlot = String((team && team.slot) || "");
+    const teamNameMarkup = teamSlot
+      ? `<a class="match-name match-team-link" href="time.html?division=${divisionKey}&id=${encodeURIComponent(teamSlot)}" aria-label="Ver estatÃ­sticas de ${escapeAttribute(teamText)}">${escapeHtml(teamText)}</a>`
+      : `<span class="match-name match-placeholder">${escapeHtml(teamText)}</span>`;
+
     return `
       <div class="${classes.join(" ")}">
-        ${renderMatchLogo(team && team.slot)}
-        <span class="match-name">${escapeHtml((team && team.text) || "")}</span>
+        ${renderMatchLogo(teamSlot)}
+        ${teamNameMarkup}
         <span class="match-score">${escapeHtml(score === null || score === undefined ? "" : score)}</span>
       </div>
     `;
