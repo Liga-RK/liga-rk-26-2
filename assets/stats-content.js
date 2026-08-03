@@ -1,6 +1,6 @@
 window.LIGA_RK_STATS = {
   "version": 2,
-  "generatedAt": "2026-08-03T01:32:56.483Z",
+  "generatedAt": "2026-08-03T14:35:35.181Z",
   "season": "Liga RK 26.2",
   "divisions": {
     "elite": {
@@ -34669,129 +34669,129 @@ window.LIGA_RK_STATS = {
         }
       ],
       "teamOfWeek": {
-        "round": 1,
-        "label": "RODADA 1",
+        "round": 2,
+        "label": "RODADA 2",
         "minimumGames": 2,
         "selection": [
           {
             "role": "TOP",
-            "playerId": "ee09cf39-13a1-4268-a363-dbd28955437b",
-            "player": "NIHIL",
-            "riotId": "N I H I L メ#CDRP",
+            "playerId": "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
+            "player": "AZO",
+            "riotId": "AZØ#AZ0",
             "image": "",
-            "team": "D1",
-            "teamName": "FAVELÃO DO TECHY",
-            "teamTag": "FVL",
-            "teamLogo": "assets/uploads/equipes_elite/fvl.png",
-            "averageScore": 87.41,
+            "team": "B4",
+            "teamName": "TOPEIRAS DO MAU",
+            "teamTag": "TOP",
+            "teamLogo": "assets/uploads/equipes_elite/top.png",
+            "averageScore": 85.37,
             "games": 2,
             "wins": 2,
             "losses": 0,
             "seriesWins": 1,
             "series": [
-              "groups-r1g7"
+              "groups-r2g4"
             ],
             "matches": [
-              "groups-r1g7-j1",
-              "groups-r1g7-j2"
+              "groups-r2g4-j1",
+              "groups-r2g4-j2"
             ]
           },
           {
             "role": "JG",
-            "playerId": "953d89dc-d2ac-4e77-bef7-88c66ad248d8",
-            "player": "TECLAS",
-            "riotId": "LittleTeclas#0402",
+            "playerId": "d98b2eb2-01a3-4f75-8d3f-f699a8974674",
+            "player": "MENTALGAP",
+            "riotId": "mygirl#1513",
             "image": "",
-            "team": "D3",
-            "teamName": "SPACE DUCKS",
-            "teamTag": "SDK",
-            "teamLogo": "assets/uploads/equipes_elite/sdk.png",
-            "averageScore": 96.02,
+            "team": "A2",
+            "teamName": "BANDO DO ROSA",
+            "teamTag": "BDR",
+            "teamLogo": "assets/uploads/equipes_elite/bdr.png",
+            "averageScore": 90.64,
             "games": 2,
             "wins": 2,
             "losses": 0,
             "seriesWins": 1,
             "series": [
-              "groups-r1g8"
+              "groups-r2g2"
             ],
             "matches": [
-              "groups-r1g8-j1",
-              "groups-r1g8-j2"
+              "groups-r2g2-j1",
+              "groups-r2g2-j2"
             ]
           },
           {
             "role": "MID",
-            "playerId": "a89f54a2-ff64-4647-8738-95c802959a50",
-            "player": "ESTRUPICIO",
-            "riotId": "estrupicio#원숭이",
+            "playerId": "9392f3eb-5e8b-4059-874e-905daba68b36",
+            "player": "RYUU",
+            "riotId": "Klein Moretti 小丑#Ryuu",
             "image": "",
-            "team": "C4",
-            "teamName": "CASHOUT & TRIMILIQUE LTDA",
-            "teamTag": "CASH",
-            "teamLogo": "assets/uploads/equipes_elite/cash.png",
-            "averageScore": 87.29,
+            "team": "A2",
+            "teamName": "BANDO DO ROSA",
+            "teamTag": "BDR",
+            "teamLogo": "assets/uploads/equipes_elite/bdr.png",
+            "averageScore": 93.11,
             "games": 2,
             "wins": 2,
             "losses": 0,
             "seriesWins": 1,
             "series": [
-              "groups-r1g6"
+              "groups-r2g2"
             ],
             "matches": [
-              "groups-r1g6-j1",
-              "groups-r1g6-j2"
+              "groups-r2g2-j1",
+              "groups-r2g2-j2"
             ]
           },
           {
             "role": "ADC",
-            "playerId": "094a9436-c639-4195-a01b-0fd126ed96fe",
-            "player": "MIRACLE",
-            "riotId": "lMiracle#BR01",
+            "playerId": "a44b2125-85a3-4f69-9caa-97a385822b0a",
+            "player": "LISBOA",
+            "riotId": "Lisboa#TTS",
             "image": "",
-            "team": "A3",
-            "teamName": "RAVENCLAW",
-            "teamTag": "RAVE",
-            "teamLogo": "assets/uploads/equipes_elite/rave.png",
-            "averageScore": 94.34,
+            "team": "B4",
+            "teamName": "TOPEIRAS DO MAU",
+            "teamTag": "TOP",
+            "teamLogo": "assets/uploads/equipes_elite/top.png",
+            "averageScore": 80.6,
             "games": 2,
             "wins": 2,
             "losses": 0,
             "seriesWins": 1,
             "series": [
-              "groups-r1g2"
+              "groups-r2g4"
             ],
             "matches": [
-              "groups-r1g2-j1",
-              "groups-r1g2-j2"
+              "groups-r2g4-j1",
+              "groups-r2g4-j2"
             ]
           },
           {
             "role": "SUP",
-            "playerId": "6c07e8dd-9195-49ae-b8a9-8a1c360cf775",
-            "player": "VALVERDE",
-            "riotId": "FedeValverde#RM8",
+            "playerId": "dbfbe491-6dba-47a6-b29a-4f6307b4d132",
+            "player": "ALPACA",
+            "riotId": "Alpacaz#br1",
             "image": "",
-            "team": "C4",
-            "teamName": "CASHOUT & TRIMILIQUE LTDA",
-            "teamTag": "CASH",
-            "teamLogo": "assets/uploads/equipes_elite/cash.png",
-            "averageScore": 83.76,
+            "team": "B4",
+            "teamName": "TOPEIRAS DO MAU",
+            "teamTag": "TOP",
+            "teamLogo": "assets/uploads/equipes_elite/top.png",
+            "averageScore": 78.52,
             "games": 2,
             "wins": 2,
             "losses": 0,
             "seriesWins": 1,
             "series": [
-              "groups-r1g6"
+              "groups-r2g4"
             ],
             "matches": [
-              "groups-r1g6-j1",
-              "groups-r1g6-j2"
+              "groups-r2g4-j1",
+              "groups-r2g4-j2"
             ]
           }
         ],
-        "highlightPlayerId": "953d89dc-d2ac-4e77-bef7-88c66ad248d8",
-        "highlightRole": "JG",
-        "highlightScore": 96.02
+        "highlightPlayerId": "9392f3eb-5e8b-4059-874e-905daba68b36",
+        "highlightRole": "MID",
+        "highlightScore": 93.11
       }
     },
     "ascension": {
@@ -67224,129 +67224,129 @@ window.LIGA_RK_STATS = {
         }
       ],
       "teamOfWeek": {
-        "round": 1,
-        "label": "RODADA 1",
+        "round": 2,
+        "label": "RODADA 2",
         "minimumGames": 2,
         "selection": [
           {
             "role": "TOP",
-            "playerId": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
-            "player": "MITS",
-            "riotId": "Mits#KIM",
+            "playerId": "73aedc68-0e38-4d08-9688-e7b16672c733",
+            "player": "POLIGONS",
+            "riotId": "Poligns#Aura",
             "image": "",
-            "team": "B3",
-            "teamName": "FOFOLETES DO RICK",
-            "teamTag": "FFLT",
-            "teamLogo": "assets/uploads/equipes_ascensao/fflt.png",
-            "averageScore": 93.27,
+            "team": "A4",
+            "teamName": "TENEBRA BEHEMOT",
+            "teamTag": "TNB",
+            "teamLogo": "assets/uploads/equipes_ascensao/tnb.png",
+            "averageScore": 85.77,
             "games": 2,
             "wins": 2,
             "losses": 0,
             "seriesWins": 1,
             "series": [
-              "groups-r1g4"
+              "groups-r2g2"
             ],
             "matches": [
-              "groups-r1g4-j1",
-              "groups-r1g4-j2"
+              "groups-r2g2-j1",
+              "groups-r2g2-j2"
             ]
           },
           {
             "role": "JG",
-            "playerId": "b23e9ca5-3abb-4222-9580-5965227b155c",
-            "player": "DRAGON",
-            "riotId": "RDG Dragon B3#155",
-            "image": "",
-            "team": "D3",
-            "teamName": "RAISING DRAGONS",
-            "teamTag": "RDG",
-            "teamLogo": "assets/uploads/equipes_ascensao/rdg.png",
-            "averageScore": 97,
-            "games": 2,
-            "wins": 2,
-            "losses": 0,
-            "seriesWins": 1,
-            "series": [
-              "groups-r1g8"
-            ],
-            "matches": [
-              "groups-r1g8-j1",
-              "groups-r1g8-j2"
-            ]
-          },
-          {
-            "role": "MID",
-            "playerId": "6aa73999-3861-4c5e-95a7-d629b6bc501f",
-            "player": "PEDRIN",
-            "riotId": "Pedrin UwU#br1",
-            "image": "",
-            "team": "C4",
-            "teamName": "THE KILLERS T7",
-            "teamTag": "TKT7",
-            "teamLogo": "assets/uploads/equipes_ascensao/tkt7.png",
-            "averageScore": 83.63,
-            "games": 2,
-            "wins": 2,
-            "losses": 0,
-            "seriesWins": 1,
-            "series": [
-              "groups-r1g6"
-            ],
-            "matches": [
-              "groups-r1g6-j1",
-              "groups-r1g6-j2"
-            ]
-          },
-          {
-            "role": "ADC",
-            "playerId": "271defca-2ef0-4720-b96f-5f68a6ddfeea",
-            "player": "Just Feeling",
-            "riotId": "Just Feeling#Bad",
+            "playerId": "b92cbd24-be2e-4c7b-b2dd-86105c87d127",
+            "player": "HEYTTOR",
+            "riotId": "kylo ren#zed",
             "image": "",
             "team": "B1",
             "teamName": "PHOENIX GAMING",
             "teamTag": "PXG",
             "teamLogo": "assets/uploads/equipes_ascensao/pxg.png",
-            "averageScore": 83.11,
+            "averageScore": 95.05,
             "games": 2,
             "wins": 2,
             "losses": 0,
             "seriesWins": 1,
             "series": [
-              "groups-r1g3"
+              "groups-r2g3"
             ],
             "matches": [
-              "groups-r1g3-j1",
-              "groups-r1g3-j2"
+              "groups-r2g3-j1",
+              "groups-r2g3-j2"
+            ]
+          },
+          {
+            "role": "MID",
+            "playerId": "ccf6c920-4a2e-40ba-824d-73598fffb378",
+            "player": "HITKILLA",
+            "riotId": "HitKilla#0408",
+            "image": "",
+            "team": "B1",
+            "teamName": "PHOENIX GAMING",
+            "teamTag": "PXG",
+            "teamLogo": "assets/uploads/equipes_ascensao/pxg.png",
+            "averageScore": 85.44,
+            "games": 2,
+            "wins": 2,
+            "losses": 0,
+            "seriesWins": 1,
+            "series": [
+              "groups-r2g3"
+            ],
+            "matches": [
+              "groups-r2g3-j1",
+              "groups-r2g3-j2"
+            ]
+          },
+          {
+            "role": "ADC",
+            "playerId": "9676fdd6-1dbb-400b-9d40-728ec3ed4897",
+            "player": "SHASHYCS",
+            "riotId": "Viollunere#Tsuki",
+            "image": "",
+            "team": "A4",
+            "teamName": "TENEBRA BEHEMOT",
+            "teamTag": "TNB",
+            "teamLogo": "assets/uploads/equipes_ascensao/tnb.png",
+            "averageScore": 89.8,
+            "games": 2,
+            "wins": 2,
+            "losses": 0,
+            "seriesWins": 1,
+            "series": [
+              "groups-r2g2"
+            ],
+            "matches": [
+              "groups-r2g2-j1",
+              "groups-r2g2-j2"
             ]
           },
           {
             "role": "SUP",
-            "playerId": "d9b48adc-0878-4579-9fdb-c6c2b45bdf04",
-            "player": "GABS MATTOS",
-            "riotId": "Gabs Mattos#GABS",
+            "playerId": "30124aec-f280-4dcd-83d4-f9cda42c5df8",
+            "player": "FREEZY",
+            "riotId": "IIIIIIIIIIIIlIII#Lcpnz",
             "image": "",
-            "team": "D3",
-            "teamName": "RAISING DRAGONS",
-            "teamTag": "RDG",
-            "teamLogo": "assets/uploads/equipes_ascensao/rdg.png",
-            "averageScore": 85.13,
+            "team": "B1",
+            "teamName": "PHOENIX GAMING",
+            "teamTag": "PXG",
+            "teamLogo": "assets/uploads/equipes_ascensao/pxg.png",
+            "averageScore": 83.52,
             "games": 2,
             "wins": 2,
             "losses": 0,
             "seriesWins": 1,
             "series": [
-              "groups-r1g8"
+              "groups-r2g3"
             ],
             "matches": [
-              "groups-r1g8-j1",
-              "groups-r1g8-j2"
+              "groups-r2g3-j1",
+              "groups-r2g3-j2"
             ]
           }
         ],
-        "highlightPlayerId": "b23e9ca5-3abb-4222-9580-5965227b155c",
+        "highlightPlayerId": "b92cbd24-be2e-4c7b-b2dd-86105c87d127",
         "highlightRole": "JG",
-        "highlightScore": 97
+        "highlightScore": 95.05
       }
     }
   }

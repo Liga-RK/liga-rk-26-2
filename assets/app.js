@@ -378,6 +378,7 @@
   function setupWeeklyTeamColors() {
     const colorOverrides = {
       RDG: "#3b070b",
+      PXG: "#34383f",
     };
 
     document.querySelectorAll("[data-weekly-team-color]").forEach((portrait) => {
@@ -1026,7 +1027,7 @@
         return true;
       });
 
-    return vods.length ? vods : [normalizeVod({})];
+    return vods.length ? vods.reverse() : [normalizeVod({})];
   }
 
   function normalizeVod(vod = {}) {

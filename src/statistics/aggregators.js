@@ -4,7 +4,7 @@ const { normalizeRiotId } = require("./player-identity");
 
 const DIVISIONS = ["elite", "ascension"];
 const MVP_MODEL_VERSION = "role-impact-v2";
-const ACTIVE_TEAM_OF_WEEK_ROUND = 1;
+const ACTIVE_TEAM_OF_WEEK_ROUND = 2;
 const MIN_TEAM_OF_WEEK_GAMES = 2;
 const COMPETITIVE_LANES = ["TOP", "JG", "MID", "ADC", "SUP"];
 const MVP_ROLE_WEIGHTS = Object.freeze({
