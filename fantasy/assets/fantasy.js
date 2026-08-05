@@ -277,6 +277,9 @@
       matchup: cleanText(item.matchup),
       average: roundMoney(item.average),
       recentPoints: normalizeRecentPoints(item.recentPoints),
+      maintenanceScore: Number.isFinite(Number(item.maintenanceScore))
+        ? roundMoney(item.maintenanceScore)
+        : null,
       scoreDetails: objectValue(item.scoreDetails),
       valuationDetails: objectValue(item.valuationDetails)
     }));
@@ -629,7 +632,10 @@
     const recent = item.recentPoints && item.recentPoints.length
       ? item.recentPoints.map((point) => formatNumber(point)).join(" · ")
       : "aguardando rodada";
-    stats.innerHTML = `<span>Média: ${formatNumber(item.average)}</span><span>Performance recente: ${escapeHtml(recent)}</span>`;
+    const maintenance = item.type === "player" && Number.isFinite(Number(item.maintenanceScore))
+      ? `<span title="Pontuação aproximada necessária para sustentar o preço atual">MPV: ${formatNumber(item.maintenanceScore)} pts</span>`
+      : "";
+    stats.innerHTML = `<span>Média: ${formatNumber(item.average)}</span><span>Performance recente: ${escapeHtml(recent)}</span>${maintenance}`;
     meta.append(name, team, matchup, stats);
     const breakdown = fantasyBreakdown(item);
     if (breakdown) meta.appendChild(breakdown);
@@ -667,7 +673,8 @@
   function fantasyBreakdown(item) {
     const score = objectValue(item.scoreDetails);
     const valuation = objectValue(item.valuationDetails);
-    if (Number(score.formulaVersion) !== 2 && Number(valuation.formulaVersion) !== 2) return null;
+    const dynamicValuation = valuation.formulaId === "fantasy-v3-dynamic" || Number(valuation.formulaVersion) === 3;
+    if (Number(score.formulaVersion) !== 2 && !dynamicValuation) return null;
     const details = document.createElement("details");
     details.className = "fantasy-breakdown";
     const summary = document.createElement("summary");
@@ -686,15 +693,20 @@
       appendBreakdownLine(list, "Total oficial", formatNumber(score.pontuacaoOficial), true);
       details.append(title, list);
     }
-    if (Number(valuation.formulaVersion) === 2 && item.type === "player") {
+    if (dynamicValuation && item.type === "player") {
       const title = document.createElement("strong");
       title.textContent = "Mercado";
       const list = document.createElement("ul");
       appendBreakdownLine(list, "Preço anterior", `RK$ ${formatMoney(valuation.currentPrice)}`);
       appendBreakdownLine(list, "Pontuação esperada", formatNumber(valuation.expectedScore));
-      appendBreakdownLine(list, "Média histórica (M3)",
+      appendBreakdownLine(list, "Desempenho ajustado",
+        valuation.adjustedPerformance == null ? "não atuou" : formatNumber(valuation.adjustedPerformance));
+      appendBreakdownLine(list, "Média recente",
+        valuation.recentAverage == null ? "sem histórico" : formatNumber(valuation.recentAverage));
+      appendBreakdownLine(list, "Média da temporada",
         valuation.historicalAverage == null ? "sem histórico" : formatNumber(valuation.historicalAverage));
       appendBreakdownLine(list, "Pontuação realizada", formatNumber(valuation.roundPoints));
+      appendBreakdownLine(list, "Fator de participação", `${formatNumber(Number(valuation.participationFactor) * 100)}%`);
       appendBreakdownLine(list, "Variação", signedMoney(valuation.delta));
       appendBreakdownLine(list, "Novo preço", `RK$ ${formatMoney(valuation.newPrice)}`, true);
       details.append(title, list);
@@ -1503,6 +1515,9 @@
       priceDelta: roundMoney(Number(item.price) - Number(Number.isFinite(Number(item.previousPrice)) ? item.previousPrice : item.price)),
       average: roundMoney(item.average),
       recentPoints: normalizeRecentPoints(item.recentPoints),
+      maintenanceScore: Number.isFinite(Number(item.maintenanceScore))
+        ? roundMoney(item.maintenanceScore)
+        : null,
       picks: normalizePickCount(item.picks)
     };
   }

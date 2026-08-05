@@ -1,4 +1,5 @@
 import formulaV2 from "../src/fantasy/formula-v2.cjs";
+import valuationV3 from "../src/fantasy/valuation-v3.cjs";
 
 const ADMIN_COOKIE = "fantasy_admin_session";
 const ADMIN_SESSION_HOURS = 8;
@@ -15,25 +16,17 @@ const PLAYER_ROLES = ["TOP", "JG", "MID", "ADC", "SUP"];
 const ALL_ROLES = [...PLAYER_ROLES, "TEAM"];
 const DEFAULT_SOURCE_URL =
   "https://liga-rk.github.io/liga-rk-26-2/assets/fantasy-source.json";
-const DEFAULT_FORMULA_SETTINGS = Object.freeze({
-  scoreMinimum: -10,
-  scoreMaximum: 50,
-  captainMultiplier: 1.5,
-  expectedPointsPerPrice: 0.9,
-  priceDeltaDivisor: 7,
-  priceDeltaMinimum: -2,
-  priceDeltaMaximum: 2,
-  priceMinimum: 4,
-  priceMaximum: 30,
-  historyRounds: 3,
-  didNotPlay: "hold"
-});
+const DEFAULT_FORMULA_SETTINGS = valuationV3.DEFAULT_VALUATION_SETTINGS;
 const {
   FORMULA_ID,
-  calcularValorizacao,
   processarRodadaFantasy,
   calcularPontuacaoEscalacao
 } = formulaV2;
+const {
+  VALUATION_FORMULA_ID,
+  VALUATION_FORMULA_VERSION,
+  calculateFantasyValuation
+} = valuationV3;
 const BACKUP_TABLES = Object.freeze([
   "d1_migrations",
   "fantasy_users",
@@ -62,6 +55,8 @@ const BACKUP_TABLES = Object.freeze([
   "fantasy_private_league_members",
   "fantasy_formula_settings",
   "fantasy_price_simulations",
+  "fantasy_price_history",
+  "fantasy_valuation_rollbacks",
   "fantasy_audit_log",
   "fantasy_error_log"
 ]);
@@ -92,6 +87,8 @@ const RESTORE_TABLES = Object.freeze([
   "fantasy_private_league_members",
   "fantasy_formula_settings",
   "fantasy_price_simulations",
+  "fantasy_price_history",
+  "fantasy_valuation_rollbacks",
   "fantasy_audit_log",
   "fantasy_error_log"
 ]);
@@ -129,6 +126,8 @@ export async function handleAdminRequest(request, env, requestId) {
     ["GET", "/api/fantasy/admin/scores", adminScores],
     ["POST", "/api/fantasy/admin/valuation/simulate", adminValuationSimulate],
     ["POST", "/api/fantasy/admin/valuation/apply", adminValuationApply],
+    ["POST", "/api/fantasy/admin/valuation/review", adminValuationReview],
+    ["POST", "/api/fantasy/admin/valuation/rollback", adminValuationRollback],
     ["POST", "/api/fantasy/admin/valuation/cancel", adminValuationCancel],
     ["GET", "/api/fantasy/admin/valuation/history", adminValuationHistory],
     ["GET", "/api/fantasy/admin/formula", adminGetFormula],
@@ -1795,6 +1794,16 @@ async function adminRoundProcessV2(request, env, requestId, auth) {
         409
       );
     }
+    if (prior?.status === "scores_saved" && timingSafeEqual(prior.sourceHash, normalized.hash)) {
+      results.push({
+        division: normalized.division,
+        roundId: round.id,
+        idempotent: true,
+        sourceHash: normalized.hash,
+        valuationPending: true
+      });
+      continue;
+    }
     processable.push({ normalized, round });
   }
   if (!processable.length) {
@@ -1821,33 +1830,11 @@ async function adminRoundProcessV2(request, env, requestId, auth) {
       WHERE division = ? AND active = 1
       ORDER BY asset_type, asset_id
     `, [normalized.division]);
-    const history = await dbAll(env, `
-      SELECT s.asset_id AS assetId, s.points, s.games,
-             r.round_number AS roundNumber,
-             CASE WHEN r.status = 'cancelled' THEN 1 ELSE 0 END AS cancelled,
-             CASE WHEN r.status = 'scored' THEN 1 ELSE 0 END AS finalized
-      FROM fantasy_asset_round_scores s
-      JOIN fantasy_rounds r ON r.id = s.round_id
-      WHERE s.division = ? AND r.round_number < ?
-      ORDER BY r.round_number DESC
-    `, [normalized.division, roundNumber]);
-    const historicos = {};
-    for (const row of history) {
-      const list = historicos[String(row.assetId)] || [];
-      list.push(row);
-      historicos[String(row.assetId)] = list;
-    }
-    const precos = Object.fromEntries(
-      market.filter((item) => item.assetType === "player")
-        .map((item) => [String(item.assetId), Number(item.priceCents) / 100])
-    );
     const processed = processarRodadaFantasy({
       rodadaId: round.id,
       rodadaNumero: roundNumber,
       divisao: normalized.division,
-      series: normalized.series,
-      precos,
-      historicos
+      series: normalized.series
     });
     const byPlayer = new Map(processed.pontuacoes.map((item) => [String(item.atletaId), item]));
     for (const asset of market.filter((item) => item.assetType === "player")) {
@@ -2015,90 +2002,7 @@ async function adminRoundProcessV2(request, env, requestId, auth) {
     if (scoreStatements.length) await env.DB.batch(scoreStatements);
     await recalculateLineupsV2(env, round, normalized.division);
 
-    const formula = { version: FORMULA_ID, settings: DEFAULT_FORMULA_SETTINGS };
-    const valuationItems = await calculateValuation(env, round, formula);
-    const valuationStatements = [];
-    for (const item of valuationItems) {
-      valuationStatements.push(env.DB.prepare(`
-        INSERT INTO fantasy_market_snapshots
-          (round_id, division, asset_id, price_before_cents,
-           price_after_cents, formula_version, breakdown_json)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT(round_id, asset_id) DO UPDATE SET
-          price_before_cents = excluded.price_before_cents,
-          price_after_cents = excluded.price_after_cents,
-          formula_version = excluded.formula_version,
-          breakdown_json = excluded.breakdown_json
-      `).bind(
-        round.id,
-        normalized.division,
-        item.assetId,
-        item.currentPriceCents,
-        item.newPriceCents,
-        FORMULA_ID,
-        JSON.stringify(item)
-      ));
-      valuationStatements.push(env.DB.prepare(`
-        UPDATE fantasy_market
-        SET previous_price = price,
-            previous_price_cents = price_cents,
-            price = ?,
-            price_cents = ?,
-            last_valuation_breakdown_json = ?,
-            updated_at = CURRENT_TIMESTAMP
-        WHERE division = ? AND asset_id = ?
-      `).bind(
-        item.newPriceCents / 100,
-        item.newPriceCents,
-        JSON.stringify(item),
-        normalized.division,
-        item.assetId
-      ));
-    }
-    const simulationHash = await hashObject({
-      roundId: round.id,
-      sourceHash,
-      formula: FORMULA_ID,
-      items: valuationItems
-    });
-    valuationStatements.push(env.DB.prepare(`
-      INSERT INTO fantasy_price_simulations
-        (id, round_id, source_hash, formula_version, settings_json,
-         items_json, status, created_by, applied_at)
-      VALUES (?, ?, ?, ?, ?, ?, 'applied', ?, CURRENT_TIMESTAMP)
-      ON CONFLICT(round_id, source_hash, formula_version) DO UPDATE SET
-        items_json = excluded.items_json,
-        status = 'applied',
-        created_by = excluded.created_by,
-        applied_at = CURRENT_TIMESTAMP
-    `).bind(
-      `v2:${round.id}:${simulationHash.slice(0, 24)}`,
-      round.id,
-      sourceHash,
-      FORMULA_ID,
-      JSON.stringify(DEFAULT_FORMULA_SETTINGS),
-      JSON.stringify(valuationItems),
-      auth.username
-    ));
-    valuationStatements.push(env.DB.prepare(`
-      UPDATE fantasy_round_processing
-      SET status = 'completed', price_items = ?,
-          details_json = ?, processed_at = CURRENT_TIMESTAMP
-      WHERE round_id = ? AND formula_version = ?
-    `).bind(
-      valuationItems.length,
-      JSON.stringify({
-        processedBy: auth.username,
-        backupId,
-        scoreItems: playerScores.length + teamScores.length,
-        priceItems: valuationItems.length
-      }),
-      round.id,
-      FORMULA_ID
-    ));
-    if (valuationStatements.length) await env.DB.batch(valuationStatements);
     await updateMarketAverages(env, normalized.division);
-    await updateWealthAfterValuation(env, round.id, normalized.division, valuationItems);
     results.push({
       division: normalized.division,
       roundId: round.id,
@@ -2106,7 +2010,7 @@ async function adminRoundProcessV2(request, env, requestId, auth) {
       idempotent: false,
       scores: playerScores.length + teamScores.length,
       maps: processed.mapasProcessados,
-      prices: valuationSummary(valuationItems)
+      valuationPending: true
     });
   }
   await audit(env, {
@@ -2484,7 +2388,7 @@ async function adminValuationSimulate(request, env, requestId, auth) {
   const requestedDivision = optionalDivision(body.division);
   const formula = await getFormula(env);
   const rounds = await dbAll(env, `
-    SELECT id, division, round_number AS roundNumber, name
+    SELECT id, division, round_number AS roundNumber, name, status
     FROM fantasy_rounds
     WHERE round_number = ?
       ${requestedDivision ? "AND division = ?" : ""}
@@ -2494,13 +2398,30 @@ async function adminValuationSimulate(request, env, requestId, auth) {
 
   const simulations = [];
   for (const round of rounds) {
+    if (round.status !== "scored") {
+      return failure(
+        "ROUND_SCORES_REQUIRED",
+        `Processe primeiro a pontuação da rodada ${roundNumber} de ${round.division}.`,
+        409,
+        { division: round.division, status: round.status }
+      );
+    }
     const alreadyApplied = await env.DB.prepare(`
-      SELECT id, source_hash AS sourceHash, items_json AS itemsJson
+      SELECT id, source_hash AS sourceHash, items_json AS itemsJson,
+             formula_version AS formulaVersion
       FROM fantasy_price_simulations
-      WHERE round_id = ? AND formula_version = ? AND status = 'applied'
+      WHERE round_id = ? AND status = 'applied'
       ORDER BY applied_at DESC LIMIT 1
-    `).bind(round.id, formula.version).first();
+    `).bind(round.id).first();
     if (alreadyApplied) {
+      if (alreadyApplied.formulaVersion !== formula.version) {
+        return failure(
+          "ROUND_ALREADY_VALUED",
+          `A rodada ${roundNumber} de ${round.division} já foi valorizada por ${alreadyApplied.formulaVersion}. A fórmula dinâmica não será aplicada retroativamente.`,
+          409,
+          { division: round.division, previousFormula: alreadyApplied.formulaVersion }
+        );
+      }
       const items = safeJson(alreadyApplied.itemsJson, []);
       simulations.push({
         id: alreadyApplied.id,
@@ -2527,12 +2448,11 @@ async function adminValuationSimulate(request, env, requestId, auth) {
       }))
     });
     const existing = await env.DB.prepare(`
-      SELECT id, status FROM fantasy_price_simulations
+      SELECT id, status, items_json AS itemsJson FROM fantasy_price_simulations
       WHERE round_id = ? AND source_hash = ? AND formula_version = ?
     `).bind(round.id, sourceHash, formula.version).first();
-    let simulationId = existing?.id;
-    if (!simulationId || existing.status === "cancelled" || existing.status === "failed") {
-      simulationId = crypto.randomUUID();
+    const simulationId = existing?.id || crypto.randomUUID();
+    if (!existing || existing.status === "cancelled" || existing.status === "failed") {
       await env.DB.prepare(`
         INSERT INTO fantasy_price_simulations
           (id, round_id, source_hash, formula_version, settings_json,
@@ -2552,14 +2472,17 @@ async function adminValuationSimulate(request, env, requestId, auth) {
         auth.username
       ).run();
     }
+    const previewItems = existing?.status === "previewed"
+      ? safeJson(existing.itemsJson, items)
+      : items;
     simulations.push({
       id: simulationId,
       round,
       sourceHash,
       formulaVersion: formula.version,
       status: existing?.status === "applied" ? "applied" : "previewed",
-      summary: valuationSummary(items),
-      items
+      summary: valuationSummary(previewItems),
+      items: previewItems
     });
   }
   await audit(env, {
@@ -2579,6 +2502,68 @@ async function adminValuationSimulate(request, env, requestId, auth) {
     requestId
   });
   return success({ formula, simulations });
+}
+
+async function adminValuationReview(request, env, requestId, auth) {
+  const body = await readJson(request);
+  const simulationId = clean(body.simulationId);
+  const assetId = clean(body.assetId);
+  const reviewAction = clean(body.action).toLowerCase();
+  if (!simulationId || !assetId || !["approve", "ignore", "edit"].includes(reviewAction)) {
+    return failure("REVIEW_INVALID", "Informe simulação, atleta e ação de revisão válidos.", 400);
+  }
+  const simulation = await env.DB.prepare(`
+    SELECT id, status, items_json AS itemsJson
+    FROM fantasy_price_simulations WHERE id = ?
+  `).bind(simulationId).first();
+  if (!simulation) return failure("SIMULATION_NOT_FOUND", "Simulação não encontrada.", 404);
+  if (simulation.status !== "previewed") {
+    return failure("SIMULATION_NOT_REVIEWABLE", "Apenas prévias pendentes podem ser revisadas.", 409);
+  }
+  const items = safeJson(simulation.itemsJson, []);
+  const item = items.find((candidate) => String(candidate.assetId) === assetId);
+  if (!item) return failure("ASSET_NOT_FOUND", "Atleta ausente nesta simulação.", 404);
+  const before = structuredClone(item);
+  if (reviewAction === "edit") {
+    const newPrice = Number(body.newPrice);
+    if (!Number.isFinite(newPrice) || newPrice < DEFAULT_FORMULA_SETTINGS.minimumPrice) {
+      return failure("PRICE_INVALID", "O preço manual deve ser de pelo menos RK$ 4,00.", 400);
+    }
+    item.newPriceCents = Math.round(roundMoney(newPrice) * 100);
+    item.newPrice = item.newPriceCents / 100;
+    item.deltaCents = item.newPriceCents - Number(item.currentPriceCents);
+    item.delta = roundMoney(item.deltaCents / 100);
+    item.needsReview = Math.abs(item.delta) > DEFAULT_FORMULA_SETTINGS.reviewThreshold;
+    item.reviewStatus = "edited";
+    item.status = item.delta > 0 ? "increased" : item.delta < 0 ? "decreased" : "unchanged";
+    item.manualOverride = {
+      by: auth.username,
+      at: new Date().toISOString(),
+      reason: clean(body.reason) || "Ajuste manual na prévia",
+      formulaPrice: before.newPrice
+    };
+  } else {
+    item.reviewStatus = reviewAction === "approve" ? "approved" : "ignored";
+    item.reviewNote = {
+      by: auth.username,
+      at: new Date().toISOString(),
+      reason: clean(body.reason) || (reviewAction === "approve" ? "Variação aprovada" : "Alerta ignorado")
+    };
+  }
+  await env.DB.prepare(`
+    UPDATE fantasy_price_simulations
+    SET items_json = ? WHERE id = ? AND status = 'previewed'
+  `).bind(JSON.stringify(items), simulationId).run();
+  await audit(env, {
+    actor: auth.username,
+    action: `valuation.review.${reviewAction}`,
+    targetType: "valuation_item",
+    targetId: `${simulationId}:${assetId}`,
+    before,
+    after: item,
+    requestId
+  });
+  return success({ simulationId, item, summary: valuationSummary(items) });
 }
 
 async function adminValuationApply(request, env, requestId, auth) {
@@ -2613,6 +2598,15 @@ async function adminValuationApply(request, env, requestId, auth) {
     return failure("SIMULATION_NOT_APPLICABLE", "A simulação não está pendente.", 409);
   }
   const items = safeJson(simulation.items_json, []);
+  const pendingReviews = items.filter((item) => item.needsReview && item.reviewStatus === "pending");
+  if (pendingReviews.length) {
+    return failure(
+      "VALUATION_REVIEW_REQUIRED",
+      "Revise todas as variações acima de RK$ 7,00 antes de aplicar.",
+      409,
+      { assets: pendingReviews.map((item) => item.assetId) }
+    );
+  }
   const current = await dbAll(env, `
     SELECT asset_id AS assetId, price_cents AS priceCents
     FROM fantasy_market WHERE division = ? AND active = 1
@@ -2637,6 +2631,7 @@ async function adminValuationApply(request, env, requestId, auth) {
   );
   const statements = [];
   for (const item of items) {
+    const historyId = crypto.randomUUID();
     statements.push(env.DB.prepare(`
       INSERT INTO fantasy_market_snapshots
         (round_id, division, asset_id, price_before_cents,
@@ -2672,14 +2667,54 @@ async function adminValuationApply(request, env, requestId, auth) {
       simulation.division,
       item.assetId
     ));
+    statements.push(env.DB.prepare(`
+      INSERT INTO fantasy_price_history
+        (id, simulation_id, round_id, division, asset_id, asset_type,
+         formula_version, price_before_cents, price_after_cents, delta_cents,
+         points, expected_points, adjusted_performance, difference,
+         participation_factor, needs_review, review_status, details_json,
+         processed_by)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      historyId,
+      simulationId,
+      simulation.round_id,
+      simulation.division,
+      item.assetId,
+      item.assetType,
+      simulation.formula_version,
+      item.currentPriceCents,
+      item.newPriceCents,
+      item.deltaCents,
+      item.roundPoints,
+      item.expectedScore ?? null,
+      item.adjustedPerformance ?? null,
+      item.scoreDifference ?? null,
+      item.participationFactor || 0,
+      item.needsReview ? 1 : 0,
+      item.reviewStatus || "ok",
+      JSON.stringify(item),
+      auth.username
+    ));
   }
   statements.push(env.DB.prepare(`
     UPDATE fantasy_price_simulations
     SET status = 'applied', applied_at = CURRENT_TIMESTAMP
     WHERE id = ? AND status = 'previewed'
   `).bind(simulationId));
+  statements.push(env.DB.prepare(`
+    UPDATE fantasy_round_processing
+    SET status = 'completed', price_items = ?, processed_at = CURRENT_TIMESTAMP
+    WHERE round_id = ? AND formula_version = ?
+  `).bind(items.length, simulation.round_id, FORMULA_ID));
   await env.DB.batch(statements);
-  await updateWealthAfterValuation(env, simulation.round_id, simulation.division, items);
+  await updateWealthAfterValuation(
+    env,
+    simulation.round_id,
+    simulation.division,
+    items,
+    simulation.formula_version
+  );
   await audit(env, {
     actor: auth.username,
     action: "valuation.apply",
@@ -2724,6 +2759,150 @@ async function adminValuationCancel(request, env, requestId, auth) {
   return success({ simulationId: id, status: "cancelled" });
 }
 
+async function adminValuationRollback(request, env, requestId, auth) {
+  const body = await readJson(request);
+  const simulationId = clean(body.simulationId);
+  if (!simulationId || !timingSafeEqual(simulationId, clean(body.confirmSimulationId))) {
+    return failure("CONFIRMATION_REQUIRED", "Confirme o mesmo ID da valorização aplicada.", 400);
+  }
+  const reason = clean(body.reason);
+  if (!reason) return failure("ROLLBACK_REASON_REQUIRED", "Informe o motivo do rollback.", 400);
+  const market = await ensureAutomaticMarketClose(env);
+  if (market?.status !== "closed") {
+    return failure("MARKET_MUST_BE_CLOSED", "O rollback exige o mercado global fechado.", 409);
+  }
+  const simulation = await env.DB.prepare(`
+    SELECT s.*, r.division, r.round_number AS roundNumber
+    FROM fantasy_price_simulations s
+    JOIN fantasy_rounds r ON r.id = s.round_id
+    WHERE s.id = ?
+  `).bind(simulationId).first();
+  if (!simulation) return failure("SIMULATION_NOT_FOUND", "Valorização não encontrada.", 404);
+  if (simulation.status !== "applied") {
+    return failure("VALUATION_NOT_APPLIED", "Somente uma valorização aplicada pode ser revertida.", 409);
+  }
+  const history = await dbAll(env, `
+    SELECT id, asset_id AS assetId, price_before_cents AS priceBeforeCents,
+           price_after_cents AS priceAfterCents, details_json AS detailsJson
+    FROM fantasy_price_history
+    WHERE simulation_id = ? AND review_status <> 'rolled_back'
+    ORDER BY processed_at DESC
+  `, [simulationId]);
+  if (!history.length) {
+    return failure("ROLLBACK_HISTORY_MISSING", "Esta aplicação não possui histórico reversível.", 409);
+  }
+  const current = await dbAll(env, `
+    SELECT asset_id AS assetId, price_cents AS priceCents
+    FROM fantasy_market WHERE division = ? AND active = 1
+  `, [simulation.division]);
+  const currentPrices = new Map(current.map((row) => [String(row.assetId), Number(row.priceCents)]));
+  const changed = history.filter((row) => currentPrices.get(String(row.assetId)) !== Number(row.priceAfterCents));
+  if (changed.length) {
+    return failure(
+      "ROLLBACK_PRICES_CHANGED",
+      "Há preços alterados depois desta valorização. O rollback foi bloqueado para não sobrescrever mudanças posteriores.",
+      409,
+      { assets: changed.map((row) => row.assetId) }
+    );
+  }
+  const backupId = await createBackupRecord(env, auth.username, `Antes do rollback ${simulationId}`);
+  const wealthBefore = await dbAll(env, `
+    SELECT * FROM fantasy_wealth_snapshots WHERE round_id = ?
+  `, [simulation.round_id]);
+  const restoredItems = history.map((row) => {
+    const previous = safeJson(row.detailsJson, {});
+    return {
+      ...previous,
+      assetId: row.assetId,
+      currentPriceCents: Number(row.priceAfterCents),
+      newPriceCents: Number(row.priceBeforeCents),
+      currentPrice: Number(row.priceAfterCents) / 100,
+      newPrice: Number(row.priceBeforeCents) / 100,
+      deltaCents: Number(row.priceBeforeCents) - Number(row.priceAfterCents),
+      delta: roundMoney((Number(row.priceBeforeCents) - Number(row.priceAfterCents)) / 100)
+    };
+  });
+  const statements = [];
+  for (const item of restoredItems) {
+    statements.push(env.DB.prepare(`
+      UPDATE fantasy_market
+      SET price = ?, price_cents = ?,
+          previous_price = ?, previous_price_cents = ?,
+          last_valuation_breakdown_json = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE division = ? AND asset_id = ?
+    `).bind(
+      item.newPrice,
+      item.newPriceCents,
+      Number.isFinite(Number(item.previousPrice)) ? Number(item.previousPrice) : item.newPrice,
+      Number.isFinite(Number(item.previousPriceCents)) ? Number(item.previousPriceCents) : item.newPriceCents,
+      JSON.stringify(item.previousValuation || {}),
+      simulation.division,
+      item.assetId
+    ));
+  }
+  statements.push(env.DB.prepare(`
+    UPDATE fantasy_price_history
+    SET review_status = 'rolled_back', rolled_back_by = ?,
+        rolled_back_at = CURRENT_TIMESTAMP, rollback_reason = ?
+    WHERE simulation_id = ? AND review_status <> 'rolled_back'
+  `).bind(auth.username, reason, simulationId));
+  statements.push(env.DB.prepare(`
+    UPDATE fantasy_price_simulations
+    SET status = 'cancelled', cancelled_at = CURRENT_TIMESTAMP
+    WHERE id = ? AND status = 'applied'
+  `).bind(simulationId));
+  statements.push(env.DB.prepare(`
+    UPDATE fantasy_round_processing
+    SET status = 'scores_saved', price_items = 0, processed_at = CURRENT_TIMESTAMP
+    WHERE round_id = ? AND formula_version = ?
+  `).bind(simulation.round_id, FORMULA_ID));
+  await env.DB.batch(statements);
+  await updateWealthAfterValuation(
+    env,
+    simulation.round_id,
+    simulation.division,
+    restoredItems,
+    simulation.formula_version
+  );
+  const wealthAfter = await dbAll(env, `
+    SELECT * FROM fantasy_wealth_snapshots WHERE round_id = ?
+  `, [simulation.round_id]);
+  const rollbackId = crypto.randomUUID();
+  await env.DB.prepare(`
+    INSERT INTO fantasy_valuation_rollbacks
+      (id, simulation_id, round_id, division, formula_version,
+       restored_prices_json, restored_wealth_json, reason, created_by)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).bind(
+    rollbackId,
+    simulationId,
+    simulation.round_id,
+    simulation.division,
+    simulation.formula_version,
+    JSON.stringify(restoredItems),
+    JSON.stringify({ before: wealthBefore, after: wealthAfter }),
+    reason,
+    auth.username
+  ).run();
+  await audit(env, {
+    actor: auth.username,
+    action: "valuation.rollback",
+    targetType: "price_simulation",
+    targetId: simulationId,
+    before: { status: "applied", backupId },
+    after: { status: "cancelled", rollbackId, restoredAssets: restoredItems.length },
+    metadata: { reason },
+    requestId
+  });
+  return success({
+    simulationId,
+    rollbackId,
+    backupId,
+    status: "rolled_back",
+    restoredAssets: restoredItems.length
+  });
+}
+
 async function adminValuationHistory(request, env) {
   const rows = await dbAll(env, `
     SELECT s.id, s.round_id AS roundId, r.round_number AS roundNumber,
@@ -2736,13 +2915,39 @@ async function adminValuationHistory(request, env) {
     JOIN fantasy_rounds r ON r.id = s.round_id
     ORDER BY s.created_at DESC LIMIT ?
   `, [queryLimit(request, 100)]);
+  const priceHistory = await dbAll(env, `
+    SELECT h.id, h.simulation_id AS simulationId, h.round_id AS roundId,
+           r.round_number AS roundNumber, h.division, h.asset_id AS assetId,
+           m.display_name AS name, h.formula_version AS formulaVersion,
+           h.price_before_cents AS priceBeforeCents,
+           h.price_after_cents AS priceAfterCents, h.delta_cents AS deltaCents,
+           h.points, h.expected_points AS expectedPoints,
+           h.adjusted_performance AS adjustedPerformance,
+           h.needs_review AS needsReview, h.review_status AS reviewStatus,
+           h.processed_by AS processedBy, h.processed_at AS processedAt,
+           h.rolled_back_by AS rolledBackBy, h.rolled_back_at AS rolledBackAt,
+           h.rollback_reason AS rollbackReason
+    FROM fantasy_price_history h
+    JOIN fantasy_rounds r ON r.id = h.round_id
+    LEFT JOIN fantasy_market m ON m.division = h.division AND m.asset_id = h.asset_id
+    ORDER BY h.processed_at DESC LIMIT ?
+  `, [queryLimit(request, 100)]);
+  const rollbacks = await dbAll(env, `
+    SELECT id, simulation_id AS simulationId, round_id AS roundId,
+           division, formula_version AS formulaVersion, reason,
+           created_by AS createdBy, created_at AS createdAt
+    FROM fantasy_valuation_rollbacks
+    ORDER BY created_at DESC LIMIT ?
+  `, [queryLimit(request, 100)]);
   return success({
     simulations: rows.map((row) => {
       const decoded = decodeJsonFields(row);
       decoded.summary = valuationSummary(decoded.items || []);
       delete decoded.items;
       return decoded;
-    })
+    }),
+    priceHistory,
+    rollbacks
   });
 }
 
@@ -2751,8 +2956,11 @@ async function calculateValuation(env, round, formula) {
     SELECT m.asset_id AS assetId, m.asset_type AS assetType, m.role,
            m.display_name AS name, m.team_name AS teamName,
            m.price_cents AS currentPriceCents,
+           m.previous_price_cents AS previousPriceCents,
            COALESCE(s.points, 0) AS roundPoints,
-           COALESCE(s.games, 0) AS games
+           COALESCE(s.games, 0) AS games,
+           COALESCE(s.breakdown_json, '{}') AS scoreDetailsJson,
+           m.last_valuation_breakdown_json AS previousValuationJson
     FROM fantasy_market m
     LEFT JOIN fantasy_asset_round_scores s
       ON s.asset_id = m.asset_id AND s.round_id = ?
@@ -2780,23 +2988,30 @@ async function calculateValuation(env, round, formula) {
     });
     historyByAsset.set(String(row.assetId), list);
   }
-  return market.map((asset) => valuationItem(asset, historyByAsset.get(String(asset.assetId)) || [], formula.settings));
+  return market.map((asset) => valuationItem(
+    asset,
+    historyByAsset.get(String(asset.assetId)) || [],
+    formula.settings,
+    round.roundNumber
+  ));
 }
 
-function valuationItem(asset, history, settings) {
+function valuationItem(asset, history, settings, roundNumber = null) {
   const price = Number(asset.currentPriceCents) / 100;
   const roundPoints = Number(asset.roundPoints) || 0;
   const games = Math.max(0, Math.trunc(Number(asset.games) || 0));
   if (asset.assetType === "team") {
     return {
-      formulaVersion: 2,
-      formulaId: FORMULA_ID,
+      formulaVersion: VALUATION_FORMULA_VERSION,
+      formulaId: VALUATION_FORMULA_ID,
       assetId: asset.assetId,
       assetType: asset.assetType,
       role: asset.role,
       name: asset.name,
       teamName: asset.teamName,
       currentPriceCents: Number(asset.currentPriceCents),
+      previousPriceCents: Number(asset.previousPriceCents),
+      previousPrice: Number(asset.previousPriceCents) / 100,
       newPriceCents: Number(asset.currentPriceCents),
       deltaCents: 0,
       currentPrice: roundMoney(price),
@@ -2807,42 +3022,70 @@ function valuationItem(asset, history, settings) {
       recentAverage: null,
       expectedScore: null,
       games,
+      playerMaps: games,
+      teamMaps: games,
+      participationFactor: games > 0 ? 1 : 0,
       played: games > 0,
-      heldReason: "A fórmula v2 de valorização é individual; o ativo de equipe mantém o preço."
+      needsReview: false,
+      reviewStatus: "ok",
+      status: "team-held",
+      previousValuation: safeJson(asset.previousValuationJson, {}),
+      heldReason: "A valorização dinâmica é individual; o ativo de equipe mantém o preço porque usa outra escala de pontuação."
     };
   }
-  const valuation = calcularValorizacao({
-    precoAtual: price,
-    pontuacaoRodada: roundPoints,
-    historico: history,
-    jogou: games > 0
+  const scoreDetails = safeJson(asset.scoreDetailsJson, {});
+  const teamMaps = Math.max(
+    games,
+    Math.trunc(Number(scoreDetails.totalMapasEquipe ?? scoreDetails.mapasDisputados) || 0)
+  );
+  const valuation = calculateFantasyValuation({
+    currentPrice: price,
+    currentPoints: roundPoints,
+    history,
+    currentRound: roundNumber,
+    playerMaps: games,
+    teamMaps,
+    settings
   });
-  const newPriceCents = Math.round(valuation.precoNovo * 100);
+  const newPriceCents = Math.round(valuation.newPrice * 100);
   return {
-    formulaVersion: 2,
-    formulaId: FORMULA_ID,
+    formulaVersion: VALUATION_FORMULA_VERSION,
+    formulaId: VALUATION_FORMULA_ID,
     assetId: asset.assetId,
     assetType: asset.assetType,
     role: asset.role,
     name: asset.name,
     teamName: asset.teamName,
     currentPriceCents: Number(asset.currentPriceCents),
+    previousPriceCents: Number(asset.previousPriceCents),
+    previousPrice: Number(asset.previousPriceCents) / 100,
     newPriceCents,
     deltaCents: newPriceCents - Number(asset.currentPriceCents),
     currentPrice: roundMoney(price),
-    newPrice: valuation.precoNovo,
-    delta: valuation.variacaoMercado,
+    newPrice: valuation.newPrice,
+    delta: valuation.finalVariation,
     roundPoints: roundMoney(roundPoints),
-    historicalAverage: valuation.mediaUltimasTres,
-    recentAverage: valuation.mediaUltimasTres,
-    expectedPriceScore: valuation.pontuacaoEsperadaPreco,
-    expectedScore: valuation.pontuacaoEsperada,
-    scoreDifference: valuation.diferenca,
-    rawVariation: valuation.variacaoBruta,
-    marketVariation: valuation.variacaoMercado,
+    historicalAverage: valuation.seasonAverage,
+    recentAverage: valuation.recentAverage,
+    recentScores: valuation.recentScores,
+    adjustedPerformance: valuation.adjustedPerformance,
+    expectedScore: valuation.expectedScore,
+    necessaryScore: valuation.expectedScore,
+    scoreDifference: valuation.difference,
+    baseVariation: valuation.baseVariation,
+    priceFactor: valuation.priceFactor,
+    participationRate: valuation.participationRate,
+    participationFactor: valuation.participationFactor,
+    confidence: valuation.participationFactor,
     games,
-    totalGames: history.filter((row) => Number(row.games) > 0).length + (games > 0 ? 1 : 0),
+    playerMaps: games,
+    teamMaps,
+    totalGames: valuation.validHistoryRounds + (games > 0 ? 1 : 0),
     played: games > 0,
+    needsReview: valuation.needsReview,
+    reviewStatus: valuation.needsReview ? "pending" : "ok",
+    status: valuation.status,
+    previousValuation: safeJson(asset.previousValuationJson, {}),
     breakdown: valuation
   };
 }
@@ -2867,10 +3110,10 @@ async function adminUpdateFormula(request, env, requestId, auth) {
   const before = await getFormula(env);
   const version = clean(body.version);
   const settings = validateFormulaSettings(body.settings);
-  if (version !== FORMULA_ID) {
+  if (version !== VALUATION_FORMULA_ID) {
     return failure(
       "FORMULA_VERSION_INVALID",
-      "A fórmula oficial ativa é fantasy-v2 e seus parâmetros são fixos.",
+      "A fórmula oficial ativa é fantasy-v3-dynamic e seus parâmetros são fixos.",
       400
     );
   }
@@ -2896,7 +3139,7 @@ async function adminResetFormula(_request, env, requestId, auth) {
   const before = await getFormula(env);
   await env.DB.prepare(`
     UPDATE fantasy_formula_settings
-    SET version = 'fantasy-v2', settings_json = ?,
+    SET version = 'fantasy-v3-dynamic', settings_json = ?,
         updated_by = ?, updated_at = CURRENT_TIMESTAMP
     WHERE id = 'global'
   `).bind(JSON.stringify(DEFAULT_FORMULA_SETTINGS), auth.username).run();
@@ -2929,19 +3172,12 @@ async function getFormula(env) {
 
 function validateFormulaSettings(input) {
   const source = input && typeof input === "object" ? input : {};
-  const settings = {
-    scoreMinimum: finiteBetween(source.scoreMinimum, -10, -10),
-    scoreMaximum: finiteBetween(source.scoreMaximum, 50, 50),
-    captainMultiplier: finiteBetween(source.captainMultiplier, 1.5, 1.5),
-    expectedPointsPerPrice: finiteBetween(source.expectedPointsPerPrice, 0.9, 0.9),
-    priceDeltaDivisor: finiteBetween(source.priceDeltaDivisor, 7, 7),
-    priceDeltaMinimum: finiteBetween(source.priceDeltaMinimum, -2, -2),
-    priceDeltaMaximum: finiteBetween(source.priceDeltaMaximum, 2, 2),
-    priceMinimum: finiteBetween(source.priceMinimum, 4, 4),
-    priceMaximum: finiteBetween(source.priceMaximum, 30, 30),
-    historyRounds: finiteBetween(source.historyRounds, 3, 3),
-    didNotPlay: source.didNotPlay === "hold" ? "hold" : "hold"
-  };
+  const settings = {};
+  for (const [key, value] of Object.entries(DEFAULT_FORMULA_SETTINGS)) {
+    settings[key] = typeof value === "number"
+      ? finiteBetween(source[key], value, value)
+      : value;
+  }
   return settings;
 }
 
@@ -2956,17 +3192,27 @@ function normalizedWeights(settings) {
   };
 }
 
-async function updateWealthAfterValuation(env, roundId, division, items) {
+async function updateWealthAfterValuation(
+  env,
+  roundId,
+  division,
+  items,
+  formulaVersion = VALUATION_FORMULA_ID
+) {
   const priceMap = new Map(items.map((item) => [String(item.assetId), Number(item.newPriceCents)]));
   const rows = await dbAll(env, `
     SELECT l.fantasy_team_id AS fantasyTeamId, l.id AS lineupId,
-           p.asset_id AS assetId, l.total_cost AS totalCost,
+           owned.asset_id AS assetId, l.total_cost AS totalCost,
            COALESCE(w.initial_cents, 10000) AS initialCents,
            COALESCE(w.purchases_cents, CAST(ROUND(l.total_cost * 100) AS INTEGER)) AS purchasesCents,
            COALESCE(w.cash_cents, 10000 - CAST(ROUND(l.total_cost * 100) AS INTEGER)) AS cashCents
     FROM fantasy_lineups l
     JOIN fantasy_teams t ON t.id = l.fantasy_team_id
-    JOIN fantasy_lineup_picks p ON p.lineup_id = l.id
+    JOIN (
+      SELECT lineup_id, asset_id FROM fantasy_lineup_picks
+      UNION ALL
+      SELECT lineup_id, asset_id FROM fantasy_lineup_reserves
+    ) owned ON owned.lineup_id = l.id
     LEFT JOIN fantasy_wealth_snapshots w
       ON w.fantasy_team_id = l.fantasy_team_id AND w.round_id = l.round_id
     WHERE l.round_id = ? AND t.division = ?
@@ -3002,7 +3248,7 @@ async function updateWealthAfterValuation(env, roundId, division, items) {
       value.purchasesCents,
       value.cashCents,
       value.cashCents + value.assetsCents,
-      FORMULA_ID
+      formulaVersion
     )
   );
   if (statements.length) await env.DB.batch(statements);

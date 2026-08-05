@@ -201,7 +201,8 @@ function createDatabase() {
     "0003_github_pages_auth.sql",
     "0004_lineup_reserves.sql",
     "0005_admin_global_market.sql",
-    "0006_fantasy_formula_v2.sql"
+    "0006_fantasy_formula_v2.sql",
+    "0007_fantasy_dynamic_valuation.sql"
   ]) {
     database.exec(fs.readFileSync(path.join(WORKER_ROOT, "migrations", file), "utf8"));
     database.prepare("INSERT INTO d1_migrations(name) VALUES(?)").run(file);

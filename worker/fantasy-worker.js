@@ -9,6 +9,7 @@ import {
   recordError,
   serveAdminAsset
 } from "./fantasy-admin.js";
+import valuationV3 from "../src/fantasy/valuation-v3.cjs";
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 var COOKIE_NAME = "fantasy_session";
@@ -263,7 +264,7 @@ async function getMarket(request, env) {
     SELECT s.asset_id AS id, ROUND(s.points, 2) AS points
     FROM fantasy_asset_round_scores s
     JOIN fantasy_rounds r ON r.id = s.round_id
-    WHERE s.division = ?
+    WHERE s.division = ? AND s.games > 0
     ORDER BY r.round_number DESC, s.created_at DESC
   `).bind(division).all();
   const recent = /* @__PURE__ */ new Map();
@@ -288,6 +289,9 @@ async function getMarket(request, env) {
       opponentSlot: opponent?.teamSlot || "",
       matchup: opponent ? `vs ${opponent.teamTag || opponent.teamName}` : "Confronto a definir",
       recentPoints: recent.get(String(row.id)) || [],
+      maintenanceScore: row.type === "player"
+        ? valuationV3.calculateExpectedScore(Number(row.price))
+        : null,
       scoreDetails: parseJsonObject(row.scoreDetailsJson),
       valuationDetails: parseJsonObject(row.valuationDetailsJson),
       scoreDetailsJson: undefined,

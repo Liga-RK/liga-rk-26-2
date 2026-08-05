@@ -307,6 +307,20 @@ test("31 simulação de valorização é determinística", () => {
   assert.deepEqual(first, second);
 });
 
+test("31a ativo de equipe mantém preço por usar outra escala", () => {
+  const item = __test.valuationItem(assetInput({
+    assetId: "team:elite:A1",
+    assetType: "team",
+    role: "TEAM",
+    currentPriceCents: 1456,
+    previousPriceCents: 1400,
+    roundPoints: 38
+  }), [], defaultSettings());
+  assert.equal(item.newPriceCents, 1456);
+  assert.equal(item.deltaCents, 0);
+  assert.equal(item.status, "team-held");
+});
+
 test("32 cancelamento de simulação não contém atualização de mercado", () => {
   const body = functionBody(adminSource, "adminValuationCancel");
   assert.match(body, /status = 'cancelled'/);
@@ -356,7 +370,7 @@ sqliteTest("38a migração v2 preserva histórico e adiciona versão segura", ()
   assert.equal(score.formulaVersion, "stats-only-v1");
   assert.equal(
     db.prepare("SELECT version FROM fantasy_formula_settings WHERE id='global'").get().version,
-    "fantasy-v2"
+    "fantasy-v3-dynamic"
   );
 });
 
@@ -505,16 +519,27 @@ function functionBody(source, name) {
 
 function defaultSettings() {
   return {
-    roundWeight: 0.55,
-    averageWeight: 0.25,
-    recentWeight: 0.2,
-    expectationBase: 3,
-    expectationPerPrice: 0.62,
-    volatility: 0.34,
-    damping: 0.85,
+    expectedPriceMultiplier: 1.6,
+    expectedPriceOffset: -8,
+    oneHistoryCurrentWeight: 0.75,
+    oneHistoryPreviousWeight: 0.25,
+    experiencedCurrentWeight: 0.65,
+    experiencedRecentWeight: 0.25,
+    experiencedSeasonWeight: 0.10,
+    recentRounds: 3,
+    variationDivisor: 10,
+    variationExponent: 0.90,
+    positiveFactorNumerator: 14,
+    positiveFactorOffset: 4,
+    negativeFactorBase: 0.75,
+    negativeFactorPriceDivisor: 40,
+    lowParticipationThreshold: 0.34,
+    lowParticipationFactor: 0.70,
+    partialParticipationFactor: 0.90,
+    fullParticipationFactor: 1,
     minimumPrice: 4,
-    minimumGames: 3,
-    decimals: 2,
+    reviewThreshold: 7,
+    currencyDecimals: 2,
     didNotPlay: "hold"
   };
 }
@@ -527,8 +552,11 @@ function assetInput(overrides = {}) {
     name: "Player",
     teamName: "Team",
     currentPriceCents: 1700,
+    previousPriceCents: 1700,
     roundPoints: 50,
     games: 2,
+    scoreDetailsJson: '{"totalMapasEquipe":2}',
+    previousValuationJson: '{}',
     ...overrides
   };
 }
@@ -574,6 +602,7 @@ function migratedDatabaseWithFixture() {
   `);
   db.exec(migrationText("0005_admin_global_market.sql"));
   db.exec(migrationText("0006_fantasy_formula_v2.sql"));
+  db.exec(migrationText("0007_fantasy_dynamic_valuation.sql"));
   return db;
 }
 

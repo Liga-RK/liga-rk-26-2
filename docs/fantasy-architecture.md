@@ -98,37 +98,28 @@ pontuações afetadas e são registradas na auditoria.
 
 ## Valorização
 
-Para preço `P`, pontos da rodada `R`, média histórica `H`, média recente `M` e
-expectativa `E = expectationBase + expectationPerPrice × P`:
+A valorização usa o módulo central `src/fantasy/valuation-v3.cjs`, identificado
+como `fantasy-v3-dynamic`. Para preço `P`, desempenho ajustado `A` e expectativa
+`E`:
 
-1. os pesos de rodada, média e recentes são normalizados;
-2. `S = wr(R-E) + wh(H-E) + wm(M-E)`;
-3. `confiança = 1 - exp(-jogosTotais/minimumGames)`;
-4. `regularidade = 1 / (1 + desvio/(|M|+10))`;
-5. `N = S / (|E|+8)`;
-6. `amortecido = sinal(N) × (1 - exp(-|N|/damping))`;
-7. `delta = P × volatility × amortecido × confiança ×
-   (0,65 + 0,35 × regularidade)`;
-8. `novo = max(minimumPrice, arredondar(P + delta, decimals))`.
+```text
+E = 1,6 × P − 8
+diferença = A − E
+base = sinal(diferença) × (|diferença| ÷ 10)^0,90
+```
 
-Não existe teto fixo de valorização ou desvalorização. A curva exponencial
-reduz naturalmente extremos. Quem não atuou mantém o preço por padrão.
+O desempenho ajustado usa somente rodadas válidas em que o atleta atuou. Sem
+histórico, vale a rodada atual; com uma anterior, os pesos são 75% e 25%; a
+partir de duas anteriores, usa 65% da atual, 25% da média recente e 10% da
+média da temporada.
 
-Parâmetros padrão:
-
-| Parâmetro | Valor |
-|---|---:|
-| roundWeight | 0,55 |
-| averageWeight | 0,25 |
-| recentWeight | 0,20 |
-| expectationBase | 3,00 |
-| expectationPerPrice | 0,62 |
-| volatility | 0,34 |
-| damping | 0,85 |
-| minimumPrice | 4,00 |
-| minimumGames | 3 |
-| decimals | 2 |
-| didNotPlay | hold |
+Altas recebem fator `14 ÷ (P + 4)` e quedas recebem fator `0,75 + P ÷ 40`.
+O resultado é multiplicado pelo fator de participação: 0 para ausência, 0,70
+até 34% dos mapas, 0,90 para participação parcial maior e 1 para participação
+integral. Não existe teto fixo de variação nem preço máximo; o piso é RK$ 4,00.
 
 Os preços só mudam depois de simulação e confirmação manual do ID exato da
-simulação, com mercado fechado e backup automático.
+simulação, com mercado fechado e backup automático. Variações acima de RK$ 7,00
+exigem aprovação, edição ou descarte consciente do alerta. Cada aplicação gera
+histórico por atleta e pode sofrer rollback com restauração de preços e
+recálculo idempotente de patrimônios.
