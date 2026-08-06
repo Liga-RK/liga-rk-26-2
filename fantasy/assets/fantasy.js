@@ -243,7 +243,7 @@
         state.market.ascension = buildMarket(content.divisions.ascension, "ascension");
       }
     } catch (error) {
-      console.warn("RK Fantasy: usando dados de demonstração.", error);
+      console.warn("Fantasy RK: usando dados de demonstração.", error);
       const content = demoContent();
       state.market.elite = buildMarket(content.divisions.elite, "elite");
       state.market.ascension = buildMarket(content.divisions.ascension, "ascension");
@@ -385,7 +385,7 @@
       if (teams.length) sections.push(marketSection("Equipes", "TEAM", teams, selectedIds, lineup, reserveId, true));
       el.marketGrid.replaceChildren(...sections);
     } catch (error) {
-      console.error("RK Fantasy: falha ao montar o mercado.", error);
+      console.error("Fantasy RK: falha ao montar o mercado.", error);
       el.marketGrid.replaceChildren();
       const errorBox = document.createElement("div");
       errorBox.className = "empty-state";
@@ -1147,7 +1147,7 @@
   }
 
   function renameTeam() {
-    const next = window.prompt("Nome do seu time no RK Fantasy:", state.teamName);
+    const next = window.prompt("Nome do seu time no Fantasy RK:", state.teamName);
     if (next === null) return;
     const clean = cleanText(next).slice(0, 32);
     if (!clean) return;
@@ -1358,7 +1358,7 @@
       if (!state.userName && authToken) clearAuthToken();
     } catch (error) {
       state.canControlMarket = false;
-      console.warn("Não foi possível consultar a sessão do RK Fantasy.", error);
+      console.warn("Não foi possível consultar a sessão do Fantasy RK.", error);
     }
   }
 
@@ -1955,7 +1955,7 @@
   }
 
   function shareLineupText() {
-    return `Minha escalação no RK Fantasy da Liga RK! ${officialSiteUrl()}`;
+    return `Minha escalação no Fantasy RK da Liga RK! ${officialSiteUrl()}`;
   }
 
   function setShareMessage(message, isError = false, isSuccess = false) {
@@ -1976,7 +1976,7 @@
     if (canSharePreparedFile()) {
       try {
         await navigator.share({
-          title: `${state.teamName} — RK Fantasy`,
+          title: `${state.teamName} — Fantasy RK`,
           text: shareLineupText(),
           files: [preparedShare.file]
         });
@@ -2013,7 +2013,7 @@
     if (!canSharePreparedFile()) return;
     try {
       await navigator.share({
-        title: `${state.teamName} — RK Fantasy`,
+        title: `${state.teamName} — Fantasy RK`,
         text: shareLineupText(),
         files: [preparedShare.file]
       });
@@ -2172,7 +2172,7 @@
 
     ctx.fillStyle = "#9c9497";
     ctx.font = "18px Inter, Arial, sans-serif";
-    ctx.fillText(`Monte seu time no RK Fantasy · ${officialSiteLabel()}`, 60, 1452);
+    ctx.fillText(`Escale seu time no Fantasy RK · ${officialSiteLabel()}`, 60, 1452);
     ctx.fillStyle = "#e52632";
     ctx.fillRect(60, 1473, 1080, 4);
 
