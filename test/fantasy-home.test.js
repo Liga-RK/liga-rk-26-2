@@ -92,7 +92,7 @@ test("Patrimônio é individual por divisão e o ranking geral não mostra patri
   assert.match(workerScript, /\(user_id, division, current_cents, formula_version\)/);
 });
 
-test("Reserva pode usar saldo disponível mais o titular mais barato", () => {
+test("Reserva da Rodada 3 usa somente o saldo restante", () => {
   const frontendSource = script.match(/function reserveBudget\(lineup\) \{[\s\S]*?\n  \}/)?.[0];
   const backendSource = workerScript.match(/function reserveBudgetForRows\(rows\) \{[\s\S]*?\n\}/)?.[0];
   assert.ok(frontendSource);
@@ -100,12 +100,10 @@ test("Reserva pode usar saldo disponível mais o titular mais barato", () => {
 
   const frontendBudget = new Function(
     "lineupCash",
-    "starterPlayers",
     "roundMoney",
     `${frontendSource}; return reserveBudget;`
   )(
     (lineup) => lineup.remaining,
-    (lineup) => lineup.players,
     (value) => Math.round((value + Number.EPSILON) * 100) / 100
   );
   const backendBudget = new Function(
@@ -120,13 +118,27 @@ test("Reserva pode usar saldo disponível mais o titular mais barato", () => {
   ];
   const team = { type: "team", asset_type: "team", price: 6 };
 
-  assert.equal(frontendBudget({ remaining: 24, players }), 36);
-  assert.equal(backendBudget([...players, team]), 36);
+  assert.equal(frontendBudget({ remaining: 24, players }), 24);
+  assert.equal(backendBudget([...players, team]), 24);
 
   for (const relativePath of pages) {
     const html = fs.readFileSync(path.join(root, relativePath), "utf8");
-    assert.match(html, /saldo disponível após os seis titulares somado ao preço do jogador titular mais barato/);
+    assert.match(html, /A partir da Rodada 3, ele precisa caber integralmente no saldo que restar depois dos seis titulares/);
   }
+});
+
+test("Cálculo da última rodada abre em modal responsivo e mostra indisponibilidade", () => {
+  for (const relativePath of pages) {
+    const html = fs.readFileSync(path.join(root, relativePath), "utf8");
+    assert.match(html, /id="calculation-dialog"/);
+    assert.match(html, /id="calculation-dialog-body"/);
+  }
+  assert.match(script, /function openCalculationDialog\(item\)/);
+  assert.match(script, /Estatística da última rodada indisponível/);
+  assert.doesNotMatch(script, /document\.createElement\("details"\)/);
+  assert.doesNotMatch(script, /MPV:/);
+  assert.match(styles, /\.calculation-dialog-card\s*\{[\s\S]*?max-height:/);
+  assert.match(styles, /\.calculation-dialog-card\s*\{[\s\S]*?overflow-y: auto/);
 });
 
 test("Controle do mercado fica oculto e depende da permissão Discord", () => {

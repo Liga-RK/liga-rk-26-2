@@ -101,6 +101,11 @@
     confirmTeamLimitDialog: document.getElementById("confirm-team-limit-dialog"),
     teamLimitMessage: document.getElementById("team-limit-message"),
     teamLimitPlayers: document.getElementById("team-limit-players"),
+    calculationDialog: document.getElementById("calculation-dialog"),
+    closeCalculationDialog: document.getElementById("close-calculation-dialog"),
+    calculationDialogTitle: document.getElementById("calculation-dialog-title"),
+    calculationDialogSubtitle: document.getElementById("calculation-dialog-subtitle"),
+    calculationDialogBody: document.getElementById("calculation-dialog-body"),
     saveLineup: document.getElementById("save-lineup"),
     captainReminder: document.getElementById("captain-reminder"),
     lineupMessage: document.getElementById("lineup-message"),
@@ -207,6 +212,11 @@
     el.teamLimitDialog.addEventListener("cancel", (event) => {
       event.preventDefault();
       closeTeamLimitDialog();
+    });
+    el.closeCalculationDialog.addEventListener("click", closeCalculationDialog);
+    el.calculationDialog.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      closeCalculationDialog();
     });
     el.saveLineup.addEventListener("click", saveLineup);
     el.renameTeam.addEventListener("click", renameTeam);
@@ -656,10 +666,7 @@
     const recent = item.recentPoints && item.recentPoints.length
       ? item.recentPoints.map((point) => formatNumber(point)).join(" · ")
       : "aguardando rodada";
-    const maintenance = item.type === "player" && Number.isFinite(Number(item.maintenanceScore))
-      ? `<span title="Pontuação aproximada necessária para sustentar o preço atual">MPV: ${formatNumber(item.maintenanceScore)} pts</span>`
-      : "";
-    stats.innerHTML = `<span>Média: ${formatNumber(item.average)}</span><span>Performance recente: ${escapeHtml(recent)}</span>${maintenance}`;
+    stats.innerHTML = `<span>Média: ${formatNumber(item.average)}</span><span>Performance recente: ${escapeHtml(recent)}</span>`;
     meta.append(name, team, matchup, stats);
     const breakdown = fantasyBreakdown(item);
     if (breakdown) meta.appendChild(breakdown);
@@ -698,15 +705,36 @@
     const score = objectValue(item.scoreDetails);
     const valuation = objectValue(item.valuationDetails);
     const dynamicValuation = valuation.formulaId === "fantasy-v3-dynamic" || Number(valuation.formulaVersion) === 3;
-    if (Number(score.formulaVersion) !== 2 && !dynamicValuation) return null;
-    const details = document.createElement("details");
-    details.className = "fantasy-breakdown";
-    const summary = document.createElement("summary");
-    summary.textContent = "Ver cálculo da última rodada";
-    details.appendChild(summary);
-    if (Number(score.formulaVersion) === 2) {
-      const title = document.createElement("strong");
-      title.textContent = "Pontuação da rodada";
+    const scoreAvailable = Number(score.formulaVersion) === 2 && (score.jogou === true || Number(score.mapasDisputados) > 0);
+    const valuationAvailable = dynamicValuation && valuation.played === true;
+    const container = document.createElement("div");
+    container.className = "fantasy-breakdown";
+    if (!scoreAvailable && !valuationAvailable) {
+      const warning = document.createElement("span");
+      warning.className = "calculation-unavailable";
+      warning.textContent = "Estatística da última rodada indisponível.";
+      container.appendChild(warning);
+      return container;
+    }
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "calculation-button";
+    button.textContent = "Ver cálculo da última rodada";
+    button.addEventListener("click", () => openCalculationDialog(item));
+    container.appendChild(button);
+    return container;
+  }
+
+  function openCalculationDialog(item) {
+    const score = objectValue(item.scoreDetails);
+    const valuation = objectValue(item.valuationDetails);
+    const scoreAvailable = Number(score.formulaVersion) === 2 && (score.jogou === true || Number(score.mapasDisputados) > 0);
+    const valuationAvailable = (valuation.formulaId === "fantasy-v3-dynamic" || Number(valuation.formulaVersion) === 3) && valuation.played === true;
+    el.calculationDialogTitle.textContent = item.name;
+    el.calculationDialogSubtitle.textContent = `${ROLE_LABELS[item.role]} · ${item.teamName || item.teamTag} · última rodada processada`;
+    el.calculationDialogBody.replaceChildren();
+    if (scoreAvailable) {
+      const section = calculationSection("Pontuação da rodada");
       const list = document.createElement("ul");
       appendBreakdownLine(list, "Média dos mapas", formatNumber(score.pontuacaoMediaMapas));
       appendBreakdownLine(list, "Vitória da série", signedNumber(score.bonusVitoriaSerie));
@@ -715,11 +743,19 @@
       appendBreakdownLine(list, "Domínio de MVP", signedNumber(score.bonusMvpSerie));
       appendBreakdownLine(list, "Série sem mortes", signedNumber(score.bonusSemMortes));
       appendBreakdownLine(list, "Total oficial", formatNumber(score.pontuacaoOficial), true);
-      details.append(title, list);
+      section.appendChild(list);
+      el.calculationDialogBody.appendChild(section);
     }
-    if (dynamicValuation && item.type === "player") {
-      const title = document.createElement("strong");
-      title.textContent = "Mercado";
+    if (valuationAvailable && item.type === "team") {
+      const section = calculationSection("Pontuação da equipe");
+      const list = document.createElement("ul");
+      appendBreakdownLine(list, "Média oficial da rodada", formatNumber(valuation.roundPoints), true);
+      appendBreakdownLine(list, "Mapas disputados", String(Math.max(0, Number(valuation.games) || 0)));
+      section.appendChild(list);
+      el.calculationDialogBody.appendChild(section);
+    }
+    if (valuationAvailable) {
+      const section = calculationSection("Mercado");
       const list = document.createElement("ul");
       appendBreakdownLine(list, "Preço anterior", `RK$ ${formatMoney(valuation.currentPrice)}`);
       appendBreakdownLine(list, "Pontuação esperada", formatNumber(valuation.expectedScore));
@@ -733,9 +769,29 @@
       appendBreakdownLine(list, "Fator de participação", `${formatNumber(Number(valuation.participationFactor) * 100)}%`);
       appendBreakdownLine(list, "Variação", signedMoney(valuation.delta));
       appendBreakdownLine(list, "Novo preço", `RK$ ${formatMoney(valuation.newPrice)}`, true);
-      details.append(title, list);
+      section.appendChild(list);
+      el.calculationDialogBody.appendChild(section);
     }
-    return details;
+    if (!scoreAvailable && !valuationAvailable) {
+      const warning = document.createElement("p");
+      warning.className = "calculation-unavailable";
+      warning.textContent = "Estatística da última rodada indisponível.";
+      el.calculationDialogBody.appendChild(warning);
+    }
+    if (!el.calculationDialog.open) el.calculationDialog.showModal();
+  }
+
+  function calculationSection(title) {
+    const section = document.createElement("section");
+    section.className = "calculation-section";
+    const heading = document.createElement("h3");
+    heading.textContent = title;
+    section.appendChild(heading);
+    return section;
+  }
+
+  function closeCalculationDialog() {
+    if (el.calculationDialog.open) el.calculationDialog.close();
   }
 
   function appendBreakdownLine(list, label, value, total = false) {
@@ -1528,9 +1584,13 @@
         state.patrimony[division] = patrimony;
         if (division === state.division) activatePatrimonyForDivision(division);
       }
-      if (!response.ok || !payload.lineup) return;
+      if (!response.ok) return;
+      if (!payload.lineup) {
+        state.lineups[division] = emptyLineup();
+        persistLocalState();
+        return;
+      }
       if (payload.team && payload.team.name) state.teamName = cleanText(payload.team.name);
-      const previousReserve = state.lineups[division] && state.lineups[division].reserve;
       const lineup = emptyLineup();
       for (const pick of payload.lineup.picks || []) {
         const role = normalizeRole(pick.role);
@@ -1540,10 +1600,6 @@
       if (payload.lineup.reserve && payload.lineup.reserve.id) {
         const reserveItem = state.market[division].find((item) => item.id === String(payload.lineup.reserve.id));
         if (reserveItem && reserveItem.type === "player") lineup.reserve = savedMarketItem(reserveItem, payload.lineup.reserve, division);
-      }
-      if (!lineup.reserve && previousReserve && previousReserve.id) {
-        const reserveItem = state.market[division].find((item) => item.id === String(previousReserve.id));
-        if (reserveItem && reserveItem.type === "player" && !reserveValidationMessage(reserveItem, lineup)) lineup.reserve = reserveItem;
       }
       lineup.captainId = cleanText(payload.lineup.captain_asset_id || payload.lineup.captainId);
       lineup.saved = true;
@@ -1963,10 +2019,8 @@
   }
 
   function reserveBudget(lineup) {
-    const players = starterPlayers(lineup);
-    const cheapestPlayer = players.length ? Math.min(...players.map((item) => Number(item.price) || 0)) : 0;
     const remainingBudget = lineupCash({ ...lineup, reserve: null });
-    return roundMoney(remainingBudget + cheapestPlayer);
+    return roundMoney(Math.max(0, remainingBudget));
   }
 
   function reserveValidationMessage(item, lineup) {

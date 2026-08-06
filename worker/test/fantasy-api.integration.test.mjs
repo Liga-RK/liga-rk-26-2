@@ -212,8 +212,12 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
   const playerPreview = simulated.payload.data.simulations[0].items.find(
     (item) => item.assetId === "elite-player"
   );
+  const teamPreview = simulated.payload.data.simulations[0].items.find(
+    (item) => item.assetId === "team:elite:A1"
+  );
   assert.equal(playerPreview.needsReview, true);
-  const expectedWealthAfter = 8144 + Number(playerPreview.newPriceCents) + 1456;
+  assert.notEqual(teamPreview.newPriceCents, 1456);
+  const expectedWealthAfter = 8144 + Number(playerPreview.newPriceCents) + Number(teamPreview.newPriceCents);
 
   const blockedByReview = await call(env, "/valuation/apply", {
     method: "POST",
@@ -464,7 +468,8 @@ function createDatabase() {
     "0009_fantasy_user_notices.sql",
     "0010_fantasy_shared_round_patrimony.sql",
     "0011_fantasy_division_patrimony.sql",
-    "0012_fantasy_market_access_mode.sql"
+    "0012_fantasy_market_access_mode.sql",
+    "0013_fantasy_round3_reserve_budget.sql"
   ]) {
     database.exec(fs.readFileSync(path.join(ROOT, "migrations", file), "utf8"));
     database.prepare("INSERT INTO d1_migrations(name) VALUES(?)").run(file);

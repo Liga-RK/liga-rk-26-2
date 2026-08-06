@@ -218,8 +218,58 @@ if (mode === "preview") {
   }
   const audit = await finalAudit();
   console.log(JSON.stringify({ mode, roundNumber, applications, audit }, null, 2));
+} else if (mode === "revalue-teams") {
+  await assertMarketClosed();
+  const appliedRows = await DB.prepare(`
+    SELECT s.id, r.division
+    FROM fantasy_price_simulations s
+    JOIN fantasy_rounds r ON r.id = s.round_id
+    WHERE r.round_number = ? AND s.status = 'applied'
+    ORDER BY r.division
+  `).bind(roundNumber).all();
+  if ((appliedRows.results || []).length !== 2) {
+    throw new Error("As duas valorizações aplicadas da rodada não foram encontradas.");
+  }
+  const rollbacks = [];
+  for (const row of appliedRows.results || []) {
+    const rolledBack = await invoke(__test.adminValuationRollback, {
+      simulationId: row.id,
+      confirmSimulationId: row.id,
+      reason: "Reprocessamento oficial para incluir valorização dos ativos de equipe."
+    });
+    rollbacks.push({ division: row.division, simulationId: row.id, rollbackId: rolledBack.rollbackId });
+  }
+  const valuation = await invoke(__test.adminValuationSimulate, { roundNumber });
+  const applications = [];
+  for (const simulation of valuation.simulations) {
+    const pending = (simulation.items || []).filter(
+      (item) => item.needsReview && item.reviewStatus === "pending"
+    );
+    for (const item of pending) {
+      await invoke(__test.adminValuationReview, {
+        simulationId: simulation.id,
+        assetId: item.assetId,
+        action: "approve",
+        reason: "Reprocessamento oficial conferido; inclui atletas e equipes da Rodada 2."
+      });
+    }
+    const applied = await invoke(__test.adminValuationApply, {
+      simulationId: simulation.id,
+      confirmSimulationId: simulation.id
+    });
+    applications.push({
+      division: simulation.round.division,
+      simulationId: simulation.id,
+      reviewed: pending.length,
+      backupId: applied.backupId,
+      summary: applied.summary,
+      patrimony: applied.patrimony
+    });
+  }
+  const audit = await finalAudit();
+  console.log(JSON.stringify({ mode, roundNumber, rollbacks, applications, audit }, null, 2));
 } else {
-  throw new Error("Modo inválido. Use preview, process ou apply.");
+  throw new Error("Modo inválido. Use preview, process, apply ou revalue-teams.");
 }
 }
 

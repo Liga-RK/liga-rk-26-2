@@ -392,7 +392,7 @@ test("31 simulação de valorização é determinística", () => {
   assert.deepEqual(first, second);
 });
 
-test("31a ativo de equipe mantém preço por usar outra escala", () => {
+test("31a ativo de equipe valoriza pela curva dinâmica", () => {
   const item = __test.valuationItem(assetInput({
     assetId: "team:elite:A1",
     assetType: "team",
@@ -401,9 +401,10 @@ test("31a ativo de equipe mantém preço por usar outra escala", () => {
     previousPriceCents: 1400,
     roundPoints: 38
   }), [], defaultSettings());
-  assert.equal(item.newPriceCents, 1456);
-  assert.equal(item.deltaCents, 0);
-  assert.equal(item.status, "team-held");
+  assert.ok(item.newPriceCents > 1456);
+  assert.ok(item.deltaCents > 0);
+  assert.equal(item.status, "increased");
+  assert.equal(item.played, true);
 });
 
 test("32 cancelamento de simulação não contém atualização de mercado", () => {

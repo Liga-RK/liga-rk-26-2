@@ -20,7 +20,7 @@
   <title>Fantasy RK | Liga RK 26.2</title>
   <link rel="icon" type="image/png" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
   <link rel="apple-touch-icon" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
-  <link rel="stylesheet" href="assets/fantasy.css?v=20260805-visual-brand" />
+  <link rel="stylesheet" href="assets/fantasy.css?v=20260806-round3-budget-v1" />
 </head>
 <body>
   <header class="site-header">
@@ -360,7 +360,7 @@
           <h3>Valorização de mercado</h3>
           <p>A pontuação esperada é <strong>1,6 × preço atual − 8</strong>. O desempenho ajustado combina a rodada atual com o histórico real do atleta: sem histórico vale a rodada atual; com uma rodada anterior usa 75% atual e 25% anterior; a partir de duas, usa 65% atual, 25% da média recente e 10% da média da temporada. O histórico recente ajuda a evitar que uma única atuação isolada distorça excessivamente o mercado.</p>
           <p>A diferença passa por uma curva dinâmica: <strong>sinal × (|diferença| ÷ 10)<sup>0,90</sup></strong>. Atletas baratos têm maior potencial de alta, atletas caros sofrem mais nas quedas e a participação parcial reduz a variação. Não há teto fixo de variação nem preço máximo; existe apenas o preço mínimo de RK$ 4,00.</p>
-          <p>Quem não disputa nenhum mapa mantém o preço e a ausência não entra nas médias. O ativo de equipe continua pontuando, mas mantém seu preço porque usa uma escala diferente da valorização individual.</p>
+          <p>Quem não disputa nenhum mapa mantém o preço e a ausência não entra nas médias. A partir da Rodada 2, os ativos de equipe também valorizam ou desvalorizam pela mesma curva dinâmica, usando a média oficial da equipe na rodada. Equipes sem partida válida mantêm o preço.</p>
         </div>
         <div class="formula-box">
           <h3>Patrimônio</h3>
@@ -371,8 +371,8 @@
         <div class="rule-list">
           <h3>Regras do elenco</h3>
           <p>Cada escalação tem TOP, JG, MID, ADC, SUP e uma equipe. Novos participantes começam com RK$ 100,00; nas rodadas seguintes, o orçamento é o patrimônio acumulado, sem teto e sem reinicialização. É permitido no máximo dois jogadores da mesma equipe real.</p>
-          <p>O reserva pode ser de qualquer rota e cobre somente uma ausência. Seu preço máximo é o saldo disponível após os seis titulares somado ao preço do jogador titular mais barato. O elenco pode ser alterado até o fechamento oficial do mercado.</p>
-          <p>Nos cartões do mercado, o MPV indica a pontuação aproximada necessária para sustentar o preço atual. Use “Ver cálculo da última rodada” para consultar expectativa, desempenho ajustado, médias, participação, variação e novo preço.</p>
+          <p>O reserva pode ser de qualquer rota e cobre somente uma ausência. A partir da Rodada 3, ele precisa caber integralmente no saldo que restar depois dos seis titulares. O elenco pode ser alterado até o fechamento oficial do mercado.</p>
+          <p>Use “Ver cálculo da última rodada” para abrir os detalhes de pontuação, expectativa, desempenho ajustado, médias, participação, variação e novo preço. Quando não houver partida válida, o cartão informa que a estatística não está disponível.</p>
         </div>
       </div>
     </section>
@@ -445,8 +445,18 @@
     </div>
   </dialog>
 
+  <dialog id="calculation-dialog" aria-labelledby="calculation-dialog-title" aria-describedby="calculation-dialog-subtitle">
+    <div class="dialog-card calculation-dialog-card">
+      <button id="close-calculation-dialog" class="dialog-close" type="button" aria-label="Fechar">×</button>
+      <span class="eyebrow">Memória de cálculo</span>
+      <h2 id="calculation-dialog-title">Cálculo da última rodada</h2>
+      <p id="calculation-dialog-subtitle" class="calculation-dialog-subtitle"></p>
+      <div id="calculation-dialog-body" class="calculation-dialog-body"></div>
+    </div>
+  </dialog>
+
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/fantasy.js?v=20260805-round2-notice-v1"></script>
-  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260805-round2-notice-v1");</script>
+  <script src="assets/fantasy.js?v=20260806-round3-budget-v1"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260806-round3-budget-v1");</script>
 </body>
 </html>

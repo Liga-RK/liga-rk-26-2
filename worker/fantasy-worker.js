@@ -1176,17 +1176,13 @@ function formatMoney(value) {
 }
 __name(formatMoney, "formatMoney");
 function reserveBudgetForRows(rows) {
-  const players = rows.filter((row) => row.asset_type === "player");
-  const cheapestPlayer = players.length ? Math.min(...players.map((row) => Number(row.price) || 0)) : 0;
   const starterCost = rows.reduce((sum, row) => sum + (Number(row.price) || 0), 0);
-  return roundMoney(BUDGET_LIMIT - starterCost + cheapestPlayer);
+  return roundMoney(Math.max(0, BUDGET_LIMIT - starterCost));
 }
 __name(reserveBudgetForRows, "reserveBudgetForRows");
 function reserveBudgetForPatrimony(rows, patrimony) {
-  const players = rows.filter((row) => row.asset_type === "player");
-  const cheapestPlayer = players.length ? Math.min(...players.map((row) => Number(row.price) || 0)) : 0;
   const starterCost = rows.reduce((sum, row) => sum + (Number(row.price) || 0), 0);
-  return roundMoney(Number(patrimony) - starterCost + cheapestPlayer);
+  return roundMoney(Math.max(0, Number(patrimony) - starterCost));
 }
 __name(reserveBudgetForPatrimony, "reserveBudgetForPatrimony");
 function assetPlayed(score) {

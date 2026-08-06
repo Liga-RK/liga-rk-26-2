@@ -5,7 +5,7 @@ Pontuação: `fantasy-v2`
 Valorização: `fantasy-v3-dynamic`
 Fontes de verdade: `src/fantasy/formula-v2.cjs` e `src/fantasy/valuation-v3.cjs`
 
-A fórmula de pontuação não mudou. A valorização dinâmica preserva os preços existentes, não recalcula rodadas anteriores e só é aplicada depois de prévia e confirmação administrativas.
+A fórmula de pontuação não mudou. A valorização dinâmica preserva os preços existentes, não recalcula rodadas anteriores e só é aplicada depois de prévia e confirmação administrativas. Desde o fechamento da Rodada 2, a mesma curva também é aplicada aos ativos de equipe.
 
 ## Pontuação individual
 
@@ -86,7 +86,11 @@ O resultado monetário é arredondado para duas casas. Não há teto fixo de var
 
 ## Ativos de equipe
 
-O ativo de equipe pontua pela média das pontuações oficiais dos atletas que atuaram. Seu preço é mantido porque essa pontuação tem escala diferente da individual. Não se aplica a fórmula de atletas a equipes sem uma calibração própria.
+O ativo de equipe pontua pela média das pontuações oficiais dos atletas que atuaram. Como essa média permanece na mesma escala oficial de −10 a 50, a equipe usa a mesma curva dinâmica de expectativa, desempenho ajustado e variação aplicada aos atletas. Se a equipe não disputar mapa válido, mantém o preço e não alimenta as médias históricas.
+
+## Regra do reserva a partir da Rodada 3
+
+O reserva precisa caber integralmente no saldo que restar depois da compra dos cinco jogadores titulares e do ativo de equipe. O preço do titular mais barato não amplia mais esse limite.
 
 ## Fluxo administrativo e segurança
 

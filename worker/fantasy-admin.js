@@ -3210,39 +3210,6 @@ function valuationItem(asset, history, settings, roundNumber = null) {
   const price = Number(asset.currentPriceCents) / 100;
   const roundPoints = Number(asset.roundPoints) || 0;
   const games = Math.max(0, Math.trunc(Number(asset.games) || 0));
-  if (asset.assetType === "team") {
-    return {
-      formulaVersion: VALUATION_FORMULA_VERSION,
-      formulaId: VALUATION_FORMULA_ID,
-      assetId: asset.assetId,
-      assetType: asset.assetType,
-      role: asset.role,
-      name: asset.name,
-      teamName: asset.teamName,
-      currentPriceCents: Number(asset.currentPriceCents),
-      previousPriceCents: Number(asset.previousPriceCents),
-      previousPrice: Number(asset.previousPriceCents) / 100,
-      newPriceCents: Number(asset.currentPriceCents),
-      deltaCents: 0,
-      currentPrice: roundMoney(price),
-      newPrice: roundMoney(price),
-      delta: 0,
-      roundPoints: roundMoney(roundPoints),
-      historicalAverage: null,
-      recentAverage: null,
-      expectedScore: null,
-      games,
-      playerMaps: games,
-      teamMaps: games,
-      participationFactor: games > 0 ? 1 : 0,
-      played: games > 0,
-      needsReview: false,
-      reviewStatus: "ok",
-      status: "team-held",
-      previousValuation: safeJson(asset.previousValuationJson, {}),
-      heldReason: "A valorização dinâmica é individual; o ativo de equipe mantém o preço porque usa outra escala de pontuação."
-    };
-  }
   const scoreDetails = safeJson(asset.scoreDetailsJson, {});
   const teamMaps = Math.max(
     games,
@@ -4028,7 +3995,7 @@ async function adminListLineups(request, env) {
 async function adminUpdateLineup(request, env, requestId, auth) {
   const id = decodePathId(request, "/api/fantasy/admin/lineups/");
   const lineup = await env.DB.prepare(`
-    SELECT l.*, t.division, t.name AS fantasy_team_name,
+    SELECT l.*, t.user_id, t.division, t.name AS fantasy_team_name,
            r.round_number AS round_number
     FROM fantasy_lineups l
     JOIN fantasy_teams t ON t.id = l.fantasy_team_id
@@ -4084,8 +4051,15 @@ async function adminUpdateLineup(request, env, requestId, auth) {
     return failure("LINEUP_CAPTAIN_INVALID", "O capitão deve ser um dos cinco jogadores titulares.", 400);
   }
   const totalCost = roundMoney(marketRows.reduce((sum, row) => sum + Number(row.price), 0));
-  if (totalCost > BUDGET_LIMIT) {
-    return failure("LINEUP_BUDGET", "A escalação ultrapassa o orçamento de RK$ 100.", 400);
+  const patrimony = await env.DB.prepare(`
+    SELECT current_cents FROM fantasy_participant_patrimony
+    WHERE user_id = ? AND division = ?
+  `).bind(lineup.user_id, lineup.division).first();
+  const budget = Number.isFinite(Number(patrimony?.current_cents))
+    ? Number(patrimony.current_cents) / 100
+    : BUDGET_LIMIT;
+  if (totalCost > budget + 0.001) {
+    return failure("LINEUP_BUDGET", `A escalação ultrapassa o patrimônio de RK$ ${budget.toFixed(2)}.`, 400);
   }
   let reserveRow = null;
   const reserveId = clean(body.reserve?.assetId || body.reserve?.id || body.reserveAssetId);
@@ -4100,10 +4074,7 @@ async function adminUpdateLineup(request, env, requestId, auth) {
     if (marketRows.some((row) => row.asset_id === reserveRow.asset_id)) {
       return failure("LINEUP_RESERVE_DUPLICATE", "O reserva não pode ser titular.", 400);
     }
-    const cheapestPlayer = Math.min(
-      ...marketRows.filter((row) => row.asset_type === "player").map((row) => Number(row.price))
-    );
-    const reserveBudget = roundMoney(BUDGET_LIMIT - totalCost + cheapestPlayer);
+    const reserveBudget = roundMoney(Math.max(0, budget - totalCost));
     if (Number(reserveRow.price) > reserveBudget + 0.001) {
       return failure("LINEUP_RESERVE_BUDGET", `O limite do reserva é RK$ ${reserveBudget.toFixed(2)}.`, 400);
     }
@@ -5119,6 +5090,7 @@ export const __test = {
   adminSyncPreview,
   adminValuationApply,
   adminValuationReview,
+  adminValuationRollback,
   adminValuationSimulate,
   adminCookie,
   arrayValues,

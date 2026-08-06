@@ -374,28 +374,35 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
   padding-top: .5rem;
   color: var(--muted);
 }
-.fantasy-breakdown summary {
-  cursor: pointer;
+.calculation-button {
+  border: 0;
+  padding: 0;
   color: #ff929d;
+  background: transparent;
   font-size: .74rem;
   font-weight: 800;
+  text-align: left;
 }
-.fantasy-breakdown > strong {
-  display: block;
-  margin-top: .65rem;
-  color: #fff;
-  font-size: .75rem;
-}
-.fantasy-breakdown ul { margin: .3rem 0 0; padding: 0; list-style: none; }
-.fantasy-breakdown li {
+.calculation-button::before { content: "▸ "; }
+.calculation-button:hover { color: #fff; }
+.calculation-unavailable { display: block; color: #a9a2a6; font-size: .72rem; line-height: 1.4; }
+.calculation-dialog-card { width: min(680px, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); overflow-y: auto; }
+.calculation-dialog-card h2 { margin: .35rem 2rem .2rem 0; font-family: var(--title-font); font-size: clamp(1.9rem, 5vw, 2.8rem); text-transform: uppercase; }
+.calculation-dialog-subtitle { margin: 0; }
+.calculation-dialog-body { display: grid; gap: .8rem; margin-top: 1rem; }
+.calculation-section { padding: .9rem 1rem; border: 1px solid var(--line); border-radius: .7rem; background: rgba(255, 255, 255, .025); }
+.calculation-section h3 { margin: 0 0 .5rem; color: #fff; font-size: .86rem; letter-spacing: .08em; text-transform: uppercase; }
+.calculation-section ul { margin: 0; padding: 0; list-style: none; }
+.calculation-section li {
   display: flex;
   justify-content: space-between;
   gap: .75rem;
-  padding: .18rem 0;
-  font-size: .72rem;
+  padding: .35rem 0;
+  color: var(--muted);
+  font-size: .82rem;
 }
-.fantasy-breakdown li b { color: #fff; white-space: nowrap; }
-.fantasy-breakdown .breakdown-total {
+.calculation-section li b { color: #fff; white-space: nowrap; }
+.calculation-section .breakdown-total {
   margin-top: .2rem;
   border-top: 1px solid rgba(255, 255, 255, .08);
   padding-top: .35rem;
@@ -594,6 +601,8 @@ dialog::backdrop { background: rgba(0, 0, 0, .78); backdrop-filter: blur(8px); }
   .lineup-actions .primary-button { grid-column: 1 / -1; }
   .lineup-slots { flex: none; overflow: visible; padding-right: 0; }
   .share-dialog-card { padding: 1rem; }
+  .calculation-dialog-card { padding: 1.1rem; }
+  .calculation-section li { align-items: flex-start; font-size: .78rem; }
   .share-options { grid-template-columns: 1fr; }
   .share-preview-wrap { max-height: 45vh; }
   .share-preview { max-height: 42vh; }

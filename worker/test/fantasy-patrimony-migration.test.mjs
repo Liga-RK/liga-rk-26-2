@@ -118,3 +118,62 @@ test("migration only recovers lineups saved before market lock", () => {
   const migration = fs.readFileSync(path.join(ROOT, "migrations", "0011_fantasy_division_patrimony.sql"), "utf8");
   assert.match(migration, /datetime\(l\.updated_at\) <= datetime\(r\.locks_at\)/);
 });
+
+sqliteTest("regra da Rodada 3 remove só o reserva excedente e reseta titulares inválidos", () => {
+  const database = new DatabaseSync(":memory:");
+  for (const file of [
+    "0001_initial.sql",
+    "0002_production_model.sql",
+    "0003_github_pages_auth.sql",
+    "0004_lineup_reserves.sql",
+    "0005_admin_global_market.sql",
+    "0006_fantasy_formula_v2.sql",
+    "0007_fantasy_dynamic_valuation.sql",
+    "0008_fantasy_dynamic_patrimony.sql",
+    "0009_fantasy_user_notices.sql",
+    "0010_fantasy_shared_round_patrimony.sql",
+    "0011_fantasy_division_patrimony.sql",
+    "0012_fantasy_market_access_mode.sql"
+  ]) database.exec(fs.readFileSync(path.join(ROOT, "migrations", file), "utf8"));
+
+  database.exec(`
+    INSERT INTO fantasy_users(id,discord_id,username) VALUES
+      ('reserve-user','r1','Reserva'),('invalid-user','r2','Inválido');
+    INSERT INTO fantasy_rounds(id,division,round_number,name,opens_at,locks_at,status)
+      VALUES('elite-r3','elite',3,'R3','2026-08-05','2026-08-08','open');
+    INSERT INTO fantasy_teams(id,user_id,division,name) VALUES
+      ('reserve-team','reserve-user','elite','Reserva'),
+      ('invalid-team','invalid-user','elite','Inválido');
+    INSERT INTO fantasy_participant_patrimony(user_id,division,current_cents) VALUES
+      ('reserve-user','elite',10473),('invalid-user','elite',10000);
+    INSERT INTO fantasy_lineups(id,fantasy_team_id,round_id,captain_asset_id,total_cost) VALUES
+      ('reserve-lineup','reserve-team','elite-r3','p1',101.85),
+      ('invalid-lineup','invalid-team','elite-r3','q1',105.00);
+    INSERT INTO fantasy_lineup_picks(lineup_id,role,asset_id,price_paid,team_slot) VALUES
+      ('reserve-lineup','TOP','p1',16.25,'A1'),
+      ('reserve-lineup','JG','p2',19.00,'A2'),
+      ('reserve-lineup','MID','p3',19.65,'A3'),
+      ('reserve-lineup','ADC','p4',16.95,'A4'),
+      ('reserve-lineup','SUP','p5',15.00,'B1'),
+      ('reserve-lineup','TEAM','pt',15.00,'B2'),
+      ('invalid-lineup','TOP','q1',20.00,'A1'),
+      ('invalid-lineup','JG','q2',20.00,'A2'),
+      ('invalid-lineup','MID','q3',20.00,'A3'),
+      ('invalid-lineup','ADC','q4',15.00,'A4'),
+      ('invalid-lineup','SUP','q5',15.00,'B1'),
+      ('invalid-lineup','TEAM','qt',15.00,'B2');
+    INSERT INTO fantasy_lineup_reserves(lineup_id,role,asset_id,price_paid,team_slot)
+      VALUES('reserve-lineup','TOP','reserve',15.88,'C1');
+  `);
+
+  database.exec(fs.readFileSync(path.join(ROOT, "migrations", "0013_fantasy_round3_reserve_budget.sql"), "utf8"));
+
+  assert.equal(database.prepare("SELECT COUNT(*) AS count FROM fantasy_lineups WHERE id='reserve-lineup'").get().count, 1);
+  assert.equal(database.prepare("SELECT COUNT(*) AS count FROM fantasy_lineup_picks WHERE lineup_id='reserve-lineup'").get().count, 6);
+  assert.equal(database.prepare("SELECT COUNT(*) AS count FROM fantasy_lineup_reserves WHERE lineup_id='reserve-lineup'").get().count, 0);
+  assert.equal(database.prepare("SELECT COUNT(*) AS count FROM fantasy_lineups WHERE id='invalid-lineup'").get().count, 0);
+  assert.deepEqual(
+    database.prepare("SELECT repair_type FROM fantasy_lineup_budget_repairs ORDER BY repair_type").all().map((row) => row.repair_type),
+    ["lineup_removed", "reserve_removed"]
+  );
+});

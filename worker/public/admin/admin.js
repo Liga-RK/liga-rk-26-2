@@ -547,7 +547,6 @@
   }
 
   function valuationStatus(item) {
-    if (item.status === "team-held") return "Equipe · preço mantido";
     if (!item.played) return "Não atuou · preço mantido";
     if (item.reviewStatus === "pending") return `<span class="warning">Revisão obrigatória</span>`;
     const labels = { approved: "Aprovada", ignored: "Alerta ignorado", edited: "Editada", ok: "Calculada" };
