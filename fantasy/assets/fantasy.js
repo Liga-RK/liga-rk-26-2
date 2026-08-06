@@ -1495,9 +1495,9 @@
         <tr>
           <td>${escapeHtml(row.name || `Rodada ${row.roundNumber || ""}`)}</td>
           <td><span class="division-pill">${escapeHtml(divisionLabel(row.division))}</span></td>
-          <td>RK$ ${formatMoney(Number(row.previousCents) / 100)}</td>
+          <td>RK$ ${formatMoney(Number(row.roundOpeningCents ?? row.previousCents) / 100)}</td>
           <td>${signedMoney(Number(row.variationCents) / 100)}</td>
-          <td>RK$ ${formatMoney(Number(row.newCents) / 100)}</td>
+          <td>RK$ ${formatMoney(Number(row.roundClosingCents ?? row.newCents) / 100)}</td>
         </tr>`).join("")
       : `<tr><td colspan="5">O patrimônio começa em RK$ 100,00 e ainda não teve uma rodada processada.</td></tr>`;
   }

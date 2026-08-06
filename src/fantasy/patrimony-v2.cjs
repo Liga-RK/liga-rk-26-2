@@ -121,11 +121,76 @@ function calculateParticipantPatrimony({
   };
 }
 
+function summarizeParticipantPatrimony({
+  currentCents,
+  historyRows = [],
+  initialCents = Math.round(PATRIMONY_CONFIG.initialPatrimony * 100)
+} = {}) {
+  const startingCents = Number.isFinite(Number(initialCents))
+    ? Math.round(Number(initialCents))
+    : Math.round(PATRIMONY_CONFIG.initialPatrimony * 100);
+  const groups = new Map();
+  for (const row of Array.isArray(historyRows) ? historyRows : []) {
+    if (!['PUBLISHED', 'INCONSISTENT', 'NO_VALID_LINEUP'].includes(String(row?.status))) continue;
+    const numericRound = Number(row?.roundNumber);
+    const roundKey = Number.isFinite(numericRound)
+      ? `number:${numericRound}`
+      : `id:${String(row?.roundId || '')}`;
+    const group = groups.get(roundKey) || {
+      key: roundKey,
+      roundNumber: Number.isFinite(numericRound) ? numericRound : null,
+      roundId: row?.roundId || null,
+      calculatedAt: String(row?.calculatedAt || row?.processedAt || ''),
+      variationCents: 0
+    };
+    if (['PUBLISHED', 'INCONSISTENT'].includes(String(row.status))) {
+      group.variationCents += Math.round(Number(row?.variationCents) || 0);
+    }
+    const calculatedAt = String(row?.calculatedAt || row?.processedAt || '');
+    if (calculatedAt > group.calculatedAt) group.calculatedAt = calculatedAt;
+    groups.set(roundKey, group);
+  }
+  const ordered = [...groups.values()].sort((a, b) => {
+    if (a.roundNumber !== null && b.roundNumber !== null && a.roundNumber !== b.roundNumber) {
+      return a.roundNumber - b.roundNumber;
+    }
+    return a.calculatedAt.localeCompare(b.calculatedAt) || a.key.localeCompare(b.key);
+  });
+  let balanceCents = startingCents;
+  let maximumCents = startingCents;
+  let minimumCents = startingCents;
+  const rounds = ordered.map((group) => {
+    const openingCents = balanceCents;
+    balanceCents += group.variationCents;
+    maximumCents = Math.max(maximumCents, balanceCents);
+    minimumCents = Math.min(minimumCents, balanceCents);
+    return {
+      ...group,
+      openingCents,
+      closingCents: balanceCents
+    };
+  });
+  const authoritativeCurrent = Number.isFinite(Number(currentCents))
+    ? Math.round(Number(currentCents))
+    : balanceCents;
+  maximumCents = Math.max(maximumCents, authoritativeCurrent);
+  minimumCents = Math.min(minimumCents, authoritativeCurrent);
+  return {
+    currentCents: authoritativeCurrent,
+    roundVariationCents: rounds.at(-1)?.variationCents || 0,
+    totalVariationCents: rounds.reduce((sum, round) => sum + round.variationCents, 0),
+    maximumCents,
+    minimumCents,
+    rounds
+  };
+}
+
 module.exports = {
   PATRIMONY_FORMULA_VERSION,
   PATRIMONY_FORMULA_ID,
   PATRIMONY_CONFIG,
   roundCurrency,
   initialParticipantPatrimony,
-  calculateParticipantPatrimony
+  calculateParticipantPatrimony,
+  summarizeParticipantPatrimony
 };

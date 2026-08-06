@@ -29,6 +29,7 @@ var ROLES = ["TOP", "JG", "MID", "ADC", "SUP", "TEAM"];
 var PLAYER_ROLES = ROLES.filter((role) => role !== "TEAM");
 var INITIAL_PATRIMONY = patrimonyV2.PATRIMONY_CONFIG.initialPatrimony;
 var PATRIMONY_FORMULA_ID = patrimonyV2.PATRIMONY_FORMULA_ID;
+var summarizeParticipantPatrimony = patrimonyV2.summarizeParticipantPatrimony;
 var BUDGET_LIMIT = INITIAL_PATRIMONY;
 var MAX_PLAYERS_PER_REAL_TEAM = 2;
 var ROUND_TWO_NOTICE = Object.freeze({
@@ -314,7 +315,28 @@ async function getMyHistory(request, env) {
     WHERE h.user_id = ?
     ORDER BY h.processed_at DESC
   `).bind(user.id).all();
-  return json({ profile, history: rows.results || [] }, 200, request, env);
+  const history = rows.results || [];
+  const summary = summarizeParticipantPatrimony({
+    currentCents: profile.currentCents,
+    historyRows: history
+  });
+  const roundSummaries = new Map(summary.rounds.map((round) => [round.key, round]));
+  return json({
+    profile,
+    history: history.map((row) => {
+      const numericRound = Number(row.roundNumber);
+      const key = Number.isFinite(numericRound)
+        ? `number:${numericRound}`
+        : `id:${String(row.roundId || '')}`;
+      const roundSummary = roundSummaries.get(key);
+      return {
+        ...row,
+        roundOpeningCents: roundSummary?.openingCents ?? row.previousCents,
+        roundClosingCents: roundSummary?.closingCents ?? row.newCents,
+        roundVariationCents: roundSummary?.variationCents ?? row.variationCents
+      };
+    })
+  }, 200, request, env);
 }
 __name(getMyHistory, "getMyHistory");
 async function getConfig(request, env) {
@@ -898,13 +920,19 @@ async function ensureParticipantPatrimony(env, userId) {
 __name(ensureParticipantPatrimony, "ensureParticipantPatrimony");
 async function participantPatrimonyProfile(env, userId) {
   const current = await ensureParticipantPatrimony(env, userId);
-  const stats = await env.DB.prepare(`
-    SELECT
-      COALESCE(SUM(CASE WHEN status IN ('PUBLISHED','INCONSISTENT') THEN variation_cents ELSE 0 END), 0) AS totalVariationCents,
-      COALESCE(MAX(CASE WHEN status IN ('PUBLISHED','INCONSISTENT') THEN new_cents END), ?) AS maximumCents,
-      COALESCE(MIN(CASE WHEN status IN ('PUBLISHED','INCONSISTENT') THEN new_cents END), ?) AS minimumCents
-    FROM fantasy_patrimony_history WHERE user_id = ?
-  `).bind(Number(current.current_cents), Number(current.current_cents), userId).first();
+  const history = await env.DB.prepare(`
+    SELECT h.round_id AS roundId, r.round_number AS roundNumber,
+           h.variation_cents AS variationCents, h.status,
+           h.processed_at AS calculatedAt
+    FROM fantasy_patrimony_history h
+    JOIN fantasy_rounds r ON r.id = h.round_id
+    WHERE h.user_id = ?
+    ORDER BY r.round_number, h.processed_at
+  `).bind(userId).all();
+  const stats = summarizeParticipantPatrimony({
+    currentCents: Number(current.current_cents),
+    historyRows: history.results || []
+  });
   const latest = await env.DB.prepare(`
     SELECT variation_cents AS variationCents, round_id AS roundId, division, status
     FROM fantasy_patrimony_history
@@ -913,10 +941,10 @@ async function participantPatrimonyProfile(env, userId) {
   `).bind(userId).first();
   return {
     currentCents: Number(current.current_cents),
-    roundVariationCents: Number(latest?.variationCents || 0),
-    totalVariationCents: Number(stats?.totalVariationCents || 0),
-    maximumCents: Math.max(Math.round(INITIAL_PATRIMONY * 100), Number.isFinite(Number(stats?.maximumCents)) ? Number(stats.maximumCents) : Number(current.current_cents)),
-    minimumCents: Math.min(Math.round(INITIAL_PATRIMONY * 100), Number.isFinite(Number(stats?.minimumCents)) ? Number(stats.minimumCents) : Number(current.current_cents)),
+    roundVariationCents: stats.roundVariationCents,
+    totalVariationCents: stats.totalVariationCents,
+    maximumCents: stats.maximumCents,
+    minimumCents: stats.minimumCents,
     latestRoundId: latest?.roundId || null,
     latestDivision: latest?.division || null,
     formulaVersion: current.formula_version,

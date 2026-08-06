@@ -7,7 +7,8 @@ const {
   PATRIMONY_FORMULA_ID,
   calculateParticipantPatrimony,
   initialParticipantPatrimony,
-  roundCurrency
+  roundCurrency,
+  summarizeParticipantPatrimony
 } = require("../src/fantasy/patrimony-v2.cjs");
 
 function lineup(assets) {
@@ -110,4 +111,37 @@ test("arredondamento monetário é centralizado em dois centavos", () => {
   assert.equal(PATRIMONY_CONFIG.minimumPatrimony, null);
   assert.equal(PATRIMONY_CONFIG.maximumPatrimony, null);
   assert.equal(PATRIMONY_FORMULA_ID, "v2-dynamic-assets");
+});
+
+test("duas divisões da mesma rodada usam a mesma base e somam na carteira única", () => {
+  const summary = summarizeParticipantPatrimony({
+    currentCents: 11268,
+    historyRows: [
+      { roundNumber: 2, roundId: "asc-r2", status: "PUBLISHED", variationCents: 795 },
+      { roundNumber: 2, roundId: "elite-r2", status: "PUBLISHED", variationCents: 473 }
+    ]
+  });
+  assert.equal(summary.roundVariationCents, 1268);
+  assert.equal(summary.totalVariationCents, 1268);
+  assert.equal(summary.rounds[0].openingCents, 10000);
+  assert.equal(summary.rounds[0].closingCents, 11268);
+  assert.equal(summary.maximumCents, 11268);
+  assert.equal(summary.minimumCents, 10000);
+});
+
+test("rodada seguinte parte do saldo global fechado da rodada anterior", () => {
+  const summary = summarizeParticipantPatrimony({
+    currentCents: 11000,
+    historyRows: [
+      { roundNumber: 2, roundId: "asc-r2", status: "PUBLISHED", variationCents: 500 },
+      { roundNumber: 2, roundId: "elite-r2", status: "PUBLISHED", variationCents: 300 },
+      { roundNumber: 3, roundId: "asc-r3", status: "PUBLISHED", variationCents: -200 },
+      { roundNumber: 3, roundId: "elite-r3", status: "PUBLISHED", variationCents: 400 }
+    ]
+  });
+  assert.deepEqual(summary.rounds.map((round) => [round.openingCents, round.closingCents]), [
+    [10000, 10800],
+    [10800, 11000]
+  ]);
+  assert.equal(summary.roundVariationCents, 200);
 });

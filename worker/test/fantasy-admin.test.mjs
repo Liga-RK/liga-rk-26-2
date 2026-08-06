@@ -459,6 +459,45 @@ sqliteTest("38a migração v2 preserva histórico e adiciona versão segura", ()
   );
 });
 
+sqliteTest("38b reajuste usa a mesma base nas duas divisões e preserva a carteira global", () => {
+  const db = migratedDatabaseWithFixture();
+  db.exec(`
+    INSERT INTO fantasy_rounds(id,division,round_number,name,opens_at,locks_at,status)
+      VALUES
+        ('asc-r2','ascension',2,'Rodada 2','2026-08-01T00:00:00Z','2026-08-02T00:00:00Z','locked'),
+        ('elite-r2','elite',2,'Rodada 2','2026-08-01T00:00:00Z','2026-08-02T00:00:00Z','locked');
+    INSERT INTO fantasy_price_simulations(
+      id,round_id,source_hash,formula_version,settings_json,items_json,status,created_by
+    ) VALUES
+      ('sim-asc-r2','asc-r2','hash-asc','fantasy-v3-dynamic','{}','[]','applied','test'),
+      ('sim-elite-r2','elite-r2','hash-elite','fantasy-v3-dynamic','{}','[]','applied','test');
+    UPDATE fantasy_participant_patrimony SET current_cents=11268 WHERE user_id='u1';
+    INSERT INTO fantasy_patrimony_history(
+      id,simulation_id,user_id,round_id,division,previous_cents,purchases_cents,
+      available_balance_cents,previous_assets_cents,updated_assets_cents,
+      variation_cents,new_cents,status,formula_version,processed_by
+    ) VALUES
+      ('h-asc','sim-asc-r2','u1','asc-r2','ascension',10000,9000,1000,9000,9795,795,10795,'PUBLISHED','v2-dynamic-assets','test'),
+      ('h-elite','sim-elite-r2','u1','elite-r2','elite',10795,9000,1795,9000,9473,473,11268,'PUBLISHED','v2-dynamic-assets','test');
+  `);
+  db.exec(migrationText("0010_fantasy_shared_round_patrimony.sql"));
+  const elite = db.prepare(`
+    SELECT previous_cents AS previousCents, available_balance_cents AS availableCents,
+           new_cents AS newCents, consistency_difference_cents AS differenceCents
+    FROM fantasy_patrimony_history WHERE id='h-elite'
+  `).get();
+  assert.deepEqual({ ...elite }, {
+    previousCents: 10000,
+    availableCents: 1000,
+    newCents: 10473,
+    differenceCents: 0
+  });
+  assert.equal(
+    db.prepare("SELECT current_cents AS currentCents FROM fantasy_participant_patrimony WHERE user_id='u1'").get().currentCents,
+    11268
+  );
+});
+
 test("39 painel possui layout responsivo para celular", () => {
   assert.match(adminCss, /@media \(max-width: 560px\)/);
   assert.match(adminCss, /\.compact-form \{ grid-template-columns: 1fr; \}/);
@@ -690,6 +729,7 @@ function migratedDatabaseWithFixture() {
   db.exec(migrationText("0007_fantasy_dynamic_valuation.sql"));
   db.exec(migrationText("0008_fantasy_dynamic_patrimony.sql"));
   db.exec(migrationText("0009_fantasy_user_notices.sql"));
+  db.exec(migrationText("0010_fantasy_shared_round_patrimony.sql"));
   return db;
 }
 

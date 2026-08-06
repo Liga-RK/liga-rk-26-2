@@ -2921,15 +2921,25 @@ async function adminValuationRollback(request, env, requestId, auth) {
   }
   const patrimonyBefore = await dbAll(env, `
     SELECT h.id, h.user_id AS userId, h.previous_cents AS previousCents,
-           h.new_cents AS newCents, h.status,
+           h.new_cents AS newCents, h.variation_cents AS variationCents, h.status,
            p.current_cents AS currentCents
     FROM fantasy_patrimony_history h
     JOIN fantasy_participant_patrimony p ON p.user_id = h.user_id
     WHERE h.simulation_id = ?
       AND h.status IN ('PUBLISHED','INCONSISTENT','NO_VALID_LINEUP')
   `, [simulationId]);
+  const expectedPatrimony = await dbAll(env, `
+    SELECT u.id AS userId,
+           10000 + COALESCE(SUM(CASE
+             WHEN h.status IN ('PUBLISHED','INCONSISTENT') THEN h.variation_cents
+             ELSE 0 END), 0) AS expectedCents
+    FROM fantasy_users u
+    LEFT JOIN fantasy_patrimony_history h ON h.user_id = u.id
+    GROUP BY u.id
+  `);
+  const expectedByUser = new Map(expectedPatrimony.map((row) => [String(row.userId), Number(row.expectedCents)]));
   const patrimonyChanged = patrimonyBefore.filter(
-    (row) => Number(row.currentCents) !== Number(row.newCents)
+    (row) => Number(row.currentCents) !== expectedByUser.get(String(row.userId))
   );
   if (patrimonyChanged.length) {
     return failure(
@@ -2992,7 +3002,15 @@ async function adminValuationRollback(request, env, requestId, auth) {
       UPDATE fantasy_participant_patrimony
       SET current_cents = ?, formula_version = ?, updated_at = CURRENT_TIMESTAMP
       WHERE user_id = ?
-    `).bind(row.previousCents, PATRIMONY_FORMULA_ID, row.userId));
+    `).bind(
+      Number(row.currentCents) - (
+        ['PUBLISHED', 'INCONSISTENT'].includes(String(row.status))
+          ? Number(row.variationCents || 0)
+          : 0
+      ),
+      PATRIMONY_FORMULA_ID,
+      row.userId
+    ));
   }
   statements.push(env.DB.prepare(`
     UPDATE fantasy_patrimony_history
@@ -3284,12 +3302,29 @@ async function calculatePatrimonyPreview(env, round, items) {
     WHERE l.round_id = ? AND t.division = ?
     ORDER BY t.user_id, l.id, o.ownership_type, o.role
   `, [round.id, round.division]);
-  const activeHistory = await dbAll(env, `
-    SELECT user_id AS userId, simulation_id AS simulationId, status
-    FROM fantasy_patrimony_history
-    WHERE round_id = ? AND status IN ('PUBLISHED','INCONSISTENT','NO_VALID_LINEUP')
-  `, [round.id]);
-  const alreadyByUser = new Map(activeHistory.map((row) => [String(row.userId), row]));
+  const sameRoundHistory = await dbAll(env, `
+    SELECT h.user_id AS userId, h.round_id AS roundId,
+           h.simulation_id AS simulationId, h.previous_cents AS previousCents,
+           h.variation_cents AS variationCents, h.status,
+           h.processed_at AS processedAt
+    FROM fantasy_patrimony_history h
+    JOIN fantasy_rounds r ON r.id = h.round_id
+    WHERE r.round_number = ?
+      AND h.status IN ('PUBLISHED','INCONSISTENT','NO_VALID_LINEUP')
+    ORDER BY h.processed_at, h.id
+  `, [round.roundNumber]);
+  const historyByUser = new Map();
+  for (const history of sameRoundHistory) {
+    const key = String(history.userId);
+    const rows = historyByUser.get(key) || [];
+    rows.push(history);
+    historyByUser.set(key, rows);
+  }
+  const alreadyByUser = new Map(
+    sameRoundHistory
+      .filter((row) => String(row.roundId) === String(round.id))
+      .map((row) => [String(row.userId), row])
+  );
   const lineupsByUser = new Map();
   for (const row of owned) {
     const group = lineupsByUser.get(String(row.userId)) || {
@@ -3314,10 +3349,14 @@ async function calculatePatrimonyPreview(env, round, items) {
   const updatedPrices = Object.fromEntries(items.map((item) => [String(item.assetId), Number(item.newPrice)]));
   const calculatedAt = new Date().toISOString();
   return users.map((user) => {
+    const participantHistory = historyByUser.get(String(user.userId)) || [];
     const group = lineupsByUser.get(String(user.userId));
     const submittedInTime = !group || !round.locksAt || Date.parse(group.updatedAt) <= Date.parse(round.locksAt);
     const isValid = Boolean(group && group.starterRoles.size === 6 && ALL_ROLES.every((role) => group.starterRoles.has(role)) && submittedInTime);
-    const previousPatrimony = Number(user.currentCents) / 100;
+    const roundOpeningCents = participantHistory.length
+      ? Number(participantHistory[0].previousCents)
+      : Number(user.currentCents);
+    const previousPatrimony = roundOpeningCents / 100;
     const purchases = group ? roundMoney(group.assets.reduce((sum, asset) => sum + asset.purchasePrice, 0)) : 0;
     const result = calculateParticipantPatrimony({
       previousPatrimony,
@@ -3327,6 +3366,13 @@ async function calculatePatrimonyPreview(env, round, items) {
       calculatedAt
     });
     const already = alreadyByUser.get(String(user.userId));
+    const otherDivisionVariationCents = participantHistory.reduce((sum, history) => (
+      String(history.roundId) !== String(round.id)
+        && ['PUBLISHED', 'INCONSISTENT'].includes(String(history.status))
+        ? sum + Number(history.variationCents || 0)
+        : sum
+    ), 0);
+    const variationCents = Math.round(result.assetsVariation * 100);
     return {
       userId: user.userId,
       participant: user.username,
@@ -3339,8 +3385,9 @@ async function calculatePatrimonyPreview(env, round, items) {
       availableBalanceCents: Math.round(result.availableBalance * 100),
       previousAssetsCents: Math.round(result.previousAssetsValue * 100),
       updatedAssetsCents: Math.round(result.updatedAssetsValue * 100),
-      variationCents: Math.round(result.assetsVariation * 100),
+      variationCents,
       newCents: Math.round(result.newPatrimony * 100),
+      globalNewCents: roundOpeningCents + otherDivisionVariationCents + variationCents,
       consistencyDifferenceCents: Math.round(result.consistencyDifference * 100),
       status: already ? "ALREADY_PROCESSED" : result.status,
       originalStatus: result.status,
@@ -3385,13 +3432,11 @@ async function preparePatrimonyPublication(env, round, simulationId, items, acto
     const historyStatus = row.originalStatus === "NO_VALID_LINEUP"
       ? "NO_VALID_LINEUP"
       : row.originalStatus === "INCONSISTENT" ? "INCONSISTENT" : "PUBLISHED";
-    if (row.originalStatus !== "NO_VALID_LINEUP") {
-      statements.push(env.DB.prepare(`
-        UPDATE fantasy_participant_patrimony
-        SET current_cents = ?, formula_version = ?, updated_at = CURRENT_TIMESTAMP
-        WHERE user_id = ?
-      `).bind(row.newCents, PATRIMONY_FORMULA_ID, row.userId));
-    }
+    statements.push(env.DB.prepare(`
+      UPDATE fantasy_participant_patrimony
+      SET current_cents = ?, formula_version = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE user_id = ?
+    `).bind(row.globalNewCents, PATRIMONY_FORMULA_ID, row.userId));
     statements.push(env.DB.prepare(`
       INSERT INTO fantasy_patrimony_history
         (id, simulation_id, user_id, round_id, division, lineup_id,
