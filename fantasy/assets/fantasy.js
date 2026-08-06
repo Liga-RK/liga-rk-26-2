@@ -665,7 +665,7 @@
     stats.className = "player-stats";
     const recent = item.recentPoints && item.recentPoints.length
       ? item.recentPoints.map((point) => formatNumber(point)).join(" · ")
-      : "aguardando rodada";
+      : "indisponível na última rodada";
     stats.innerHTML = `<span>Média: ${formatNumber(item.average)}</span><span>Performance recente: ${escapeHtml(recent)}</span>`;
     meta.append(name, team, matchup, stats);
     const breakdown = fantasyBreakdown(item);
@@ -2478,7 +2478,7 @@
   }
 
   function demoRecentPoints(seed) {
-    return [0, 1, 2].map((index) => roundMoney(8 + ((stableNumber(`${seed}:${index}`) % 1200) / 100)));
+    return [roundMoney(8 + ((stableNumber(`${seed}:latest`) % 1200) / 100))];
   }
 
   function formatNumber(value) {

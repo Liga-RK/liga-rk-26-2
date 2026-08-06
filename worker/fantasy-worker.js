@@ -366,21 +366,21 @@ async function getMarket(request, env) {
            last_valuation_breakdown_json AS valuationDetailsJson
     FROM fantasy_market WHERE division = ? AND active = 1 ORDER BY role, price DESC, display_name
   `).bind(division).all();
+  const performanceRoundNumber = Math.max(
+    0,
+    Math.trunc(Number(round?.round_number || marketState?.lock_round_number || 0)) - 1
+  );
   const recentResult = await env.DB.prepare(`
     SELECT s.asset_id AS id, ROUND(s.points, 2) AS points
     FROM fantasy_asset_round_scores s
     JOIN fantasy_rounds r ON r.id = s.round_id
-    WHERE s.division = ? AND s.games > 0
-    ORDER BY r.round_number DESC, s.created_at DESC
-  `).bind(division).all();
+    WHERE s.division = ? AND r.round_number = ? AND s.games > 0
+    ORDER BY s.created_at DESC
+  `).bind(division, performanceRoundNumber).all();
   const recent = /* @__PURE__ */ new Map();
   for (const row of recentResult.results || []) {
     const id = String(row.id);
-    const list = recent.get(id) || [];
-    if (list.length < 3) {
-      list.push(roundMoney(row.points));
-      recent.set(id, list);
-    }
+    if (!recent.has(id)) recent.set(id, [roundMoney(row.points)]);
   }
   const marketRows = result.results || [];
   const matchups = buildRoundMatchups(marketRows, round);
@@ -404,7 +404,12 @@ async function getMarket(request, env) {
       valuationDetailsJson: undefined
     };
   });
-  return json({ division, market, marketState: marketStateForUser(marketState, user, env) }, 200, request, env);
+  return json({
+    division,
+    performanceRoundNumber,
+    market,
+    marketState: marketStateForUser(marketState, user, env)
+  }, 200, request, env);
 }
 __name(getMarket, "getMarket");
 function buildRoundMatchups(marketRows, round) {

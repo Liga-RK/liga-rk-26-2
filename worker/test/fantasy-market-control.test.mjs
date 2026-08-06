@@ -159,6 +159,56 @@ sqliteTest("destaques usam a rodada vinculada ao mercado mesmo com a próxima ag
   assert.equal(result.payload.highlights.team.picks, 2);
 });
 
+sqliteTest("performance recente mostra somente quem jogou na rodada anterior", async () => {
+  const database = createDatabase();
+  database.exec(`
+    INSERT INTO fantasy_rounds(id, division, round_number, name, opens_at, locks_at, status)
+    VALUES
+      ('elite-r1', 'elite', 1, 'Rodada 1', '2026-07-20T00:00:00.000Z', '2026-07-25T00:00:00.000Z', 'scored'),
+      ('elite-r2', 'elite', 2, 'Rodada 2', '2026-07-27T00:00:00.000Z', '2026-08-01T00:00:00.000Z', 'scored'),
+      ('elite-r3', 'elite', 3, 'Rodada 3', '2099-08-05T00:00:00.000Z', '2099-08-08T18:35:00.000Z', 'scheduled');
+
+    INSERT INTO fantasy_market(
+      division, asset_id, asset_type, role, display_name, team_slot,
+      team_name, team_tag, price, previous_price
+    ) VALUES
+      ('elite', 'player:played', 'player', 'TOP', 'Jogou R2', 'A1', 'Time A', 'TMA', 12, 12),
+      ('elite', 'player:absent', 'player', 'JG', 'Não jogou R2', 'A2', 'Time B', 'TMB', 12, 12),
+      ('elite', 'team:elite:A1', 'team', 'TEAM', 'Time A', 'A1', 'Time A', 'TMA', 10, 10),
+      ('elite', 'team:elite:A2', 'team', 'TEAM', 'Time B', 'A2', 'Time B', 'TMB', 10, 10);
+
+    INSERT INTO fantasy_asset_round_scores(round_id, division, asset_id, role, games, points)
+    VALUES
+      ('elite-r1', 'elite', 'player:played', 'TOP', 2, 11),
+      ('elite-r1', 'elite', 'player:absent', 'JG', 2, 12),
+      ('elite-r1', 'elite', 'team:elite:A1', 'TEAM', 2, 13),
+      ('elite-r1', 'elite', 'team:elite:A2', 'TEAM', 2, 14),
+      ('elite-r2', 'elite', 'player:played', 'TOP', 2, 21),
+      ('elite-r2', 'elite', 'player:absent', 'JG', 0, 0),
+      ('elite-r2', 'elite', 'team:elite:A1', 'TEAM', 2, 23),
+      ('elite-r2', 'elite', 'team:elite:A2', 'TEAM', 0, 0);
+
+    UPDATE fantasy_market_state
+    SET status='closed', lock_round_number=3, version=1
+    WHERE id='global';
+  `);
+  const env = {
+    DB: d1(database),
+    SITE_URL: `${SITE_ORIGIN}/liga-rk-26-2/fantasy/`,
+    ALLOWED_ORIGINS: SITE_ORIGIN
+  };
+
+  const result = await call(env, "/api/fantasy/market?division=elite");
+  const assets = new Map(result.payload.market.map((item) => [item.id, item]));
+
+  assert.equal(result.response.status, 200);
+  assert.equal(result.payload.performanceRoundNumber, 2);
+  assert.deepEqual(assets.get("player:played").recentPoints, [21]);
+  assert.deepEqual(assets.get("team:elite:A1").recentPoints, [23]);
+  assert.deepEqual(assets.get("player:absent").recentPoints, []);
+  assert.deepEqual(assets.get("team:elite:A2").recentPoints, []);
+});
+
 sqliteTest("callback do Discord retorna diretamente para a tela do mercado", async () => {
   const database = createDatabase();
   const env = {
