@@ -250,6 +250,91 @@ test("30a elenco ao vivo substitui equipe e jogadores do arquivo estático", () 
   assert.equal(merged.contentUpdatedAt, "2026-07-29T18:33:06.155Z");
 });
 
+test("30aa resultados ao vivo distinguem WO e adiamento da rodada 2", () => {
+  const source = sampleSource();
+  source.divisions.elite.rounds[0].matches.push({
+    id: "schedule:elite:r2g7",
+    sourceId: "r2g7",
+    stage: "groups",
+    homeTeamSlot: "D1",
+    awayTeamSlot: "D3",
+    startsAt: "2026-08-02T23:30:00.000Z",
+    status: "scheduled"
+  });
+  const merged = __test.mergeLiveOfficialContent(source, {
+    divisions: {
+      elite: {
+        teams: {},
+        results: {
+          r2g1: { homeScore: 0, awayScore: 2, manualOverride: true },
+          r2g7: { homeScore: "", awayScore: "" }
+        }
+      },
+      ascension: { teams: {}, results: {} }
+    }
+  }, "2026-08-05T22:26:55.282Z");
+  const [walkover, postponed] = merged.divisions.elite.rounds[0].matches;
+  assert.equal(walkover.status, "completed");
+  assert.equal(walkover.isWalkover, true);
+  assert.equal(walkover.excludedFromScoring, true);
+  assert.equal(walkover.homeScore, 0);
+  assert.equal(walkover.awayScore, 2);
+  assert.equal(postponed.status, "postponed");
+  assert.equal(postponed.excludedFromScoring, true);
+  assert.match(postponed.scheduleIssue, /FVL x SDK/);
+});
+
+test("30ab rodada fecha com série jogada, WO e partida adiada sem inventar mapas", async () => {
+  const source = sampleSource();
+  source.divisions.elite.rounds[0].matches = [
+    {
+      id: "schedule:elite:r2g1", sourceId: "r2g1", stage: "groups",
+      homeTeamSlot: "A1", awayTeamSlot: "A2", status: "completed",
+      homeScore: 0, awayScore: 2, isWalkover: true, excludedFromScoring: true
+    },
+    {
+      id: "schedule:elite:r2g2", sourceId: "r2g2", stage: "groups",
+      homeTeamSlot: "A1", awayTeamSlot: "A2", status: "completed",
+      homeScore: 2, awayScore: 0
+    },
+    {
+      id: "schedule:elite:r2g7", sourceId: "r2g7", stage: "groups",
+      homeTeamSlot: "D1", awayTeamSlot: "D3", status: "postponed",
+      excludedFromScoring: true
+    }
+  ];
+  source.divisions.elite.stats.matches = [1, 2].map((gameNumber) => ({
+    id: `elite-r2g2-map-${gameNumber}`,
+    seriesId: "groups-r2g2",
+    round: "RODADA 2",
+    roundNumber: 2,
+    gameNumber,
+    format: "MD3",
+    blueTeamSlot: "A1",
+    redTeamSlot: "A2",
+    winnerSlot: "A1",
+    mvpPlayerId: "p-elite",
+    participants: [{
+      playerId: "p-elite",
+      teamSlot: "A1",
+      position: "TOP",
+      score: 80,
+      won: true,
+      deaths: 1
+    }]
+  }));
+  const normalized = await __test.normalizeFormulaV2Round(source, 2, "elite");
+  assert.equal(normalized.ready, true);
+  assert.equal(normalized.expectedSeries, 3);
+  assert.equal(normalized.completedSeries, 3);
+  assert.equal(normalized.playedSeries, 1);
+  assert.equal(normalized.walkovers, 1);
+  assert.equal(normalized.postponed, 1);
+  assert.equal(normalized.series.length, 1);
+  assert.equal(normalized.series[0].id, "groups-r2g2");
+  assert.equal(normalized.series[0].mapas.length, 2);
+});
+
 test("30b estatística histórica é reconciliada com o jogador atual pelo Riot ID", async () => {
   const source = sampleSource();
   source.divisions.elite.teams[0].players = [{

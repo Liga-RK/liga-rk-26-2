@@ -17,6 +17,13 @@ const PLAYER_ROLES = ["TOP", "JG", "MID", "ADC", "SUP"];
 const ALL_ROLES = [...PLAYER_ROLES, "TEAM"];
 const DEFAULT_SOURCE_URL =
   "https://liga-rk.github.io/liga-rk-26-2/assets/fantasy-source.json";
+const OFFICIAL_MATCH_OVERRIDES = Object.freeze({
+  "elite:2:r2g7": Object.freeze({
+    status: "postponed",
+    excludedFromScoring: true,
+    reason: "FVL x SDK foi adiado após o fechamento do mercado da rodada 2."
+  })
+});
 const DEFAULT_FORMULA_SETTINGS = valuationV3.DEFAULT_VALUATION_SETTINGS;
 const {
   FORMULA_ID,
@@ -1037,11 +1044,12 @@ function mergeLiveOfficialContent(source, liveContent, updatedAt = null) {
   for (const division of DIVISIONS) {
     const sourceDivision = source.divisions?.[division] || {};
     const liveDivision = liveContent.divisions?.[division];
-    if (!liveDivision?.teams) {
+    if (!liveDivision) {
       merged.divisions[division] = sourceDivision;
       continue;
     }
-    const teams = Object.entries(liveDivision.teams).map(([rawSlot, rawTeam]) => {
+    const liveTeams = liveDivision.teams || {};
+    const teams = Object.entries(liveTeams).map(([rawSlot, rawTeam]) => {
       const slot = clean(rawSlot).toUpperCase();
       return {
         id: `team:${division}:${slot}`,
@@ -1060,23 +1068,60 @@ function mergeLiveOfficialContent(source, liveContent, updatedAt = null) {
             riotIdAliases: arrayValues(player.riotIdAliases).map(clean).filter(Boolean),
             opgg: clean(player.opgg),
             captain: Boolean(player.captain)
-          }))
+        }))
       };
     });
-    const namesBySlot = new Map(teams.map((team) => [team.slot, team.name]));
+    const effectiveTeams = teams.length ? teams : arrayValues(sourceDivision.teams);
+    const namesBySlot = new Map(effectiveTeams.map((team) => [clean(team.slot).toUpperCase(), team.name]));
+    const statSeriesIds = new Set(arrayValues(sourceDivision.stats?.matches)
+      .map((match) => clean(match.seriesId))
+      .filter(Boolean));
+    const liveResults = liveDivision.results || {};
     const rounds = arrayValues(sourceDivision.rounds).map((round) => ({
       ...round,
-      matches: arrayValues(round.matches).map((match) => ({
-        ...match,
-        homeTeamName: namesBySlot.get(clean(match.homeTeamSlot || match.homeSlot).toUpperCase()) ||
-          clean(match.homeTeamName),
-        awayTeamName: namesBySlot.get(clean(match.awayTeamSlot || match.awaySlot).toUpperCase()) ||
-          clean(match.awayTeamName)
-      }))
+      matches: arrayValues(round.matches).map((match) => {
+        const roundNumber = Math.trunc(Number(round.roundNumber || round.number));
+        const sourceId = clean(match.sourceId || match.id);
+        const stage = clean(match.stage) || "groups";
+        const statsSeriesId = clean(match.statsSeriesId) || `${stage}-${sourceId}`;
+        const liveResult = liveResults[sourceId];
+        const homeScore = nullableInteger(liveResult?.homeScore);
+        const awayScore = nullableInteger(liveResult?.awayScore);
+        const hasFinalScore = homeScore !== null && awayScore !== null && homeScore !== awayScore;
+        const manualResult = Boolean(liveResult?.manualOverride);
+        const hasDetailedStats = statSeriesIds.has(statsSeriesId);
+        const override = OFFICIAL_MATCH_OVERRIDES[`${division}:${roundNumber}:${sourceId}`] || null;
+        const status = override?.status || (hasFinalScore ? "completed" : validMatchStatus(match.status));
+        const isWalkover = !override && hasFinalScore && manualResult && !hasDetailedStats;
+        const homeSlot = clean(match.homeTeamSlot || match.homeSlot).toUpperCase();
+        const awaySlot = clean(match.awayTeamSlot || match.awaySlot).toUpperCase();
+        const winnerSlot = hasFinalScore ? (homeScore > awayScore ? homeSlot : awaySlot) : "";
+        return {
+          ...match,
+          homeTeamName: namesBySlot.get(homeSlot) || clean(match.homeTeamName),
+          awayTeamName: namesBySlot.get(awaySlot) || clean(match.awayTeamName),
+          status,
+          homeScore: hasFinalScore ? homeScore : nullableInteger(match.homeScore),
+          awayScore: hasFinalScore ? awayScore : nullableInteger(match.awayScore),
+          winnerTeamId: winnerSlot ? `team:${division}:${winnerSlot}` : null,
+          statsSeriesId,
+          isWalkover,
+          excludedFromScoring: Boolean(
+            override?.excludedFromScoring || isWalkover || ["postponed", "cancelled"].includes(status)
+          ),
+          scheduleIssue: clean(override?.reason || match.scheduleIssue),
+          officialResult: liveResult ? {
+            homeScore,
+            awayScore,
+            manualOverride: manualResult,
+            updatedAt: isoDate(updatedAt) || clean(updatedAt) || null
+          } : null
+        };
+      })
     }));
     merged.divisions[division] = {
       ...sourceDivision,
-      teams,
+      teams: effectiveTeams,
       rounds
     };
   }
@@ -1195,7 +1240,8 @@ async function normalizeOfficialSource(source) {
         const homeTeam = teams.find((team) => team.division === division && team.slot === homeSlot);
         const awayTeam = teams.find((team) => team.division === division && team.slot === awaySlot);
         const startsAt = isoDate(rawMatch.startsAt);
-        const scheduleIssue = startsAt ? "" : "Horário ausente ou inválido";
+        const scheduleIssue = clean(rawMatch.scheduleIssue) ||
+          (startsAt ? "" : "Horário ausente ou inválido");
         if (scheduleIssue) warnings.push(`${division} ${sourceId}: ${scheduleIssue}.`);
         const match = {
           id,
@@ -1619,7 +1665,7 @@ async function normalizeFormulaV2Round(source, roundNumber, division) {
     });
     grouped.set(seriesId, series);
   }
-  const series = [...grouped.values()].map((item) => {
+  const allSeries = [...grouped.values()].map((item) => {
     item.mapas.sort((left, right) => left.gameNumber - right.gameNumber);
     const vitorias = new Map();
     for (const game of item.mapas) {
@@ -1647,17 +1693,47 @@ async function normalizeFormulaV2Round(source, roundNumber, division) {
     };
   });
   const scheduledMatches = arrayValues(scheduledRound.matches);
-  const completedSchedule = scheduledMatches.filter((match) => clean(match.status) === "completed");
+  const seriesIdForMatch = (match) => clean(match.statsSeriesId) ||
+    `${clean(match.stage) || "groups"}-${clean(match.sourceId || match.id)}`;
+  const terminalStatuses = new Set(["completed", "postponed", "cancelled"]);
+  const excludedMatches = scheduledMatches.filter((match) =>
+    Boolean(match.excludedFromScoring || match.isWalkover) ||
+    ["postponed", "cancelled"].includes(clean(match.status))
+  );
+  const excludedSeriesIds = new Set(excludedMatches.map(seriesIdForMatch));
+  const playableMatches = scheduledMatches.filter((match) => !excludedSeriesIds.has(seriesIdForMatch(match)));
+  const playableSeriesIds = new Set(playableMatches.map(seriesIdForMatch));
+  const scheduledSeriesIds = new Set(scheduledMatches.map(seriesIdForMatch));
+  const series = allSeries.filter((item) => playableSeriesIds.has(item.id));
+  const completedPlayableSeries = new Set(
+    series.filter((item) => item.concluida).map((item) => item.id)
+  );
+  const missingPlayableSeries = [...playableSeriesIds]
+    .filter((seriesId) => !completedPlayableSeries.has(seriesId));
+  const unknownSeries = allSeries.filter((item) => !scheduledSeriesIds.has(item.id));
+  const unresolvedSchedule = scheduledMatches.filter((match) =>
+    !terminalStatuses.has(clean(match.status))
+  );
+  const resolvedWithoutPlay = excludedMatches.filter((match) =>
+    terminalStatuses.has(clean(match.status))
+  );
   const ready = scheduledMatches.length > 0 &&
-    completedSchedule.length === scheduledMatches.length &&
-    series.length === scheduledMatches.length &&
-    series.every((item) => item.concluida);
+    unresolvedSchedule.length === 0 &&
+    missingPlayableSeries.length === 0 &&
+    unknownSeries.length === 0;
   const normalized = {
     roundNumber,
     division,
     roundId: clean(scheduledRound.id) || `${division}-r${roundNumber}`,
     expectedSeries: scheduledMatches.length,
-    completedSeries: series.filter((item) => item.concluida).length,
+    completedSeries: completedPlayableSeries.size + resolvedWithoutPlay.length,
+    playedSeries: completedPlayableSeries.size,
+    walkovers: excludedMatches.filter((match) => Boolean(match.isWalkover)).length,
+    postponed: excludedMatches.filter((match) => clean(match.status) === "postponed").length,
+    cancelled: excludedMatches.filter((match) => clean(match.status) === "cancelled").length,
+    ignoredStatSeries: allSeries.filter((item) => excludedSeriesIds.has(item.id)).map((item) => item.id),
+    missingPlayableSeries,
+    unknownSeries: unknownSeries.map((item) => item.id),
     ready,
     series
   };
@@ -1687,6 +1763,10 @@ async function adminRoundPreviewV2(request, env, requestId, auth) {
       ready: normalized.ready,
       expectedSeries: normalized.expectedSeries,
       completedSeries: normalized.completedSeries,
+      playedSeries: normalized.playedSeries,
+      walkovers: normalized.walkovers,
+      postponed: normalized.postponed,
+      cancelled: normalized.cancelled,
       maps: normalized.series.reduce((total, item) => total + item.mapas.length, 0),
       players: new Set(normalized.series.flatMap((item) =>
         item.mapas.flatMap((game) => game.participantes.map((participant) => participant.atletaId))
@@ -1759,7 +1839,13 @@ async function adminRoundProcessV2(request, env, requestId, auth) {
         divisions: notReady.map((item) => ({
           division: item.division,
           expectedSeries: item.expectedSeries,
-          completedSeries: item.completedSeries
+          completedSeries: item.completedSeries,
+          playedSeries: item.playedSeries,
+          walkovers: item.walkovers,
+          postponed: item.postponed,
+          cancelled: item.cancelled,
+          missingPlayableSeries: item.missingPlayableSeries,
+          unknownSeries: item.unknownSeries
         }))
       }
     );
@@ -4965,6 +5051,7 @@ export const __test = {
   hashObject,
   initialPrice,
   mergeLiveOfficialContent,
+  normalizeFormulaV2Round,
   normalizeOfficialSource,
   normalizeRoundStats,
   normalizeRiotIdentity,
