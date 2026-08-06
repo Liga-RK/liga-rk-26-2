@@ -4625,6 +4625,11 @@ async function validatedBackup(env, id) {
 }
 
 async function createBackupRecord(env, actor, reason) {
+  if (typeof env.__maintenanceBackup === "function") {
+    const maintenanceBackupId = clean(await env.__maintenanceBackup({ actor, reason }));
+    if (!maintenanceBackupId) throw new Error("O backup externo de manutenção não foi confirmado.");
+    return maintenanceBackupId;
+  }
   const data = {
     format: "fantasy-rk-d1-json-backup-v1",
     createdAt: new Date().toISOString(),
@@ -5044,6 +5049,13 @@ class HttpError extends Error {
 export const __test = {
   LOCK_MINUTES,
   TIMEZONE,
+  adminRoundPreviewV2,
+  adminRoundProcessV2,
+  adminSyncApply,
+  adminSyncPreview,
+  adminValuationApply,
+  adminValuationReview,
+  adminValuationSimulate,
   adminCookie,
   arrayValues,
   calculateValuation,
