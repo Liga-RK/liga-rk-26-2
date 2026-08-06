@@ -54,6 +54,7 @@
     el.formulaForm.addEventListener("submit", saveFormula);
     el.valuationForm.addEventListener("submit", simulateValuation);
     el.valuationSort.addEventListener("change", renderSimulations);
+    el.patrimonySort.addEventListener("change", renderSimulations);
     el.backupForm.addEventListener("submit", createBackup);
     [
       el.matchDivision, el.matchRound,
@@ -494,6 +495,55 @@
         valuationReviewActions(item)
       ])
     );
+    renderPatrimonyPreview();
+  }
+
+  function renderPatrimonyPreview() {
+    const rows = state.simulations.flatMap((simulation) =>
+      (simulation.patrimony || []).map((row) => ({
+        ...row,
+        simulationId: simulation.id,
+        division: row.division || simulation.round.division
+      }))
+    );
+    const priority = (row, kind) => kind === "inconsistent"
+      ? Number(row.originalStatus === "INCONSISTENT" || Math.abs(Number(row.consistencyDifferenceCents)) > 1)
+      : kind === "no-lineup" ? Number(row.originalStatus === "NO_VALID_LINEUP")
+        : Number(row.status !== "ALREADY_PROCESSED");
+    const sorters = {
+      highest: (a, b) => Number(b.newCents) - Number(a.newCents),
+      lowest: (a, b) => Number(a.newCents) - Number(b.newCents),
+      increase: (a, b) => Number(b.variationCents) - Number(a.variationCents),
+      decrease: (a, b) => Number(a.variationCents) - Number(b.variationCents),
+      inconsistent: (a, b) => priority(b, "inconsistent") - priority(a, "inconsistent"),
+      "no-lineup": (a, b) => priority(b, "no-lineup") - priority(a, "no-lineup"),
+      unprocessed: (a, b) => priority(b, "unprocessed") - priority(a, "unprocessed")
+    };
+    rows.sort(sorters[el.patrimonySort.value] || sorters.highest);
+    el.patrimonyPreviewTable.innerHTML = table(
+      ["Divisão", "Participante", "Time", "Anterior", "Ativos antes", "Ativos depois", "Variação", "Novo", "Situação"],
+      rows.map((row) => [
+        row.division,
+        escapeHtml(row.participant),
+        escapeHtml(row.teamName || "—"),
+        `RK$ ${decimal(Number(row.previousCents) / 100)}`,
+        `RK$ ${decimal(Number(row.previousAssetsCents) / 100)}`,
+        `RK$ ${decimal(Number(row.updatedAssetsCents) / 100)}`,
+        `<span class="${Number(row.variationCents) > 0 ? "positive" : Number(row.variationCents) < 0 ? "negative" : ""}">${signed(Number(row.variationCents) / 100)}</span>`,
+        `RK$ ${decimal(Number(row.newCents) / 100)}`,
+        patrimonyStatus(row)
+      ])
+    );
+  }
+
+  function patrimonyStatus(row) {
+    if (row.status === "ALREADY_PROCESSED") return "Já processado";
+    if (row.status === "PUBLISHED") return "Publicado";
+    if (row.originalStatus === "NO_VALID_LINEUP") return `<span class="warning">Sem escalação válida</span>`;
+    if (row.originalStatus === "INCONSISTENT" || Math.abs(Number(row.consistencyDifferenceCents)) > 1) {
+      return `<span class="warning">Inconsistência de RK$ ${decimal(Math.abs(Number(row.consistencyDifferenceCents)) / 100)}</span>`;
+    }
+    return "Pronto para publicar";
   }
 
   function valuationStatus(item) {
@@ -567,6 +617,7 @@
     await action(async () => {
       const data = await api("/valuation/review", { method: "POST", body });
       Object.assign(item, data.item);
+      simulation.patrimony = data.patrimony || simulation.patrimony;
       renderSimulations();
     });
   }
@@ -587,6 +638,17 @@
 
   async function loadValuationHistory() {
     const data = await api("/valuation/history?limit=100");
+    const patrimonyTable = table(
+      ["Data", "Participante", "Rodada", "Anterior", "Variação", "Novo", "Status"],
+      (data.patrimonyHistory || []).map((row) => [
+        dateTime(row.processedAt), escapeHtml(row.participant),
+        `${row.division} · ${row.roundNumber}`,
+        `RK$ ${decimal(Number(row.previousCents) / 100)}`,
+        signed(Number(row.variationCents) / 100),
+        `RK$ ${decimal(Number(row.newCents) / 100)}`,
+        row.status
+      ])
+    );
     const simulationTable = table(
       ["Data", "Divisão", "Rodada", "Versão", "Status", "Responsável"],
       (data.simulations || []).map((row) => [
@@ -606,6 +668,7 @@
       ])
     );
     el.valuationHistory.innerHTML = `<h3>Aplicações</h3>${simulationTable}<h3>Preços por atleta</h3>${pricesTable}`;
+    el.valuationHistory.insertAdjacentHTML("beforeend", `<h3>Patrimônio por participante</h3>${patrimonyTable}`);
   }
 
   async function loadPlayers() {

@@ -10,6 +10,7 @@ import {
   serveAdminAsset
 } from "./fantasy-admin.js";
 import valuationV3 from "../src/fantasy/valuation-v3.cjs";
+import patrimonyV2 from "../src/fantasy/patrimony-v2.cjs";
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 var COOKIE_NAME = "fantasy_session";
@@ -26,7 +27,9 @@ var MARKET_TIMEZONE = "America/Sao_Paulo";
 var DIVISIONS = ["elite", "ascension"];
 var ROLES = ["TOP", "JG", "MID", "ADC", "SUP", "TEAM"];
 var PLAYER_ROLES = ROLES.filter((role) => role !== "TEAM");
-var BUDGET_LIMIT = 100;
+var INITIAL_PATRIMONY = patrimonyV2.PATRIMONY_CONFIG.initialPatrimony;
+var PATRIMONY_FORMULA_ID = patrimonyV2.PATRIMONY_FORMULA_ID;
+var BUDGET_LIMIT = INITIAL_PATRIMONY;
 var MAX_PLAYERS_PER_REAL_TEAM = 2;
 var fantasy_worker_default = {
   async fetch(request, env) {
@@ -135,6 +138,7 @@ async function authCallback(request, env) {
     VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
     ON CONFLICT(discord_id) DO UPDATE SET username=excluded.username, avatar_url=excluded.avatar_url, updated_at=CURRENT_TIMESTAMP
   `).bind(userId, String(discordUser.id), String(discordUser.global_name || discordUser.username || "Jogador RK"), avatarUrl).run();
+  await ensureParticipantPatrimony(env, userId);
   const account = await env.DB.prepare(`
     SELECT blocked, blocked_reason AS blockedReason FROM fantasy_users WHERE id = ?
   `).bind(userId).first();
@@ -181,9 +185,11 @@ async function authLogout(request, env) {
 __name(authLogout, "authLogout");
 async function getMe(request, env) {
   const user = await optionalUser(request, env);
+  const patrimony = user ? await participantPatrimonyProfile(env, user.id) : null;
   return json({
     authenticated: Boolean(user),
     user,
+    patrimony,
     isAdmin: user ? adminIds(env).has(String(user.discordId)) : false,
     canControlMarket: user ? marketControlIds(env).has(String(user.discordId)) : false
   }, 200, request, env);
@@ -223,9 +229,21 @@ __name(getMyScores, "getMyScores");
 async function getMyHistory(request, env) {
   const user = await requireUser(request, env);
   if (user.response) return user.response;
-  const division = validDivision(new URL(request.url).searchParams.get("division") || "elite");
-  const rows = await env.DB.prepare("SELECT r.id AS roundId,r.name,r.status,w.initial_cents AS initialCents,w.cash_cents AS cashCents,w.final_cents AS finalCents,s.points FROM fantasy_teams t JOIN fantasy_rounds r ON r.division=t.division LEFT JOIN fantasy_wealth_snapshots w ON w.fantasy_team_id=t.id AND w.round_id=r.id LEFT JOIN fantasy_team_round_scores s ON s.fantasy_team_id=t.id AND s.round_id=r.id WHERE t.user_id=? AND t.division=? ORDER BY r.round_number DESC").bind(user.id, division).all();
-  return json({ division, history: rows.results || [] }, 200, request, env);
+  const profile = await participantPatrimonyProfile(env, user.id);
+  const rows = await env.DB.prepare(`
+    SELECT h.id, h.round_id AS roundId, r.round_number AS roundNumber, r.name,
+           h.division, h.previous_cents AS previousCents, h.new_cents AS newCents,
+           h.variation_cents AS variationCents,
+           h.available_balance_cents AS availableBalanceCents,
+           h.updated_assets_cents AS assetsValueCents,
+           h.consistency_difference_cents AS consistencyDifferenceCents,
+           h.status, h.processed_at AS calculatedAt
+    FROM fantasy_patrimony_history h
+    JOIN fantasy_rounds r ON r.id = h.round_id
+    WHERE h.user_id = ?
+    ORDER BY h.processed_at DESC
+  `).bind(user.id).all();
+  return json({ profile, history: rows.results || [] }, 200, request, env);
 }
 __name(getMyHistory, "getMyHistory");
 async function getConfig(request, env) {
@@ -239,11 +257,15 @@ async function getConfig(request, env) {
     opens_at: marketState?.opened_at || round.opens_at,
     locks_at: marketState?.closes_at || round.locks_at
   } : null;
+  const user = await optionalUser(request, env);
+  const patrimony = user ? await participantPatrimonyProfile(env, user.id) : null;
+  const budget = patrimony ? Number(patrimony.currentCents) / 100 : INITIAL_PATRIMONY;
   return json({
     division,
     round: compatibleRound,
     market: publicMarketState(marketState),
-    rules: { budget: 100, maxPlayersPerRealTeam: 2, captainMultiplier: 1.5, requiredRoles: ROLES }
+    patrimony,
+    rules: { budget, initialPatrimony: INITIAL_PATRIMONY, patrimonyFormulaVersion: PATRIMONY_FORMULA_ID, maxPlayersPerRealTeam: 2, captainMultiplier: 1.5, requiredRoles: ROLES }
   }, 200, request, env);
 }
 __name(getConfig, "getConfig");
@@ -401,13 +423,14 @@ async function getCurrentLineup(request, env) {
   const marketState = await getGlobalMarketState(env);
   const round = await currentRound(env, division, marketState?.lock_round_number);
   if (!round) return json({ error: "Nenhuma rodada cadastrada." }, 404, request, env);
+  const patrimony = await participantPatrimonyProfile(env, user.id);
   const team = await env.DB.prepare("SELECT * FROM fantasy_teams WHERE user_id = ? AND division = ?").bind(user.id, division).first();
-  if (!team) return json({ division, round, lineup: null }, 200, request, env);
+  if (!team) return json({ division, round, patrimony, lineup: null }, 200, request, env);
   const lineup = await env.DB.prepare("SELECT * FROM fantasy_lineups WHERE fantasy_team_id = ? AND round_id = ?").bind(team.id, round.id).first();
-  if (!lineup) return json({ division, round, team, lineup: null }, 200, request, env);
+  if (!lineup) return json({ division, round, patrimony, team, lineup: null }, 200, request, env);
   const picks = await env.DB.prepare("SELECT role, asset_id AS id, price_paid AS price, team_slot AS teamSlot FROM fantasy_lineup_picks WHERE lineup_id = ?").bind(lineup.id).all();
   const reserve = await env.DB.prepare("SELECT role, asset_id AS id, price_paid AS price, team_slot AS teamSlot FROM fantasy_lineup_reserves WHERE lineup_id = ?").bind(lineup.id).first();
-  return json({ division, round, team, lineup: { ...lineup, picks: picks.results || [], reserve: reserve || null } }, 200, request, env);
+  return json({ division, round, patrimony, team, lineup: { ...lineup, picks: picks.results || [], reserve: reserve || null } }, 200, request, env);
 }
 __name(getCurrentLineup, "getCurrentLineup");
 async function saveCurrentLineup(request, env) {
@@ -442,13 +465,15 @@ async function saveCurrentLineup(request, env) {
   if ([...playerTeamCounts.values()].some((count) => count > MAX_PLAYERS_PER_REAL_TEAM)) return json({ error: "Use no m\xE1ximo dois jogadores da mesma equipe real." }, 400, request, env);
   if (!marketRows.some((row) => row.asset_type === "player" && row.asset_id === captainId)) return json({ error: "O capit\xE3o deve ser um dos cinco jogadores." }, 400, request, env);
   const totalCost = roundMoney(marketRows.reduce((sum, row) => sum + Number(row.price), 0));
-  if (totalCost > BUDGET_LIMIT) return json({ error: "A escala\xE7\xE3o ultrapassa o or\xE7amento de RK$ 100." }, 400, request, env);
+  const patrimony = await ensureParticipantPatrimony(env, user.id);
+  const budget = Number(patrimony.current_cents) / 100;
+  if (totalCost > budget + 1e-3) return json({ error: `A escalação ultrapassa seu patrimônio de RK$ ${formatMoney(budget)}.` }, 400, request, env);
   let reserveRow = null;
   if (reservePick) {
     reserveRow = await env.DB.prepare("SELECT * FROM fantasy_market WHERE division = ? AND asset_id = ? AND active = 1").bind(division, cleanText(reservePick.id)).first();
     if (!reserveRow || reserveRow.asset_type !== "player") return json({ error: "O reserva precisa ser um jogador dispon\xEDvel no mercado." }, 400, request, env);
     if (marketRows.some((row) => row.asset_id === reserveRow.asset_id)) return json({ error: "O reserva n\xE3o pode ser um dos titulares." }, 400, request, env);
-    const reserveBudget = reserveBudgetForRows(marketRows);
+    const reserveBudget = reserveBudgetForPatrimony(marketRows, budget);
     if (Number(reserveRow.price) > reserveBudget + 1e-3) return json({ error: `Seu limite para reserva \xE9 RK$ ${formatMoney(reserveBudget)}.` }, 400, request, env);
     if ((playerTeamCounts.get(reserveRow.team_slot) || 0) >= MAX_PLAYERS_PER_REAL_TEAM) return json({ error: "Escolha um reserva de uma equipe com no m\xE1ximo um jogador titular no seu time." }, 400, request, env);
   }
@@ -471,7 +496,7 @@ async function saveCurrentLineup(request, env) {
     statements.push(env.DB.prepare("INSERT INTO fantasy_lineup_reserves (lineup_id, role, asset_id, price_paid, team_slot) VALUES (?, ?, ?, ?, ?)").bind(lineupId, reserveRow.role, reserveRow.asset_id, reserveRow.price, reserveRow.team_slot));
   }
   await env.DB.batch(statements);
-  return json({ ok: true, lineupId, roundId: round.id, totalCost, reserveBudget: reserveBudgetForRows(marketRows), reserveCost: reserveRow ? Number(reserveRow.price) : 0 }, 200, request, env);
+  return json({ ok: true, lineupId, roundId: round.id, patrimonyCents: Number(patrimony.current_cents), totalCost, reserveBudget: reserveBudgetForPatrimony(marketRows, budget), reserveCost: reserveRow ? Number(reserveRow.price) : 0 }, 200, request, env);
 }
 __name(saveCurrentLineup, "saveCurrentLineup");
 async function getRanking(request, env) {
@@ -488,23 +513,13 @@ async function getRanking(request, env) {
            COALESCE(ROUND(MAX(s.points), 2), 0) AS bestRoundPoints,
            COUNT(s.round_id) AS scoredRounds,
            COALESCE((SELECT MIN(l.submitted_at) FROM fantasy_lineups l WHERE l.fantasy_team_id = ft.id), ft.created_at) AS firstValidLineupAt,
-           COALESCE(
-             (SELECT w.final_cents FROM fantasy_wealth_snapshots w JOIN fantasy_rounds wr ON wr.id = w.round_id WHERE w.fantasy_team_id = ft.id ORDER BY wr.round_number DESC LIMIT 1),
-             (SELECT CAST(ROUND((100 - latest.total_cost + COALESCE(SUM(COALESCE(m.price, lp.price_paid)), 0)) * 100) AS INTEGER)
-                FROM fantasy_lineups latest
-                JOIN fantasy_lineup_picks lp ON lp.lineup_id = latest.id
-                LEFT JOIN fantasy_market m ON m.division = ft.division AND m.asset_id = lp.asset_id
-               WHERE latest.fantasy_team_id = ft.id
-               GROUP BY latest.id, latest.total_cost
-               ORDER BY latest.updated_at DESC
-               LIMIT 1),
-             10000
-           ) AS wealthCents
+           COALESCE(pp.current_cents, 10000) AS wealthCents
     FROM fantasy_teams ft
     JOIN fantasy_users u ON u.id = ft.user_id
+    LEFT JOIN fantasy_participant_patrimony pp ON pp.user_id = u.id
     LEFT JOIN fantasy_team_round_scores s ON s.fantasy_team_id = ft.id
     ${where}
-    GROUP BY ft.id, ft.division, ft.name, u.id, u.username
+    GROUP BY ft.id, ft.division, ft.name, u.id, u.username, pp.current_cents
     LIMIT 500
   `);
   const result = division === "all" ? await statement.all() : await statement.bind(division).all();
@@ -518,7 +533,7 @@ async function getRanking(request, env) {
     roundPoints: roundMoney(row.roundPoints),
     averagePoints: roundMoney(row.averagePoints),
     bestRoundPoints: roundMoney(row.bestRoundPoints),
-    wealthCents: Math.trunc(Number(row.wealthCents) || 1e4),
+    wealthCents: Number.isFinite(Number(row.wealthCents)) ? Math.trunc(Number(row.wealthCents)) : 10000,
     scoredRounds: Math.trunc(Number(row.scoredRounds) || 0),
     firstValidLineupAt: row.firstValidLineupAt
   }));
@@ -547,7 +562,7 @@ function combineOverallRankingRows(rows) {
       roundPoints: 0,
       averagePoints: 0,
       bestRoundPoints: 0,
-      wealthCents: 0,
+      wealthCents: Number.isFinite(Number(row.wealthCents)) ? Math.trunc(Number(row.wealthCents)) : 10000,
       scoredRounds: 0,
       firstValidLineupAt: row.firstValidLineupAt,
       teamNames: []
@@ -555,7 +570,9 @@ function combineOverallRankingRows(rows) {
     current.totalPoints = roundMoney(Number(current.totalPoints) + Number(row.totalPoints || 0));
     current.roundPoints = roundMoney(Number(current.roundPoints) + Number(row.roundPoints || 0));
     current.bestRoundPoints = Math.max(Number(current.bestRoundPoints) || 0, Number(row.bestRoundPoints) || 0);
-    current.wealthCents += Math.trunc(Number(row.wealthCents) || 0);
+    current.wealthCents = Number.isFinite(Number(row.wealthCents))
+      ? Math.trunc(Number(row.wealthCents))
+      : current.wealthCents;
     current.scoredRounds += Math.trunc(Number(row.scoredRounds) || 0);
     if (row.teamName) current.teamNames.push(`${row.division === "ascension" ? "Ascens\xE3o" : "Elite"}: ${row.teamName}`);
     if (!current.firstValidLineupAt || row.firstValidLineupAt && String(row.firstValidLineupAt).localeCompare(String(current.firstValidLineupAt)) < 0) {
@@ -573,7 +590,7 @@ function combineOverallRankingRows(rows) {
     roundPoints: roundMoney(row.roundPoints),
     averagePoints: row.scoredRounds > 0 ? roundMoney(Number(row.totalPoints) / row.scoredRounds) : 0,
     bestRoundPoints: roundMoney(row.bestRoundPoints),
-    wealthCents: row.wealthCents || 1e4,
+    wealthCents: Number.isFinite(Number(row.wealthCents)) ? Number(row.wealthCents) : 10000,
     scoredRounds: row.scoredRounds,
     firstValidLineupAt: row.firstValidLineupAt
   }));
@@ -722,42 +739,9 @@ async function adminScoreRound(request, env) {
     `).bind(roundMoney(roundAverage), division, assetId));
   }
   if (averageUpdates.length) await env.DB.batch(averageUpdates);
-  await snapshotRoundWealth(env, round, division);
   return json({ ok: true, assetsScored: scores.length, fantasyTeamsScored: grouped.size }, 200, request, env);
 }
 __name(adminScoreRound, "adminScoreRound");
-async function snapshotRoundWealth(env, round, division) {
-  const rows = await env.DB.prepare(`
-    SELECT l.fantasy_team_id AS fantasyTeamId,
-           CAST(ROUND(? * 100) AS INTEGER) AS initialCents,
-           CAST(ROUND(l.total_cost * 100) AS INTEGER) AS purchasesCents,
-           CAST(ROUND((? - l.total_cost) * 100) AS INTEGER) AS cashCents,
-           CAST(ROUND((? - l.total_cost + COALESCE(SUM(COALESCE(m.price, p.price_paid)), 0)) * 100) AS INTEGER) AS finalCents
-    FROM fantasy_lineups l
-    JOIN fantasy_teams ft ON ft.id = l.fantasy_team_id
-    JOIN fantasy_lineup_picks p ON p.lineup_id = l.id
-    LEFT JOIN fantasy_market m ON m.division = ft.division AND m.asset_id = p.asset_id
-    WHERE l.round_id = ? AND ft.division = ?
-    GROUP BY l.id, l.fantasy_team_id, l.total_cost
-  `).bind(BUDGET_LIMIT, BUDGET_LIMIT, BUDGET_LIMIT, round.id, division).all();
-  const statements = (rows.results || []).map((row) => env.DB.prepare(`
-    INSERT INTO fantasy_wealth_snapshots (fantasy_team_id, round_id, initial_cents, purchases_cents, cash_cents, final_cents, formula_version)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-    ON CONFLICT(fantasy_team_id, round_id) DO UPDATE SET initial_cents=excluded.initial_cents,
-      purchases_cents=excluded.purchases_cents, cash_cents=excluded.cash_cents, final_cents=excluded.final_cents,
-      formula_version=excluded.formula_version, created_at=CURRENT_TIMESTAMP
-  `).bind(
-    row.fantasyTeamId,
-    round.id,
-    Math.trunc(Number(row.initialCents) || BUDGET_LIMIT * 100),
-    Math.trunc(Number(row.purchasesCents) || 0),
-    Math.trunc(Number(row.cashCents) || 0),
-    Math.trunc(Number(row.finalCents) || BUDGET_LIMIT * 100),
-    round.formula_version || "fantasy-score-v1"
-  ));
-  if (statements.length) await env.DB.batch(statements);
-}
-__name(snapshotRoundWealth, "snapshotRoundWealth");
 async function adminListMatches(request, env) {
   if (!await isAdmin(request, env)) return json({ error: "N\xE3o autorizado." }, 401, request, env);
   const division = validDivision(new URL(request.url).searchParams.get("division") || "elite");
@@ -829,6 +813,46 @@ function isGlobalMarketOpen(marketState) {
   );
 }
 __name(isGlobalMarketOpen, "isGlobalMarketOpen");
+async function ensureParticipantPatrimony(env, userId) {
+  await env.DB.prepare(`
+    INSERT OR IGNORE INTO fantasy_participant_patrimony
+      (user_id, current_cents, formula_version)
+    VALUES (?, ?, ?)
+  `).bind(userId, Math.round(INITIAL_PATRIMONY * 100), PATRIMONY_FORMULA_ID).run();
+  return env.DB.prepare(`
+    SELECT user_id, current_cents, formula_version, created_at, updated_at
+    FROM fantasy_participant_patrimony WHERE user_id = ?
+  `).bind(userId).first();
+}
+__name(ensureParticipantPatrimony, "ensureParticipantPatrimony");
+async function participantPatrimonyProfile(env, userId) {
+  const current = await ensureParticipantPatrimony(env, userId);
+  const stats = await env.DB.prepare(`
+    SELECT
+      COALESCE(SUM(CASE WHEN status IN ('PUBLISHED','INCONSISTENT') THEN variation_cents ELSE 0 END), 0) AS totalVariationCents,
+      COALESCE(MAX(CASE WHEN status IN ('PUBLISHED','INCONSISTENT') THEN new_cents END), ?) AS maximumCents,
+      COALESCE(MIN(CASE WHEN status IN ('PUBLISHED','INCONSISTENT') THEN new_cents END), ?) AS minimumCents
+    FROM fantasy_patrimony_history WHERE user_id = ?
+  `).bind(Number(current.current_cents), Number(current.current_cents), userId).first();
+  const latest = await env.DB.prepare(`
+    SELECT variation_cents AS variationCents, round_id AS roundId, division, status
+    FROM fantasy_patrimony_history
+    WHERE user_id = ? AND status IN ('PUBLISHED','INCONSISTENT')
+    ORDER BY processed_at DESC LIMIT 1
+  `).bind(userId).first();
+  return {
+    currentCents: Number(current.current_cents),
+    roundVariationCents: Number(latest?.variationCents || 0),
+    totalVariationCents: Number(stats?.totalVariationCents || 0),
+    maximumCents: Math.max(Math.round(INITIAL_PATRIMONY * 100), Number.isFinite(Number(stats?.maximumCents)) ? Number(stats.maximumCents) : Number(current.current_cents)),
+    minimumCents: Math.min(Math.round(INITIAL_PATRIMONY * 100), Number.isFinite(Number(stats?.minimumCents)) ? Number(stats.minimumCents) : Number(current.current_cents)),
+    latestRoundId: latest?.roundId || null,
+    latestDivision: latest?.division || null,
+    formulaVersion: current.formula_version,
+    updatedAt: current.updated_at
+  };
+}
+__name(participantPatrimonyProfile, "participantPatrimonyProfile");
 async function ensureFantasyTeam(env, userId, division, name) {
   const existing = await env.DB.prepare("SELECT id FROM fantasy_teams WHERE user_id = ? AND division = ?").bind(userId, division).first();
   const id = existing?.id || crypto.randomUUID();
@@ -1029,6 +1053,13 @@ function reserveBudgetForRows(rows) {
   return roundMoney(BUDGET_LIMIT - starterCost + cheapestPlayer);
 }
 __name(reserveBudgetForRows, "reserveBudgetForRows");
+function reserveBudgetForPatrimony(rows, patrimony) {
+  const players = rows.filter((row) => row.asset_type === "player");
+  const cheapestPlayer = players.length ? Math.min(...players.map((row) => Number(row.price) || 0)) : 0;
+  const starterCost = rows.reduce((sum, row) => sum + (Number(row.price) || 0), 0);
+  return roundMoney(Number(patrimony) - starterCost + cheapestPlayer);
+}
+__name(reserveBudgetForPatrimony, "reserveBudgetForPatrimony");
 function assetPlayed(score) {
   return Boolean(score && Number(score.games) > 0);
 }

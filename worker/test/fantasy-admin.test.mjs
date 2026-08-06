@@ -603,6 +603,7 @@ function migratedDatabaseWithFixture() {
   db.exec(migrationText("0005_admin_global_market.sql"));
   db.exec(migrationText("0006_fantasy_formula_v2.sql"));
   db.exec(migrationText("0007_fantasy_dynamic_valuation.sql"));
+  db.exec(migrationText("0008_fantasy_dynamic_patrimony.sql"));
   return db;
 }
 

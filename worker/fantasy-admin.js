@@ -1,5 +1,6 @@
 import formulaV2 from "../src/fantasy/formula-v2.cjs";
 import valuationV3 from "../src/fantasy/valuation-v3.cjs";
+import patrimonyV2 from "../src/fantasy/patrimony-v2.cjs";
 
 const ADMIN_COOKIE = "fantasy_admin_session";
 const ADMIN_SESSION_HOURS = 8;
@@ -27,6 +28,10 @@ const {
   VALUATION_FORMULA_VERSION,
   calculateFantasyValuation
 } = valuationV3;
+const {
+  PATRIMONY_FORMULA_ID,
+  calculateParticipantPatrimony
+} = patrimonyV2;
 const BACKUP_TABLES = Object.freeze([
   "d1_migrations",
   "fantasy_users",
@@ -48,6 +53,7 @@ const BACKUP_TABLES = Object.freeze([
   "fantasy_round_matches",
   "fantasy_market_snapshots",
   "fantasy_wealth_snapshots",
+  "fantasy_participant_patrimony",
   "fantasy_asset_map_scores",
   "fantasy_imports",
   "fantasy_round_processing",
@@ -55,6 +61,7 @@ const BACKUP_TABLES = Object.freeze([
   "fantasy_private_league_members",
   "fantasy_formula_settings",
   "fantasy_price_simulations",
+  "fantasy_patrimony_history",
   "fantasy_price_history",
   "fantasy_valuation_rollbacks",
   "fantasy_audit_log",
@@ -80,6 +87,7 @@ const RESTORE_TABLES = Object.freeze([
   "fantasy_round_matches",
   "fantasy_market_snapshots",
   "fantasy_wealth_snapshots",
+  "fantasy_participant_patrimony",
   "fantasy_asset_map_scores",
   "fantasy_imports",
   "fantasy_round_processing",
@@ -87,6 +95,7 @@ const RESTORE_TABLES = Object.freeze([
   "fantasy_private_league_members",
   "fantasy_formula_settings",
   "fantasy_price_simulations",
+  "fantasy_patrimony_history",
   "fantasy_price_history",
   "fantasy_valuation_rollbacks",
   "fantasy_audit_log",
@@ -2388,7 +2397,8 @@ async function adminValuationSimulate(request, env, requestId, auth) {
   const requestedDivision = optionalDivision(body.division);
   const formula = await getFormula(env);
   const rounds = await dbAll(env, `
-    SELECT id, division, round_number AS roundNumber, name, status
+    SELECT id, division, round_number AS roundNumber, name, status,
+           locks_at AS locksAt
     FROM fantasy_rounds
     WHERE round_number = ?
       ${requestedDivision ? "AND division = ?" : ""}
@@ -2431,6 +2441,7 @@ async function adminValuationSimulate(request, env, requestId, auth) {
         status: "applied",
         idempotent: true,
         summary: valuationSummary(items),
+        patrimony: await publishedPatrimonyPreview(env, alreadyApplied.id),
         items
       });
       continue;
@@ -2482,6 +2493,7 @@ async function adminValuationSimulate(request, env, requestId, auth) {
       formulaVersion: formula.version,
       status: existing?.status === "applied" ? "applied" : "previewed",
       summary: valuationSummary(previewItems),
+      patrimony: await calculatePatrimonyPreview(env, round, previewItems),
       items: previewItems
     });
   }
@@ -2513,8 +2525,12 @@ async function adminValuationReview(request, env, requestId, auth) {
     return failure("REVIEW_INVALID", "Informe simulação, atleta e ação de revisão válidos.", 400);
   }
   const simulation = await env.DB.prepare(`
-    SELECT id, status, items_json AS itemsJson
-    FROM fantasy_price_simulations WHERE id = ?
+    SELECT s.id, s.status, s.items_json AS itemsJson,
+           r.id AS roundId, r.division, r.round_number AS roundNumber,
+           r.name, r.locks_at AS locksAt
+    FROM fantasy_price_simulations s
+    JOIN fantasy_rounds r ON r.id = s.round_id
+    WHERE s.id = ?
   `).bind(simulationId).first();
   if (!simulation) return failure("SIMULATION_NOT_FOUND", "Simulação não encontrada.", 404);
   if (simulation.status !== "previewed") {
@@ -2563,7 +2579,14 @@ async function adminValuationReview(request, env, requestId, auth) {
     after: item,
     requestId
   });
-  return success({ simulationId, item, summary: valuationSummary(items) });
+  const patrimony = await calculatePatrimonyPreview(env, {
+    id: simulation.roundId,
+    division: simulation.division,
+    roundNumber: simulation.roundNumber,
+    name: simulation.name,
+    locksAt: simulation.locksAt
+  }, items);
+  return success({ simulationId, item, summary: valuationSummary(items), patrimony });
 }
 
 async function adminValuationApply(request, env, requestId, auth) {
@@ -2585,7 +2608,8 @@ async function adminValuationApply(request, env, requestId, auth) {
     );
   }
   const simulation = await env.DB.prepare(`
-    SELECT s.*, r.division, r.round_number AS roundNumber
+    SELECT s.*, r.division, r.round_number AS roundNumber,
+           r.name AS roundName, r.locks_at AS locksAt
     FROM fantasy_price_simulations s
     JOIN fantasy_rounds r ON r.id = s.round_id
     WHERE s.id = ?
@@ -2629,6 +2653,13 @@ async function adminValuationApply(request, env, requestId, auth) {
     auth.username,
     `Antes da valorização ${simulationId}`
   );
+  const patrimonyPublication = await preparePatrimonyPublication(env, {
+    id: simulation.round_id,
+    division: simulation.division,
+    roundNumber: simulation.roundNumber,
+    name: simulation.roundName,
+    locksAt: simulation.locksAt
+  }, simulationId, items, auth.username);
   const statements = [];
   for (const item of items) {
     const historyId = crypto.randomUUID();
@@ -2707,28 +2738,23 @@ async function adminValuationApply(request, env, requestId, auth) {
     SET status = 'completed', price_items = ?, processed_at = CURRENT_TIMESTAMP
     WHERE round_id = ? AND formula_version = ?
   `).bind(items.length, simulation.round_id, FORMULA_ID));
+  statements.push(...patrimonyPublication.statements);
   await env.DB.batch(statements);
-  await updateWealthAfterValuation(
-    env,
-    simulation.round_id,
-    simulation.division,
-    items,
-    simulation.formula_version
-  );
   await audit(env, {
     actor: auth.username,
     action: "valuation.apply",
     targetType: "price_simulation",
     targetId: simulationId,
     before: { backupId, sourceHash: simulation.source_hash },
-    after: { summary: valuationSummary(items), formulaVersion: simulation.formula_version },
+    after: { summary: valuationSummary(items), patrimony: patrimonySummary(patrimonyPublication.preview), formulaVersion: simulation.formula_version },
     requestId
   });
   return success({
     simulationId,
     status: "applied",
     backupId,
-    summary: valuationSummary(items)
+    summary: valuationSummary(items),
+    patrimony: patrimonySummary(patrimonyPublication.preview)
   });
 }
 
@@ -2805,10 +2831,27 @@ async function adminValuationRollback(request, env, requestId, auth) {
       { assets: changed.map((row) => row.assetId) }
     );
   }
+  const patrimonyBefore = await dbAll(env, `
+    SELECT h.id, h.user_id AS userId, h.previous_cents AS previousCents,
+           h.new_cents AS newCents, h.status,
+           p.current_cents AS currentCents
+    FROM fantasy_patrimony_history h
+    JOIN fantasy_participant_patrimony p ON p.user_id = h.user_id
+    WHERE h.simulation_id = ?
+      AND h.status IN ('PUBLISHED','INCONSISTENT','NO_VALID_LINEUP')
+  `, [simulationId]);
+  const patrimonyChanged = patrimonyBefore.filter(
+    (row) => Number(row.currentCents) !== Number(row.newCents)
+  );
+  if (patrimonyChanged.length) {
+    return failure(
+      "ROLLBACK_PATRIMONY_CHANGED",
+      "Há patrimônios alterados por processamento posterior. Reverta primeiro a valorização mais recente.",
+      409,
+      { participants: patrimonyChanged.map((row) => row.userId) }
+    );
+  }
   const backupId = await createBackupRecord(env, auth.username, `Antes do rollback ${simulationId}`);
-  const wealthBefore = await dbAll(env, `
-    SELECT * FROM fantasy_wealth_snapshots WHERE round_id = ?
-  `, [simulation.round_id]);
   const restoredItems = history.map((row) => {
     const previous = safeJson(row.detailsJson, {});
     return {
@@ -2856,17 +2899,28 @@ async function adminValuationRollback(request, env, requestId, auth) {
     SET status = 'scores_saved', price_items = 0, processed_at = CURRENT_TIMESTAMP
     WHERE round_id = ? AND formula_version = ?
   `).bind(simulation.round_id, FORMULA_ID));
+  for (const row of patrimonyBefore) {
+    statements.push(env.DB.prepare(`
+      UPDATE fantasy_participant_patrimony
+      SET current_cents = ?, formula_version = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE user_id = ?
+    `).bind(row.previousCents, PATRIMONY_FORMULA_ID, row.userId));
+  }
+  statements.push(env.DB.prepare(`
+    UPDATE fantasy_patrimony_history
+    SET status = 'ROLLED_BACK', rolled_back_by = ?,
+        rolled_back_at = CURRENT_TIMESTAMP, rollback_reason = ?
+    WHERE simulation_id = ?
+      AND status IN ('PUBLISHED','INCONSISTENT','NO_VALID_LINEUP')
+  `).bind(auth.username, reason, simulationId));
   await env.DB.batch(statements);
-  await updateWealthAfterValuation(
-    env,
-    simulation.round_id,
-    simulation.division,
-    restoredItems,
-    simulation.formula_version
-  );
-  const wealthAfter = await dbAll(env, `
-    SELECT * FROM fantasy_wealth_snapshots WHERE round_id = ?
-  `, [simulation.round_id]);
+  const patrimonyAfter = await dbAll(env, `
+    SELECT user_id AS userId, current_cents AS currentCents
+    FROM fantasy_participant_patrimony
+    WHERE user_id IN (
+      SELECT user_id FROM fantasy_patrimony_history WHERE simulation_id = ?
+    )
+  `, [simulationId]);
   const rollbackId = crypto.randomUUID();
   await env.DB.prepare(`
     INSERT INTO fantasy_valuation_rollbacks
@@ -2880,7 +2934,7 @@ async function adminValuationRollback(request, env, requestId, auth) {
     simulation.division,
     simulation.formula_version,
     JSON.stringify(restoredItems),
-    JSON.stringify({ before: wealthBefore, after: wealthAfter }),
+    JSON.stringify({ before: patrimonyBefore, after: patrimonyAfter }),
     reason,
     auth.username
   ).run();
@@ -2939,6 +2993,21 @@ async function adminValuationHistory(request, env) {
     FROM fantasy_valuation_rollbacks
     ORDER BY created_at DESC LIMIT ?
   `, [queryLimit(request, 100)]);
+  const patrimonyHistory = await dbAll(env, `
+    SELECT h.id, h.simulation_id AS simulationId, h.user_id AS userId,
+           u.username AS participant, h.round_id AS roundId,
+           r.round_number AS roundNumber, h.division,
+           h.previous_cents AS previousCents, h.new_cents AS newCents,
+           h.variation_cents AS variationCents,
+           h.available_balance_cents AS availableBalanceCents,
+           h.consistency_difference_cents AS consistencyDifferenceCents,
+           h.status, h.formula_version AS formulaVersion,
+           h.processed_by AS processedBy, h.processed_at AS processedAt
+    FROM fantasy_patrimony_history h
+    JOIN fantasy_users u ON u.id = h.user_id
+    JOIN fantasy_rounds r ON r.id = h.round_id
+    ORDER BY h.processed_at DESC LIMIT ?
+  `, [queryLimit(request, 300)]);
   return success({
     simulations: rows.map((row) => {
       const decoded = decodeJsonFields(row);
@@ -2947,6 +3016,7 @@ async function adminValuationHistory(request, env) {
       return decoded;
     }),
     priceHistory,
+    patrimonyHistory,
     rollbacks
   });
 }
@@ -3101,6 +3171,168 @@ function valuationSummary(items) {
   };
 }
 
+async function calculatePatrimonyPreview(env, round, items) {
+  const users = await dbAll(env, `
+    SELECT u.id AS userId, u.username,
+           COALESCE(p.current_cents, 10000) AS currentCents
+    FROM fantasy_users u
+    LEFT JOIN fantasy_participant_patrimony p ON p.user_id = u.id
+    ORDER BY u.username, u.id
+  `);
+  const owned = await dbAll(env, `
+    SELECT t.user_id AS userId, t.name AS teamName, l.id AS lineupId,
+           l.updated_at AS lineupUpdatedAt,
+           o.asset_id AS assetId, o.role, o.price_paid AS purchasePrice,
+           o.ownership_type AS ownershipType
+    FROM fantasy_lineups l
+    JOIN fantasy_teams t ON t.id = l.fantasy_team_id
+    JOIN (
+      SELECT lineup_id, asset_id, role, price_paid, 'starter' AS ownership_type
+      FROM fantasy_lineup_picks
+      UNION ALL
+      SELECT lineup_id, asset_id, role, price_paid, 'reserve' AS ownership_type
+      FROM fantasy_lineup_reserves
+    ) o ON o.lineup_id = l.id
+    WHERE l.round_id = ? AND t.division = ?
+    ORDER BY t.user_id, l.id, o.ownership_type, o.role
+  `, [round.id, round.division]);
+  const activeHistory = await dbAll(env, `
+    SELECT user_id AS userId, simulation_id AS simulationId, status
+    FROM fantasy_patrimony_history
+    WHERE round_id = ? AND status IN ('PUBLISHED','INCONSISTENT','NO_VALID_LINEUP')
+  `, [round.id]);
+  const alreadyByUser = new Map(activeHistory.map((row) => [String(row.userId), row]));
+  const lineupsByUser = new Map();
+  for (const row of owned) {
+    const group = lineupsByUser.get(String(row.userId)) || {
+      lineupId: row.lineupId,
+      teamName: row.teamName,
+      updatedAt: row.lineupUpdatedAt,
+      assets: [],
+      starterRoles: new Set()
+    };
+    const isReserve = row.ownershipType === "reserve";
+    if (!isReserve) group.starterRoles.add(String(row.role));
+    group.assets.push({
+      assetId: String(row.assetId),
+      assetType: row.role === "TEAM" ? "team" : "player",
+      position: isReserve ? "RESERVE" : String(row.role),
+      role: String(row.role),
+      isReserve,
+      purchasePrice: roundMoney(row.purchasePrice)
+    });
+    lineupsByUser.set(String(row.userId), group);
+  }
+  const updatedPrices = Object.fromEntries(items.map((item) => [String(item.assetId), Number(item.newPrice)]));
+  const calculatedAt = new Date().toISOString();
+  return users.map((user) => {
+    const group = lineupsByUser.get(String(user.userId));
+    const submittedInTime = !group || !round.locksAt || Date.parse(group.updatedAt) <= Date.parse(round.locksAt);
+    const isValid = Boolean(group && group.starterRoles.size === 6 && ALL_ROLES.every((role) => group.starterRoles.has(role)) && submittedInTime);
+    const previousPatrimony = Number(user.currentCents) / 100;
+    const purchases = group ? roundMoney(group.assets.reduce((sum, asset) => sum + asset.purchasePrice, 0)) : 0;
+    const result = calculateParticipantPatrimony({
+      previousPatrimony,
+      availableBalance: roundMoney(previousPatrimony - purchases),
+      officialLineup: group ? { roundId: round.id, isValid, assets: group.assets } : null,
+      updatedAssetPrices: updatedPrices,
+      calculatedAt
+    });
+    const already = alreadyByUser.get(String(user.userId));
+    return {
+      userId: user.userId,
+      participant: user.username,
+      teamName: group?.teamName || "—",
+      lineupId: group?.lineupId || null,
+      division: round.division,
+      roundId: round.id,
+      previousCents: Math.round(result.previousPatrimony * 100),
+      purchasesCents: Math.round(purchases * 100),
+      availableBalanceCents: Math.round(result.availableBalance * 100),
+      previousAssetsCents: Math.round(result.previousAssetsValue * 100),
+      updatedAssetsCents: Math.round(result.updatedAssetsValue * 100),
+      variationCents: Math.round(result.assetsVariation * 100),
+      newCents: Math.round(result.newPatrimony * 100),
+      consistencyDifferenceCents: Math.round(result.consistencyDifference * 100),
+      status: already ? "ALREADY_PROCESSED" : result.status,
+      originalStatus: result.status,
+      reason: !group ? "NO_LINEUP" : !submittedInTime ? "LINEUP_AFTER_LOCK" : !isValid ? "INCOMPLETE_LINEUP" : "",
+      alreadyProcessedBy: already?.simulationId || null,
+      assets: result.assets
+    };
+  });
+}
+
+async function publishedPatrimonyPreview(env, simulationId) {
+  return dbAll(env, `
+    SELECT h.user_id AS userId, u.username AS participant,
+           COALESCE(t.name, '—') AS teamName, h.lineup_id AS lineupId,
+           h.division, h.round_id AS roundId,
+           h.previous_cents AS previousCents, h.purchases_cents AS purchasesCents,
+           h.available_balance_cents AS availableBalanceCents,
+           h.previous_assets_cents AS previousAssetsCents,
+           h.updated_assets_cents AS updatedAssetsCents,
+           h.variation_cents AS variationCents, h.new_cents AS newCents,
+           h.consistency_difference_cents AS consistencyDifferenceCents,
+           h.status, h.asset_details_json AS assetsJson
+    FROM fantasy_patrimony_history h
+    JOIN fantasy_users u ON u.id = h.user_id
+    LEFT JOIN fantasy_lineups l ON l.id = h.lineup_id
+    LEFT JOIN fantasy_teams t ON t.id = l.fantasy_team_id
+    WHERE h.simulation_id = ? AND h.status <> 'ROLLED_BACK'
+    ORDER BY h.new_cents DESC, u.username
+  `, [simulationId]).then((rows) => rows.map((row) => ({
+    ...row,
+    originalStatus: row.status,
+    assets: safeJson(row.assetsJson, []),
+    assetsJson: undefined
+  })));
+}
+
+async function preparePatrimonyPublication(env, round, simulationId, items, actor) {
+  const preview = await calculatePatrimonyPreview(env, round, items);
+  const statements = [];
+  for (const row of preview) {
+    if (row.status === "ALREADY_PROCESSED") continue;
+    const historyStatus = row.originalStatus === "NO_VALID_LINEUP"
+      ? "NO_VALID_LINEUP"
+      : row.originalStatus === "INCONSISTENT" ? "INCONSISTENT" : "PUBLISHED";
+    if (row.originalStatus !== "NO_VALID_LINEUP") {
+      statements.push(env.DB.prepare(`
+        UPDATE fantasy_participant_patrimony
+        SET current_cents = ?, formula_version = ?, updated_at = CURRENT_TIMESTAMP
+        WHERE user_id = ?
+      `).bind(row.newCents, PATRIMONY_FORMULA_ID, row.userId));
+    }
+    statements.push(env.DB.prepare(`
+      INSERT INTO fantasy_patrimony_history
+        (id, simulation_id, user_id, round_id, division, lineup_id,
+         previous_cents, purchases_cents, available_balance_cents,
+         previous_assets_cents, updated_assets_cents, variation_cents,
+         new_cents, consistency_difference_cents, status,
+         asset_details_json, formula_version, processed_by)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      crypto.randomUUID(), simulationId, row.userId, round.id, round.division,
+      row.lineupId, row.previousCents, row.purchasesCents,
+      row.availableBalanceCents, row.previousAssetsCents, row.updatedAssetsCents,
+      row.variationCents, row.newCents, row.consistencyDifferenceCents,
+      historyStatus, JSON.stringify(row.assets), PATRIMONY_FORMULA_ID, actor
+    ));
+  }
+  return { preview, statements };
+}
+
+function patrimonySummary(rows) {
+  return {
+    participants: rows.length,
+    processed: rows.filter((row) => ["CALCULATED", "INCONSISTENT"].includes(row.originalStatus)).length,
+    noValidLineup: rows.filter((row) => row.originalStatus === "NO_VALID_LINEUP").length,
+    inconsistent: rows.filter((row) => row.originalStatus === "INCONSISTENT").length,
+    alreadyProcessed: rows.filter((row) => row.status === "ALREADY_PROCESSED").length
+  };
+}
+
 async function adminGetFormula(_request, env) {
   return success({ formula: await getFormula(env) });
 }
@@ -3190,68 +3422,6 @@ function normalizedWeights(settings) {
     average: Number(settings.averageWeight ?? 0.25) / total,
     recent: Number(settings.recentWeight ?? 0.20) / total
   };
-}
-
-async function updateWealthAfterValuation(
-  env,
-  roundId,
-  division,
-  items,
-  formulaVersion = VALUATION_FORMULA_ID
-) {
-  const priceMap = new Map(items.map((item) => [String(item.assetId), Number(item.newPriceCents)]));
-  const rows = await dbAll(env, `
-    SELECT l.fantasy_team_id AS fantasyTeamId, l.id AS lineupId,
-           owned.asset_id AS assetId, l.total_cost AS totalCost,
-           COALESCE(w.initial_cents, 10000) AS initialCents,
-           COALESCE(w.purchases_cents, CAST(ROUND(l.total_cost * 100) AS INTEGER)) AS purchasesCents,
-           COALESCE(w.cash_cents, 10000 - CAST(ROUND(l.total_cost * 100) AS INTEGER)) AS cashCents
-    FROM fantasy_lineups l
-    JOIN fantasy_teams t ON t.id = l.fantasy_team_id
-    JOIN (
-      SELECT lineup_id, asset_id FROM fantasy_lineup_picks
-      UNION ALL
-      SELECT lineup_id, asset_id FROM fantasy_lineup_reserves
-    ) owned ON owned.lineup_id = l.id
-    LEFT JOIN fantasy_wealth_snapshots w
-      ON w.fantasy_team_id = l.fantasy_team_id AND w.round_id = l.round_id
-    WHERE l.round_id = ? AND t.division = ?
-  `, [roundId, division]);
-  const grouped = new Map();
-  for (const row of rows) {
-    const entry = grouped.get(row.fantasyTeamId) || {
-      initialCents: Number(row.initialCents) || 10000,
-      purchasesCents: Number(row.purchasesCents) || 0,
-      cashCents: Number(row.cashCents) || 0,
-      assetsCents: 0
-    };
-    entry.assetsCents += priceMap.get(String(row.assetId)) || 0;
-    grouped.set(row.fantasyTeamId, entry);
-  }
-  const statements = [...grouped.entries()].map(([fantasyTeamId, value]) =>
-    env.DB.prepare(`
-      INSERT INTO fantasy_wealth_snapshots
-        (fantasy_team_id, round_id, initial_cents, purchases_cents,
-         cash_cents, final_cents, formula_version)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT(fantasy_team_id, round_id) DO UPDATE SET
-        initial_cents = excluded.initial_cents,
-        purchases_cents = excluded.purchases_cents,
-        cash_cents = excluded.cash_cents,
-        final_cents = excluded.final_cents,
-        formula_version = excluded.formula_version,
-        created_at = CURRENT_TIMESTAMP
-    `).bind(
-      fantasyTeamId,
-      roundId,
-      value.initialCents,
-      value.purchasesCents,
-      value.cashCents,
-      value.cashCents + value.assetsCents,
-      formulaVersion
-    )
-  );
-  if (statements.length) await env.DB.batch(statements);
 }
 
 async function adminOverview(_request, env) {

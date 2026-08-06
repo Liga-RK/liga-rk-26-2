@@ -63,6 +63,8 @@
     userName: "",
     canControlMarket: false,
     marketControlBusy: false,
+    patrimony: null,
+    patrimonyHistory: [],
     loaded: false
   };
 
@@ -130,7 +132,14 @@
     popularDivision: document.getElementById("popular-division"),
     closedActions: document.querySelectorAll("[data-closed-action]"),
     roleShortcuts: document.querySelectorAll("[data-role-shortcut]"),
-    backToTop: document.getElementById("back-to-top")
+    backToTop: document.getElementById("back-to-top"),
+    patrimonyProfile: document.getElementById("patrimony-profile"),
+    patrimonyCurrent: document.getElementById("patrimony-current"),
+    patrimonyRoundVariation: document.getElementById("patrimony-round-variation"),
+    patrimonyTotalVariation: document.getElementById("patrimony-total-variation"),
+    patrimonyMaximum: document.getElementById("patrimony-maximum"),
+    patrimonyMinimum: document.getElementById("patrimony-minimum"),
+    patrimonyHistoryBody: document.getElementById("patrimony-history-body")
   };
 
   init();
@@ -153,7 +162,7 @@
       syncAllLineupsWithMarket();
       await Promise.all([loadCloudLineup("elite"), loadCloudLineup("ascension")]);
       syncAllLineupsWithMarket();
-      await Promise.all([loadCloudRanking(), loadCloudPopular(state.division)]);
+      await Promise.all([loadCloudRanking(), loadCloudPopular(state.division), loadCloudPatrimonyHistory()]);
       renderLineup();
       renderMarketShell();
       renderMarket();
@@ -747,7 +756,7 @@
     const lineup = currentLineup();
     syncLineupWithMarket(state.division);
     el.lineupSlots.replaceChildren(...ROLE_ORDER.map((role) => lineupSlot(role, lineup.slots[role])), reserveSlot(lineup.reserve));
-    const spent = lineupPurchaseCost(lineup);
+    const spent = lineupCurrentValue(lineup);
     const selected = Object.values(lineup.slots).filter(Boolean).length;
     el.budgetTotal.textContent = formatMoney(lineupPatrimony(lineup));
     el.budgetSpent.textContent = formatMoney(spent);
@@ -756,7 +765,7 @@
     el.fantasyTeamName.textContent = state.teamName;
     const reserveError = lineup.reserve && selected === 6 ? reserveValidationMessage(lineup.reserve, lineup) : "";
     const closed = !isMarketOpen();
-    const overBudget = spent > config.budget + 0.001;
+    const overBudget = lineupStarterPurchaseCost(lineup) > config.budget + 0.001;
     el.saveLineup.disabled = closed || selected !== 6 || !lineup.captainId || overBudget || Boolean(reserveError);
     el.saveLineup.textContent = closed ? "Mercado fechado" : (lineup.saved ? "Atualizar escalação" : "Salvar escalação");
     el.shareLineup.disabled = selected === 0;
@@ -876,7 +885,7 @@
   function addItem(item) {
     const lineup = currentLineup();
     const replacing = lineup.slots[item.role];
-    const nextCost = lineupPurchaseCost(lineup) - (replacing ? itemPurchasePrice(replacing) : 0) + Number(item.price || 0);
+    const nextCost = lineupStarterPurchaseCost(lineup) - (replacing ? itemPurchasePrice(replacing) : 0) + Number(item.price || 0);
     if (nextCost > config.budget + 0.001) {
       setMessage("Seu orçamento não é suficiente para essa escolha.", true);
       return;
@@ -1112,6 +1121,7 @@
     state.view = view;
     el.navButtons.forEach((button) => button.classList.toggle("active", button.dataset.view === view));
     el.views.forEach((section) => section.classList.toggle("active", section.id === `${view}-view`));
+    renderPatrimonyProfile();
     if (view === "market") {
       renderMarketShell();
     }
@@ -1342,6 +1352,8 @@
       const response = await apiFetch("/api/fantasy/me", { cache: "no-store" });
       const payload = await response.json().catch(() => ({}));
       state.userName = response.ok && payload.authenticated && payload.user ? cleanText(payload.user.username) : "";
+      state.patrimony = response.ok && payload.authenticated ? (payload.patrimony || payload.data?.patrimony || null) : null;
+      if (Number.isFinite(Number(state.patrimony?.currentCents))) config.budget = Number(state.patrimony.currentCents) / 100;
       state.canControlMarket = Boolean(response.ok && payload.authenticated && payload.canControlMarket);
       if (!state.userName && authToken) clearAuthToken();
     } catch (error) {
@@ -1350,11 +1362,56 @@
     }
   }
 
+  async function loadCloudPatrimonyHistory() {
+    if (!state.userName || config.backendMode !== "cloud") {
+      renderPatrimonyProfile();
+      return;
+    }
+    try {
+      const response = await apiFetch("/api/fantasy/history/me", { cache: "no-store" });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(apiErrorMessage(payload, "Histórico patrimonial indisponível."));
+      state.patrimony = payload.profile || payload.data?.profile || state.patrimony;
+      state.patrimonyHistory = payload.history || payload.data?.history || [];
+      if (Number.isFinite(Number(state.patrimony?.currentCents))) config.budget = Number(state.patrimony.currentCents) / 100;
+    } catch (error) {
+      console.warn("Não foi possível carregar o histórico patrimonial.", error);
+    }
+    renderPatrimonyProfile();
+  }
+
+  function renderPatrimonyProfile() {
+    if (!el.patrimonyProfile) return;
+    el.patrimonyProfile.hidden = !state.userName || state.view !== "market";
+    if (!state.userName || !state.patrimony) return;
+    const profile = state.patrimony;
+    el.patrimonyCurrent.textContent = formatMoney(Number(profile.currentCents) / 100);
+    el.patrimonyRoundVariation.textContent = signedMoney(Number(profile.roundVariationCents) / 100);
+    el.patrimonyTotalVariation.textContent = signedMoney(Number(profile.totalVariationCents) / 100);
+    el.patrimonyMaximum.textContent = formatMoney(Number(profile.maximumCents) / 100);
+    el.patrimonyMinimum.textContent = formatMoney(Number(profile.minimumCents) / 100);
+    el.patrimonyHistoryBody.innerHTML = state.patrimonyHistory.length
+      ? state.patrimonyHistory.map((row) => `
+        <tr>
+          <td>${escapeHtml(row.name || `Rodada ${row.roundNumber || ""}`)}</td>
+          <td><span class="division-pill">${escapeHtml(divisionLabel(row.division))}</span></td>
+          <td>RK$ ${formatMoney(Number(row.previousCents) / 100)}</td>
+          <td>${signedMoney(Number(row.variationCents) / 100)}</td>
+          <td>RK$ ${formatMoney(Number(row.newCents) / 100)}</td>
+        </tr>`).join("")
+      : `<tr><td colspan="5">O patrimônio começa em RK$ 100,00 e ainda não teve uma rodada processada.</td></tr>`;
+  }
+
   async function loadCloudLineup(division) {
     if (!state.userName) return;
     try {
       const response = await apiFetch(`/api/fantasy/lineups/current?division=${encodeURIComponent(division)}`, { cache: "no-store" });
       const payload = await response.json().catch(() => ({}));
+      const patrimony = payload.patrimony || payload.data?.patrimony || null;
+      if (patrimony) {
+        state.patrimony = patrimony;
+        config.budget = Number(patrimony.currentCents) / 100;
+      }
       if (!response.ok || !payload.lineup) return;
       if (payload.team && payload.team.name) state.teamName = cleanText(payload.team.name);
       const previousReserve = state.lineups[division] && state.lineups[division].reserve;
@@ -1438,6 +1495,10 @@
     try {
       const response = await apiFetch(`/api/fantasy/config?division=${encodeURIComponent(division)}`, { cache: "no-store" });
       const payload = await response.json().catch(() => ({}));
+      const rules = payload.rules || payload.data?.rules || {};
+      const patrimony = payload.patrimony || payload.data?.patrimony || null;
+      if (Number.isFinite(Number(rules.budget))) config.budget = roundMoney(rules.budget);
+      if (patrimony) state.patrimony = patrimony;
       const round = normalizeRoundInfo(payload.round);
       if (!response.ok || !round) return;
       const market = payload.market || payload.data?.market || null;
@@ -1446,6 +1507,7 @@
         : round.status === "open" && Date.now() < Date.parse(round.locks_at);
       state.roundInfo[division] = round;
       state.marketOpen[division] = open;
+      renderPatrimonyProfile();
       if (division === state.division) {
         updateMarketStatus();
         renderLineup();
@@ -1631,7 +1693,7 @@
   function fantasySaveErrorMessage(payload, lineup) {
     const message = apiErrorMessage(payload, "Não foi possível salvar a escalação.");
     if (!isBudgetRejection(message)) return message;
-    const localCost = formatMoney(lineupPurchaseCost(lineup));
+    const localCost = formatMoney(lineupStarterPurchaseCost(lineup));
     return `Sua escalação está em RK$ ${localCost} após a atualização dos preços. Troque uma ou mais escolhas para ficar dentro do limite de RK$ ${formatMoney(config.budget)} e tente salvar novamente.`;
   }
 
@@ -1747,19 +1809,25 @@
   }
 
   function lineupPurchaseCost(lineup) {
-    return roundMoney(Object.values(lineup.slots).reduce((total, item) => total + (item ? itemPurchasePrice(item) : 0), 0));
+    const starters = Object.values(lineup.slots).reduce((total, item) => total + (item ? itemPurchasePrice(item) : 0), 0);
+    return roundMoney(starters + (lineup.reserve ? itemPurchasePrice(lineup.reserve) : 0));
   }
 
   function lineupCurrentValue(lineup) {
-    return roundMoney(Object.values(lineup.slots).reduce((total, item) => total + (item ? Number(item.price) : 0), 0));
+    const starters = Object.values(lineup.slots).reduce((total, item) => total + (item ? Number(item.price) : 0), 0);
+    return roundMoney(starters + (lineup.reserve ? Number(lineup.reserve.price) : 0));
+  }
+
+  function lineupStarterPurchaseCost(lineup) {
+    return roundMoney(Object.values(lineup.slots).reduce((total, item) => total + (item ? itemPurchasePrice(item) : 0), 0));
   }
 
   function lineupCash(lineup) {
-    return roundMoney(config.budget - lineupPurchaseCost(lineup));
+    return roundMoney(config.budget - lineupCurrentValue(lineup));
   }
 
-  function lineupPatrimony(lineup) {
-    return roundMoney(lineupCash(lineup) + lineupCurrentValue(lineup));
+  function lineupPatrimony(_lineup) {
+    return roundMoney(config.budget);
   }
 
   function starterPlayers(lineup) {
@@ -1769,7 +1837,7 @@
   function reserveBudget(lineup) {
     const players = starterPlayers(lineup);
     const cheapestPlayer = players.length ? Math.min(...players.map((item) => Number(item.price) || 0)) : 0;
-    const remainingBudget = lineupCash(lineup);
+    const remainingBudget = lineupCash({ ...lineup, reserve: null });
     return roundMoney(remainingBudget + cheapestPlayer);
   }
 
@@ -2004,7 +2072,7 @@
     ctx.font = "39px Anton, Impact, sans-serif";
     ctx.fillText(fitCanvasText(ctx, state.teamName, 950), 88, 275);
 
-    const spent = lineupPurchaseCost(lineup);
+    const spent = lineupCurrentValue(lineup);
     const finance = [
       ["PATRIMÔNIO", lineupPatrimony(lineup)],
       ["UTILIZADO", spent],

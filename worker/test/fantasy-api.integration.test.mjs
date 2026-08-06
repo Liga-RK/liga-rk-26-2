@@ -172,13 +172,27 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
   database.exec(`
     INSERT INTO fantasy_users(id, discord_id, username)
       VALUES('valuation-user','valuation-discord','Valuation Tester');
+    INSERT INTO fantasy_participant_patrimony(user_id,current_cents,formula_version)
+      VALUES('valuation-user',10000,'v2-dynamic-assets');
     INSERT INTO fantasy_teams(id, user_id, division, name)
       VALUES('valuation-team','valuation-user','elite','Time de teste');
-    INSERT INTO fantasy_lineups(id, fantasy_team_id, round_id, captain_asset_id, total_cost)
-      VALUES('valuation-lineup','valuation-team','elite-test-1','elite-player',18.56);
+    INSERT INTO fantasy_market(
+      division,asset_id,asset_type,role,display_name,team_slot,team_name,team_tag,
+      price,previous_price,price_cents,previous_price_cents
+    ) VALUES
+      ('elite','elite-jg','player','JG','Elite JG','A1','Elite Team','ELI',4,4,400,400),
+      ('elite','elite-mid','player','MID','Elite MID','A1','Elite Team','ELI',4,4,400,400),
+      ('elite','elite-adc','player','ADC','Elite ADC','A1','Elite Team','ELI',4,4,400,400),
+      ('elite','elite-sup','player','SUP','Elite SUP','A1','Elite Team','ELI',4,4,400,400);
+    INSERT INTO fantasy_lineups(id, fantasy_team_id, round_id, captain_asset_id, total_cost, submitted_at, updated_at)
+      VALUES('valuation-lineup','valuation-team','elite-test-1','elite-player',34.56,'2026-07-24T20:00:00Z','2026-07-24T20:00:00Z');
     INSERT INTO fantasy_lineup_picks(lineup_id, role, asset_id, price_paid, team_slot)
       VALUES
         ('valuation-lineup','TOP','elite-player',4,'A1'),
+        ('valuation-lineup','JG','elite-jg',4,'A1'),
+        ('valuation-lineup','MID','elite-mid',4,'A1'),
+        ('valuation-lineup','ADC','elite-adc',4,'A1'),
+        ('valuation-lineup','SUP','elite-sup',4,'A1'),
         ('valuation-lineup','TEAM','team:elite:A1',14.56,'A1');
   `);
 
@@ -254,9 +268,9 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
   `).get().price_cents;
   assert.notEqual(priceAfterValuation, priceBeforeValuation);
   assert.equal(database.prepare(`
-    SELECT final_cents FROM fantasy_wealth_snapshots
-    WHERE fantasy_team_id='valuation-team' AND round_id='elite-test-1'
-  `).get().final_cents, expectedWealthAfter);
+    SELECT current_cents FROM fantasy_participant_patrimony
+    WHERE user_id='valuation-user'
+  `).get().current_cents, expectedWealthAfter);
   const valuationRepeated = await call(env, "/valuation/apply", {
     method: "POST",
     body: { simulationId, confirmSimulationId: simulationId },
@@ -269,9 +283,9 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
     WHERE division='elite' AND asset_id='elite-player'
   `).get().price_cents, priceAfterValuation);
   assert.equal(database.prepare(`
-    SELECT final_cents FROM fantasy_wealth_snapshots
-    WHERE fantasy_team_id='valuation-team' AND round_id='elite-test-1'
-  `).get().final_cents, expectedWealthAfter);
+    SELECT current_cents FROM fantasy_participant_patrimony
+    WHERE user_id='valuation-user'
+  `).get().current_cents, expectedWealthAfter);
 
   const rolledBack = await call(env, "/valuation/rollback", {
     method: "POST",
@@ -286,9 +300,13 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
     WHERE division='elite' AND asset_id='elite-player'
   `).get().price_cents, priceBeforeValuation);
   assert.equal(database.prepare(`
-    SELECT final_cents FROM fantasy_wealth_snapshots
-    WHERE fantasy_team_id='valuation-team' AND round_id='elite-test-1'
-  `).get().final_cents, 10000);
+    SELECT current_cents FROM fantasy_participant_patrimony
+    WHERE user_id='valuation-user'
+  `).get().current_cents, 10000);
+  assert.equal(database.prepare(`
+    SELECT COUNT(*) AS count FROM fantasy_patrimony_history
+    WHERE simulation_id=? AND status='ROLLED_BACK'
+  `).get(simulationId).count > 0, true);
   assert.equal(database.prepare(`
     SELECT COUNT(*) AS count FROM fantasy_price_history
     WHERE simulation_id=? AND review_status='rolled_back'
@@ -441,7 +459,8 @@ function createDatabase() {
     "0004_lineup_reserves.sql",
     "0005_admin_global_market.sql",
     "0006_fantasy_formula_v2.sql",
-    "0007_fantasy_dynamic_valuation.sql"
+    "0007_fantasy_dynamic_valuation.sql",
+    "0008_fantasy_dynamic_patrimony.sql"
   ]) {
     database.exec(fs.readFileSync(path.join(ROOT, "migrations", file), "utf8"));
     database.prepare("INSERT INTO d1_migrations(name) VALUES(?)").run(file);

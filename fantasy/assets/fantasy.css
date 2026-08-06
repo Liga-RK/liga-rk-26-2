@@ -386,6 +386,8 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .empty-state { padding: 4rem 1rem; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: .85rem; }
 
 .content-card { min-height: 460px; }
+.patrimony-profile { min-height: 0; margin-top: 1rem; }
+.patrimony-profile .budget-card { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .ranking-controls { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .6rem; }
 .ranking-division-tabs { display: flex; gap: .35rem; padding: .28rem; border: 1px solid var(--line); border-radius: .72rem; background: rgba(255, 255, 255, .035); }
 .ranking-division-tab { border: 0; border-radius: .55rem; padding: .7rem .85rem; color: var(--muted); background: transparent; font-weight: 850; }
@@ -548,6 +550,7 @@ dialog::backdrop { background: rgba(0, 0, 0, .78); backdrop-filter: blur(8px); }
   .rename-button { font-size: 0; }
   .rename-button span { font-size: 1rem; }
   .budget-card { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .35rem; }
+  .patrimony-profile .budget-card { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .budget-stat.available { grid-column: 1 / -1; }
   .budget-stat { padding: .65rem .45rem; }
   .budget-stat > span { font-size: .58rem; }

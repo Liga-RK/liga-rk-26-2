@@ -181,12 +181,24 @@
                   <option value="review">Revisão obrigatória</option>
                 </select>
               </label>
+              <label>Ordenar patrimônio
+                <select id="patrimony-sort">
+                  <option value="highest">Maior patrimônio</option>
+                  <option value="lowest">Menor patrimônio</option>
+                  <option value="increase">Maior valorização</option>
+                  <option value="decrease">Maior desvalorização</option>
+                  <option value="inconsistent">Inconsistências</option>
+                  <option value="no-lineup">Sem escalação</option>
+                  <option value="unprocessed">Ainda não processado</option>
+                </select>
+              </label>
             </div>
             <div id="valuation-actions" class="actions"></div>
           </article>
         </div>
         <article class="card"><div class="card-heading"><h2>Resultado da simulação</h2></div><div id="valuation-table" class="table-wrap"></div></article>
         <article class="card"><div class="card-heading"><h2>Histórico de valorizações</h2></div><div id="valuation-history" class="table-wrap"></div></article>
+        <article class="card"><div class="card-heading"><div><span class="eyebrow">Antes de publicar</span><h2>Prévia do patrimônio</h2></div></div><div id="patrimony-preview-table" class="table-wrap"></div></article>
       </section>
 
       <section id="panel-players" class="panel">
