@@ -230,7 +230,7 @@ export async function recordError(env, request, requestId, error, actor = null) 
 
 export async function getGlobalMarketState(env) {
   return env.DB.prepare(`
-    SELECT id, status, opened_at, closes_at, closed_at, opened_by, closed_by,
+    SELECT id, status, access_mode, opened_at, closes_at, closed_at, opened_by, closed_by,
            close_reason, lock_match_id, lock_division, lock_round_number,
            version, updated_at
     FROM fantasy_market_state WHERE id = ?
@@ -250,6 +250,7 @@ export function publicMarketState(row) {
   return {
     id: row.id,
     status: row.status,
+    accessMode: row.access_mode || "public",
     openedAt: row.opened_at,
     closesAt: row.closes_at,
     closedAt: row.closed_at,
@@ -550,7 +551,7 @@ async function adminOpenMarket(request, env, requestId, auth) {
   await env.DB.batch([
     env.DB.prepare(`
       UPDATE fantasy_market_state
-      SET status = 'open', opened_at = ?, closes_at = ?, closed_at = NULL,
+      SET status = 'open', access_mode = 'public', opened_at = ?, closes_at = ?, closed_at = NULL,
           opened_by = ?, closed_by = NULL, close_reason = NULL,
           lock_match_id = ?, lock_division = ?, lock_round_number = ?,
           version = version + 1, updated_at = CURRENT_TIMESTAMP
@@ -610,6 +611,32 @@ export async function openMarketFromDiscordAdmin(request, env, requestId, userna
 
 export async function closeMarketFromDiscordAdmin(request, env, requestId, username) {
   return adminCloseMarket(request, env, requestId, { username });
+}
+
+export async function setMarketAccessFromDiscordAdmin(request, env, requestId, username) {
+  const body = await readJson(request);
+  const accessMode = clean(body.accessMode) === "admin" ? "admin" : "public";
+  const before = await getGlobalMarketState(env);
+  if (!before || before.status !== "open") {
+    return failure("MARKET_NOT_OPEN", "Abra o mercado antes de alterar o acesso.", 409);
+  }
+  await env.DB.prepare(`
+    UPDATE fantasy_market_state
+    SET access_mode = ?, version = version + 1, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ? AND status = 'open'
+  `).bind(accessMode, GLOBAL_MARKET_ID).run();
+  const after = await getGlobalMarketState(env);
+  await audit(env, {
+    actor: username,
+    action: "market.access",
+    targetType: "global_market",
+    targetId: GLOBAL_MARKET_ID,
+    before,
+    after,
+    metadata: { accessMode },
+    requestId
+  });
+  return success({ market: publicMarketState(after) });
 }
 
 async function adminMarketStatus(_request, env) {

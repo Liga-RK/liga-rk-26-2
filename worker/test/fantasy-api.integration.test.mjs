@@ -463,7 +463,8 @@ function createDatabase() {
     "0008_fantasy_dynamic_patrimony.sql",
     "0009_fantasy_user_notices.sql",
     "0010_fantasy_shared_round_patrimony.sql",
-    "0011_fantasy_division_patrimony.sql"
+    "0011_fantasy_division_patrimony.sql",
+    "0012_fantasy_market_access_mode.sql"
   ]) {
     database.exec(fs.readFileSync(path.join(ROOT, "migrations", file), "utf8"));
     database.prepare("INSERT INTO d1_migrations(name) VALUES(?)").run(file);

@@ -164,3 +164,13 @@ test("Aviso da Rodada 2 exige login e só fecha depois do aceite persistido", ()
   assert.match(workerScript, /INSERT OR IGNORE INTO fantasy_user_notices/);
   assert.match(styles, /\.round-two-notice\[hidden\] \{ display: none; \}/);
 });
+
+test("Admin-only mode keeps the market closed for other players", () => {
+  assert.match(script, /marketAccessMode: \{ elite: "public", ascension: "public" \}/);
+  assert.match(script, /MERCADO ADMINISTRATIVO/);
+  assert.match(script, /Acesso exclusivo da administração/);
+  assert.match(workerScript, /function isMarketOpenForUser\(marketState, user, env\)/);
+  assert.match(workerScript, /access_mode \|\| "public"/);
+  assert.match(workerScript, /temporariamente aberto apenas para a administração/);
+  assert.match(workerScript, /marketStateForUser\(marketState, user, env\)/);
+});

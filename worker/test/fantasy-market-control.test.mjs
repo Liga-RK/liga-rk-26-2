@@ -75,6 +75,39 @@ sqliteTest("controle do mercado aparece e funciona somente para Cress Albane", a
     ["open"]
   );
 
+  const restricted = await call(env, "/api/fantasy/market/control/access", {
+    method: "POST",
+    token: controllerToken,
+    body: { accessMode: "admin" }
+  });
+  assert.equal(restricted.response.status, 200);
+  assert.equal(restricted.payload.data.market.status, "open");
+  assert.equal(restricted.payload.data.market.accessMode, "admin");
+
+  const controllerConfig = await call(env, "/api/fantasy/config?division=elite", {
+    token: controllerToken
+  });
+  assert.equal(controllerConfig.payload.market.status, "open");
+  assert.equal(controllerConfig.payload.round.status, "open");
+
+  const otherAdminConfig = await call(env, "/api/fantasy/config?division=elite", {
+    token: otherAdminToken
+  });
+  assert.equal(otherAdminConfig.payload.market.status, "closed");
+  assert.equal(otherAdminConfig.payload.market.accessMode, "admin");
+  assert.equal(otherAdminConfig.payload.round.status, "locked");
+
+  const anonymousConfig = await call(env, "/api/fantasy/config?division=elite");
+  assert.equal(anonymousConfig.payload.market.status, "closed");
+
+  const forbiddenRestrictedWrite = await call(env, "/api/fantasy/lineups/current", {
+    method: "PUT",
+    token: otherAdminToken,
+    body: { division: "elite" }
+  });
+  assert.equal(forbiddenRestrictedWrite.response.status, 403);
+  assert.match(forbiddenRestrictedWrite.payload.error.message, /apenas para a administra/);
+
   const duplicateOpen = await call(env, "/api/fantasy/market/control/open", {
     method: "POST",
     token: controllerToken,
@@ -274,7 +307,8 @@ function createDatabase() {
     "0008_fantasy_dynamic_patrimony.sql",
     "0009_fantasy_user_notices.sql",
     "0010_fantasy_shared_round_patrimony.sql",
-    "0011_fantasy_division_patrimony.sql"
+    "0011_fantasy_division_patrimony.sql",
+    "0012_fantasy_market_access_mode.sql"
   ]) {
     database.exec(fs.readFileSync(path.join(WORKER_ROOT, "migrations", file), "utf8"));
     database.prepare("INSERT INTO d1_migrations(name) VALUES(?)").run(file);

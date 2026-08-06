@@ -57,6 +57,7 @@
     popularRound: { elite: null, ascension: null },
     closedRanking: { elite: [], ascension: [] },
     marketOpen: { elite: false, ascension: false },
+    marketAccessMode: { elite: "public", ascension: "public" },
     roundInfo: { elite: null, ascension: null },
     lineups: { elite: emptyLineup(), ascension: emptyLineup() },
     teamName: "Meu Time RK",
@@ -1622,6 +1623,7 @@
       const round = normalizeRoundInfo(payload.round);
       if (!response.ok || !round) return;
       const market = payload.market || payload.data?.market || null;
+      state.marketAccessMode[division] = market?.accessMode === "admin" ? "admin" : "public";
       const open = market
         ? market.status === "open" && Date.now() < Date.parse(market.closesAt)
         : round.status === "open" && Date.now() < Date.parse(round.locks_at);
@@ -1884,11 +1886,14 @@
     const opensAt = Date.parse(round?.opens_at);
     const locksAt = Date.parse(round?.locks_at);
     const open = Boolean(round && round.status === "open" && Number.isFinite(locksAt) && now < locksAt && (!Number.isFinite(opensAt) || now >= opensAt));
+    const administrative = open && state.marketAccessMode[state.division] === "admin" && state.canControlMarket;
     if (round) state.marketOpen[state.division] = open;
-    el.marketStatus.textContent = open ? "MERCADO ABERTO" : "MERCADO FECHADO";
+    el.marketStatus.textContent = open ? (administrative ? "MERCADO ADMINISTRATIVO" : "MERCADO ABERTO") : "MERCADO FECHADO";
     el.marketStatus.style.color = open ? "var(--success)" : "var(--danger)";
     if (open) {
-      el.marketDeadline.textContent = `Mercado fecha em ${formatCountdown(locksAt - now)}`;
+      el.marketDeadline.textContent = administrative
+        ? `Acesso exclusivo da administração · fecha em ${formatCountdown(locksAt - now)}`
+        : `Mercado fecha em ${formatCountdown(locksAt - now)}`;
       return;
     }
     if (round?.status === "scheduled" && Number.isFinite(opensAt) && opensAt > now) {
@@ -1911,6 +1916,9 @@
   }
 
   function closedMarketDetail(round) {
+    if (state.marketAccessMode[state.division] === "admin") {
+      return "Mercado temporariamente disponível apenas para a administração.";
+    }
     if (!round) return "Aguarde a organização abrir a próxima rodada.";
     const opensAt = Date.parse(round.opens_at);
     if (round.status === "scheduled" && Number.isFinite(opensAt) && opensAt > Date.now()) {

@@ -7,6 +7,7 @@ import {
   openMarketFromDiscordAdmin,
   publicMarketState,
   recordError,
+  setMarketAccessFromDiscordAdmin,
   serveAdminAsset
 } from "./fantasy-admin.js";
 import valuationV3 from "../src/fantasy/valuation-v3.cjs";
@@ -81,6 +82,9 @@ async function route(request, env, requestId) {
   }
   if (url.pathname === "/api/fantasy/market/control/close" && request.method === "POST") {
     return controlMarketFromDiscord(request, env, requestId, "close");
+  }
+  if (url.pathname === "/api/fantasy/market/control/access" && request.method === "POST") {
+    return controlMarketFromDiscord(request, env, requestId, "access");
   }
   if (url.pathname === "/api/fantasy/notices/round-2-postponement" && request.method === "GET") {
     return getRoundTwoPostponementNotice(request, env);
@@ -280,7 +284,9 @@ async function controlMarketFromDiscord(request, env, requestId, action) {
   const actor = `${cleanText(user.username) || "Administrador Discord"} (${user.discordId})`;
   const response = action === "open"
     ? await openMarketFromDiscordAdmin(request, env, requestId, actor)
-    : await closeMarketFromDiscordAdmin(request, env, requestId, actor);
+    : action === "close"
+      ? await closeMarketFromDiscordAdmin(request, env, requestId, actor)
+      : await setMarketAccessFromDiscordAdmin(request, env, requestId, actor);
   return cors(response, request, env);
 }
 __name(controlMarketFromDiscord, "controlMarketFromDiscord");
@@ -326,20 +332,21 @@ async function getConfig(request, env) {
   const division = validDivision(new URL(request.url).searchParams.get("division") || "elite");
   await ensureAutomaticMarketClose(env, new Date(), "request");
   const marketState = await getGlobalMarketState(env);
+  const user = await optionalUser(request, env);
+  const visibleMarketState = marketStateForUser(marketState, user, env);
   const round = await currentRound(env, division, marketState?.lock_round_number);
   const compatibleRound = round ? {
     ...round,
-    status: marketState?.status === "open" ? "open" : "locked",
+    status: visibleMarketState.status === "open" ? "open" : "locked",
     opens_at: marketState?.opened_at || round.opens_at,
     locks_at: marketState?.closes_at || round.locks_at
   } : null;
-  const user = await optionalUser(request, env);
   const patrimony = user ? await participantPatrimonyProfile(env, user.id, division) : null;
   const budget = patrimony ? Number(patrimony.currentCents) / 100 : INITIAL_PATRIMONY;
   return json({
     division,
     round: compatibleRound,
-    market: publicMarketState(marketState),
+    market: visibleMarketState,
     patrimony,
     rules: { budget, initialPatrimony: INITIAL_PATRIMONY, patrimonyFormulaVersion: PATRIMONY_FORMULA_ID, maxPlayersPerRealTeam: 2, captainMultiplier: 1.5, requiredRoles: ROLES }
   }, 200, request, env);
@@ -349,6 +356,7 @@ async function getMarket(request, env) {
   const division = validDivision(new URL(request.url).searchParams.get("division") || "elite");
   await ensureAutomaticMarketClose(env, new Date(), "request");
   const marketState = await getGlobalMarketState(env);
+  const user = await optionalUser(request, env);
   const round = await currentRound(env, division, marketState?.lock_round_number);
   const result = await env.DB.prepare(`
     SELECT asset_id AS id, asset_type AS type, role, display_name AS name, team_slot AS teamSlot,
@@ -396,7 +404,7 @@ async function getMarket(request, env) {
       valuationDetailsJson: undefined
     };
   });
-  return json({ division, market, marketState: publicMarketState(marketState) }, 200, request, env);
+  return json({ division, market, marketState: marketStateForUser(marketState, user, env) }, 200, request, env);
 }
 __name(getMarket, "getMarket");
 function buildRoundMatchups(marketRows, round) {
@@ -518,6 +526,9 @@ async function saveCurrentLineup(request, env) {
   await ensureAutomaticMarketClose(env, new Date(), "lineup-write");
   const marketState = await getGlobalMarketState(env);
   if (!isGlobalMarketOpen(marketState)) return json({ error: "O mercado global está fechado para as duas divisões." }, 409, request, env);
+  if (!isMarketOpenForUser(marketState, user, env)) {
+    return json({ error: "O mercado está temporariamente aberto apenas para a administração." }, 403, request, env);
+  }
   const round = await currentRound(env, division, marketState.lock_round_number);
   if (!round) return json({ error: "Nenhuma rodada dispon\xEDvel." }, 409, request, env);
   const teamName = cleanText(body.teamName).slice(0, 32);
@@ -896,6 +907,22 @@ function isGlobalMarketOpen(marketState) {
   );
 }
 __name(isGlobalMarketOpen, "isGlobalMarketOpen");
+function isMarketOpenForUser(marketState, user, env) {
+  if (!isGlobalMarketOpen(marketState)) return false;
+  if (String(marketState?.access_mode || "public") !== "admin") return true;
+  return Boolean(user && marketControlIds(env).has(String(user.discordId)));
+}
+__name(isMarketOpenForUser, "isMarketOpenForUser");
+function marketStateForUser(marketState, user, env) {
+  const visible = publicMarketState(marketState);
+  if (visible.accessMode !== "admin" || isMarketOpenForUser(marketState, user, env)) return visible;
+  return {
+    ...visible,
+    status: "closed",
+    closeReason: "Mercado temporariamente disponível apenas para a administração."
+  };
+}
+__name(marketStateForUser, "marketStateForUser");
 async function ensureParticipantPatrimony(env, userId, division) {
   const validPatrimonyDivision = validDivision(division);
   await env.DB.prepare(`
