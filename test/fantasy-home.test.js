@@ -14,12 +14,18 @@ test("Fantasy opens on a separate, minimal Início view", () => {
     const html = fs.readFileSync(path.join(root, relativePath), "utf8");
     const home = html.match(/<section id="home-view"[\s\S]*?<\/section>\s*<\/section>/)?.[0] || "";
 
+    assert.match(html, /<title>Fantasy RK \| Liga RK 26\.2<\/title>/);
     assert.match(html, /data-view="home">Início<\/button>/);
-    assert.match(home, /MONTE SEU TIME\. <em>DISPUTE O TOPO DO FANTASY RK\.<\/em>/);
+    assert.match(home, /class="home-title-primary">ESCALE SEU TIME<\/span>/);
+    assert.match(home, /class="home-title-secondary">DISPUTE O TOPO DO RK FANTASY<\/span>/);
     assert.match(home, /id="home-login-button"[^>]*>Entrar ou cadastrar-se<\/button>/);
     assert.equal((home.match(/<button\b/g) || []).length, 1);
     assert.doesNotMatch(html, /id="market-intro"/);
   }
+
+  assert.match(styles, /\.home-title-primary\s*\{[\s\S]*?color: var\(--accent-bright\)/);
+  assert.match(styles, /\.home-title-secondary\s*\{[\s\S]*?color: #fff/);
+  assert.match(styles, /\.home-title-primary,\s*\.home-title-secondary\s*\{[\s\S]*?white-space: nowrap/);
 });
 
 test("Fantasy account action signs out instead of switching accounts", () => {
