@@ -36,7 +36,11 @@ env = {
   DB,
   FANTASY_SOURCE_URL: SOURCE_URL,
   CONTENT_API_URL,
-  __maintenanceBackup: mode === "apply" ? async () => previewId : null
+  __maintenanceBackup: mode === "apply"
+    ? async () => previewId
+    : mode === "revalue-teams"
+      ? async () => "external-sql:fantasy-production-before-round3-budget-and-team-valuation-20260806.sql"
+      : null
 };
 
 if (mode === "preview") {
