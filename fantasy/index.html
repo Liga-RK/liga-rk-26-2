@@ -53,7 +53,7 @@
             <span class="home-title-primary">ESCALE SEU TIME</span>
             <span class="home-title-secondary">DISPUTE O TOPO DO RK FANTASY</span>
           </h1>
-          <p>Você começa com RK$ 100,00 e seu patrimônio passa a variar após cada rodada. Escale os destaques da Elite ou da Ascensão; o mercado e o patrimônio são únicos para as duas divisões.</p>
+          <p>Você começa com RK$ 100,00 em cada divisão e cada patrimônio varia separadamente após as rodadas. O mercado abre e fecha ao mesmo tempo para Elite e Ascensão.</p>
           <button id="home-login-button" class="primary-button home-login-button" type="button">Entrar ou cadastrar-se</button>
         </div>
       </section>
@@ -260,18 +260,17 @@
       <div class="section-heading">
         <div><span class="eyebrow">Seu perfil financeiro</span><h2>Evolução do patrimônio</h2></div>
       </div>
-      <div class="budget-card" aria-label="Histórico resumido do patrimônio">
-        <div class="budget-stat"><span>Atual</span><strong><small>RK$</small> <span id="patrimony-current">100,00</span></strong></div>
-        <div class="budget-stat"><span>Variação da rodada</span><strong id="patrimony-round-variation">RK$ 0,00</strong></div>
-        <div class="budget-stat"><span>Evolução total</span><strong id="patrimony-total-variation">RK$ 0,00</strong></div>
-        <div class="budget-stat"><span>Maior</span><strong><small>RK$</small> <span id="patrimony-maximum">100,00</span></strong></div>
-        <div class="budget-stat"><span>Menor</span><strong><small>RK$</small> <span id="patrimony-minimum">100,00</span></strong></div>
-      </div>
-      <div class="ranking-table-wrap">
-        <table class="ranking-table">
-          <thead><tr><th>Rodada</th><th>Divisão</th><th>Base da rodada</th><th>Variação da divisão</th><th>Patrimônio após a rodada</th></tr></thead>
-          <tbody id="patrimony-history-body"></tbody>
-        </table>
+      <div class="patrimony-summary" role="table" aria-label="Patrimônio individual por divisão">
+        <div class="patrimony-summary-row patrimony-summary-header" role="row">
+          <span role="columnheader">Divisão</span>
+          <span role="columnheader">Saldo anterior</span>
+          <span role="columnheader">Atual</span>
+          <span role="columnheader">Variação da rodada</span>
+          <span role="columnheader">Evolução total</span>
+          <span role="columnheader">Maior</span>
+          <span role="columnheader">Menor</span>
+        </div>
+        <div id="patrimony-summary-body" class="patrimony-summary-body" aria-live="polite"></div>
       </div>
     </section>
 
@@ -303,7 +302,7 @@
                 <th>Jogador</th>
                 <th>Rodada</th>
                 <th>Total</th>
-                <th>Patrimônio</th>
+                <th id="ranking-wealth-header">Patrimônio</th>
                 <th>Média</th>
                 <th>Melhor</th>
               </tr>
@@ -367,7 +366,7 @@
           <h3>Patrimônio</h3>
           <p>Cada participante começa sua primeira escalação com <strong>RK$ 100,00</strong>. Depois disso, o patrimônio varia conforme os preços dos cinco titulares, do reserva e da equipe confirmados na escalação oficial. Se esses ativos valorizarem, o patrimônio aumenta; se desvalorizarem, ele diminui.</p>
           <p>Não existe teto máximo nem retorno automático a RK$ 100,00. O saldo não utilizado permanece disponível e não sofre variação. Ao abrir a rodada seguinte, os ativos anteriores são considerados vendidos pelo preço atualizado de mercado, transformando sua valorização em poder de compra.</p>
-          <p>O patrimônio é único para todo o Fantasy RK: trocar entre Elite e Ascensão não cria outra carteira nem concede novos RK$ 100,00.</p>
+          <p>Elite e Ascensão possuem patrimônios independentes. Cada divisão começa com RK$ 100,00 e somente a valorização dos ativos escalados naquela divisão altera sua carteira.</p>
         </div>
         <div class="rule-list">
           <h3>Regras do elenco</h3>

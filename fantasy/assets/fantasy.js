@@ -65,8 +65,7 @@
     marketControlBusy: false,
     roundTwoNotice: null,
     roundTwoNoticeBusy: false,
-    patrimony: null,
-    patrimonyHistory: [],
+    patrimony: { elite: null, ascension: null },
     loaded: false
   };
 
@@ -115,6 +114,7 @@
     rankingScope: document.getElementById("ranking-scope"),
     rankingDivisionTabs: document.querySelectorAll("[data-ranking-division]"),
     rankingBody: document.getElementById("ranking-body"),
+    rankingWealthHeader: document.getElementById("ranking-wealth-header"),
     rankingHelper: document.getElementById("ranking-helper"),
     marketStatus: document.getElementById("market-status"),
     marketDeadline: document.getElementById("market-deadline"),
@@ -144,12 +144,7 @@
     acknowledgeRoundTwoNotice: document.getElementById("acknowledge-round-two-notice"),
     roundTwoNoticeFeedback: document.getElementById("round-two-notice-feedback"),
     patrimonyProfile: document.getElementById("patrimony-profile"),
-    patrimonyCurrent: document.getElementById("patrimony-current"),
-    patrimonyRoundVariation: document.getElementById("patrimony-round-variation"),
-    patrimonyTotalVariation: document.getElementById("patrimony-total-variation"),
-    patrimonyMaximum: document.getElementById("patrimony-maximum"),
-    patrimonyMinimum: document.getElementById("patrimony-minimum"),
-    patrimonyHistoryBody: document.getElementById("patrimony-history-body")
+    patrimonySummaryBody: document.getElementById("patrimony-summary-body")
   };
 
   init();
@@ -1104,6 +1099,7 @@
   function setDivision(division) {
     if (!state.lineups[division]) return;
     state.division = division;
+    activatePatrimonyForDivision(division);
     el.roleFilter.value = "ALL";
     el.search.value = "";
     el.roleShortcuts.forEach((button) => button.classList.toggle("active", button.dataset.roleShortcut === "ALL"));
@@ -1228,10 +1224,13 @@
     clearRoundTwoNotice();
     state.teamName = "Meu Time RK";
     state.lineups = { elite: emptyLineup(), ascension: emptyLineup() };
+    state.patrimony = { elite: null, ascension: null };
+    activatePatrimonyForDivision(state.division);
     try { localStorage.removeItem("fantasy-rk-state-v1"); } catch {}
     renderAccount();
     renderLineup();
     renderMarket();
+    renderPatrimonyProfile();
     renderClosedLineups();
   }
 
@@ -1325,6 +1324,7 @@
 
   function renderRankingRows(rows) {
     if (!el.rankingBody) return;
+    const showWealth = !rankingUsesAllDivisions();
     el.rankingBody.innerHTML = rows.length ? rows.map((row) => `
       <tr>
         <td>${Number(row.position) || "-"}</td>
@@ -1334,16 +1334,17 @@
         <td>${escapeHtml(row.manager || "-")}</td>
         <td class="number-cell">${formatNumber(row.roundPoints)}</td>
         <td class="number-cell">${formatNumber(row.totalPoints)}</td>
-        <td class="number-cell">RK$ ${formatMoney(Number(row.wealthCents || 0) / 100)}</td>
+        ${showWealth ? `<td class="number-cell">RK$ ${formatMoney(Number(row.wealthCents || 0) / 100)}</td>` : ""}
         <td class="number-cell">${formatNumber(row.averagePoints)}</td>
         <td class="number-cell">${formatNumber(row.bestRoundPoints)}</td>
       </tr>
-    `).join("") : `<tr><td colspan="10">O ranking ainda não possui pontuações.</td></tr>`;
+    `).join("") : `<tr><td colspan="${showWealth ? 10 : 9}">O ranking ainda não possui pontuações.</td></tr>`;
   }
 
   function updateRankingControls() {
     if (el.rankingScope) el.rankingScope.value = state.rankingScope;
     const allDivisions = rankingUsesAllDivisions();
+    if (el.rankingWealthHeader) el.rankingWealthHeader.hidden = allDivisions;
     el.rankingDivisionTabs.forEach((button) => {
       button.classList.toggle("active", button.dataset.rankingDivision === state.rankingDivision);
       button.disabled = allDivisions;
@@ -1372,8 +1373,10 @@
       const response = await apiFetch("/api/fantasy/me", { cache: "no-store" });
       const payload = await response.json().catch(() => ({}));
       state.userName = response.ok && payload.authenticated && payload.user ? cleanText(payload.user.username) : "";
-      state.patrimony = response.ok && payload.authenticated ? (payload.patrimony || payload.data?.patrimony || null) : null;
-      if (Number.isFinite(Number(state.patrimony?.currentCents))) config.budget = Number(state.patrimony.currentCents) / 100;
+      const profiles = response.ok && payload.authenticated ? (payload.patrimony || payload.data?.patrimony || {}) : {};
+      state.patrimony.elite = profiles.elite || null;
+      state.patrimony.ascension = profiles.ascension || null;
+      activatePatrimonyForDivision(state.division);
       state.canControlMarket = Boolean(response.ok && payload.authenticated && payload.canControlMarket);
       if (!state.userName && authToken) clearAuthToken();
     } catch (error) {
@@ -1471,9 +1474,10 @@
       const response = await apiFetch("/api/fantasy/history/me", { cache: "no-store" });
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(apiErrorMessage(payload, "Histórico patrimonial indisponível."));
-      state.patrimony = payload.profile || payload.data?.profile || state.patrimony;
-      state.patrimonyHistory = payload.history || payload.data?.history || [];
-      if (Number.isFinite(Number(state.patrimony?.currentCents))) config.budget = Number(state.patrimony.currentCents) / 100;
+      const profiles = payload.profiles || payload.data?.profiles || {};
+      state.patrimony.elite = profiles.elite || state.patrimony.elite;
+      state.patrimony.ascension = profiles.ascension || state.patrimony.ascension;
+      activatePatrimonyForDivision(state.division);
     } catch (error) {
       console.warn("Não foi possível carregar o histórico patrimonial.", error);
     }
@@ -1483,23 +1487,34 @@
   function renderPatrimonyProfile() {
     if (!el.patrimonyProfile) return;
     el.patrimonyProfile.hidden = !state.userName || state.view !== "market";
-    if (!state.userName || !state.patrimony) return;
-    const profile = state.patrimony;
-    el.patrimonyCurrent.textContent = formatMoney(Number(profile.currentCents) / 100);
-    el.patrimonyRoundVariation.textContent = signedMoney(Number(profile.roundVariationCents) / 100);
-    el.patrimonyTotalVariation.textContent = signedMoney(Number(profile.totalVariationCents) / 100);
-    el.patrimonyMaximum.textContent = formatMoney(Number(profile.maximumCents) / 100);
-    el.patrimonyMinimum.textContent = formatMoney(Number(profile.minimumCents) / 100);
-    el.patrimonyHistoryBody.innerHTML = state.patrimonyHistory.length
-      ? state.patrimonyHistory.map((row) => `
-        <tr>
-          <td>${escapeHtml(row.name || `Rodada ${row.roundNumber || ""}`)}</td>
-          <td><span class="division-pill">${escapeHtml(divisionLabel(row.division))}</span></td>
-          <td>RK$ ${formatMoney(Number(row.roundOpeningCents ?? row.previousCents) / 100)}</td>
-          <td>${signedMoney(Number(row.variationCents) / 100)}</td>
-          <td>RK$ ${formatMoney(Number(row.roundClosingCents ?? row.newCents) / 100)}</td>
-        </tr>`).join("")
-      : `<tr><td colspan="5">O patrimônio começa em RK$ 100,00 e ainda não teve uma rodada processada.</td></tr>`;
+    if (!state.userName || !el.patrimonySummaryBody) return;
+    el.patrimonySummaryBody.innerHTML = ["elite", "ascension"].map((division) => {
+      const profile = state.patrimony[division] || {
+        previousCents: 10000,
+        currentCents: 10000,
+        roundVariationCents: 0,
+        totalVariationCents: 0,
+        maximumCents: 10000,
+        minimumCents: 10000
+      };
+      return `
+        <div class="patrimony-summary-row" role="row">
+          <span role="cell"><span class="division-pill">${escapeHtml(divisionLabel(division))}</span></span>
+          <strong role="cell">RK$ ${formatMoney(Number(profile.previousCents) / 100)}</strong>
+          <strong role="cell">RK$ ${formatMoney(Number(profile.currentCents) / 100)}</strong>
+          <strong role="cell">${signedMoney(Number(profile.roundVariationCents) / 100)}</strong>
+          <strong role="cell">${signedMoney(Number(profile.totalVariationCents) / 100)}</strong>
+          <strong role="cell">RK$ ${formatMoney(Number(profile.maximumCents) / 100)}</strong>
+          <strong role="cell">RK$ ${formatMoney(Number(profile.minimumCents) / 100)}</strong>
+        </div>`;
+    }).join("");
+  }
+
+  function activatePatrimonyForDivision(division) {
+    const profile = state.patrimony[division];
+    config.budget = Number.isFinite(Number(profile?.currentCents))
+      ? roundMoney(Number(profile.currentCents) / 100)
+      : 100;
   }
 
   async function loadCloudLineup(division) {
@@ -1509,8 +1524,8 @@
       const payload = await response.json().catch(() => ({}));
       const patrimony = payload.patrimony || payload.data?.patrimony || null;
       if (patrimony) {
-        state.patrimony = patrimony;
-        config.budget = Number(patrimony.currentCents) / 100;
+        state.patrimony[division] = patrimony;
+        if (division === state.division) activatePatrimonyForDivision(division);
       }
       if (!response.ok || !payload.lineup) return;
       if (payload.team && payload.team.name) state.teamName = cleanText(payload.team.name);
@@ -1597,8 +1612,13 @@
       const payload = await response.json().catch(() => ({}));
       const rules = payload.rules || payload.data?.rules || {};
       const patrimony = payload.patrimony || payload.data?.patrimony || null;
-      if (Number.isFinite(Number(rules.budget))) config.budget = roundMoney(rules.budget);
-      if (patrimony) state.patrimony = patrimony;
+      if (division === state.division && Number.isFinite(Number(rules.budget))) {
+        config.budget = roundMoney(rules.budget);
+      }
+      if (patrimony) {
+        state.patrimony[division] = patrimony;
+        if (division === state.division) activatePatrimonyForDivision(division);
+      }
       const round = normalizeRoundInfo(payload.round);
       if (!response.ok || !round) return;
       const market = payload.market || payload.data?.market || null;
@@ -1713,7 +1733,7 @@
       renderRankingRows(rows);
     } catch (error) {
       console.warn("Não foi possível carregar o ranking online.", error);
-      if (el.rankingBody) el.rankingBody.innerHTML = `<tr><td colspan="10">Não foi possível carregar o ranking agora.</td></tr>`;
+      if (el.rankingBody) el.rankingBody.innerHTML = `<tr><td colspan="${rankingUsesAllDivisions() ? 9 : 10}">Não foi possível carregar o ranking agora.</td></tr>`;
     }
   }
 

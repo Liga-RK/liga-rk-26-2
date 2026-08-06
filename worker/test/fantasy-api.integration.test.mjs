@@ -172,8 +172,8 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
   database.exec(`
     INSERT INTO fantasy_users(id, discord_id, username)
       VALUES('valuation-user','valuation-discord','Valuation Tester');
-    INSERT INTO fantasy_participant_patrimony(user_id,current_cents,formula_version)
-      VALUES('valuation-user',10000,'v2-dynamic-assets');
+    INSERT INTO fantasy_participant_patrimony(user_id,division,current_cents,formula_version)
+      VALUES('valuation-user','elite',10000,'v2-dynamic-assets');
     INSERT INTO fantasy_teams(id, user_id, division, name)
       VALUES('valuation-team','valuation-user','elite','Time de teste');
     INSERT INTO fantasy_market(
@@ -269,7 +269,7 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
   assert.notEqual(priceAfterValuation, priceBeforeValuation);
   assert.equal(database.prepare(`
     SELECT current_cents FROM fantasy_participant_patrimony
-    WHERE user_id='valuation-user'
+    WHERE user_id='valuation-user' AND division='elite'
   `).get().current_cents, expectedWealthAfter);
   const valuationRepeated = await call(env, "/valuation/apply", {
     method: "POST",
@@ -284,7 +284,7 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
   `).get().price_cents, priceAfterValuation);
   assert.equal(database.prepare(`
     SELECT current_cents FROM fantasy_participant_patrimony
-    WHERE user_id='valuation-user'
+    WHERE user_id='valuation-user' AND division='elite'
   `).get().current_cents, expectedWealthAfter);
 
   const rolledBack = await call(env, "/valuation/rollback", {
@@ -301,7 +301,7 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
   `).get().price_cents, priceBeforeValuation);
   assert.equal(database.prepare(`
     SELECT current_cents FROM fantasy_participant_patrimony
-    WHERE user_id='valuation-user'
+    WHERE user_id='valuation-user' AND division='elite'
   `).get().current_cents, 10000);
   assert.equal(database.prepare(`
     SELECT COUNT(*) AS count FROM fantasy_patrimony_history
@@ -462,7 +462,8 @@ function createDatabase() {
     "0007_fantasy_dynamic_valuation.sql",
     "0008_fantasy_dynamic_patrimony.sql",
     "0009_fantasy_user_notices.sql",
-    "0010_fantasy_shared_round_patrimony.sql"
+    "0010_fantasy_shared_round_patrimony.sql",
+    "0011_fantasy_division_patrimony.sql"
   ]) {
     database.exec(fs.readFileSync(path.join(ROOT, "migrations", file), "utf8"));
     database.prepare("INSERT INTO d1_migrations(name) VALUES(?)").run(file);

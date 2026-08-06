@@ -77,6 +77,21 @@ test("Home, ranking and rules remain available while the market is closed", () =
   assert.doesNotMatch(script, /button\.hidden = !open/);
 });
 
+test("Patrimônio é individual por divisão e o ranking geral não mostra patrimônio", () => {
+  for (const relativePath of pages) {
+    const html = fs.readFileSync(path.join(root, relativePath), "utf8");
+    assert.match(html, /id="patrimony-summary-body"/);
+    assert.match(html, /Saldo anterior/);
+    assert.match(html, /Elite e Ascensão possuem patrimônios independentes/);
+    assert.doesNotMatch(html, /id="patrimony-history-body"/);
+    assert.match(html, /id="ranking-wealth-header"/);
+  }
+  assert.match(script, /const showWealth = !rankingUsesAllDivisions\(\)/);
+  assert.match(script, /rankingWealthHeader\.hidden = allDivisions/);
+  assert.match(workerScript, /pp\.division = ft\.division/);
+  assert.match(workerScript, /\(user_id, division, current_cents, formula_version\)/);
+});
+
 test("Reserva pode usar saldo disponível mais o titular mais barato", () => {
   const frontendSource = script.match(/function reserveBudget\(lineup\) \{[\s\S]*?\n  \}/)?.[0];
   const backendSource = workerScript.match(/function reserveBudgetForRows\(rows\) \{[\s\S]*?\n\}/)?.[0];

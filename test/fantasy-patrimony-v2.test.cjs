@@ -113,23 +113,24 @@ test("arredondamento monetário é centralizado em dois centavos", () => {
   assert.equal(PATRIMONY_FORMULA_ID, "v2-dynamic-assets");
 });
 
-test("duas divisões da mesma rodada usam a mesma base e somam na carteira única", () => {
-  const summary = summarizeParticipantPatrimony({
-    currentCents: 11268,
-    historyRows: [
-      { roundNumber: 2, roundId: "asc-r2", status: "PUBLISHED", variationCents: 795 },
-      { roundNumber: 2, roundId: "elite-r2", status: "PUBLISHED", variationCents: 473 }
-    ]
+test("cada divisão calcula sua própria evolução patrimonial", () => {
+  const elite = summarizeParticipantPatrimony({
+    currentCents: 10473,
+    historyRows: [{ roundNumber: 2, roundId: "elite-r2", status: "PUBLISHED", variationCents: 473 }]
   });
-  assert.equal(summary.roundVariationCents, 1268);
-  assert.equal(summary.totalVariationCents, 1268);
-  assert.equal(summary.rounds[0].openingCents, 10000);
-  assert.equal(summary.rounds[0].closingCents, 11268);
-  assert.equal(summary.maximumCents, 11268);
-  assert.equal(summary.minimumCents, 10000);
+  const ascension = summarizeParticipantPatrimony({
+    currentCents: 10795,
+    historyRows: [{ roundNumber: 2, roundId: "asc-r2", status: "PUBLISHED", variationCents: 795 }]
+  });
+  assert.equal(elite.roundVariationCents, 473);
+  assert.equal(elite.rounds[0].closingCents, 10473);
+  assert.equal(ascension.roundVariationCents, 795);
+  assert.equal(ascension.rounds[0].closingCents, 10795);
+  assert.equal(elite.minimumCents, 10000);
+  assert.equal(ascension.maximumCents, 10795);
 });
 
-test("rodada seguinte parte do saldo global fechado da rodada anterior", () => {
+test("rodada seguinte parte do saldo fechado da própria divisão", () => {
   const summary = summarizeParticipantPatrimony({
     currentCents: 11000,
     historyRows: [

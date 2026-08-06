@@ -445,6 +445,17 @@ sqliteTest("38 migração preserva preços atuais", () => {
   assert.equal(price.price_cents, 1727);
 });
 
+test("34a timestamp do SQLite é comparado em UTC com o fechamento", () => {
+  assert.equal(
+    __test.timestampMillis("2026-08-01 17:51:19"),
+    Date.parse("2026-08-01T17:51:19Z")
+  );
+  assert.ok(
+    __test.timestampMillis("2026-08-01 17:51:19")
+      < __test.timestampMillis("2026-08-01T18:35:52.301Z")
+  );
+});
+
 sqliteTest("38a migração v2 preserva histórico e adiciona versão segura", () => {
   const db = migratedDatabaseWithFixture();
   const score = db.prepare(`
@@ -459,7 +470,7 @@ sqliteTest("38a migração v2 preserva histórico e adiciona versão segura", ()
   );
 });
 
-sqliteTest("38b reajuste usa a mesma base nas duas divisões e preserva a carteira global", () => {
+sqliteTest("38b Elite e Ascensão mantêm patrimônios independentes", () => {
   const db = migratedDatabaseWithFixture();
   db.exec(`
     INSERT INTO fantasy_rounds(id,division,round_number,name,opens_at,locks_at,status)
@@ -481,6 +492,7 @@ sqliteTest("38b reajuste usa a mesma base nas duas divisões e preserva a cartei
       ('h-elite','sim-elite-r2','u1','elite-r2','elite',10795,9000,1795,9000,9473,473,11268,'PUBLISHED','v2-dynamic-assets','test');
   `);
   db.exec(migrationText("0010_fantasy_shared_round_patrimony.sql"));
+  db.exec(migrationText("0011_fantasy_division_patrimony.sql"));
   const elite = db.prepare(`
     SELECT previous_cents AS previousCents, available_balance_cents AS availableCents,
            new_cents AS newCents, consistency_difference_cents AS differenceCents
@@ -493,8 +505,12 @@ sqliteTest("38b reajuste usa a mesma base nas duas divisões e preserva a cartei
     differenceCents: 0
   });
   assert.equal(
-    db.prepare("SELECT current_cents AS currentCents FROM fantasy_participant_patrimony WHERE user_id='u1'").get().currentCents,
-    11268
+    db.prepare("SELECT current_cents AS currentCents FROM fantasy_participant_patrimony WHERE user_id='u1' AND division='elite'").get().currentCents,
+    10473
+  );
+  assert.equal(
+    db.prepare("SELECT current_cents AS currentCents FROM fantasy_participant_patrimony WHERE user_id='u1' AND division='ascension'").get().currentCents,
+    10795
   );
 });
 

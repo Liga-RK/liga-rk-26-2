@@ -150,7 +150,7 @@ async function authCallback(request, env) {
     VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
     ON CONFLICT(discord_id) DO UPDATE SET username=excluded.username, avatar_url=excluded.avatar_url, updated_at=CURRENT_TIMESTAMP
   `).bind(userId, String(discordUser.id), String(discordUser.global_name || discordUser.username || "Jogador RK"), avatarUrl).run();
-  await ensureParticipantPatrimony(env, userId);
+  await Promise.all(DIVISIONS.map((division) => ensureParticipantPatrimony(env, userId, division)));
   const account = await env.DB.prepare(`
     SELECT blocked, blocked_reason AS blockedReason FROM fantasy_users WHERE id = ?
   `).bind(userId).first();
@@ -197,7 +197,7 @@ async function authLogout(request, env) {
 __name(authLogout, "authLogout");
 async function getMe(request, env) {
   const user = await optionalUser(request, env);
-  const patrimony = user ? await participantPatrimonyProfile(env, user.id) : null;
+  const patrimony = user ? await participantPatrimonyProfiles(env, user.id) : null;
   return json({
     authenticated: Boolean(user),
     user,
@@ -301,7 +301,7 @@ __name(getMyScores, "getMyScores");
 async function getMyHistory(request, env) {
   const user = await requireUser(request, env);
   if (user.response) return user.response;
-  const profile = await participantPatrimonyProfile(env, user.id);
+  const profiles = await participantPatrimonyProfiles(env, user.id);
   const rows = await env.DB.prepare(`
     SELECT h.id, h.round_id AS roundId, r.round_number AS roundNumber, r.name,
            h.division, h.previous_cents AS previousCents, h.new_cents AS newCents,
@@ -316,26 +316,9 @@ async function getMyHistory(request, env) {
     ORDER BY h.processed_at DESC
   `).bind(user.id).all();
   const history = rows.results || [];
-  const summary = summarizeParticipantPatrimony({
-    currentCents: profile.currentCents,
-    historyRows: history
-  });
-  const roundSummaries = new Map(summary.rounds.map((round) => [round.key, round]));
   return json({
-    profile,
-    history: history.map((row) => {
-      const numericRound = Number(row.roundNumber);
-      const key = Number.isFinite(numericRound)
-        ? `number:${numericRound}`
-        : `id:${String(row.roundId || '')}`;
-      const roundSummary = roundSummaries.get(key);
-      return {
-        ...row,
-        roundOpeningCents: roundSummary?.openingCents ?? row.previousCents,
-        roundClosingCents: roundSummary?.closingCents ?? row.newCents,
-        roundVariationCents: roundSummary?.variationCents ?? row.variationCents
-      };
-    })
+    profiles,
+    history
   }, 200, request, env);
 }
 __name(getMyHistory, "getMyHistory");
@@ -351,7 +334,7 @@ async function getConfig(request, env) {
     locks_at: marketState?.closes_at || round.locks_at
   } : null;
   const user = await optionalUser(request, env);
-  const patrimony = user ? await participantPatrimonyProfile(env, user.id) : null;
+  const patrimony = user ? await participantPatrimonyProfile(env, user.id, division) : null;
   const budget = patrimony ? Number(patrimony.currentCents) / 100 : INITIAL_PATRIMONY;
   return json({
     division,
@@ -516,7 +499,7 @@ async function getCurrentLineup(request, env) {
   const marketState = await getGlobalMarketState(env);
   const round = await currentRound(env, division, marketState?.lock_round_number);
   if (!round) return json({ error: "Nenhuma rodada cadastrada." }, 404, request, env);
-  const patrimony = await participantPatrimonyProfile(env, user.id);
+  const patrimony = await participantPatrimonyProfile(env, user.id, division);
   const team = await env.DB.prepare("SELECT * FROM fantasy_teams WHERE user_id = ? AND division = ?").bind(user.id, division).first();
   if (!team) return json({ division, round, patrimony, lineup: null }, 200, request, env);
   const lineup = await env.DB.prepare("SELECT * FROM fantasy_lineups WHERE fantasy_team_id = ? AND round_id = ?").bind(team.id, round.id).first();
@@ -558,7 +541,7 @@ async function saveCurrentLineup(request, env) {
   if ([...playerTeamCounts.values()].some((count) => count > MAX_PLAYERS_PER_REAL_TEAM)) return json({ error: "Use no m\xE1ximo dois jogadores da mesma equipe real." }, 400, request, env);
   if (!marketRows.some((row) => row.asset_type === "player" && row.asset_id === captainId)) return json({ error: "O capit\xE3o deve ser um dos cinco jogadores." }, 400, request, env);
   const totalCost = roundMoney(marketRows.reduce((sum, row) => sum + Number(row.price), 0));
-  const patrimony = await ensureParticipantPatrimony(env, user.id);
+  const patrimony = await ensureParticipantPatrimony(env, user.id, division);
   const budget = Number(patrimony.current_cents) / 100;
   if (totalCost > budget + 1e-3) return json({ error: `A escalação ultrapassa seu patrimônio de RK$ ${formatMoney(budget)}.` }, 400, request, env);
   let reserveRow = null;
@@ -601,7 +584,13 @@ async function getRanking(request, env) {
   const statement = env.DB.prepare(`
     SELECT ft.id, ft.division, ft.name AS teamName, u.id AS userId, u.username AS manager,
            COALESCE(ROUND(SUM(s.points), 2), 0) AS totalPoints,
-           COALESCE(ROUND(SUM(CASE WHEN s.round_id = (SELECT id FROM fantasy_rounds r2 WHERE r2.division = ft.division ORDER BY r2.round_number DESC LIMIT 1) THEN s.points ELSE 0 END), 2), 0) AS roundPoints,
+           COALESCE(ROUND(SUM(CASE WHEN s.round_id = (
+             SELECT s2.round_id
+             FROM fantasy_team_round_scores s2
+             JOIN fantasy_rounds r2 ON r2.id = s2.round_id
+             WHERE s2.fantasy_team_id = ft.id
+             ORDER BY r2.round_number DESC LIMIT 1
+           ) THEN s.points ELSE 0 END), 2), 0) AS roundPoints,
            COALESCE(ROUND(AVG(s.points), 2), 0) AS averagePoints,
            COALESCE(ROUND(MAX(s.points), 2), 0) AS bestRoundPoints,
            COUNT(s.round_id) AS scoredRounds,
@@ -609,7 +598,8 @@ async function getRanking(request, env) {
            COALESCE(pp.current_cents, 10000) AS wealthCents
     FROM fantasy_teams ft
     JOIN fantasy_users u ON u.id = ft.user_id
-    LEFT JOIN fantasy_participant_patrimony pp ON pp.user_id = u.id
+    LEFT JOIN fantasy_participant_patrimony pp
+      ON pp.user_id = u.id AND pp.division = ft.division
     LEFT JOIN fantasy_team_round_scores s ON s.fantasy_team_id = ft.id
     ${where}
     GROUP BY ft.id, ft.division, ft.name, u.id, u.username, pp.current_cents
@@ -683,7 +673,7 @@ function combineOverallRankingRows(rows) {
     roundPoints: roundMoney(row.roundPoints),
     averagePoints: row.scoredRounds > 0 ? roundMoney(Number(row.totalPoints) / row.scoredRounds) : 0,
     bestRoundPoints: roundMoney(row.bestRoundPoints),
-    wealthCents: Number.isFinite(Number(row.wealthCents)) ? Number(row.wealthCents) : 10000,
+    wealthCents: null,
     scoredRounds: row.scoredRounds,
     firstValidLineupAt: row.firstValidLineupAt
   }));
@@ -906,40 +896,53 @@ function isGlobalMarketOpen(marketState) {
   );
 }
 __name(isGlobalMarketOpen, "isGlobalMarketOpen");
-async function ensureParticipantPatrimony(env, userId) {
+async function ensureParticipantPatrimony(env, userId, division) {
+  const validPatrimonyDivision = validDivision(division);
   await env.DB.prepare(`
     INSERT OR IGNORE INTO fantasy_participant_patrimony
-      (user_id, current_cents, formula_version)
-    VALUES (?, ?, ?)
-  `).bind(userId, Math.round(INITIAL_PATRIMONY * 100), PATRIMONY_FORMULA_ID).run();
+      (user_id, division, current_cents, formula_version)
+    VALUES (?, ?, ?, ?)
+  `).bind(userId, validPatrimonyDivision, Math.round(INITIAL_PATRIMONY * 100), PATRIMONY_FORMULA_ID).run();
   return env.DB.prepare(`
-    SELECT user_id, current_cents, formula_version, created_at, updated_at
-    FROM fantasy_participant_patrimony WHERE user_id = ?
-  `).bind(userId).first();
+    SELECT user_id, division, current_cents, formula_version, created_at, updated_at
+    FROM fantasy_participant_patrimony WHERE user_id = ? AND division = ?
+  `).bind(userId, validPatrimonyDivision).first();
 }
 __name(ensureParticipantPatrimony, "ensureParticipantPatrimony");
-async function participantPatrimonyProfile(env, userId) {
-  const current = await ensureParticipantPatrimony(env, userId);
+async function participantPatrimonyProfiles(env, userId) {
+  const [elite, ascension] = await Promise.all(
+    DIVISIONS.map((division) => participantPatrimonyProfile(env, userId, division))
+  );
+  return { elite, ascension };
+}
+__name(participantPatrimonyProfiles, "participantPatrimonyProfiles");
+async function participantPatrimonyProfile(env, userId, division) {
+  const validPatrimonyDivision = validDivision(division);
+  const current = await ensureParticipantPatrimony(env, userId, validPatrimonyDivision);
   const history = await env.DB.prepare(`
     SELECT h.round_id AS roundId, r.round_number AS roundNumber,
            h.variation_cents AS variationCents, h.status,
            h.processed_at AS calculatedAt
     FROM fantasy_patrimony_history h
     JOIN fantasy_rounds r ON r.id = h.round_id
-    WHERE h.user_id = ?
+    WHERE h.user_id = ? AND h.division = ?
     ORDER BY r.round_number, h.processed_at
-  `).bind(userId).all();
+  `).bind(userId, validPatrimonyDivision).all();
   const stats = summarizeParticipantPatrimony({
     currentCents: Number(current.current_cents),
     historyRows: history.results || []
   });
   const latest = await env.DB.prepare(`
-    SELECT variation_cents AS variationCents, round_id AS roundId, division, status
+    SELECT previous_cents AS previousCents, variation_cents AS variationCents,
+           round_id AS roundId, division, status
     FROM fantasy_patrimony_history
-    WHERE user_id = ? AND status IN ('PUBLISHED','INCONSISTENT')
+    WHERE user_id = ? AND division = ?
+      AND status IN ('PUBLISHED','INCONSISTENT','NO_VALID_LINEUP')
     ORDER BY processed_at DESC LIMIT 1
-  `).bind(userId).first();
+  `).bind(userId, validPatrimonyDivision).first();
   return {
+    division: validPatrimonyDivision,
+    previousCents: Number(latest?.previousCents ?? current.current_cents),
     currentCents: Number(current.current_cents),
     roundVariationCents: stats.roundVariationCents,
     totalVariationCents: stats.totalVariationCents,
