@@ -31,6 +31,11 @@ var INITIAL_PATRIMONY = patrimonyV2.PATRIMONY_CONFIG.initialPatrimony;
 var PATRIMONY_FORMULA_ID = patrimonyV2.PATRIMONY_FORMULA_ID;
 var BUDGET_LIMIT = INITIAL_PATRIMONY;
 var MAX_PLAYERS_PER_REAL_TEAM = 2;
+var ROUND_TWO_NOTICE = Object.freeze({
+  key: "round2-elite-fvl-sdk-postponed-v1",
+  title: "Aviso sobre a Rodada 2",
+  message: "A partida Favelão do Techy (FVL) x Space Ducks (SDK), válida pela Rodada 2 da Elite, foi adiada após o fechamento do mercado. Por isso, os atletas das duas equipes não pontuarão na Rodada 2. Quando houver um reserva válido, ele substituirá automaticamente um dos titulares que não atuou, conforme as regras do Fantasy. A Rodada 3 seguirá normalmente, sem contabilizar essa partida adiada."
+});
 var fantasy_worker_default = {
   async fetch(request, env) {
     const requestId = request.headers.get("CF-Ray") || crypto.randomUUID();
@@ -75,6 +80,12 @@ async function route(request, env, requestId) {
   }
   if (url.pathname === "/api/fantasy/market/control/close" && request.method === "POST") {
     return controlMarketFromDiscord(request, env, requestId, "close");
+  }
+  if (url.pathname === "/api/fantasy/notices/round-2-postponement" && request.method === "GET") {
+    return getRoundTwoPostponementNotice(request, env);
+  }
+  if (url.pathname === "/api/fantasy/notices/round-2-postponement/ack" && request.method === "POST") {
+    return acknowledgeRoundTwoPostponementNotice(request, env);
   }
   if (url.pathname === "/api/fantasy/popular" && request.method === "GET") return getPopularPicks(request, env);
   if (url.pathname === "/api/fantasy/lineups/current" && request.method === "GET") return getCurrentLineup(request, env);
@@ -195,6 +206,66 @@ async function getMe(request, env) {
   }, 200, request, env);
 }
 __name(getMe, "getMe");
+async function getRoundTwoPostponementNotice(request, env) {
+  const user = await requireUser(request, env);
+  if (user.response) return user.response;
+  const status = await roundTwoNoticeStatus(env, user.id);
+  return json({
+    notice: ROUND_TWO_NOTICE,
+    eligible: status.eligible,
+    acknowledged: status.acknowledged,
+    acknowledgedAt: status.acknowledgedAt,
+    showPopup: status.eligible && !status.acknowledged
+  }, 200, request, env);
+}
+__name(getRoundTwoPostponementNotice, "getRoundTwoPostponementNotice");
+async function acknowledgeRoundTwoPostponementNotice(request, env) {
+  const user = await requireUser(request, env);
+  if (user.response) return user.response;
+  const status = await roundTwoNoticeStatus(env, user.id);
+  if (!status.eligible) {
+    return json({ error: "Este aviso é destinado aos participantes que escalaram na Rodada 2." }, 403, request, env);
+  }
+  await env.DB.prepare(`
+    INSERT OR IGNORE INTO fantasy_user_notices
+      (user_id, notice_key, acknowledged_at)
+    VALUES (?, ?, CURRENT_TIMESTAMP)
+  `).bind(user.id, ROUND_TWO_NOTICE.key).run();
+  const acknowledgment = await env.DB.prepare(`
+    SELECT acknowledged_at AS acknowledgedAt
+    FROM fantasy_user_notices
+    WHERE user_id = ? AND notice_key = ?
+  `).bind(user.id, ROUND_TWO_NOTICE.key).first();
+  return json({
+    noticeKey: ROUND_TWO_NOTICE.key,
+    acknowledged: true,
+    acknowledgedAt: acknowledgment?.acknowledgedAt || null
+  }, 200, request, env);
+}
+__name(acknowledgeRoundTwoPostponementNotice, "acknowledgeRoundTwoPostponementNotice");
+async function roundTwoNoticeStatus(env, userId) {
+  const eligibility = await env.DB.prepare(`
+    SELECT EXISTS (
+      SELECT 1
+      FROM fantasy_lineups l
+      JOIN fantasy_teams t ON t.id = l.fantasy_team_id
+      JOIN fantasy_rounds r ON r.id = l.round_id
+      WHERE t.user_id = ? AND r.round_number = 2
+      LIMIT 1
+    ) AS eligible
+  `).bind(userId).first();
+  const acknowledgment = await env.DB.prepare(`
+    SELECT acknowledged_at AS acknowledgedAt
+    FROM fantasy_user_notices
+    WHERE user_id = ? AND notice_key = ?
+  `).bind(userId, ROUND_TWO_NOTICE.key).first();
+  return {
+    eligible: Boolean(Number(eligibility?.eligible)),
+    acknowledged: Boolean(acknowledgment),
+    acknowledgedAt: acknowledgment?.acknowledgedAt || null
+  };
+}
+__name(roundTwoNoticeStatus, "roundTwoNoticeStatus");
 async function controlMarketFromDiscord(request, env, requestId, action) {
   const origin = request.headers.get("Origin") || "";
   if (!origin || !allowedOrigins(request, env).has(origin)) {

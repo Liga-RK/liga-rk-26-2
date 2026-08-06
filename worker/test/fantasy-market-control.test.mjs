@@ -166,6 +166,74 @@ sqliteTest("callback do Discord retorna diretamente para a tela do mercado", asy
   }
 });
 
+sqliteTest("aviso da rodada 2 aparece uma vez somente para participante autenticado", async () => {
+  const database = createDatabase();
+  const controllerToken = "notice-controller-session";
+  const otherAdminToken = "notice-other-session";
+  await seed(database, controllerToken, otherAdminToken);
+  database.exec(`
+    INSERT INTO fantasy_teams(id, user_id, division, name)
+    VALUES('notice-team', 'discord:${CONTROLLER_ID}', 'elite', 'Time do aviso');
+    INSERT INTO fantasy_lineups(
+      id, fantasy_team_id, round_id, captain_asset_id, total_cost
+    ) VALUES(
+      'notice-lineup', 'notice-team', 'elite-r2', 'notice-player', 80
+    );
+  `);
+  const env = {
+    DB: d1(database),
+    SITE_URL: `${SITE_ORIGIN}/liga-rk-26-2/fantasy/`,
+    ALLOWED_ORIGINS: SITE_ORIGIN
+  };
+
+  const anonymous = await call(env, "/api/fantasy/notices/round-2-postponement");
+  assert.equal(anonymous.response.status, 401);
+
+  const eligible = await call(env, "/api/fantasy/notices/round-2-postponement", {
+    token: controllerToken
+  });
+  assert.equal(eligible.response.status, 200);
+  assert.equal(eligible.payload.eligible, true);
+  assert.equal(eligible.payload.acknowledged, false);
+  assert.equal(eligible.payload.showPopup, true);
+  assert.equal(eligible.payload.notice.title, "Aviso sobre a Rodada 2");
+
+  const notEligible = await call(env, "/api/fantasy/notices/round-2-postponement", {
+    token: otherAdminToken
+  });
+  assert.equal(notEligible.payload.eligible, false);
+  assert.equal(notEligible.payload.showPopup, false);
+  const forbiddenAck = await call(env, "/api/fantasy/notices/round-2-postponement/ack", {
+    method: "POST",
+    token: otherAdminToken
+  });
+  assert.equal(forbiddenAck.response.status, 403);
+
+  const acknowledged = await call(env, "/api/fantasy/notices/round-2-postponement/ack", {
+    method: "POST",
+    token: controllerToken
+  });
+  assert.equal(acknowledged.response.status, 200);
+  assert.equal(acknowledged.payload.acknowledged, true);
+
+  const repeated = await call(env, "/api/fantasy/notices/round-2-postponement/ack", {
+    method: "POST",
+    token: controllerToken
+  });
+  assert.equal(repeated.response.status, 200);
+  assert.equal(database.prepare(`
+    SELECT COUNT(*) AS count FROM fantasy_user_notices
+    WHERE user_id = 'discord:${CONTROLLER_ID}'
+  `).get().count, 1);
+
+  const after = await call(env, "/api/fantasy/notices/round-2-postponement", {
+    token: controllerToken
+  });
+  assert.equal(after.payload.eligible, true);
+  assert.equal(after.payload.acknowledged, true);
+  assert.equal(after.payload.showPopup, false);
+});
+
 async function call(env, pathname, {
   method = "GET",
   token = "",
@@ -203,7 +271,8 @@ function createDatabase() {
     "0005_admin_global_market.sql",
     "0006_fantasy_formula_v2.sql",
     "0007_fantasy_dynamic_valuation.sql",
-    "0008_fantasy_dynamic_patrimony.sql"
+    "0008_fantasy_dynamic_patrimony.sql",
+    "0009_fantasy_user_notices.sql"
   ]) {
     database.exec(fs.readFileSync(path.join(WORKER_ROOT, "migrations", file), "utf8"));
     database.prepare("INSERT INTO d1_migrations(name) VALUES(?)").run(file);

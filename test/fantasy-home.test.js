@@ -127,3 +127,25 @@ test("Controle do mercado fica oculto e depende da permissão Discord", () => {
   assert.match(workerScript, /MARKET_CONTROL_DISCORD_IDS/);
   assert.match(workerScript, /Somente o administrador autorizado pode controlar o mercado/);
 });
+
+test("Aviso da Rodada 2 exige login e só fecha depois do aceite persistido", () => {
+  for (const relativePath of pages) {
+    const html = fs.readFileSync(path.join(root, relativePath), "utf8");
+    assert.match(html, /id="round-two-notice"[^>]*hidden/);
+    assert.match(html, /id="round-two-notice-dialog"/);
+    assert.match(html, /id="acknowledge-round-two-notice"[^>]*>Entendido<\/button>/);
+    const dialog = html.match(/<dialog id="round-two-notice-dialog"[\s\S]*?<\/dialog>/)?.[0] || "";
+    assert.doesNotMatch(dialog, /dialog-close/);
+  }
+
+  const noticeLoader = script.match(/async function loadRoundTwoNotice\(\) \{[\s\S]*?\n  \}/)?.[0] || "";
+  const acknowledgment = script.match(/async function acknowledgeRoundTwoNotice\(\) \{[\s\S]*?\n  \}/)?.[0] || "";
+  assert.match(noticeLoader, /if \(!state\.userName \|\| config\.backendMode !== "cloud"\)/);
+  assert.match(noticeLoader, /\/api\/fantasy\/notices\/round-2-postponement/);
+  assert.match(acknowledgment, /\/api\/fantasy\/notices\/round-2-postponement\/ack/);
+  assert.ok(acknowledgment.indexOf("apiFetch") < acknowledgment.indexOf("roundTwoNoticeDialog.close()"));
+  assert.match(script, /roundTwoNoticeDialog\.addEventListener\("cancel", \(event\) => \{\s*event\.preventDefault\(\)/);
+  assert.doesNotMatch(script, /localStorage\.(?:setItem|getItem)\([^\n]*round-two-notice/);
+  assert.match(workerScript, /INSERT OR IGNORE INTO fantasy_user_notices/);
+  assert.match(styles, /\.round-two-notice\[hidden\] \{ display: none; \}/);
+});

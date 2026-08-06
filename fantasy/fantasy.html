@@ -82,6 +82,15 @@
         <button class="division-tab" type="button" data-division="ascension">Divisão Ascensão</button>
       </section>
 
+      <section id="round-two-notice" class="round-two-notice" aria-labelledby="round-two-notice-title" hidden>
+        <div class="round-two-notice-icon" aria-hidden="true">!</div>
+        <div>
+          <span class="eyebrow">Comunicado oficial</span>
+          <h2 id="round-two-notice-title">Aviso sobre a Rodada 2</h2>
+          <p id="round-two-notice-message"></p>
+        </div>
+      </section>
+
       <section id="popular-strip" class="popular-strip" aria-labelledby="popular-title">
         <div class="popular-heading">
           <div>
@@ -380,6 +389,17 @@
     <span>Topo</span>
   </button>
 
+  <dialog id="round-two-notice-dialog" aria-labelledby="round-two-notice-dialog-title" aria-describedby="round-two-notice-dialog-message">
+    <div class="dialog-card round-two-notice-dialog-card" role="document">
+      <div class="round-two-notice-dialog-icon" aria-hidden="true">!</div>
+      <span class="eyebrow">Comunicado oficial</span>
+      <h2 id="round-two-notice-dialog-title">Aviso sobre a Rodada 2</h2>
+      <p id="round-two-notice-dialog-message"></p>
+      <button id="acknowledge-round-two-notice" class="primary-button" type="button">Entendido</button>
+      <p id="round-two-notice-feedback" class="status-message" aria-live="polite"></p>
+    </div>
+  </dialog>
+
   <dialog id="account-dialog">
     <form method="dialog" class="dialog-card">
       <button class="dialog-close" value="cancel" aria-label="Fechar">×</button>
@@ -427,7 +447,7 @@
   </dialog>
 
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/fantasy.js?v=20260805-visual-brand"></script>
-  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260805-visual-brand");</script>
+  <script src="assets/fantasy.js?v=20260805-round2-notice-v1"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260805-round2-notice-v1");</script>
 </body>
 </html>
