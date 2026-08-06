@@ -177,6 +177,19 @@ test("Aviso da Rodada 2 exige login e só fecha depois do aceite persistido", ()
   assert.match(styles, /\.round-two-notice\[hidden\] \{ display: none; \}/);
 });
 
+test("Comunicado da Rodada 3 sobre CASH x NKZ fica no site sem popup", () => {
+  for (const relativePath of pages) {
+    const html = fs.readFileSync(path.join(root, relativePath), "utf8");
+    const roundTwoPosition = html.indexOf('id="round-two-notice"');
+    const roundThreePosition = html.indexOf('id="round-three-nkz-notice"');
+    assert.ok(roundTwoPosition >= 0);
+    assert.ok(roundThreePosition > roundTwoPosition);
+    assert.match(html, /Aviso sobre a Rodada 3/);
+    assert.match(html, /NO KINGS ZONE \(NKZ\)[\s\S]*CASHOUT &amp; TRIMILIQUE LTDA \(CASH\)[\s\S]*não será contabilizado no Fantasy RK/);
+    assert.doesNotMatch(html, /<dialog[^>]*round-three-nkz-notice/);
+  }
+});
+
 test("Admin-only mode keeps the market closed for other players", () => {
   assert.match(script, /marketAccessMode: \{ elite: "public", ascension: "public" \}/);
   assert.match(script, /MERCADO ADMINISTRATIVO/);
