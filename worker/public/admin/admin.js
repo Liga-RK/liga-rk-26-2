@@ -53,6 +53,8 @@
     el.roundForm.addEventListener("submit", saveRound);
     el.formulaForm.addEventListener("submit", saveFormula);
     el.valuationForm.addEventListener("submit", simulateValuation);
+    el.valuationSort.addEventListener("change", renderSimulations);
+    el.patrimonySort.addEventListener("change", renderSimulations);
     el.backupForm.addEventListener("submit", createBackup);
     [
       el.matchDivision, el.matchRound,
@@ -324,7 +326,7 @@
     if (!state.roundPreview || !state.roundPreview.ready) return;
     const roundNumber = Number(state.roundPreview.roundNumber);
     if (!confirm(
-      `Processar oficialmente a rodada ${roundNumber}? Isso calculará pontos, escalações, patrimônio e preços.`
+      `Processar oficialmente a pontuação da rodada ${roundNumber}? Os preços só mudarão depois da prévia de valorização e de uma segunda confirmação.`
     )) return;
     await action(async () => {
       const body = formObject(el.roundProcessForm);
@@ -404,21 +406,32 @@
     const data = await api("/formula");
     const formula = data.formula;
     const labels = {
-      scoreMinimum: "Pontuação mínima",
-      scoreMaximum: "Pontuação máxima",
-      captainMultiplier: "Multiplicador do capitão",
-      expectedPointsPerPrice: "Expectativa por RK$",
-      priceDeltaDivisor: "Divisor da variação",
-      priceDeltaMinimum: "Variação mínima",
-      priceDeltaMaximum: "Variação máxima",
-      priceMinimum: "Preço mínimo",
-      priceMaximum: "Preço máximo",
-      historyRounds: "Rodadas no M3"
+      expectedPriceMultiplier: "Multiplicador da expectativa",
+      expectedPriceOffset: "Ajuste da expectativa",
+      oneHistoryCurrentWeight: "Peso atual (1 histórico)",
+      oneHistoryPreviousWeight: "Peso anterior (1 histórico)",
+      experiencedCurrentWeight: "Peso atual (2+ históricos)",
+      experiencedRecentWeight: "Peso da média recente",
+      experiencedSeasonWeight: "Peso da temporada",
+      recentRounds: "Rodadas recentes",
+      variationDivisor: "Divisor da curva",
+      variationExponent: "Expoente da curva",
+      positiveFactorNumerator: "Numerador da alta",
+      positiveFactorOffset: "Ajuste de preço na alta",
+      negativeFactorBase: "Base da queda",
+      negativeFactorPriceDivisor: "Divisor de preço na queda",
+      lowParticipationThreshold: "Limite da baixa participação",
+      lowParticipationFactor: "Fator da baixa participação",
+      partialParticipationFactor: "Fator da participação parcial",
+      fullParticipationFactor: "Fator da participação integral",
+      minimumPrice: "Preço mínimo",
+      reviewThreshold: "Alerta acima de RK$",
+      currencyDecimals: "Casas decimais"
     };
     el.formulaForm.innerHTML = `
       <label class="wide">Versão<input name="version" value="${escapeAttr(formula.version)}" required maxlength="80"></label>
       ${Object.entries(labels).map(([key, label]) =>
-        `<label>${escapeHtml(label)}<input name="${key}" type="number" step="0.01" value="${escapeAttr(formula.settings[key])}" required></label>`
+        `<label>${escapeHtml(label)}<input name="${key}" type="number" step="0.01" value="${escapeAttr(formula.settings[key])}" required readonly></label>`
       ).join("")}
       <input type="hidden" name="didNotPlay" value="hold">
       <button class="primary wide" type="submit">Salvar fórmula</button>
@@ -455,19 +468,98 @@
     const items = state.simulations.flatMap((simulation) =>
       (simulation.items || []).map((item) => ({ ...item, simulationId: simulation.id, division: simulation.round.division }))
     );
+    const sorters = {
+      increase: (a, b) => Number(b.delta) - Number(a.delta),
+      decrease: (a, b) => Number(a.delta) - Number(b.delta),
+      price: (a, b) => Number(b.currentPrice) - Number(a.currentPrice),
+      difference: (a, b) => Number(b.scoreDifference ?? -Number.MAX_VALUE) - Number(a.scoreDifference ?? -Number.MAX_VALUE),
+      review: (a, b) => Number(Boolean(b.needsReview && b.reviewStatus === "pending")) - Number(Boolean(a.needsReview && a.reviewStatus === "pending"))
+    };
+    items.sort(sorters[el.valuationSort.value] || sorters.increase);
     el.valuationActions.innerHTML = state.simulations.map((simulation) =>
-      `${actionButton(`Aplicar ${simulation.round.division}`, "apply-valuation", simulation.id, "danger")}
-       ${actionButton(`Cancelar ${simulation.round.division}`, "cancel-valuation", simulation.id)}`
+      simulation.status === "applied"
+        ? actionButton(`Reverter ${simulation.round.division}`, "rollback-valuation", simulation.id, "danger")
+        : `${actionButton(`Aplicar ${simulation.round.division}`, "apply-valuation", simulation.id, "danger")}
+           ${actionButton(`Cancelar ${simulation.round.division}`, "cancel-valuation", simulation.id)}`
     ).join("");
     el.valuationTable.innerHTML = table(
-      ["Divisão", "Ativo", "Posição", "Preço", "Novo", "Δ", "Pontos", "Necessário", "Confiança"],
+      ["Divisão", "Atleta", "Preço anterior", "Pontos", "Esperado", "Ajustado", "Δ", "Novo", "Status", ""],
       items.map((item) => [
-        item.division, item.name, item.role,
-        `RK$ ${decimal(item.currentPrice)}`, `RK$ ${decimal(item.newPrice)}`,
+        item.division, `${escapeHtml(item.name)} <small>${escapeHtml(item.role)}</small>`,
+        `RK$ ${decimal(item.currentPrice)}`, decimal(item.roundPoints),
+        item.expectedScore == null ? "—" : decimal(item.expectedScore),
+        item.adjustedPerformance == null ? "—" : decimal(item.adjustedPerformance),
         `<span class="${item.delta > 0 ? "positive" : item.delta < 0 ? "negative" : ""}">${signed(item.delta)}</span>`,
-        decimal(item.roundPoints), decimal(item.necessaryScore), decimal(item.confidence)
+        `RK$ ${decimal(item.newPrice)}`,
+        valuationStatus(item),
+        valuationReviewActions(item)
       ])
     );
+    renderPatrimonyPreview();
+  }
+
+  function renderPatrimonyPreview() {
+    const rows = state.simulations.flatMap((simulation) =>
+      (simulation.patrimony || []).map((row) => ({
+        ...row,
+        simulationId: simulation.id,
+        division: row.division || simulation.round.division
+      }))
+    );
+    const priority = (row, kind) => kind === "inconsistent"
+      ? Number(row.originalStatus === "INCONSISTENT" || Math.abs(Number(row.consistencyDifferenceCents)) > 1)
+      : kind === "no-lineup" ? Number(row.originalStatus === "NO_VALID_LINEUP")
+        : Number(row.status !== "ALREADY_PROCESSED");
+    const sorters = {
+      highest: (a, b) => Number(b.newCents) - Number(a.newCents),
+      lowest: (a, b) => Number(a.newCents) - Number(b.newCents),
+      increase: (a, b) => Number(b.variationCents) - Number(a.variationCents),
+      decrease: (a, b) => Number(a.variationCents) - Number(b.variationCents),
+      inconsistent: (a, b) => priority(b, "inconsistent") - priority(a, "inconsistent"),
+      "no-lineup": (a, b) => priority(b, "no-lineup") - priority(a, "no-lineup"),
+      unprocessed: (a, b) => priority(b, "unprocessed") - priority(a, "unprocessed")
+    };
+    rows.sort(sorters[el.patrimonySort.value] || sorters.highest);
+    el.patrimonyPreviewTable.innerHTML = table(
+      ["Divisão", "Participante", "Time", "Anterior", "Ativos antes", "Ativos depois", "Variação", "Novo", "Situação"],
+      rows.map((row) => [
+        row.division,
+        escapeHtml(row.participant),
+        escapeHtml(row.teamName || "—"),
+        `RK$ ${decimal(Number(row.previousCents) / 100)}`,
+        `RK$ ${decimal(Number(row.previousAssetsCents) / 100)}`,
+        `RK$ ${decimal(Number(row.updatedAssetsCents) / 100)}`,
+        `<span class="${Number(row.variationCents) > 0 ? "positive" : Number(row.variationCents) < 0 ? "negative" : ""}">${signed(Number(row.variationCents) / 100)}</span>`,
+        `RK$ ${decimal(Number(row.newCents) / 100)}`,
+        patrimonyStatus(row)
+      ])
+    );
+  }
+
+  function patrimonyStatus(row) {
+    if (row.status === "ALREADY_PROCESSED") return "Já processado";
+    if (row.status === "PUBLISHED") return "Publicado";
+    if (row.originalStatus === "NO_VALID_LINEUP") return `<span class="warning">Sem escalação válida</span>`;
+    if (row.originalStatus === "INCONSISTENT" || Math.abs(Number(row.consistencyDifferenceCents)) > 1) {
+      return `<span class="warning">Inconsistência de RK$ ${decimal(Math.abs(Number(row.consistencyDifferenceCents)) / 100)}</span>`;
+    }
+    return "Pronto para publicar";
+  }
+
+  function valuationStatus(item) {
+    if (!item.played) return "Não atuou · preço mantido";
+    if (item.reviewStatus === "pending") return `<span class="warning">Revisão obrigatória</span>`;
+    const labels = { approved: "Aprovada", ignored: "Alerta ignorado", edited: "Editada", ok: "Calculada" };
+    return labels[item.reviewStatus] || item.status || "Calculada";
+  }
+
+  function valuationReviewActions(item) {
+    const details = `<button class="mini-button" type="button" data-action="valuation-details" data-simulation="${escapeAttr(item.simulationId)}" data-asset="${escapeAttr(item.assetId)}">Revisar</button>`;
+    if (!item.needsReview || item.reviewStatus !== "pending") return details;
+    return `${details}
+      <button class="mini-button" type="button" data-action="approve-valuation" data-simulation="${escapeAttr(item.simulationId)}" data-asset="${escapeAttr(item.assetId)}">Aprovar</button>
+      <button class="mini-button" type="button" data-action="edit-valuation" data-simulation="${escapeAttr(item.simulationId)}" data-asset="${escapeAttr(item.assetId)}">Editar</button>
+      <button class="mini-button" type="button" data-action="ignore-valuation" data-simulation="${escapeAttr(item.simulationId)}" data-asset="${escapeAttr(item.assetId)}">Ignorar alerta</button>`;
   }
 
   async function applyValuation(id) {
@@ -493,15 +585,89 @@
     });
   }
 
+  async function reviewValuation(simulationId, assetId, reviewAction) {
+    const simulation = state.simulations.find((row) => row.id === simulationId);
+    const item = simulation?.items?.find((row) => String(row.assetId) === assetId);
+    if (!item) return;
+    if (reviewAction === "details") {
+      alert(JSON.stringify({
+        atleta: item.name,
+        precoAnterior: item.currentPrice,
+        pontos: item.roundPoints,
+        esperado: item.expectedScore,
+        ajustado: item.adjustedPerformance,
+        diferenca: item.scoreDifference,
+        fatorParticipacao: item.participationFactor,
+        variacao: item.delta,
+        novoPreco: item.newPrice,
+        historicoRecente: item.recentScores
+      }, null, 2));
+      return;
+    }
+    const body = { simulationId, assetId, action: reviewAction };
+    if (reviewAction === "edit") {
+      const value = prompt(`Novo preço para ${item.name}:`, decimal(item.newPrice));
+      if (value == null) return;
+      body.newPrice = Number(String(value).replace(",", "."));
+      body.reason = prompt("Motivo do ajuste manual:", "Revisão administrativa") || "Revisão administrativa";
+    } else {
+      body.reason = prompt("Observação da revisão:", reviewAction === "approve" ? "Variação conferida" : "Alerta analisado e ignorado") || "Revisão administrativa";
+    }
+    await action(async () => {
+      const data = await api("/valuation/review", { method: "POST", body });
+      Object.assign(item, data.item);
+      simulation.patrimony = data.patrimony || simulation.patrimony;
+      renderSimulations();
+    });
+  }
+
+  async function rollbackValuation(id) {
+    const reason = prompt("Motivo obrigatório para reverter esta valorização:", "Correção administrativa");
+    if (!reason || !confirm(`Reverter a valorização ${id}, restaurar preços e recalcular patrimônios?`)) return;
+    await action(async () => {
+      await api("/valuation/rollback", {
+        method: "POST",
+        body: { simulationId: id, confirmSimulationId: id, reason }
+      });
+      state.simulations = state.simulations.filter((simulation) => simulation.id !== id);
+      renderSimulations();
+      await loadValuationHistory();
+    });
+  }
+
   async function loadValuationHistory() {
     const data = await api("/valuation/history?limit=100");
-    el.valuationHistory.innerHTML = table(
+    const patrimonyTable = table(
+      ["Data", "Participante", "Rodada", "Anterior", "Variação", "Novo", "Status"],
+      (data.patrimonyHistory || []).map((row) => [
+        dateTime(row.processedAt), escapeHtml(row.participant),
+        `${row.division} · ${row.roundNumber}`,
+        `RK$ ${decimal(Number(row.previousCents) / 100)}`,
+        signed(Number(row.variationCents) / 100),
+        `RK$ ${decimal(Number(row.newCents) / 100)}`,
+        row.status
+      ])
+    );
+    const simulationTable = table(
       ["Data", "Divisão", "Rodada", "Versão", "Status", "Responsável"],
       (data.simulations || []).map((row) => [
         dateTime(row.createdAt), row.division, row.roundNumber,
-        row.formulaVersion, row.status, row.createdBy
+        row.formulaVersion, row.status,
+        `${escapeHtml(row.createdBy)} ${row.status === "applied" ? actionButton("Rollback", "rollback-valuation", row.id, "danger") : ""}`
       ])
     );
+    const pricesTable = table(
+      ["Data", "Rodada", "Atleta", "Anterior", "Δ", "Novo", "Revisão", "Responsável"],
+      (data.priceHistory || []).map((row) => [
+        dateTime(row.processedAt), `${row.division} · ${row.roundNumber}`, row.name || shortId(row.assetId),
+        `RK$ ${decimal(Number(row.priceBeforeCents) / 100)}`,
+        signed(Number(row.deltaCents) / 100),
+        `RK$ ${decimal(Number(row.priceAfterCents) / 100)}`,
+        row.reviewStatus, row.processedBy
+      ])
+    );
+    el.valuationHistory.innerHTML = `<h3>Aplicações</h3>${simulationTable}<h3>Preços por atleta</h3>${pricesTable}`;
+    el.valuationHistory.insertAdjacentHTML("beforeend", `<h3>Patrimônio por participante</h3>${patrimonyTable}`);
   }
 
   async function loadPlayers() {
@@ -625,6 +791,11 @@
     const { action: name, id } = button.dataset;
     if (name === "apply-valuation") return applyValuation(id);
     if (name === "cancel-valuation") return cancelValuation(id);
+    if (name === "rollback-valuation") return rollbackValuation(id);
+    if (name === "valuation-details") return reviewValuation(button.dataset.simulation, button.dataset.asset, "details");
+    if (name === "approve-valuation") return reviewValuation(button.dataset.simulation, button.dataset.asset, "approve");
+    if (name === "edit-valuation") return reviewValuation(button.dataset.simulation, button.dataset.asset, "edit");
+    if (name === "ignore-valuation") return reviewValuation(button.dataset.simulation, button.dataset.asset, "ignore");
     if (name === "edit-match") return openMatchEdit(id);
     if (name === "restore-match") return restoreOfficialMatch(id);
     if (name === "edit-score") return openScoreEdit(id);

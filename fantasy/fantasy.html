@@ -3,36 +3,36 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="RK Fantasy — o fantasy oficial da Liga RK 26.2" />
+  <meta name="description" content="Fantasy RK — o fantasy oficial da Liga RK 26.2" />
   <meta name="theme-color" content="#e52632" />
   <meta name="referrer" content="no-referrer" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="RK Fantasy | Liga RK 26.2" />
-  <meta property="og:description" content="Monte seu time e dispute o topo do Fantasy RK." />
+  <meta property="og:title" content="Fantasy RK | Liga RK 26.2" />
+  <meta property="og:description" content="Escale seu time e dispute o topo do Fantasy RK." />
   <meta property="og:image" content="https://liga-rk.github.io/liga-rk-26-2/fantasy/assets/branding/og-rk-fantasy.png" />
   <meta property="og:image:width" content="1731" />
   <meta property="og:image:height" content="909" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="RK Fantasy | Liga RK 26.2" />
-  <meta name="twitter:description" content="Monte seu time e dispute o topo do Fantasy RK." />
+  <meta name="twitter:title" content="Fantasy RK | Liga RK 26.2" />
+  <meta name="twitter:description" content="Escale seu time e dispute o topo do Fantasy RK." />
   <meta name="twitter:image" content="https://liga-rk.github.io/liga-rk-26-2/fantasy/assets/branding/og-rk-fantasy.png" />
   <link rel="manifest" href="manifest.webmanifest" />
-  <title>RK Fantasy | Liga RK 26.2</title>
+  <title>Fantasy RK | Liga RK 26.2</title>
   <link rel="icon" type="image/png" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
   <link rel="apple-touch-icon" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
-  <link rel="stylesheet" href="assets/fantasy.css?v=20260730-back-to-top" />
+  <link rel="stylesheet" href="assets/fantasy.css?v=20260806-round3-nkz-notice-v1" />
 </head>
 <body>
   <header class="site-header">
     <div class="brand-actions">
-      <a class="brand" href="index.html" aria-label="Ir para o início do RK Fantasy">
-        <img class="brand-logo" src="assets/branding/logo-rk-fantasy.png" alt="Logo oficial do RK Fantasy" />
+      <a class="brand" href="index.html" aria-label="Ir para o início do Fantasy RK">
+        <img class="brand-logo" src="assets/branding/logo-rk-fantasy.png" alt="Logo oficial do Fantasy RK" />
       </a>
       <a class="league-home-link" href="https://liga-rk.github.io/liga-rk-26-2/" aria-label="Ir para o site oficial da Liga RK 26.2">
         <img src="assets/branding/logo-liga-rk.png" alt="Liga RK 26.2" />
       </a>
     </div>
-    <nav class="top-nav" aria-label="Navegação do RK Fantasy">
+    <nav class="top-nav" aria-label="Navegação do Fantasy RK">
       <button class="nav-button active" type="button" data-view="home">Início</button>
       <button class="nav-button" type="button" data-view="market">Mercado</button>
       <button class="nav-button" type="button" data-view="ranking">Ranking</button>
@@ -49,8 +49,11 @@
       <section class="home-landing" aria-labelledby="home-title">
         <div class="home-landing-copy">
           <span class="eyebrow">Fantasy oficial da Liga RK</span>
-          <h1 id="home-title">MONTE SEU TIME. <em>DISPUTE O TOPO DO FANTASY RK.</em></h1>
-          <p>Você recebe RK$ 100 para escalar os destaques da Elite ou da Ascensão e competir rodada a rodada. O mercado é único: quando está aberto, as duas divisões ficam disponíveis ao mesmo tempo.</p>
+          <h1 id="home-title">
+            <span class="home-title-primary">ESCALE SEU TIME</span>
+            <span class="home-title-secondary">DISPUTE O TOPO DO RK FANTASY</span>
+          </h1>
+          <p>Você começa com RK$ 100,00 em cada divisão e cada patrimônio varia separadamente após as rodadas. O mercado abre e fecha ao mesmo tempo para Elite e Ascensão.</p>
           <button id="home-login-button" class="primary-button home-login-button" type="button">Entrar ou cadastrar-se</button>
         </div>
       </section>
@@ -77,6 +80,24 @@
       <section class="division-tabs" aria-label="Escolha de divisão">
         <button class="division-tab active" type="button" data-division="elite">Divisão Elite</button>
         <button class="division-tab" type="button" data-division="ascension">Divisão Ascensão</button>
+      </section>
+
+      <section id="round-two-notice" class="round-two-notice" aria-labelledby="round-two-notice-title" hidden>
+        <div class="round-two-notice-icon" aria-hidden="true">!</div>
+        <div>
+          <span class="eyebrow">Comunicado oficial</span>
+          <h2 id="round-two-notice-title">Aviso sobre a Rodada 2</h2>
+          <p id="round-two-notice-message"></p>
+        </div>
+      </section>
+
+      <section id="round-three-nkz-notice" class="round-two-notice" aria-labelledby="round-three-nkz-notice-title">
+        <div class="round-two-notice-icon" aria-hidden="true">!</div>
+        <div>
+          <span class="eyebrow">Comunicado oficial</span>
+          <h2 id="round-three-nkz-notice-title">Aviso sobre a Rodada 3</h2>
+          <p>Devido à eliminação da NO KINGS ZONE (NKZ) da Divisão Elite, o confronto entre CASHOUT &amp; TRIMILIQUE LTDA (CASH) e NKZ, válido pela Rodada 3, não será contabilizado no Fantasy RK. Por isso, os atletas e os ativos de equipe das duas organizações não receberão pontuação por essa partida. Os demais confrontos da rodada seguem normalmente.</p>
+        </div>
       </section>
 
       <section id="popular-strip" class="popular-strip" aria-labelledby="popular-title">
@@ -244,10 +265,28 @@
       </div>
     </section>
 
+    <section id="patrimony-profile" class="content-card patrimony-profile" hidden>
+      <div class="section-heading">
+        <div><span class="eyebrow">Seu perfil financeiro</span><h2>Evolução do patrimônio</h2></div>
+      </div>
+      <div class="patrimony-summary" role="table" aria-label="Patrimônio individual por divisão">
+        <div class="patrimony-summary-row patrimony-summary-header" role="row">
+          <span role="columnheader">Divisão</span>
+          <span role="columnheader">Saldo anterior</span>
+          <span role="columnheader">Atual</span>
+          <span role="columnheader">Variação da rodada</span>
+          <span role="columnheader">Evolução total</span>
+          <span role="columnheader">Maior</span>
+          <span role="columnheader">Menor</span>
+        </div>
+        <div id="patrimony-summary-body" class="patrimony-summary-body" aria-live="polite"></div>
+      </div>
+    </section>
+
     <section id="ranking-view" class="app-view">
       <div class="content-card">
         <div class="section-heading">
-          <div><span class="eyebrow">Classificação</span><h2>Ranking do RK Fantasy</h2></div>
+          <div><span class="eyebrow">Classificação</span><h2>Ranking do Fantasy RK</h2></div>
           <div class="ranking-controls">
             <div class="ranking-division-tabs" aria-label="Escolha de divisão do ranking">
               <button class="ranking-division-tab active" type="button" data-ranking-division="elite">Divisão Elite</button>
@@ -272,7 +311,7 @@
                 <th>Jogador</th>
                 <th>Rodada</th>
                 <th>Total</th>
-                <th>Patrimônio</th>
+                <th id="ranking-wealth-header">Patrimônio</th>
                 <th>Média</th>
                 <th>Melhor</th>
               </tr>
@@ -294,7 +333,7 @@
           <article><strong>+2</strong><span>vitória no mapa</span></article>
           <article><strong>+3</strong><span>MVP oficial do mapa</span></article>
           <article><strong>1,5×</strong><span>para o capitão</span></article>
-          <article><strong>±RK$ 2</strong><span>limite de preço</span></article>
+          <article><strong>DINÂMICA</strong><span>variação sem teto fixo</span></article>
         </div>
         <div class="formula-box">
           <h3>Pontuação por mapa e média da série</h3>
@@ -328,20 +367,26 @@
         </div>
         <div class="formula-box">
           <h3>Valorização de mercado</h3>
-          <p>A expectativa inicial é <strong>0,90 × preço atual</strong>. Quando há histórico, ela combina 70% dessa expectativa com 30% da média das últimas três rodadas válidas (M3), sem incluir antecipadamente a rodada atual.</p>
-          <p><strong>Variação = (pontuação realizada − pontuação esperada) ÷ 7</strong>, limitada entre −RK$ 2,00 e +RK$ 2,00 e arredondada para RK$ 0,10. O novo preço fica entre RK$ 4,00 e RK$ 30,00.</p>
-          <p>O ativo de equipe pontua pela média das pontuações oficiais dos atletas que atuaram por ela. Como a nova valorização solicitada é individual, o preço do ativo de equipe permanece inalterado.</p>
+          <p>A pontuação esperada é <strong>1,6 × preço atual − 8</strong>. O desempenho ajustado combina a rodada atual com o histórico real do atleta: sem histórico vale a rodada atual; com uma rodada anterior usa 75% atual e 25% anterior; a partir de duas, usa 65% atual, 25% da média recente e 10% da média da temporada. O histórico recente ajuda a evitar que uma única atuação isolada distorça excessivamente o mercado.</p>
+          <p>A diferença passa por uma curva dinâmica: <strong>sinal × (|diferença| ÷ 10)<sup>0,90</sup></strong>. Atletas baratos têm maior potencial de alta, atletas caros sofrem mais nas quedas e a participação parcial reduz a variação. Não há teto fixo de variação nem preço máximo; existe apenas o preço mínimo de RK$ 4,00.</p>
+          <p>Quem não disputa nenhum mapa mantém o preço e a ausência não entra nas médias. A partir da Rodada 2, os ativos de equipe também valorizam ou desvalorizam pela mesma curva dinâmica, usando a média oficial da equipe na rodada. Equipes sem partida válida mantêm o preço.</p>
+        </div>
+        <div class="formula-box">
+          <h3>Patrimônio</h3>
+          <p>Cada participante começa sua primeira escalação com <strong>RK$ 100,00</strong>. Depois disso, o patrimônio varia conforme os preços dos cinco titulares, do reserva e da equipe confirmados na escalação oficial. Se esses ativos valorizarem, o patrimônio aumenta; se desvalorizarem, ele diminui.</p>
+          <p>Não existe teto máximo nem retorno automático a RK$ 100,00. O saldo não utilizado permanece disponível e não sofre variação. Ao abrir a rodada seguinte, os ativos anteriores são considerados vendidos pelo preço atualizado de mercado, transformando sua valorização em poder de compra.</p>
+          <p>Elite e Ascensão possuem patrimônios independentes. Cada divisão começa com RK$ 100,00 e somente a valorização dos ativos escalados naquela divisão altera sua carteira.</p>
         </div>
         <div class="rule-list">
           <h3>Regras do elenco</h3>
-          <p>Cada escalação tem TOP, JG, MID, ADC, SUP e uma equipe, com orçamento de RK$ 100 e no máximo dois jogadores da mesma equipe real.</p>
-          <p>O reserva pode ser de qualquer rota e cobre somente uma ausência. Seu preço máximo é o saldo disponível após os seis titulares somado ao preço do jogador titular mais barato. O elenco pode ser alterado até o fechamento oficial do mercado.</p>
-          <p>Nos cartões do mercado, use “Ver cálculo da última rodada” para consultar média dos mapas, bônus, expectativa, M3, variação e novo preço.</p>
+          <p>Cada escalação tem TOP, JG, MID, ADC, SUP e uma equipe. Novos participantes começam com RK$ 100,00; nas rodadas seguintes, o orçamento é o patrimônio acumulado, sem teto e sem reinicialização. É permitido no máximo dois jogadores da mesma equipe real.</p>
+          <p>O reserva pode ser de qualquer rota e cobre somente uma ausência. A partir da Rodada 3, ele precisa caber integralmente no saldo que restar depois dos seis titulares. O elenco pode ser alterado até o fechamento oficial do mercado.</p>
+          <p>Use “Ver cálculo da última rodada” para abrir os detalhes de pontuação, expectativa, desempenho ajustado, médias, participação, variação e novo preço. Quando não houver partida válida, o cartão informa que a estatística não está disponível.</p>
         </div>
       </div>
     </section>
 
-    <footer class="site-footer" aria-label="Créditos do RK Fantasy">
+    <footer class="site-footer" aria-label="Créditos do Fantasy RK">
       <span>© 2026 Inhouse RK. Todos os direitos reservados.</span>
       <small>Criado e desenvolvido pela Staff RK.</small>
     </footer>
@@ -352,12 +397,23 @@
     <span>Topo</span>
   </button>
 
+  <dialog id="round-two-notice-dialog" aria-labelledby="round-two-notice-dialog-title" aria-describedby="round-two-notice-dialog-message">
+    <div class="dialog-card round-two-notice-dialog-card" role="document">
+      <div class="round-two-notice-dialog-icon" aria-hidden="true">!</div>
+      <span class="eyebrow">Comunicado oficial</span>
+      <h2 id="round-two-notice-dialog-title">Aviso sobre a Rodada 2</h2>
+      <p id="round-two-notice-dialog-message"></p>
+      <button id="acknowledge-round-two-notice" class="primary-button" type="button">Entendido</button>
+      <p id="round-two-notice-feedback" class="status-message" aria-live="polite"></p>
+    </div>
+  </dialog>
+
   <dialog id="account-dialog">
     <form method="dialog" class="dialog-card">
       <button class="dialog-close" value="cancel" aria-label="Fechar">×</button>
       <img class="dialog-logo" src="assets/branding/logo-rk-fantasy.png" alt="" />
       <span class="eyebrow">Identificação</span>
-      <h2>Entre no RK Fantasy</h2>
+      <h2>Entre no Fantasy RK</h2>
       <p>Conecte sua conta para salvar a escalação e participar do ranking.</p>
       <label><span>Seu nome ou nick</span><input id="demo-user-name" maxlength="32" placeholder="Ex.: Vitor" /></label>
       <button id="confirm-demo-user" class="primary-button" value="default" type="button">Continuar</button>
@@ -398,8 +454,18 @@
     </div>
   </dialog>
 
+  <dialog id="calculation-dialog" aria-labelledby="calculation-dialog-title" aria-describedby="calculation-dialog-subtitle">
+    <div class="dialog-card calculation-dialog-card">
+      <button id="close-calculation-dialog" class="dialog-close" type="button" aria-label="Fechar">×</button>
+      <span class="eyebrow">Memória de cálculo</span>
+      <h2 id="calculation-dialog-title">Cálculo da última rodada</h2>
+      <p id="calculation-dialog-subtitle" class="calculation-dialog-subtitle"></p>
+      <div id="calculation-dialog-body" class="calculation-dialog-body"></div>
+    </div>
+  </dialog>
+
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/fantasy.js?v=20260730-back-to-top"></script>
-  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260730-back-to-top");</script>
+  <script src="assets/fantasy.js?v=20260806-round3-nkz-notice-v1"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260806-round3-nkz-notice-v1");</script>
 </body>
 </html>

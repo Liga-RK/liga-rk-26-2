@@ -66,7 +66,7 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
   assert.equal(opened.response.status, 200);
   assert.equal(opened.payload.data.market.status, "open");
   assert.equal(opened.payload.data.market.lockDivision, "ascension");
-  assert.equal(opened.payload.data.market.closesAt, "2026-08-01T18:35:00.000Z");
+  assert.equal(opened.payload.data.market.closesAt, "2099-08-01T18:35:00.000Z");
   assert.equal(database.prepare("SELECT COUNT(*) AS count FROM fantasy_rounds WHERE round_number=2 AND status='open'").get().count, 2);
   const duplicateOpen = await call(env, "/market/open", {
     method: "POST", body: { roundNumber: 2 }, cookie, csrf
@@ -162,6 +162,40 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
     "SELECT GROUP_CONCAT(price_cents, ',') AS prices FROM fantasy_market ORDER BY division,asset_id"
   ).get().prices, pricesAfterV2);
 
+  const cheapPlayer = await call(env, "/players/elite-player", {
+    method: "PUT",
+    body: { price: 4 },
+    cookie,
+    csrf
+  });
+  assert.equal(cheapPlayer.response.status, 200);
+  database.exec(`
+    INSERT INTO fantasy_users(id, discord_id, username)
+      VALUES('valuation-user','valuation-discord','Valuation Tester');
+    INSERT INTO fantasy_participant_patrimony(user_id,division,current_cents,formula_version)
+      VALUES('valuation-user','elite',10000,'v2-dynamic-assets');
+    INSERT INTO fantasy_teams(id, user_id, division, name)
+      VALUES('valuation-team','valuation-user','elite','Time de teste');
+    INSERT INTO fantasy_market(
+      division,asset_id,asset_type,role,display_name,team_slot,team_name,team_tag,
+      price,previous_price,price_cents,previous_price_cents
+    ) VALUES
+      ('elite','elite-jg','player','JG','Elite JG','A1','Elite Team','ELI',4,4,400,400),
+      ('elite','elite-mid','player','MID','Elite MID','A1','Elite Team','ELI',4,4,400,400),
+      ('elite','elite-adc','player','ADC','Elite ADC','A1','Elite Team','ELI',4,4,400,400),
+      ('elite','elite-sup','player','SUP','Elite SUP','A1','Elite Team','ELI',4,4,400,400);
+    INSERT INTO fantasy_lineups(id, fantasy_team_id, round_id, captain_asset_id, total_cost, submitted_at, updated_at)
+      VALUES('valuation-lineup','valuation-team','elite-test-1','elite-player',34.56,'2026-07-24T20:00:00Z','2026-07-24T20:00:00Z');
+    INSERT INTO fantasy_lineup_picks(lineup_id, role, asset_id, price_paid, team_slot)
+      VALUES
+        ('valuation-lineup','TOP','elite-player',4,'A1'),
+        ('valuation-lineup','JG','elite-jg',4,'A1'),
+        ('valuation-lineup','MID','elite-mid',4,'A1'),
+        ('valuation-lineup','ADC','elite-adc',4,'A1'),
+        ('valuation-lineup','SUP','elite-sup',4,'A1'),
+        ('valuation-lineup','TEAM','team:elite:A1',14.56,'A1');
+  `);
+
   const simulated = await call(env, "/valuation/simulate", {
     method: "POST",
     body: { roundNumber: 1, division: "elite" },
@@ -171,6 +205,57 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
   assert.equal(simulated.response.status, 200);
   assert.equal(simulated.payload.data.simulations.length, 1);
   const simulationId = simulated.payload.data.simulations[0].id;
+  const priceBeforeValuation = database.prepare(`
+    SELECT price_cents FROM fantasy_market
+    WHERE division='elite' AND asset_id='elite-player'
+  `).get().price_cents;
+  const playerPreview = simulated.payload.data.simulations[0].items.find(
+    (item) => item.assetId === "elite-player"
+  );
+  const teamPreview = simulated.payload.data.simulations[0].items.find(
+    (item) => item.assetId === "team:elite:A1"
+  );
+  assert.equal(playerPreview.needsReview, true);
+  assert.notEqual(teamPreview.newPriceCents, 1456);
+  const expectedWealthAfter = 8144 + Number(playerPreview.newPriceCents) + Number(teamPreview.newPriceCents);
+
+  const blockedByReview = await call(env, "/valuation/apply", {
+    method: "POST",
+    body: { simulationId, confirmSimulationId: simulationId },
+    cookie,
+    csrf
+  });
+  assert.equal(blockedByReview.response.status, 409);
+  assert.equal(blockedByReview.payload.error.code, "VALUATION_REVIEW_REQUIRED");
+
+  const reviewed = await call(env, "/valuation/review", {
+    method: "POST",
+    body: {
+      simulationId,
+      assetId: "elite-player",
+      action: "approve",
+      reason: "Variação extrema conferida"
+    },
+    cookie,
+    csrf
+  });
+  assert.equal(reviewed.response.status, 200);
+  assert.equal(reviewed.payload.data.item.reviewStatus, "approved");
+  const editedPreview = await call(env, "/valuation/review", {
+    method: "POST",
+    body: {
+      simulationId,
+      assetId: "elite-player",
+      action: "edit",
+      newPrice: playerPreview.newPrice,
+      reason: "Preço manual conferido"
+    },
+    cookie,
+    csrf
+  });
+  assert.equal(editedPreview.response.status, 200);
+  assert.equal(editedPreview.payload.data.item.reviewStatus, "edited");
+  assert.equal(editedPreview.payload.data.item.newPrice, playerPreview.newPrice);
 
   const valuationApplied = await call(env, "/valuation/apply", {
     method: "POST",
@@ -181,13 +266,109 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
   assert.equal(valuationApplied.response.status, 200);
   assert.equal(valuationApplied.payload.data.status, "applied");
   assert.ok(valuationApplied.payload.data.backupId);
+  const priceAfterValuation = database.prepare(`
+    SELECT price_cents FROM fantasy_market
+    WHERE division='elite' AND asset_id='elite-player'
+  `).get().price_cents;
+  assert.notEqual(priceAfterValuation, priceBeforeValuation);
+  assert.equal(database.prepare(`
+    SELECT current_cents FROM fantasy_participant_patrimony
+    WHERE user_id='valuation-user' AND division='elite'
+  `).get().current_cents, expectedWealthAfter);
+  const valuationRepeated = await call(env, "/valuation/apply", {
+    method: "POST",
+    body: { simulationId, confirmSimulationId: simulationId },
+    cookie,
+    csrf
+  });
+  assert.equal(valuationRepeated.payload.data.idempotent, true);
+  assert.equal(database.prepare(`
+    SELECT price_cents FROM fantasy_market
+    WHERE division='elite' AND asset_id='elite-player'
+  `).get().price_cents, priceAfterValuation);
+  assert.equal(database.prepare(`
+    SELECT current_cents FROM fantasy_participant_patrimony
+    WHERE user_id='valuation-user' AND division='elite'
+  `).get().current_cents, expectedWealthAfter);
+
+  const rolledBack = await call(env, "/valuation/rollback", {
+    method: "POST",
+    body: { simulationId, confirmSimulationId: simulationId, reason: "Teste automatizado" },
+    cookie,
+    csrf
+  });
+  assert.equal(rolledBack.response.status, 200);
+  assert.equal(rolledBack.payload.data.status, "rolled_back");
+  assert.equal(database.prepare(`
+    SELECT price_cents FROM fantasy_market
+    WHERE division='elite' AND asset_id='elite-player'
+  `).get().price_cents, priceBeforeValuation);
+  assert.equal(database.prepare(`
+    SELECT current_cents FROM fantasy_participant_patrimony
+    WHERE user_id='valuation-user' AND division='elite'
+  `).get().current_cents, 10000);
+  assert.equal(database.prepare(`
+    SELECT COUNT(*) AS count FROM fantasy_patrimony_history
+    WHERE simulation_id=? AND status='ROLLED_BACK'
+  `).get(simulationId).count > 0, true);
+  assert.equal(database.prepare(`
+    SELECT COUNT(*) AS count FROM fantasy_price_history
+    WHERE simulation_id=? AND review_status='rolled_back'
+  `).get(simulationId).count > 0, true);
+
+  const resimulated = await call(env, "/valuation/simulate", {
+    method: "POST",
+    body: { roundNumber: 1, division: "elite" },
+    cookie,
+    csrf
+  });
+  assert.equal(resimulated.payload.data.simulations[0].id, simulationId);
+  await call(env, "/valuation/review", {
+    method: "POST",
+    body: {
+      simulationId,
+      assetId: "elite-player",
+      action: "ignore",
+      reason: "Reprocessamento de teste"
+    },
+    cookie,
+    csrf
+  });
+  const reapplied = await call(env, "/valuation/apply", {
+    method: "POST",
+    body: { simulationId, confirmSimulationId: simulationId },
+    cookie,
+    csrf
+  });
+  assert.equal(reapplied.payload.data.status, "applied");
+  assert.equal(database.prepare(`
+    SELECT price_cents FROM fantasy_market
+    WHERE division='elite' AND asset_id='elite-player'
+  `).get().price_cents, priceAfterValuation);
+  assert.ok(database.prepare(`
+    SELECT COUNT(*) AS count FROM fantasy_price_history WHERE simulation_id=?
+  `).get(simulationId).count > 2);
+  database.prepare(`
+    INSERT INTO fantasy_price_simulations
+      (id, round_id, source_hash, formula_version, settings_json,
+       items_json, status, created_by, applied_at)
+    VALUES('legacy-valuation','ascension-test-1','legacy-hash','fantasy-v2','{}','[]','applied','legacy',CURRENT_TIMESTAMP)
+  `).run();
+  const retroactiveBlocked = await call(env, "/valuation/simulate", {
+    method: "POST",
+    body: { roundNumber: 1, division: "ascension" },
+    cookie,
+    csrf
+  });
+  assert.equal(retroactiveBlocked.response.status, 409);
+  assert.equal(retroactiveBlocked.payload.error.code, "ROUND_ALREADY_VALUED");
   assert.ok(database.prepare("SELECT COUNT(*) AS count FROM fantasy_backups").get().count >= 3);
 
   const formulaReset = await call(env, "/formula/reset", {
     method: "POST", body: {}, cookie, csrf
   });
   assert.equal(formulaReset.response.status, 200);
-  assert.equal(formulaReset.payload.data.formula.version, "fantasy-v2");
+  assert.equal(formulaReset.payload.data.formula.version, "fantasy-v3-dynamic");
 
   const beforeRestorePrice = database.prepare(`
     SELECT price_cents FROM fantasy_market
@@ -281,7 +462,14 @@ function createDatabase() {
     "0003_github_pages_auth.sql",
     "0004_lineup_reserves.sql",
     "0005_admin_global_market.sql",
-    "0006_fantasy_formula_v2.sql"
+    "0006_fantasy_formula_v2.sql",
+    "0007_fantasy_dynamic_valuation.sql",
+    "0008_fantasy_dynamic_patrimony.sql",
+    "0009_fantasy_user_notices.sql",
+    "0010_fantasy_shared_round_patrimony.sql",
+    "0011_fantasy_division_patrimony.sql",
+    "0012_fantasy_market_access_mode.sql",
+    "0013_fantasy_round3_reserve_budget.sql"
   ]) {
     database.exec(fs.readFileSync(path.join(ROOT, "migrations", file), "utf8"));
     database.prepare("INSERT INTO d1_migrations(name) VALUES(?)").run(file);
@@ -453,8 +641,8 @@ function sourceFixture() {
     version: 1,
     generatedAt: "2026-07-29T00:00:00.000Z",
     divisions: {
-      elite: buildDivision("elite", "2026-08-02T19:00:00.000Z", "elite-player"),
-      ascension: buildDivision("ascension", "2026-08-01T19:00:00.000Z", "asc-player")
+      elite: buildDivision("elite", "2099-08-02T19:00:00.000Z", "elite-player"),
+      ascension: buildDivision("ascension", "2099-08-01T19:00:00.000Z", "asc-player")
     }
   };
 }

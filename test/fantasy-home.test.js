@@ -14,12 +14,18 @@ test("Fantasy opens on a separate, minimal Início view", () => {
     const html = fs.readFileSync(path.join(root, relativePath), "utf8");
     const home = html.match(/<section id="home-view"[\s\S]*?<\/section>\s*<\/section>/)?.[0] || "";
 
+    assert.match(html, /<title>Fantasy RK \| Liga RK 26\.2<\/title>/);
     assert.match(html, /data-view="home">Início<\/button>/);
-    assert.match(home, /MONTE SEU TIME\. <em>DISPUTE O TOPO DO FANTASY RK\.<\/em>/);
+    assert.match(home, /class="home-title-primary">ESCALE SEU TIME<\/span>/);
+    assert.match(home, /class="home-title-secondary">DISPUTE O TOPO DO RK FANTASY<\/span>/);
     assert.match(home, /id="home-login-button"[^>]*>Entrar ou cadastrar-se<\/button>/);
     assert.equal((home.match(/<button\b/g) || []).length, 1);
     assert.doesNotMatch(html, /id="market-intro"/);
   }
+
+  assert.match(styles, /\.home-title-primary\s*\{[\s\S]*?color: var\(--accent-bright\)/);
+  assert.match(styles, /\.home-title-secondary\s*\{[\s\S]*?color: #fff/);
+  assert.match(styles, /\.home-title-primary,\s*\.home-title-secondary\s*\{[\s\S]*?white-space: nowrap/);
 });
 
 test("Fantasy account action signs out instead of switching accounts", () => {
@@ -71,7 +77,22 @@ test("Home, ranking and rules remain available while the market is closed", () =
   assert.doesNotMatch(script, /button\.hidden = !open/);
 });
 
-test("Reserva pode usar saldo disponível mais o titular mais barato", () => {
+test("Patrimônio é individual por divisão e o ranking geral não mostra patrimônio", () => {
+  for (const relativePath of pages) {
+    const html = fs.readFileSync(path.join(root, relativePath), "utf8");
+    assert.match(html, /id="patrimony-summary-body"/);
+    assert.match(html, /Saldo anterior/);
+    assert.match(html, /Elite e Ascensão possuem patrimônios independentes/);
+    assert.doesNotMatch(html, /id="patrimony-history-body"/);
+    assert.match(html, /id="ranking-wealth-header"/);
+  }
+  assert.match(script, /const showWealth = !rankingUsesAllDivisions\(\)/);
+  assert.match(script, /rankingWealthHeader\.hidden = allDivisions/);
+  assert.match(workerScript, /pp\.division = ft\.division/);
+  assert.match(workerScript, /\(user_id, division, current_cents, formula_version\)/);
+});
+
+test("Reserva da Rodada 3 usa somente o saldo restante", () => {
   const frontendSource = script.match(/function reserveBudget\(lineup\) \{[\s\S]*?\n  \}/)?.[0];
   const backendSource = workerScript.match(/function reserveBudgetForRows\(rows\) \{[\s\S]*?\n\}/)?.[0];
   assert.ok(frontendSource);
@@ -79,12 +100,10 @@ test("Reserva pode usar saldo disponível mais o titular mais barato", () => {
 
   const frontendBudget = new Function(
     "lineupCash",
-    "starterPlayers",
     "roundMoney",
     `${frontendSource}; return reserveBudget;`
   )(
     (lineup) => lineup.remaining,
-    (lineup) => lineup.players,
     (value) => Math.round((value + Number.EPSILON) * 100) / 100
   );
   const backendBudget = new Function(
@@ -99,13 +118,27 @@ test("Reserva pode usar saldo disponível mais o titular mais barato", () => {
   ];
   const team = { type: "team", asset_type: "team", price: 6 };
 
-  assert.equal(frontendBudget({ remaining: 24, players }), 36);
-  assert.equal(backendBudget([...players, team]), 36);
+  assert.equal(frontendBudget({ remaining: 24, players }), 24);
+  assert.equal(backendBudget([...players, team]), 24);
 
   for (const relativePath of pages) {
     const html = fs.readFileSync(path.join(root, relativePath), "utf8");
-    assert.match(html, /saldo disponível após os seis titulares somado ao preço do jogador titular mais barato/);
+    assert.match(html, /A partir da Rodada 3, ele precisa caber integralmente no saldo que restar depois dos seis titulares/);
   }
+});
+
+test("Cálculo da última rodada abre em modal responsivo e mostra indisponibilidade", () => {
+  for (const relativePath of pages) {
+    const html = fs.readFileSync(path.join(root, relativePath), "utf8");
+    assert.match(html, /id="calculation-dialog"/);
+    assert.match(html, /id="calculation-dialog-body"/);
+  }
+  assert.match(script, /function openCalculationDialog\(item\)/);
+  assert.match(script, /Estatística da última rodada indisponível/);
+  assert.doesNotMatch(script, /document\.createElement\("details"\)/);
+  assert.doesNotMatch(script, /MPV:/);
+  assert.match(styles, /\.calculation-dialog-card\s*\{[\s\S]*?max-height:/);
+  assert.match(styles, /\.calculation-dialog-card\s*\{[\s\S]*?overflow-y: auto/);
 });
 
 test("Controle do mercado fica oculto e depende da permissão Discord", () => {
@@ -120,4 +153,49 @@ test("Controle do mercado fica oculto e depende da permissão Discord", () => {
   assert.match(script, /\/api\/fantasy\/market\/control\/\$\{action\}/);
   assert.match(workerScript, /MARKET_CONTROL_DISCORD_IDS/);
   assert.match(workerScript, /Somente o administrador autorizado pode controlar o mercado/);
+});
+
+test("Aviso da Rodada 2 exige login e só fecha depois do aceite persistido", () => {
+  for (const relativePath of pages) {
+    const html = fs.readFileSync(path.join(root, relativePath), "utf8");
+    assert.match(html, /id="round-two-notice"[^>]*hidden/);
+    assert.match(html, /id="round-two-notice-dialog"/);
+    assert.match(html, /id="acknowledge-round-two-notice"[^>]*>Entendido<\/button>/);
+    const dialog = html.match(/<dialog id="round-two-notice-dialog"[\s\S]*?<\/dialog>/)?.[0] || "";
+    assert.doesNotMatch(dialog, /dialog-close/);
+  }
+
+  const noticeLoader = script.match(/async function loadRoundTwoNotice\(\) \{[\s\S]*?\n  \}/)?.[0] || "";
+  const acknowledgment = script.match(/async function acknowledgeRoundTwoNotice\(\) \{[\s\S]*?\n  \}/)?.[0] || "";
+  assert.match(noticeLoader, /if \(!state\.userName \|\| config\.backendMode !== "cloud"\)/);
+  assert.match(noticeLoader, /\/api\/fantasy\/notices\/round-2-postponement/);
+  assert.match(acknowledgment, /\/api\/fantasy\/notices\/round-2-postponement\/ack/);
+  assert.ok(acknowledgment.indexOf("apiFetch") < acknowledgment.indexOf("roundTwoNoticeDialog.close()"));
+  assert.match(script, /roundTwoNoticeDialog\.addEventListener\("cancel", \(event\) => \{\s*event\.preventDefault\(\)/);
+  assert.doesNotMatch(script, /localStorage\.(?:setItem|getItem)\([^\n]*round-two-notice/);
+  assert.match(workerScript, /INSERT OR IGNORE INTO fantasy_user_notices/);
+  assert.match(styles, /\.round-two-notice\[hidden\] \{ display: none; \}/);
+});
+
+test("Comunicado da Rodada 3 sobre CASH x NKZ fica no site sem popup", () => {
+  for (const relativePath of pages) {
+    const html = fs.readFileSync(path.join(root, relativePath), "utf8");
+    const roundTwoPosition = html.indexOf('id="round-two-notice"');
+    const roundThreePosition = html.indexOf('id="round-three-nkz-notice"');
+    assert.ok(roundTwoPosition >= 0);
+    assert.ok(roundThreePosition > roundTwoPosition);
+    assert.match(html, /Aviso sobre a Rodada 3/);
+    assert.match(html, /NO KINGS ZONE \(NKZ\)[\s\S]*CASHOUT &amp; TRIMILIQUE LTDA \(CASH\)[\s\S]*não será contabilizado no Fantasy RK/);
+    assert.doesNotMatch(html, /<dialog[^>]*round-three-nkz-notice/);
+  }
+});
+
+test("Admin-only mode keeps the market closed for other players", () => {
+  assert.match(script, /marketAccessMode: \{ elite: "public", ascension: "public" \}/);
+  assert.match(script, /MERCADO ADMINISTRATIVO/);
+  assert.match(script, /Acesso exclusivo da administração/);
+  assert.match(workerScript, /function isMarketOpenForUser\(marketState, user, env\)/);
+  assert.match(workerScript, /access_mode \|\| "public"/);
+  assert.match(workerScript, /temporariamente aberto apenas para a administração/);
+  assert.match(workerScript, /marketStateForUser\(marketState, user, env\)/);
 });

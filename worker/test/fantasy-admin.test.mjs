@@ -250,6 +250,91 @@ test("30a elenco ao vivo substitui equipe e jogadores do arquivo estático", () 
   assert.equal(merged.contentUpdatedAt, "2026-07-29T18:33:06.155Z");
 });
 
+test("30aa resultados ao vivo distinguem WO e adiamento da rodada 2", () => {
+  const source = sampleSource();
+  source.divisions.elite.rounds[0].matches.push({
+    id: "schedule:elite:r2g7",
+    sourceId: "r2g7",
+    stage: "groups",
+    homeTeamSlot: "D1",
+    awayTeamSlot: "D3",
+    startsAt: "2026-08-02T23:30:00.000Z",
+    status: "scheduled"
+  });
+  const merged = __test.mergeLiveOfficialContent(source, {
+    divisions: {
+      elite: {
+        teams: {},
+        results: {
+          r2g1: { homeScore: 0, awayScore: 2, manualOverride: true },
+          r2g7: { homeScore: "", awayScore: "" }
+        }
+      },
+      ascension: { teams: {}, results: {} }
+    }
+  }, "2026-08-05T22:26:55.282Z");
+  const [walkover, postponed] = merged.divisions.elite.rounds[0].matches;
+  assert.equal(walkover.status, "completed");
+  assert.equal(walkover.isWalkover, true);
+  assert.equal(walkover.excludedFromScoring, true);
+  assert.equal(walkover.homeScore, 0);
+  assert.equal(walkover.awayScore, 2);
+  assert.equal(postponed.status, "postponed");
+  assert.equal(postponed.excludedFromScoring, true);
+  assert.match(postponed.scheduleIssue, /FVL x SDK/);
+});
+
+test("30ab rodada fecha com série jogada, WO e partida adiada sem inventar mapas", async () => {
+  const source = sampleSource();
+  source.divisions.elite.rounds[0].matches = [
+    {
+      id: "schedule:elite:r2g1", sourceId: "r2g1", stage: "groups",
+      homeTeamSlot: "A1", awayTeamSlot: "A2", status: "completed",
+      homeScore: 0, awayScore: 2, isWalkover: true, excludedFromScoring: true
+    },
+    {
+      id: "schedule:elite:r2g2", sourceId: "r2g2", stage: "groups",
+      homeTeamSlot: "A1", awayTeamSlot: "A2", status: "completed",
+      homeScore: 2, awayScore: 0
+    },
+    {
+      id: "schedule:elite:r2g7", sourceId: "r2g7", stage: "groups",
+      homeTeamSlot: "D1", awayTeamSlot: "D3", status: "postponed",
+      excludedFromScoring: true
+    }
+  ];
+  source.divisions.elite.stats.matches = [1, 2].map((gameNumber) => ({
+    id: `elite-r2g2-map-${gameNumber}`,
+    seriesId: "groups-r2g2",
+    round: "RODADA 2",
+    roundNumber: 2,
+    gameNumber,
+    format: "MD3",
+    blueTeamSlot: "A1",
+    redTeamSlot: "A2",
+    winnerSlot: "A1",
+    mvpPlayerId: "p-elite",
+    participants: [{
+      playerId: "p-elite",
+      teamSlot: "A1",
+      position: "TOP",
+      score: 80,
+      won: true,
+      deaths: 1
+    }]
+  }));
+  const normalized = await __test.normalizeFormulaV2Round(source, 2, "elite");
+  assert.equal(normalized.ready, true);
+  assert.equal(normalized.expectedSeries, 3);
+  assert.equal(normalized.completedSeries, 3);
+  assert.equal(normalized.playedSeries, 1);
+  assert.equal(normalized.walkovers, 1);
+  assert.equal(normalized.postponed, 1);
+  assert.equal(normalized.series.length, 1);
+  assert.equal(normalized.series[0].id, "groups-r2g2");
+  assert.equal(normalized.series[0].mapas.length, 2);
+});
+
 test("30b estatística histórica é reconciliada com o jogador atual pelo Riot ID", async () => {
   const source = sampleSource();
   source.divisions.elite.teams[0].players = [{
@@ -307,6 +392,21 @@ test("31 simulação de valorização é determinística", () => {
   assert.deepEqual(first, second);
 });
 
+test("31a ativo de equipe valoriza pela curva dinâmica", () => {
+  const item = __test.valuationItem(assetInput({
+    assetId: "team:elite:A1",
+    assetType: "team",
+    role: "TEAM",
+    currentPriceCents: 1456,
+    previousPriceCents: 1400,
+    roundPoints: 38
+  }), [], defaultSettings());
+  assert.ok(item.newPriceCents > 1456);
+  assert.ok(item.deltaCents > 0);
+  assert.equal(item.status, "increased");
+  assert.equal(item.played, true);
+});
+
 test("32 cancelamento de simulação não contém atualização de mercado", () => {
   const body = functionBody(adminSource, "adminValuationCancel");
   assert.match(body, /status = 'cancelled'/);
@@ -346,6 +446,17 @@ sqliteTest("38 migração preserva preços atuais", () => {
   assert.equal(price.price_cents, 1727);
 });
 
+test("34a timestamp do SQLite é comparado em UTC com o fechamento", () => {
+  assert.equal(
+    __test.timestampMillis("2026-08-01 17:51:19"),
+    Date.parse("2026-08-01T17:51:19Z")
+  );
+  assert.ok(
+    __test.timestampMillis("2026-08-01 17:51:19")
+      < __test.timestampMillis("2026-08-01T18:35:52.301Z")
+  );
+});
+
 sqliteTest("38a migração v2 preserva histórico e adiciona versão segura", () => {
   const db = migratedDatabaseWithFixture();
   const score = db.prepare(`
@@ -356,7 +467,51 @@ sqliteTest("38a migração v2 preserva histórico e adiciona versão segura", ()
   assert.equal(score.formulaVersion, "stats-only-v1");
   assert.equal(
     db.prepare("SELECT version FROM fantasy_formula_settings WHERE id='global'").get().version,
-    "fantasy-v2"
+    "fantasy-v3-dynamic"
+  );
+});
+
+sqliteTest("38b Elite e Ascensão mantêm patrimônios independentes", () => {
+  const db = migratedDatabaseWithFixture();
+  db.exec(`
+    INSERT INTO fantasy_rounds(id,division,round_number,name,opens_at,locks_at,status)
+      VALUES
+        ('asc-r2','ascension',2,'Rodada 2','2026-08-01T00:00:00Z','2026-08-02T00:00:00Z','locked'),
+        ('elite-r2','elite',2,'Rodada 2','2026-08-01T00:00:00Z','2026-08-02T00:00:00Z','locked');
+    INSERT INTO fantasy_price_simulations(
+      id,round_id,source_hash,formula_version,settings_json,items_json,status,created_by
+    ) VALUES
+      ('sim-asc-r2','asc-r2','hash-asc','fantasy-v3-dynamic','{}','[]','applied','test'),
+      ('sim-elite-r2','elite-r2','hash-elite','fantasy-v3-dynamic','{}','[]','applied','test');
+    UPDATE fantasy_participant_patrimony SET current_cents=11268 WHERE user_id='u1';
+    INSERT INTO fantasy_patrimony_history(
+      id,simulation_id,user_id,round_id,division,previous_cents,purchases_cents,
+      available_balance_cents,previous_assets_cents,updated_assets_cents,
+      variation_cents,new_cents,status,formula_version,processed_by
+    ) VALUES
+      ('h-asc','sim-asc-r2','u1','asc-r2','ascension',10000,9000,1000,9000,9795,795,10795,'PUBLISHED','v2-dynamic-assets','test'),
+      ('h-elite','sim-elite-r2','u1','elite-r2','elite',10795,9000,1795,9000,9473,473,11268,'PUBLISHED','v2-dynamic-assets','test');
+  `);
+  db.exec(migrationText("0010_fantasy_shared_round_patrimony.sql"));
+  db.exec(migrationText("0011_fantasy_division_patrimony.sql"));
+  const elite = db.prepare(`
+    SELECT previous_cents AS previousCents, available_balance_cents AS availableCents,
+           new_cents AS newCents, consistency_difference_cents AS differenceCents
+    FROM fantasy_patrimony_history WHERE id='h-elite'
+  `).get();
+  assert.deepEqual({ ...elite }, {
+    previousCents: 10000,
+    availableCents: 1000,
+    newCents: 10473,
+    differenceCents: 0
+  });
+  assert.equal(
+    db.prepare("SELECT current_cents AS currentCents FROM fantasy_participant_patrimony WHERE user_id='u1' AND division='elite'").get().currentCents,
+    10473
+  );
+  assert.equal(
+    db.prepare("SELECT current_cents AS currentCents FROM fantasy_participant_patrimony WHERE user_id='u1' AND division='ascension'").get().currentCents,
+    10795
   );
 });
 
@@ -505,16 +660,27 @@ function functionBody(source, name) {
 
 function defaultSettings() {
   return {
-    roundWeight: 0.55,
-    averageWeight: 0.25,
-    recentWeight: 0.2,
-    expectationBase: 3,
-    expectationPerPrice: 0.62,
-    volatility: 0.34,
-    damping: 0.85,
+    expectedPriceMultiplier: 1.6,
+    expectedPriceOffset: -8,
+    oneHistoryCurrentWeight: 0.75,
+    oneHistoryPreviousWeight: 0.25,
+    experiencedCurrentWeight: 0.65,
+    experiencedRecentWeight: 0.25,
+    experiencedSeasonWeight: 0.10,
+    recentRounds: 3,
+    variationDivisor: 10,
+    variationExponent: 0.90,
+    positiveFactorNumerator: 14,
+    positiveFactorOffset: 4,
+    negativeFactorBase: 0.75,
+    negativeFactorPriceDivisor: 40,
+    lowParticipationThreshold: 0.34,
+    lowParticipationFactor: 0.70,
+    partialParticipationFactor: 0.90,
+    fullParticipationFactor: 1,
     minimumPrice: 4,
-    minimumGames: 3,
-    decimals: 2,
+    reviewThreshold: 7,
+    currencyDecimals: 2,
     didNotPlay: "hold"
   };
 }
@@ -527,8 +693,11 @@ function assetInput(overrides = {}) {
     name: "Player",
     teamName: "Team",
     currentPriceCents: 1700,
+    previousPriceCents: 1700,
     roundPoints: 50,
     games: 2,
+    scoreDetailsJson: '{"totalMapasEquipe":2}',
+    previousValuationJson: '{}',
     ...overrides
   };
 }
@@ -574,6 +743,10 @@ function migratedDatabaseWithFixture() {
   `);
   db.exec(migrationText("0005_admin_global_market.sql"));
   db.exec(migrationText("0006_fantasy_formula_v2.sql"));
+  db.exec(migrationText("0007_fantasy_dynamic_valuation.sql"));
+  db.exec(migrationText("0008_fantasy_dynamic_patrimony.sql"));
+  db.exec(migrationText("0009_fantasy_user_notices.sql"));
+  db.exec(migrationText("0010_fantasy_shared_round_patrimony.sql"));
   return db;
 }
 

@@ -1,11 +1,13 @@
 "use strict";
 
+const valuationV3 = require("./valuation-v3.cjs");
+
 const FORMULA_VERSION = 2;
 const FORMULA_ID = "fantasy-v2";
 const PLAYER_SCORE_MIN = -10;
 const PLAYER_SCORE_MAX = 50;
 const PRICE_MIN = 4;
-const PRICE_MAX = 30;
+const PRICE_MAX = Number.POSITIVE_INFINITY;
 
 function clamp(valor, minimo, maximo) {
   const numero = Number(valor);
@@ -189,13 +191,11 @@ function calcularPontuacaoEsperada(precoAtual, mediaUltimasTres = null) {
   if (!Number.isFinite(preco) || preco <= 0) {
     throw new TypeError("O preço atual deve ser um número positivo.");
   }
-  const pontuacaoEsperadaPreco = arredondar(0.9 * preco);
+  const pontuacaoEsperadaPreco = valuationV3.calculateExpectedScore(preco);
   const possuiHistorico = mediaUltimasTres !== null &&
     mediaUltimasTres !== undefined &&
     Number.isFinite(Number(mediaUltimasTres));
-  const pontuacaoEsperada = possuiHistorico
-    ? arredondar(0.7 * pontuacaoEsperadaPreco + 0.3 * Number(mediaUltimasTres))
-    : pontuacaoEsperadaPreco;
+  const pontuacaoEsperada = pontuacaoEsperadaPreco;
   return { pontuacaoEsperadaPreco, pontuacaoEsperada, possuiHistorico };
 }
 
@@ -208,8 +208,10 @@ function calcularVariacaoMercado(pontuacaoRodada, pontuacaoEsperada, jogou = tru
     return { diferenca: 0, variacaoBruta: 0, variacaoMercado: 0 };
   }
   const diferenca = Number(pontuacaoRodada) - Number(pontuacaoEsperada);
-  const variacaoBruta = diferenca / 7;
-  const variacaoMercado = arredondarParaDezCentavos(clamp(variacaoBruta, -2, 2));
+  const variacaoBruta = diferenca === 0
+    ? 0
+    : Math.sign(diferenca) * ((Math.abs(diferenca) / 10) ** 0.9);
+  const variacaoMercado = arredondar(variacaoBruta);
   return {
     diferenca: arredondar(diferenca),
     variacaoBruta: arredondar(variacaoBruta, 4),
@@ -223,7 +225,7 @@ function calcularNovoPreco(precoAtual, variacaoMercado, jogou = true) {
     throw new TypeError("O preço atual deve ser um número positivo.");
   }
   if (!jogou) return arredondar(preco);
-  return arredondar(clamp(preco + Number(variacaoMercado || 0), PRICE_MIN, PRICE_MAX));
+  return arredondar(Math.max(preco + Number(variacaoMercado || 0), PRICE_MIN));
 }
 
 function calcularValorizacao({
@@ -231,41 +233,32 @@ function calcularValorizacao({
   pontuacaoRodada,
   historico = [],
   rodadaAtual = null,
-  jogou = true
+  jogou = true,
+  mapasAtleta = null,
+  mapasEquipe = null
 } = {}) {
-  const precoAnterior = calcularNovoPreco(precoAtual, 0, false);
-  if (!jogou) {
-    return {
-      formulaVersion: FORMULA_VERSION,
-      jogou: false,
-      precoAnterior,
-      pontuacaoRealizada: 0,
-      pontuacaoEsperadaPreco: arredondar(0.9 * precoAnterior),
-      mediaUltimasTres: null,
-      pontuacaoEsperada: arredondar(0.9 * precoAnterior),
-      diferenca: 0,
-      variacaoBruta: 0,
-      variacaoMercado: 0,
-      precoNovo: precoAnterior
-    };
-  }
-  const mediaUltimasTres = obterMediaUltimasTresRodadas(historico, rodadaAtual);
-  const expectativa = calcularPontuacaoEsperada(precoAnterior, mediaUltimasTres);
-  const variacao = calcularVariacaoMercado(
-    Number(pontuacaoRodada) || 0,
-    expectativa.pontuacaoEsperada,
-    true
-  );
+  const valuation = valuationV3.calculateFantasyValuation({
+    currentPrice: precoAtual,
+    currentPoints: Number(pontuacaoRodada) || 0,
+    history: historico,
+    currentRound: rodadaAtual,
+    playerMaps: jogou ? Math.max(1, Number(mapasAtleta) || 1) : 0,
+    teamMaps: jogou ? Math.max(1, Number(mapasEquipe) || Number(mapasAtleta) || 1) : 0
+  });
   return {
-    formulaVersion: FORMULA_VERSION,
-    jogou: true,
-    precoAnterior,
-    pontuacaoRealizada: arredondar(Number(pontuacaoRodada) || 0),
-    pontuacaoEsperadaPreco: expectativa.pontuacaoEsperadaPreco,
-    mediaUltimasTres,
-    pontuacaoEsperada: expectativa.pontuacaoEsperada,
-    ...variacao,
-    precoNovo: calcularNovoPreco(precoAnterior, variacao.variacaoMercado, true)
+    ...valuation,
+    jogou: valuation.played,
+    precoAnterior: valuation.currentPrice,
+    pontuacaoRealizada: valuation.currentPoints,
+    pontuacaoEsperadaPreco: valuation.expectedScore,
+    mediaUltimasTres: valuation.recentAverage,
+    mediaTemporada: valuation.seasonAverage,
+    desempenhoAjustado: valuation.adjustedPerformance,
+    pontuacaoEsperada: valuation.expectedScore,
+    diferenca: valuation.difference,
+    variacaoBruta: valuation.variationBeforeFloor,
+    variacaoMercado: valuation.finalVariation,
+    precoNovo: valuation.newPrice
   };
 }
 
@@ -418,7 +411,9 @@ function processarRodadaFantasy({
             pontuacaoRodada: pontuacao.pontuacaoOficial,
             historico: historicos[atleta.atletaId] || [],
             rodadaAtual: rodadaNumero,
-            jogou: pontuacao.jogou
+            jogou: pontuacao.jogou,
+            mapasAtleta: pontuacao.mapasDisputados,
+            mapasEquipe: pontuacao.totalMapasEquipe
           })
         });
       }

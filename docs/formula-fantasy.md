@@ -1,166 +1,119 @@
-# Fórmula oficial do Fantasy RK
+# Fórmulas oficiais do Fantasy RK
 
-Versão: `formulaVersion: 2` (`fantasy-v2`)  
-Aplicação: rodada 2 em diante  
-Fonte única de verdade: `src/fantasy/formula-v2.cjs`
+Pontuação: `fantasy-v2`
 
-O histórico da rodada 1 permanece armazenado como `stats-only-v1`. A fórmula v2 não recalcula temporadas ou rodadas anteriores automaticamente.
+Valorização: `fantasy-v3-dynamic`
+Fontes de verdade: `src/fantasy/formula-v2.cjs` e `src/fantasy/valuation-v3.cjs`
 
-## Nota de Desempenho
+A fórmula de pontuação não mudou. A valorização dinâmica preserva os preços existentes, não recalcula rodadas anteriores e só é aplicada depois de prévia e confirmação administrativas. Desde o fechamento da Rodada 2, a mesma curva também é aplicada aos ativos de equipe.
 
-O Fantasy consome a Nota de Desempenho de 0 a 100 já calculada pelo módulo de estatísticas em `src/statistics/aggregators.js`. Antes do uso, a nota é normalizada entre 0 e 100.
+## Pontuação individual
 
-O MVP só entra no cálculo quando o mapa oficial contém explicitamente o `playerId` do MVP. A fórmula do Fantasy não escolhe nem duplica MVP.
-
-## Pontuação por mapa
+Por mapa:
 
 ```text
 base = clamp(0,55 × (nota − 40), −10, 33)
 mapa = base + (venceu ? 2 : 0) + (MVP oficial ? 3 : 0)
 ```
 
-O limite de 50 não é aplicado por mapa.
+A pontuação da série é a média dos mapas efetivamente disputados pelo atleta, acrescida dos bônus oficiais. O resultado da rodada fica entre −10 e 50. Capitão recebe multiplicador de 1,5 depois desse limite. O reserva pode cobrir uma ausência e entra sem multiplicador.
 
-## Média da série
+Quem não disputa mapa recebe zero ponto, não entra nas médias históricas e mantém o preço.
 
-MD3 e MD5 usam a mesma regra:
+## Valorização individual dinâmica
+
+### Expectativa pelo preço
 
 ```text
-média = soma dos pontos dos mapas disputados pelo atleta ÷ mapas disputados pelo atleta
+esperado = 1,6 × preço atual − 8
 ```
 
-Os mapas não são somados diretamente. Assim, jogar uma MD5 não gera vantagem automática sobre jogar uma MD3.
+### Desempenho ajustado
 
-## Bônus da série
+Somente rodadas anteriores válidas em que o atleta atuou entram no histórico. Ausências, rodadas canceladas, não finalizadas e a própria rodada atual são ignoradas.
 
-| Condição | Bônus |
+```text
+sem histórico: ajustado = pontos atuais
+1 rodada anterior: ajustado = 0,75 × atual + 0,25 × anterior
+2+ rodadas anteriores: ajustado = 0,65 × atual + 0,25 × média recente + 0,10 × média da temporada
+```
+
+A média recente usa até as três rodadas válidas mais recentes. A média da temporada usa todo o histórico anterior válido.
+
+### Curva da variação
+
+```text
+diferença = desempenho ajustado − esperado
+base = sinal(diferença) × (|diferença| ÷ 10)^0,90
+```
+
+Para altas:
+
+```text
+fator de preço = 14 ÷ (preço atual + 4)
+```
+
+Para quedas:
+
+```text
+fator de preço = 0,75 + preço atual ÷ 40
+```
+
+Participação:
+
+| Participação nos mapas da equipe | Fator |
 |---|---:|
-| Vitória da série | +3 |
-| Vitória por 2×0 em MD3 ou 3×0 em MD5 | +2 |
-| Nota ≥ 80 em todos os mapas da equipe | +1 |
-| Nota ≥ 90 em todos os mapas da equipe | +3, substitui o +1 |
-| MVP em todos os mapas vencidos pela equipe | +2 |
-| Série inteira com zero mortes | +2 |
-
-Consistência, domínio de MVP e série sem mortes exigem participação em todos os mapas da equipe.
-
-Vitória e série perfeita são proporcionais para quem jogou somente parte da série:
+| nenhum mapa | 0,00 |
+| até 34% | 0,70 |
+| acima de 34% e abaixo de 100% | 0,90 |
+| 100% | 1,00 |
 
 ```text
-participação = mapas do atleta ÷ mapas da equipe
-bônus aplicado = bônus integral × participação
+variação = base × fator de preço × fator de participação
+novo preço = máximo(4, preço atual + variação)
 ```
 
-## Pontuação oficial da rodada
+O resultado monetário é arredondado para duas casas. Não há teto fixo de variação nem preço máximo. Variações absolutas acima de RK$ 7,00 entram em revisão obrigatória no painel.
 
-```text
-oficial = clamp(média dos mapas + bônus da série, −10, 50)
-```
+### Exemplos sem histórico e com participação integral
 
-O resultado é arredondado para duas casas decimais. Atingir 50 exige desempenho próximo de uma série perfeita.
+| Preço | Pontos | Novo preço aproximado |
+|---:|---:|---:|
+| RK$ 6,00 | 31 | RK$ 9,70 |
+| RK$ 12,00 | 30 | RK$ 13,54 |
+| RK$ 25,00 | 50 | RK$ 25,82 |
+| RK$ 25,00 | 10 | RK$ 22,21 |
 
-## Ausência, reserva e capitão
+## Ativos de equipe
 
-- Atleta sem mapa disputado recebe 0 ponto.
-- Ausência não entra no M3 e não altera preço.
-- O primeiro titular ausente pode ser coberto pelo reserva, desde que o reserva tenha atuado.
-- O reserva entra sem multiplicador e cobre apenas uma ausência.
-- O capitão recebe `pontuação oficial × 1,5` depois do limite oficial.
-- Pontos negativos também são multiplicados. Por isso, o capitão pode entregar de −15 a 75 pontos à escalação.
+O ativo de equipe pontua pela média das pontuações oficiais dos atletas que atuaram. Como essa média permanece na mesma escala oficial de −10 a 50, a equipe usa a mesma curva dinâmica de expectativa, desempenho ajustado e variação aplicada aos atletas. Se a equipe não disputar mapa válido, mantém o preço e não alimenta as médias históricas.
 
-## Ativo de equipe
+## Regra do reserva a partir da Rodada 3
 
-O ativo de equipe continua pontuando. Na v2, sua pontuação da rodada é a média das pontuações oficiais dos atletas que atuaram pela equipe. Como a nova valorização solicitada é individual, o preço do ativo de equipe é mantido.
+O reserva precisa caber integralmente no saldo que restar depois da compra dos cinco jogadores titulares e do ativo de equipe. O preço do titular mais barato não amplia mais esse limite.
 
-## Valorização individual
+## Fluxo administrativo e segurança
 
-### Histórico M3
+1. O mercado global precisa estar fechado.
+2. A pontuação é processada e salva sem alterar preços.
+3. O administrador gera a prévia de valorização.
+4. A prévia exibe preço anterior, pontos, esperado, ajustado, diferença, variação, novo preço e status.
+5. Alertas acima de RK$ 7,00 precisam ser aprovados, editados ou ignorados conscientemente.
+6. A aplicação exige confirmação pelo ID exato e cria backup.
+7. Preços, histórico e patrimônios são atualizados de forma idempotente.
 
-O M3 é a média das três rodadas anteriores mais recentes em que o atleta atuou. São ignoradas:
+Cada aplicação grava histórico por atleta com preço anterior, novo preço, delta, rodada, versão, responsável e horário.
 
-- ausências;
-- partidas ou rodadas canceladas;
-- rodadas ainda não finalizadas;
-- a própria rodada que está sendo processada.
+## Rollback
 
-Com uma ou duas rodadas válidas, usa-se somente o histórico disponível.
+O rollback exige mercado fechado, confirmação do ID e motivo. Ele:
 
-### Expectativa
+- verifica se nenhum preço mudou depois da aplicação;
+- cria backup;
+- restaura todos os preços da aplicação;
+- recalcula patrimônios;
+- marca o processamento como pendente de valorização;
+- preserva o histórico antigo com estado `rolled_back`;
+- permite gerar nova prévia e reprocessar a rodada.
 
-```text
-expectativa pelo preço = 0,90 × preço atual
-```
-
-Sem histórico:
-
-```text
-E = expectativa pelo preço
-```
-
-Com histórico:
-
-```text
-E = 0,70 × expectativa pelo preço + 0,30 × M3
-```
-
-### Variação e novo preço
-
-```text
-diferença = pontuação da rodada − E
-variação bruta = diferença ÷ 7
-variação = clamp(variação bruta, −2, 2)
-```
-
-A variação é arredondada para múltiplos de RK$ 0,10.
-
-```text
-novo preço = clamp(preço atual + variação, RK$ 4,00, RK$ 30,00)
-```
-
-O novo preço é armazenado em centavos e exibido com duas casas decimais.
-
-### Exemplos
-
-Atleta de RK$ 8,00, M3 de 8 e 18 pontos:
-
-```text
-expectativa pelo preço = 7,20
-E = 0,70 × 7,20 + 0,30 × 8 = 7,44
-variação = (18 − 7,44) ÷ 7 = 1,5085… → +RK$ 1,50
-novo preço = RK$ 9,50
-```
-
-Atleta de RK$ 20,00, M3 de 18 e 7 pontos:
-
-```text
-E = 18
-variação = (7 − 18) ÷ 7 = −1,5714… → −RK$ 1,60
-novo preço = RK$ 18,40
-```
-
-## Processamento e idempotência
-
-O processamento administrativo:
-
-1. exige mercado fechado;
-2. confirma que todas as séries oficiais da rodada terminaram;
-3. carrega mapas, participantes, Nota de Desempenho e MVP explicitamente publicado;
-4. calcula e salva mapa e rodada com `formulaVersion: 2`;
-5. recalcula escalações, capitão e reserva;
-6. usa somente o histórico anterior no M3;
-7. registra preço anterior, expectativa, variação e novo preço;
-8. atualiza patrimônio e médias;
-9. grava a origem e o estado em `fantasy_round_processing`.
-
-Pontuações usam chaves únicas por rodada/atleta e por rodada/mapa/atleta. Preços usam um snapshot único por rodada/ativo. Se o mesmo hash oficial já foi concluído, o endpoint devolve sucesso idempotente sem pontuar nem valorizar novamente. Se a fonte mudar depois da valorização, o sistema recusa reaplicar automaticamente.
-
-## Auditoria e migração
-
-A migração `worker/migrations/0006_fantasy_formula_v2.sql` adiciona:
-
-- versão, hash e data de processamento às pontuações;
-- detalhamento JSON de pontuação e valorização;
-- detalhamento nos snapshots de mercado;
-- controle único de processamento por rodada e versão.
-
-Nenhuma pontuação histórica é apagada.
+A migração `worker/migrations/0007_fantasy_dynamic_valuation.sql` adiciona o histórico durável e o registro de rollbacks sem modificar os preços atuais.

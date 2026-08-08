@@ -75,6 +75,39 @@ sqliteTest("controle do mercado aparece e funciona somente para Cress Albane", a
     ["open"]
   );
 
+  const restricted = await call(env, "/api/fantasy/market/control/access", {
+    method: "POST",
+    token: controllerToken,
+    body: { accessMode: "admin" }
+  });
+  assert.equal(restricted.response.status, 200);
+  assert.equal(restricted.payload.data.market.status, "open");
+  assert.equal(restricted.payload.data.market.accessMode, "admin");
+
+  const controllerConfig = await call(env, "/api/fantasy/config?division=elite", {
+    token: controllerToken
+  });
+  assert.equal(controllerConfig.payload.market.status, "open");
+  assert.equal(controllerConfig.payload.round.status, "open");
+
+  const otherAdminConfig = await call(env, "/api/fantasy/config?division=elite", {
+    token: otherAdminToken
+  });
+  assert.equal(otherAdminConfig.payload.market.status, "closed");
+  assert.equal(otherAdminConfig.payload.market.accessMode, "admin");
+  assert.equal(otherAdminConfig.payload.round.status, "locked");
+
+  const anonymousConfig = await call(env, "/api/fantasy/config?division=elite");
+  assert.equal(anonymousConfig.payload.market.status, "closed");
+
+  const forbiddenRestrictedWrite = await call(env, "/api/fantasy/lineups/current", {
+    method: "PUT",
+    token: otherAdminToken,
+    body: { division: "elite" }
+  });
+  assert.equal(forbiddenRestrictedWrite.response.status, 403);
+  assert.match(forbiddenRestrictedWrite.payload.error.message, /apenas para a administra/);
+
   const duplicateOpen = await call(env, "/api/fantasy/market/control/open", {
     method: "POST",
     token: controllerToken,
@@ -126,6 +159,56 @@ sqliteTest("destaques usam a rodada vinculada ao mercado mesmo com a próxima ag
   assert.equal(result.payload.highlights.team.picks, 2);
 });
 
+sqliteTest("performance recente mostra somente quem jogou na rodada anterior", async () => {
+  const database = createDatabase();
+  database.exec(`
+    INSERT INTO fantasy_rounds(id, division, round_number, name, opens_at, locks_at, status)
+    VALUES
+      ('elite-r1', 'elite', 1, 'Rodada 1', '2026-07-20T00:00:00.000Z', '2026-07-25T00:00:00.000Z', 'scored'),
+      ('elite-r2', 'elite', 2, 'Rodada 2', '2026-07-27T00:00:00.000Z', '2026-08-01T00:00:00.000Z', 'scored'),
+      ('elite-r3', 'elite', 3, 'Rodada 3', '2099-08-05T00:00:00.000Z', '2099-08-08T18:35:00.000Z', 'scheduled');
+
+    INSERT INTO fantasy_market(
+      division, asset_id, asset_type, role, display_name, team_slot,
+      team_name, team_tag, price, previous_price
+    ) VALUES
+      ('elite', 'player:played', 'player', 'TOP', 'Jogou R2', 'A1', 'Time A', 'TMA', 12, 12),
+      ('elite', 'player:absent', 'player', 'JG', 'Não jogou R2', 'A2', 'Time B', 'TMB', 12, 12),
+      ('elite', 'team:elite:A1', 'team', 'TEAM', 'Time A', 'A1', 'Time A', 'TMA', 10, 10),
+      ('elite', 'team:elite:A2', 'team', 'TEAM', 'Time B', 'A2', 'Time B', 'TMB', 10, 10);
+
+    INSERT INTO fantasy_asset_round_scores(round_id, division, asset_id, role, games, points)
+    VALUES
+      ('elite-r1', 'elite', 'player:played', 'TOP', 2, 11),
+      ('elite-r1', 'elite', 'player:absent', 'JG', 2, 12),
+      ('elite-r1', 'elite', 'team:elite:A1', 'TEAM', 2, 13),
+      ('elite-r1', 'elite', 'team:elite:A2', 'TEAM', 2, 14),
+      ('elite-r2', 'elite', 'player:played', 'TOP', 2, 21),
+      ('elite-r2', 'elite', 'player:absent', 'JG', 0, 0),
+      ('elite-r2', 'elite', 'team:elite:A1', 'TEAM', 2, 23),
+      ('elite-r2', 'elite', 'team:elite:A2', 'TEAM', 0, 0);
+
+    UPDATE fantasy_market_state
+    SET status='closed', lock_round_number=3, version=1
+    WHERE id='global';
+  `);
+  const env = {
+    DB: d1(database),
+    SITE_URL: `${SITE_ORIGIN}/liga-rk-26-2/fantasy/`,
+    ALLOWED_ORIGINS: SITE_ORIGIN
+  };
+
+  const result = await call(env, "/api/fantasy/market?division=elite");
+  const assets = new Map(result.payload.market.map((item) => [item.id, item]));
+
+  assert.equal(result.response.status, 200);
+  assert.equal(result.payload.performanceRoundNumber, 2);
+  assert.deepEqual(assets.get("player:played").recentPoints, [21]);
+  assert.deepEqual(assets.get("team:elite:A1").recentPoints, [23]);
+  assert.deepEqual(assets.get("player:absent").recentPoints, []);
+  assert.deepEqual(assets.get("team:elite:A2").recentPoints, []);
+});
+
 sqliteTest("callback do Discord retorna diretamente para a tela do mercado", async () => {
   const database = createDatabase();
   const env = {
@@ -166,6 +249,74 @@ sqliteTest("callback do Discord retorna diretamente para a tela do mercado", asy
   }
 });
 
+sqliteTest("aviso da rodada 2 aparece uma vez somente para participante autenticado", async () => {
+  const database = createDatabase();
+  const controllerToken = "notice-controller-session";
+  const otherAdminToken = "notice-other-session";
+  await seed(database, controllerToken, otherAdminToken);
+  database.exec(`
+    INSERT INTO fantasy_teams(id, user_id, division, name)
+    VALUES('notice-team', 'discord:${CONTROLLER_ID}', 'elite', 'Time do aviso');
+    INSERT INTO fantasy_lineups(
+      id, fantasy_team_id, round_id, captain_asset_id, total_cost
+    ) VALUES(
+      'notice-lineup', 'notice-team', 'elite-r2', 'notice-player', 80
+    );
+  `);
+  const env = {
+    DB: d1(database),
+    SITE_URL: `${SITE_ORIGIN}/liga-rk-26-2/fantasy/`,
+    ALLOWED_ORIGINS: SITE_ORIGIN
+  };
+
+  const anonymous = await call(env, "/api/fantasy/notices/round-2-postponement");
+  assert.equal(anonymous.response.status, 401);
+
+  const eligible = await call(env, "/api/fantasy/notices/round-2-postponement", {
+    token: controllerToken
+  });
+  assert.equal(eligible.response.status, 200);
+  assert.equal(eligible.payload.eligible, true);
+  assert.equal(eligible.payload.acknowledged, false);
+  assert.equal(eligible.payload.showPopup, true);
+  assert.equal(eligible.payload.notice.title, "Aviso sobre a Rodada 2");
+
+  const notEligible = await call(env, "/api/fantasy/notices/round-2-postponement", {
+    token: otherAdminToken
+  });
+  assert.equal(notEligible.payload.eligible, false);
+  assert.equal(notEligible.payload.showPopup, false);
+  const forbiddenAck = await call(env, "/api/fantasy/notices/round-2-postponement/ack", {
+    method: "POST",
+    token: otherAdminToken
+  });
+  assert.equal(forbiddenAck.response.status, 403);
+
+  const acknowledged = await call(env, "/api/fantasy/notices/round-2-postponement/ack", {
+    method: "POST",
+    token: controllerToken
+  });
+  assert.equal(acknowledged.response.status, 200);
+  assert.equal(acknowledged.payload.acknowledged, true);
+
+  const repeated = await call(env, "/api/fantasy/notices/round-2-postponement/ack", {
+    method: "POST",
+    token: controllerToken
+  });
+  assert.equal(repeated.response.status, 200);
+  assert.equal(database.prepare(`
+    SELECT COUNT(*) AS count FROM fantasy_user_notices
+    WHERE user_id = 'discord:${CONTROLLER_ID}'
+  `).get().count, 1);
+
+  const after = await call(env, "/api/fantasy/notices/round-2-postponement", {
+    token: controllerToken
+  });
+  assert.equal(after.payload.eligible, true);
+  assert.equal(after.payload.acknowledged, true);
+  assert.equal(after.payload.showPopup, false);
+});
+
 async function call(env, pathname, {
   method = "GET",
   token = "",
@@ -201,7 +352,14 @@ function createDatabase() {
     "0003_github_pages_auth.sql",
     "0004_lineup_reserves.sql",
     "0005_admin_global_market.sql",
-    "0006_fantasy_formula_v2.sql"
+    "0006_fantasy_formula_v2.sql",
+    "0007_fantasy_dynamic_valuation.sql",
+    "0008_fantasy_dynamic_patrimony.sql",
+    "0009_fantasy_user_notices.sql",
+    "0010_fantasy_shared_round_patrimony.sql",
+    "0011_fantasy_division_patrimony.sql",
+    "0012_fantasy_market_access_mode.sql",
+    "0013_fantasy_round3_reserve_budget.sql"
   ]) {
     database.exec(fs.readFileSync(path.join(WORKER_ROOT, "migrations", file), "utf8"));
     database.prepare("INSERT INTO d1_migrations(name) VALUES(?)").run(file);

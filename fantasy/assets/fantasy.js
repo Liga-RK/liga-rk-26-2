@@ -57,12 +57,16 @@
     popularRound: { elite: null, ascension: null },
     closedRanking: { elite: [], ascension: [] },
     marketOpen: { elite: false, ascension: false },
+    marketAccessMode: { elite: "public", ascension: "public" },
     roundInfo: { elite: null, ascension: null },
     lineups: { elite: emptyLineup(), ascension: emptyLineup() },
     teamName: "Meu Time RK",
     userName: "",
     canControlMarket: false,
     marketControlBusy: false,
+    roundTwoNotice: null,
+    roundTwoNoticeBusy: false,
+    patrimony: { elite: null, ascension: null },
     loaded: false
   };
 
@@ -97,6 +101,11 @@
     confirmTeamLimitDialog: document.getElementById("confirm-team-limit-dialog"),
     teamLimitMessage: document.getElementById("team-limit-message"),
     teamLimitPlayers: document.getElementById("team-limit-players"),
+    calculationDialog: document.getElementById("calculation-dialog"),
+    closeCalculationDialog: document.getElementById("close-calculation-dialog"),
+    calculationDialogTitle: document.getElementById("calculation-dialog-title"),
+    calculationDialogSubtitle: document.getElementById("calculation-dialog-subtitle"),
+    calculationDialogBody: document.getElementById("calculation-dialog-body"),
     saveLineup: document.getElementById("save-lineup"),
     captainReminder: document.getElementById("captain-reminder"),
     lineupMessage: document.getElementById("lineup-message"),
@@ -111,6 +120,7 @@
     rankingScope: document.getElementById("ranking-scope"),
     rankingDivisionTabs: document.querySelectorAll("[data-ranking-division]"),
     rankingBody: document.getElementById("ranking-body"),
+    rankingWealthHeader: document.getElementById("ranking-wealth-header"),
     rankingHelper: document.getElementById("ranking-helper"),
     marketStatus: document.getElementById("market-status"),
     marketDeadline: document.getElementById("market-deadline"),
@@ -130,7 +140,17 @@
     popularDivision: document.getElementById("popular-division"),
     closedActions: document.querySelectorAll("[data-closed-action]"),
     roleShortcuts: document.querySelectorAll("[data-role-shortcut]"),
-    backToTop: document.getElementById("back-to-top")
+    backToTop: document.getElementById("back-to-top"),
+    roundTwoNotice: document.getElementById("round-two-notice"),
+    roundTwoNoticeTitle: document.getElementById("round-two-notice-title"),
+    roundTwoNoticeMessage: document.getElementById("round-two-notice-message"),
+    roundTwoNoticeDialog: document.getElementById("round-two-notice-dialog"),
+    roundTwoNoticeDialogTitle: document.getElementById("round-two-notice-dialog-title"),
+    roundTwoNoticeDialogMessage: document.getElementById("round-two-notice-dialog-message"),
+    acknowledgeRoundTwoNotice: document.getElementById("acknowledge-round-two-notice"),
+    roundTwoNoticeFeedback: document.getElementById("round-two-notice-feedback"),
+    patrimonyProfile: document.getElementById("patrimony-profile"),
+    patrimonySummaryBody: document.getElementById("patrimony-summary-body")
   };
 
   init();
@@ -142,7 +162,10 @@
     restoreLocalState();
     bindEvents();
     marketStatusTimer = window.setInterval(renderMarketShell, 30000);
-    if (config.backendMode === "cloud") await loadCloudAccount();
+    if (config.backendMode === "cloud") {
+      await loadCloudAccount();
+      await loadRoundTwoNotice();
+    }
     renderAccount();
     renderLineup();
     renderMarketShell();
@@ -153,7 +176,7 @@
       syncAllLineupsWithMarket();
       await Promise.all([loadCloudLineup("elite"), loadCloudLineup("ascension")]);
       syncAllLineupsWithMarket();
-      await Promise.all([loadCloudRanking(), loadCloudPopular(state.division)]);
+      await Promise.all([loadCloudRanking(), loadCloudPopular(state.division), loadCloudPatrimonyHistory()]);
       renderLineup();
       renderMarketShell();
       renderMarket();
@@ -190,10 +213,21 @@
       event.preventDefault();
       closeTeamLimitDialog();
     });
+    el.closeCalculationDialog.addEventListener("click", closeCalculationDialog);
+    el.calculationDialog.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      closeCalculationDialog();
+    });
     el.saveLineup.addEventListener("click", saveLineup);
     el.renameTeam.addEventListener("click", renameTeam);
     el.accountButton.addEventListener("click", handleAccountAction);
     el.homeLoginButton.addEventListener("click", startDiscordLogin);
+    if (el.acknowledgeRoundTwoNotice) el.acknowledgeRoundTwoNotice.addEventListener("click", acknowledgeRoundTwoNotice);
+    if (el.roundTwoNoticeDialog) {
+      el.roundTwoNoticeDialog.addEventListener("cancel", (event) => {
+        event.preventDefault();
+      });
+    }
     if (el.marketAdminToggle) el.marketAdminToggle.addEventListener("click", toggleMarketFromFantasy);
     el.confirmDemoUser.addEventListener("click", confirmDemoUser);
     if (el.backToTop) {
@@ -234,7 +268,7 @@
         state.market.ascension = buildMarket(content.divisions.ascension, "ascension");
       }
     } catch (error) {
-      console.warn("RK Fantasy: usando dados de demonstração.", error);
+      console.warn("Fantasy RK: usando dados de demonstração.", error);
       const content = demoContent();
       state.market.elite = buildMarket(content.divisions.elite, "elite");
       state.market.ascension = buildMarket(content.divisions.ascension, "ascension");
@@ -277,6 +311,9 @@
       matchup: cleanText(item.matchup),
       average: roundMoney(item.average),
       recentPoints: normalizeRecentPoints(item.recentPoints),
+      maintenanceScore: Number.isFinite(Number(item.maintenanceScore))
+        ? roundMoney(item.maintenanceScore)
+        : null,
       scoreDetails: objectValue(item.scoreDetails),
       valuationDetails: objectValue(item.valuationDetails)
     }));
@@ -373,7 +410,7 @@
       if (teams.length) sections.push(marketSection("Equipes", "TEAM", teams, selectedIds, lineup, reserveId, true));
       el.marketGrid.replaceChildren(...sections);
     } catch (error) {
-      console.error("RK Fantasy: falha ao montar o mercado.", error);
+      console.error("Fantasy RK: falha ao montar o mercado.", error);
       el.marketGrid.replaceChildren();
       const errorBox = document.createElement("div");
       errorBox.className = "empty-state";
@@ -628,7 +665,7 @@
     stats.className = "player-stats";
     const recent = item.recentPoints && item.recentPoints.length
       ? item.recentPoints.map((point) => formatNumber(point)).join(" · ")
-      : "aguardando rodada";
+      : "indisponível na última rodada";
     stats.innerHTML = `<span>Média: ${formatNumber(item.average)}</span><span>Performance recente: ${escapeHtml(recent)}</span>`;
     meta.append(name, team, matchup, stats);
     const breakdown = fantasyBreakdown(item);
@@ -667,15 +704,37 @@
   function fantasyBreakdown(item) {
     const score = objectValue(item.scoreDetails);
     const valuation = objectValue(item.valuationDetails);
-    if (Number(score.formulaVersion) !== 2 && Number(valuation.formulaVersion) !== 2) return null;
-    const details = document.createElement("details");
-    details.className = "fantasy-breakdown";
-    const summary = document.createElement("summary");
-    summary.textContent = "Ver cálculo da última rodada";
-    details.appendChild(summary);
-    if (Number(score.formulaVersion) === 2) {
-      const title = document.createElement("strong");
-      title.textContent = "Pontuação da rodada";
+    const dynamicValuation = valuation.formulaId === "fantasy-v3-dynamic" || Number(valuation.formulaVersion) === 3;
+    const scoreAvailable = Number(score.formulaVersion) === 2 && (score.jogou === true || Number(score.mapasDisputados) > 0);
+    const valuationAvailable = dynamicValuation && valuation.played === true;
+    const container = document.createElement("div");
+    container.className = "fantasy-breakdown";
+    if (!scoreAvailable && !valuationAvailable) {
+      const warning = document.createElement("span");
+      warning.className = "calculation-unavailable";
+      warning.textContent = "Estatística da última rodada indisponível.";
+      container.appendChild(warning);
+      return container;
+    }
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "calculation-button";
+    button.textContent = "Ver cálculo da última rodada";
+    button.addEventListener("click", () => openCalculationDialog(item));
+    container.appendChild(button);
+    return container;
+  }
+
+  function openCalculationDialog(item) {
+    const score = objectValue(item.scoreDetails);
+    const valuation = objectValue(item.valuationDetails);
+    const scoreAvailable = Number(score.formulaVersion) === 2 && (score.jogou === true || Number(score.mapasDisputados) > 0);
+    const valuationAvailable = (valuation.formulaId === "fantasy-v3-dynamic" || Number(valuation.formulaVersion) === 3) && valuation.played === true;
+    el.calculationDialogTitle.textContent = item.name;
+    el.calculationDialogSubtitle.textContent = `${ROLE_LABELS[item.role]} · ${item.teamName || item.teamTag} · última rodada processada`;
+    el.calculationDialogBody.replaceChildren();
+    if (scoreAvailable) {
+      const section = calculationSection("Pontuação da rodada");
       const list = document.createElement("ul");
       appendBreakdownLine(list, "Média dos mapas", formatNumber(score.pontuacaoMediaMapas));
       appendBreakdownLine(list, "Vitória da série", signedNumber(score.bonusVitoriaSerie));
@@ -684,22 +743,55 @@
       appendBreakdownLine(list, "Domínio de MVP", signedNumber(score.bonusMvpSerie));
       appendBreakdownLine(list, "Série sem mortes", signedNumber(score.bonusSemMortes));
       appendBreakdownLine(list, "Total oficial", formatNumber(score.pontuacaoOficial), true);
-      details.append(title, list);
+      section.appendChild(list);
+      el.calculationDialogBody.appendChild(section);
     }
-    if (Number(valuation.formulaVersion) === 2 && item.type === "player") {
-      const title = document.createElement("strong");
-      title.textContent = "Mercado";
+    if (valuationAvailable && item.type === "team") {
+      const section = calculationSection("Pontuação da equipe");
+      const list = document.createElement("ul");
+      appendBreakdownLine(list, "Média oficial da rodada", formatNumber(valuation.roundPoints), true);
+      appendBreakdownLine(list, "Mapas disputados", String(Math.max(0, Number(valuation.games) || 0)));
+      section.appendChild(list);
+      el.calculationDialogBody.appendChild(section);
+    }
+    if (valuationAvailable) {
+      const section = calculationSection("Mercado");
       const list = document.createElement("ul");
       appendBreakdownLine(list, "Preço anterior", `RK$ ${formatMoney(valuation.currentPrice)}`);
       appendBreakdownLine(list, "Pontuação esperada", formatNumber(valuation.expectedScore));
-      appendBreakdownLine(list, "Média histórica (M3)",
+      appendBreakdownLine(list, "Desempenho ajustado",
+        valuation.adjustedPerformance == null ? "não atuou" : formatNumber(valuation.adjustedPerformance));
+      appendBreakdownLine(list, "Média recente",
+        valuation.recentAverage == null ? "sem histórico" : formatNumber(valuation.recentAverage));
+      appendBreakdownLine(list, "Média da temporada",
         valuation.historicalAverage == null ? "sem histórico" : formatNumber(valuation.historicalAverage));
       appendBreakdownLine(list, "Pontuação realizada", formatNumber(valuation.roundPoints));
+      appendBreakdownLine(list, "Fator de participação", `${formatNumber(Number(valuation.participationFactor) * 100)}%`);
       appendBreakdownLine(list, "Variação", signedMoney(valuation.delta));
       appendBreakdownLine(list, "Novo preço", `RK$ ${formatMoney(valuation.newPrice)}`, true);
-      details.append(title, list);
+      section.appendChild(list);
+      el.calculationDialogBody.appendChild(section);
     }
-    return details;
+    if (!scoreAvailable && !valuationAvailable) {
+      const warning = document.createElement("p");
+      warning.className = "calculation-unavailable";
+      warning.textContent = "Estatística da última rodada indisponível.";
+      el.calculationDialogBody.appendChild(warning);
+    }
+    if (!el.calculationDialog.open) el.calculationDialog.showModal();
+  }
+
+  function calculationSection(title) {
+    const section = document.createElement("section");
+    section.className = "calculation-section";
+    const heading = document.createElement("h3");
+    heading.textContent = title;
+    section.appendChild(heading);
+    return section;
+  }
+
+  function closeCalculationDialog() {
+    if (el.calculationDialog.open) el.calculationDialog.close();
   }
 
   function appendBreakdownLine(list, label, value, total = false) {
@@ -735,7 +827,7 @@
     const lineup = currentLineup();
     syncLineupWithMarket(state.division);
     el.lineupSlots.replaceChildren(...ROLE_ORDER.map((role) => lineupSlot(role, lineup.slots[role])), reserveSlot(lineup.reserve));
-    const spent = lineupPurchaseCost(lineup);
+    const spent = lineupCurrentValue(lineup);
     const selected = Object.values(lineup.slots).filter(Boolean).length;
     el.budgetTotal.textContent = formatMoney(lineupPatrimony(lineup));
     el.budgetSpent.textContent = formatMoney(spent);
@@ -744,7 +836,7 @@
     el.fantasyTeamName.textContent = state.teamName;
     const reserveError = lineup.reserve && selected === 6 ? reserveValidationMessage(lineup.reserve, lineup) : "";
     const closed = !isMarketOpen();
-    const overBudget = spent > config.budget + 0.001;
+    const overBudget = lineupStarterPurchaseCost(lineup) > config.budget + 0.001;
     el.saveLineup.disabled = closed || selected !== 6 || !lineup.captainId || overBudget || Boolean(reserveError);
     el.saveLineup.textContent = closed ? "Mercado fechado" : (lineup.saved ? "Atualizar escalação" : "Salvar escalação");
     el.shareLineup.disabled = selected === 0;
@@ -864,7 +956,7 @@
   function addItem(item) {
     const lineup = currentLineup();
     const replacing = lineup.slots[item.role];
-    const nextCost = lineupPurchaseCost(lineup) - (replacing ? itemPurchasePrice(replacing) : 0) + Number(item.price || 0);
+    const nextCost = lineupStarterPurchaseCost(lineup) - (replacing ? itemPurchasePrice(replacing) : 0) + Number(item.price || 0);
     if (nextCost > config.budget + 0.001) {
       setMessage("Seu orçamento não é suficiente para essa escolha.", true);
       return;
@@ -1064,6 +1156,7 @@
   function setDivision(division) {
     if (!state.lineups[division]) return;
     state.division = division;
+    activatePatrimonyForDivision(division);
     el.roleFilter.value = "ALL";
     el.search.value = "";
     el.roleShortcuts.forEach((button) => button.classList.toggle("active", button.dataset.roleShortcut === "ALL"));
@@ -1100,6 +1193,7 @@
     state.view = view;
     el.navButtons.forEach((button) => button.classList.toggle("active", button.dataset.view === view));
     el.views.forEach((section) => section.classList.toggle("active", section.id === `${view}-view`));
+    renderPatrimonyProfile();
     if (view === "market") {
       renderMarketShell();
     }
@@ -1125,7 +1219,7 @@
   }
 
   function renameTeam() {
-    const next = window.prompt("Nome do seu time no RK Fantasy:", state.teamName);
+    const next = window.prompt("Nome do seu time no Fantasy RK:", state.teamName);
     if (next === null) return;
     const clean = cleanText(next).slice(0, 32);
     if (!clean) return;
@@ -1184,12 +1278,16 @@
     state.userName = "";
     state.canControlMarket = false;
     state.marketControlBusy = false;
+    clearRoundTwoNotice();
     state.teamName = "Meu Time RK";
     state.lineups = { elite: emptyLineup(), ascension: emptyLineup() };
+    state.patrimony = { elite: null, ascension: null };
+    activatePatrimonyForDivision(state.division);
     try { localStorage.removeItem("fantasy-rk-state-v1"); } catch {}
     renderAccount();
     renderLineup();
     renderMarket();
+    renderPatrimonyProfile();
     renderClosedLineups();
   }
 
@@ -1283,6 +1381,7 @@
 
   function renderRankingRows(rows) {
     if (!el.rankingBody) return;
+    const showWealth = !rankingUsesAllDivisions();
     el.rankingBody.innerHTML = rows.length ? rows.map((row) => `
       <tr>
         <td>${Number(row.position) || "-"}</td>
@@ -1292,16 +1391,17 @@
         <td>${escapeHtml(row.manager || "-")}</td>
         <td class="number-cell">${formatNumber(row.roundPoints)}</td>
         <td class="number-cell">${formatNumber(row.totalPoints)}</td>
-        <td class="number-cell">RK$ ${formatMoney(Number(row.wealthCents || 0) / 100)}</td>
+        ${showWealth ? `<td class="number-cell">RK$ ${formatMoney(Number(row.wealthCents || 0) / 100)}</td>` : ""}
         <td class="number-cell">${formatNumber(row.averagePoints)}</td>
         <td class="number-cell">${formatNumber(row.bestRoundPoints)}</td>
       </tr>
-    `).join("") : `<tr><td colspan="10">O ranking ainda não possui pontuações.</td></tr>`;
+    `).join("") : `<tr><td colspan="${showWealth ? 10 : 9}">O ranking ainda não possui pontuações.</td></tr>`;
   }
 
   function updateRankingControls() {
     if (el.rankingScope) el.rankingScope.value = state.rankingScope;
     const allDivisions = rankingUsesAllDivisions();
+    if (el.rankingWealthHeader) el.rankingWealthHeader.hidden = allDivisions;
     el.rankingDivisionTabs.forEach((button) => {
       button.classList.toggle("active", button.dataset.rankingDivision === state.rankingDivision);
       button.disabled = allDivisions;
@@ -1330,12 +1430,148 @@
       const response = await apiFetch("/api/fantasy/me", { cache: "no-store" });
       const payload = await response.json().catch(() => ({}));
       state.userName = response.ok && payload.authenticated && payload.user ? cleanText(payload.user.username) : "";
+      const profiles = response.ok && payload.authenticated ? (payload.patrimony || payload.data?.patrimony || {}) : {};
+      state.patrimony.elite = profiles.elite || null;
+      state.patrimony.ascension = profiles.ascension || null;
+      activatePatrimonyForDivision(state.division);
       state.canControlMarket = Boolean(response.ok && payload.authenticated && payload.canControlMarket);
       if (!state.userName && authToken) clearAuthToken();
     } catch (error) {
       state.canControlMarket = false;
-      console.warn("Não foi possível consultar a sessão do RK Fantasy.", error);
+      console.warn("Não foi possível consultar a sessão do Fantasy RK.", error);
     }
+  }
+
+  async function loadRoundTwoNotice() {
+    if (!state.userName || config.backendMode !== "cloud") {
+      clearRoundTwoNotice();
+      return;
+    }
+    try {
+      const response = await apiFetch("/api/fantasy/notices/round-2-postponement", { cache: "no-store" });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(apiErrorMessage(payload, "Aviso da Rodada 2 indisponível."));
+      const eligible = Boolean(payload.eligible ?? payload.data?.eligible);
+      const notice = payload.notice || payload.data?.notice || null;
+      if (!eligible || !notice) {
+        clearRoundTwoNotice();
+        return;
+      }
+      state.roundTwoNotice = {
+        ...notice,
+        acknowledged: Boolean(payload.acknowledged ?? payload.data?.acknowledged)
+      };
+      renderRoundTwoNotice();
+      const showPopup = Boolean(payload.showPopup ?? payload.data?.showPopup);
+      if (showPopup && el.roundTwoNoticeDialog && !el.roundTwoNoticeDialog.open) {
+        el.roundTwoNoticeDialog.showModal();
+      }
+    } catch (error) {
+      clearRoundTwoNotice();
+      console.warn("Não foi possível carregar o aviso da Rodada 2.", error);
+    }
+  }
+
+  function renderRoundTwoNotice() {
+    const notice = state.roundTwoNotice;
+    if (el.roundTwoNotice) el.roundTwoNotice.hidden = !notice || !state.userName;
+    if (!notice || !state.userName) return;
+    if (el.roundTwoNoticeTitle) el.roundTwoNoticeTitle.textContent = notice.title;
+    if (el.roundTwoNoticeMessage) el.roundTwoNoticeMessage.textContent = notice.message;
+    if (el.roundTwoNoticeDialogTitle) el.roundTwoNoticeDialogTitle.textContent = notice.title;
+    if (el.roundTwoNoticeDialogMessage) el.roundTwoNoticeDialogMessage.textContent = notice.message;
+  }
+
+  async function acknowledgeRoundTwoNotice() {
+    if (!state.userName || !state.roundTwoNotice || state.roundTwoNoticeBusy) return;
+    state.roundTwoNoticeBusy = true;
+    if (el.acknowledgeRoundTwoNotice) {
+      el.acknowledgeRoundTwoNotice.disabled = true;
+      el.acknowledgeRoundTwoNotice.textContent = "Salvando...";
+    }
+    if (el.roundTwoNoticeFeedback) el.roundTwoNoticeFeedback.textContent = "";
+    try {
+      const response = await apiFetch("/api/fantasy/notices/round-2-postponement/ack", {
+        method: "POST",
+        cache: "no-store"
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || !(payload.acknowledged ?? payload.data?.acknowledged)) {
+        throw new Error(apiErrorMessage(payload, "Não foi possível confirmar o aviso."));
+      }
+      state.roundTwoNotice.acknowledged = true;
+      if (el.roundTwoNoticeDialog?.open) el.roundTwoNoticeDialog.close();
+    } catch (error) {
+      if (el.roundTwoNoticeFeedback) {
+        el.roundTwoNoticeFeedback.textContent = error.message || "Não foi possível confirmar agora. Tente novamente.";
+      }
+    } finally {
+      state.roundTwoNoticeBusy = false;
+      if (el.acknowledgeRoundTwoNotice) {
+        el.acknowledgeRoundTwoNotice.disabled = false;
+        el.acknowledgeRoundTwoNotice.textContent = "Entendido";
+      }
+    }
+  }
+
+  function clearRoundTwoNotice() {
+    state.roundTwoNotice = null;
+    state.roundTwoNoticeBusy = false;
+    if (el.roundTwoNotice) el.roundTwoNotice.hidden = true;
+    if (el.roundTwoNoticeFeedback) el.roundTwoNoticeFeedback.textContent = "";
+    if (el.roundTwoNoticeDialog?.open) el.roundTwoNoticeDialog.close();
+  }
+
+  async function loadCloudPatrimonyHistory() {
+    if (!state.userName || config.backendMode !== "cloud") {
+      renderPatrimonyProfile();
+      return;
+    }
+    try {
+      const response = await apiFetch("/api/fantasy/history/me", { cache: "no-store" });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(apiErrorMessage(payload, "Histórico patrimonial indisponível."));
+      const profiles = payload.profiles || payload.data?.profiles || {};
+      state.patrimony.elite = profiles.elite || state.patrimony.elite;
+      state.patrimony.ascension = profiles.ascension || state.patrimony.ascension;
+      activatePatrimonyForDivision(state.division);
+    } catch (error) {
+      console.warn("Não foi possível carregar o histórico patrimonial.", error);
+    }
+    renderPatrimonyProfile();
+  }
+
+  function renderPatrimonyProfile() {
+    if (!el.patrimonyProfile) return;
+    el.patrimonyProfile.hidden = !state.userName || state.view !== "market";
+    if (!state.userName || !el.patrimonySummaryBody) return;
+    el.patrimonySummaryBody.innerHTML = ["elite", "ascension"].map((division) => {
+      const profile = state.patrimony[division] || {
+        previousCents: 10000,
+        currentCents: 10000,
+        roundVariationCents: 0,
+        totalVariationCents: 0,
+        maximumCents: 10000,
+        minimumCents: 10000
+      };
+      return `
+        <div class="patrimony-summary-row" role="row">
+          <span role="cell"><span class="division-pill">${escapeHtml(divisionLabel(division))}</span></span>
+          <strong role="cell">RK$ ${formatMoney(Number(profile.previousCents) / 100)}</strong>
+          <strong role="cell">RK$ ${formatMoney(Number(profile.currentCents) / 100)}</strong>
+          <strong role="cell">${signedMoney(Number(profile.roundVariationCents) / 100)}</strong>
+          <strong role="cell">${signedMoney(Number(profile.totalVariationCents) / 100)}</strong>
+          <strong role="cell">RK$ ${formatMoney(Number(profile.maximumCents) / 100)}</strong>
+          <strong role="cell">RK$ ${formatMoney(Number(profile.minimumCents) / 100)}</strong>
+        </div>`;
+    }).join("");
+  }
+
+  function activatePatrimonyForDivision(division) {
+    const profile = state.patrimony[division];
+    config.budget = Number.isFinite(Number(profile?.currentCents))
+      ? roundMoney(Number(profile.currentCents) / 100)
+      : 100;
   }
 
   async function loadCloudLineup(division) {
@@ -1343,9 +1579,18 @@
     try {
       const response = await apiFetch(`/api/fantasy/lineups/current?division=${encodeURIComponent(division)}`, { cache: "no-store" });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok || !payload.lineup) return;
+      const patrimony = payload.patrimony || payload.data?.patrimony || null;
+      if (patrimony) {
+        state.patrimony[division] = patrimony;
+        if (division === state.division) activatePatrimonyForDivision(division);
+      }
+      if (!response.ok) return;
+      if (!payload.lineup) {
+        state.lineups[division] = emptyLineup();
+        persistLocalState();
+        return;
+      }
       if (payload.team && payload.team.name) state.teamName = cleanText(payload.team.name);
-      const previousReserve = state.lineups[division] && state.lineups[division].reserve;
       const lineup = emptyLineup();
       for (const pick of payload.lineup.picks || []) {
         const role = normalizeRole(pick.role);
@@ -1355,10 +1600,6 @@
       if (payload.lineup.reserve && payload.lineup.reserve.id) {
         const reserveItem = state.market[division].find((item) => item.id === String(payload.lineup.reserve.id));
         if (reserveItem && reserveItem.type === "player") lineup.reserve = savedMarketItem(reserveItem, payload.lineup.reserve, division);
-      }
-      if (!lineup.reserve && previousReserve && previousReserve.id) {
-        const reserveItem = state.market[division].find((item) => item.id === String(previousReserve.id));
-        if (reserveItem && reserveItem.type === "player" && !reserveValidationMessage(reserveItem, lineup)) lineup.reserve = reserveItem;
       }
       lineup.captainId = cleanText(payload.lineup.captain_asset_id || payload.lineup.captainId);
       lineup.saved = true;
@@ -1426,14 +1667,25 @@
     try {
       const response = await apiFetch(`/api/fantasy/config?division=${encodeURIComponent(division)}`, { cache: "no-store" });
       const payload = await response.json().catch(() => ({}));
+      const rules = payload.rules || payload.data?.rules || {};
+      const patrimony = payload.patrimony || payload.data?.patrimony || null;
+      if (division === state.division && Number.isFinite(Number(rules.budget))) {
+        config.budget = roundMoney(rules.budget);
+      }
+      if (patrimony) {
+        state.patrimony[division] = patrimony;
+        if (division === state.division) activatePatrimonyForDivision(division);
+      }
       const round = normalizeRoundInfo(payload.round);
       if (!response.ok || !round) return;
       const market = payload.market || payload.data?.market || null;
+      state.marketAccessMode[division] = market?.accessMode === "admin" ? "admin" : "public";
       const open = market
         ? market.status === "open" && Date.now() < Date.parse(market.closesAt)
         : round.status === "open" && Date.now() < Date.parse(round.locks_at);
       state.roundInfo[division] = round;
       state.marketOpen[division] = open;
+      renderPatrimonyProfile();
       if (division === state.division) {
         updateMarketStatus();
         renderLineup();
@@ -1503,6 +1755,9 @@
       priceDelta: roundMoney(Number(item.price) - Number(Number.isFinite(Number(item.previousPrice)) ? item.previousPrice : item.price)),
       average: roundMoney(item.average),
       recentPoints: normalizeRecentPoints(item.recentPoints),
+      maintenanceScore: Number.isFinite(Number(item.maintenanceScore))
+        ? roundMoney(item.maintenanceScore)
+        : null,
       picks: normalizePickCount(item.picks)
     };
   }
@@ -1536,7 +1791,7 @@
       renderRankingRows(rows);
     } catch (error) {
       console.warn("Não foi possível carregar o ranking online.", error);
-      if (el.rankingBody) el.rankingBody.innerHTML = `<tr><td colspan="10">Não foi possível carregar o ranking agora.</td></tr>`;
+      if (el.rankingBody) el.rankingBody.innerHTML = `<tr><td colspan="${rankingUsesAllDivisions() ? 9 : 10}">Não foi possível carregar o ranking agora.</td></tr>`;
     }
   }
 
@@ -1616,7 +1871,7 @@
   function fantasySaveErrorMessage(payload, lineup) {
     const message = apiErrorMessage(payload, "Não foi possível salvar a escalação.");
     if (!isBudgetRejection(message)) return message;
-    const localCost = formatMoney(lineupPurchaseCost(lineup));
+    const localCost = formatMoney(lineupStarterPurchaseCost(lineup));
     return `Sua escalação está em RK$ ${localCost} após a atualização dos preços. Troque uma ou mais escolhas para ficar dentro do limite de RK$ ${formatMoney(config.budget)} e tente salvar novamente.`;
   }
 
@@ -1687,11 +1942,14 @@
     const opensAt = Date.parse(round?.opens_at);
     const locksAt = Date.parse(round?.locks_at);
     const open = Boolean(round && round.status === "open" && Number.isFinite(locksAt) && now < locksAt && (!Number.isFinite(opensAt) || now >= opensAt));
+    const administrative = open && state.marketAccessMode[state.division] === "admin" && state.canControlMarket;
     if (round) state.marketOpen[state.division] = open;
-    el.marketStatus.textContent = open ? "MERCADO ABERTO" : "MERCADO FECHADO";
+    el.marketStatus.textContent = open ? (administrative ? "MERCADO ADMINISTRATIVO" : "MERCADO ABERTO") : "MERCADO FECHADO";
     el.marketStatus.style.color = open ? "var(--success)" : "var(--danger)";
     if (open) {
-      el.marketDeadline.textContent = `Mercado fecha em ${formatCountdown(locksAt - now)}`;
+      el.marketDeadline.textContent = administrative
+        ? `Acesso exclusivo da administração · fecha em ${formatCountdown(locksAt - now)}`
+        : `Mercado fecha em ${formatCountdown(locksAt - now)}`;
       return;
     }
     if (round?.status === "scheduled" && Number.isFinite(opensAt) && opensAt > now) {
@@ -1714,6 +1972,9 @@
   }
 
   function closedMarketDetail(round) {
+    if (state.marketAccessMode[state.division] === "admin") {
+      return "Mercado temporariamente disponível apenas para a administração.";
+    }
     if (!round) return "Aguarde a organização abrir a próxima rodada.";
     const opensAt = Date.parse(round.opens_at);
     if (round.status === "scheduled" && Number.isFinite(opensAt) && opensAt > Date.now()) {
@@ -1732,19 +1993,25 @@
   }
 
   function lineupPurchaseCost(lineup) {
-    return roundMoney(Object.values(lineup.slots).reduce((total, item) => total + (item ? itemPurchasePrice(item) : 0), 0));
+    const starters = Object.values(lineup.slots).reduce((total, item) => total + (item ? itemPurchasePrice(item) : 0), 0);
+    return roundMoney(starters + (lineup.reserve ? itemPurchasePrice(lineup.reserve) : 0));
   }
 
   function lineupCurrentValue(lineup) {
-    return roundMoney(Object.values(lineup.slots).reduce((total, item) => total + (item ? Number(item.price) : 0), 0));
+    const starters = Object.values(lineup.slots).reduce((total, item) => total + (item ? Number(item.price) : 0), 0);
+    return roundMoney(starters + (lineup.reserve ? Number(lineup.reserve.price) : 0));
+  }
+
+  function lineupStarterPurchaseCost(lineup) {
+    return roundMoney(Object.values(lineup.slots).reduce((total, item) => total + (item ? itemPurchasePrice(item) : 0), 0));
   }
 
   function lineupCash(lineup) {
-    return roundMoney(config.budget - lineupPurchaseCost(lineup));
+    return roundMoney(config.budget - lineupCurrentValue(lineup));
   }
 
-  function lineupPatrimony(lineup) {
-    return roundMoney(lineupCash(lineup) + lineupCurrentValue(lineup));
+  function lineupPatrimony(_lineup) {
+    return roundMoney(config.budget);
   }
 
   function starterPlayers(lineup) {
@@ -1752,10 +2019,8 @@
   }
 
   function reserveBudget(lineup) {
-    const players = starterPlayers(lineup);
-    const cheapestPlayer = players.length ? Math.min(...players.map((item) => Number(item.price) || 0)) : 0;
-    const remainingBudget = lineupCash(lineup);
-    return roundMoney(remainingBudget + cheapestPlayer);
+    const remainingBudget = lineupCash({ ...lineup, reserve: null });
+    return roundMoney(Math.max(0, remainingBudget));
   }
 
   function reserveValidationMessage(item, lineup) {
@@ -1872,7 +2137,7 @@
   }
 
   function shareLineupText() {
-    return `Minha escalação no RK Fantasy da Liga RK! ${officialSiteUrl()}`;
+    return `Minha escalação no Fantasy RK da Liga RK! ${officialSiteUrl()}`;
   }
 
   function setShareMessage(message, isError = false, isSuccess = false) {
@@ -1893,7 +2158,7 @@
     if (canSharePreparedFile()) {
       try {
         await navigator.share({
-          title: `${state.teamName} — RK Fantasy`,
+          title: `${state.teamName} — Fantasy RK`,
           text: shareLineupText(),
           files: [preparedShare.file]
         });
@@ -1930,7 +2195,7 @@
     if (!canSharePreparedFile()) return;
     try {
       await navigator.share({
-        title: `${state.teamName} — RK Fantasy`,
+        title: `${state.teamName} — Fantasy RK`,
         text: shareLineupText(),
         files: [preparedShare.file]
       });
@@ -1989,7 +2254,7 @@
     ctx.font = "39px Anton, Impact, sans-serif";
     ctx.fillText(fitCanvasText(ctx, state.teamName, 950), 88, 275);
 
-    const spent = lineupPurchaseCost(lineup);
+    const spent = lineupCurrentValue(lineup);
     const finance = [
       ["PATRIMÔNIO", lineupPatrimony(lineup)],
       ["UTILIZADO", spent],
@@ -2089,7 +2354,7 @@
 
     ctx.fillStyle = "#9c9497";
     ctx.font = "18px Inter, Arial, sans-serif";
-    ctx.fillText(`Monte seu time no RK Fantasy · ${officialSiteLabel()}`, 60, 1452);
+    ctx.fillText(`Escale seu time no Fantasy RK · ${officialSiteLabel()}`, 60, 1452);
     ctx.fillStyle = "#e52632";
     ctx.fillRect(60, 1473, 1080, 4);
 
@@ -2213,7 +2478,7 @@
   }
 
   function demoRecentPoints(seed) {
-    return [0, 1, 2].map((index) => roundMoney(8 + ((stableNumber(`${seed}:${index}`) % 1200) / 100)));
+    return [roundMoney(8 + ((stableNumber(`${seed}:latest`) % 1200) / 100))];
   }
 
   function formatNumber(value) {

@@ -1,4 +1,6 @@
 import formulaV2 from "../src/fantasy/formula-v2.cjs";
+import valuationV3 from "../src/fantasy/valuation-v3.cjs";
+import patrimonyV2 from "../src/fantasy/patrimony-v2.cjs";
 
 const ADMIN_COOKIE = "fantasy_admin_session";
 const ADMIN_SESSION_HOURS = 8;
@@ -15,30 +17,34 @@ const PLAYER_ROLES = ["TOP", "JG", "MID", "ADC", "SUP"];
 const ALL_ROLES = [...PLAYER_ROLES, "TEAM"];
 const DEFAULT_SOURCE_URL =
   "https://liga-rk.github.io/liga-rk-26-2/assets/fantasy-source.json";
-const DEFAULT_FORMULA_SETTINGS = Object.freeze({
-  scoreMinimum: -10,
-  scoreMaximum: 50,
-  captainMultiplier: 1.5,
-  expectedPointsPerPrice: 0.9,
-  priceDeltaDivisor: 7,
-  priceDeltaMinimum: -2,
-  priceDeltaMaximum: 2,
-  priceMinimum: 4,
-  priceMaximum: 30,
-  historyRounds: 3,
-  didNotPlay: "hold"
+const OFFICIAL_MATCH_OVERRIDES = Object.freeze({
+  "elite:2:r2g7": Object.freeze({
+    status: "postponed",
+    excludedFromScoring: true,
+    reason: "FVL x SDK foi adiado após o fechamento do mercado da rodada 2."
+  })
 });
+const DEFAULT_FORMULA_SETTINGS = valuationV3.DEFAULT_VALUATION_SETTINGS;
 const {
   FORMULA_ID,
-  calcularValorizacao,
   processarRodadaFantasy,
   calcularPontuacaoEscalacao
 } = formulaV2;
+const {
+  VALUATION_FORMULA_ID,
+  VALUATION_FORMULA_VERSION,
+  calculateFantasyValuation
+} = valuationV3;
+const {
+  PATRIMONY_FORMULA_ID,
+  calculateParticipantPatrimony
+} = patrimonyV2;
 const BACKUP_TABLES = Object.freeze([
   "d1_migrations",
   "fantasy_users",
   "fantasy_sessions",
   "fantasy_login_codes",
+  "fantasy_user_notices",
   "fantasy_rounds",
   "fantasy_market",
   "fantasy_market_state",
@@ -55,6 +61,7 @@ const BACKUP_TABLES = Object.freeze([
   "fantasy_round_matches",
   "fantasy_market_snapshots",
   "fantasy_wealth_snapshots",
+  "fantasy_participant_patrimony",
   "fantasy_asset_map_scores",
   "fantasy_imports",
   "fantasy_round_processing",
@@ -62,6 +69,9 @@ const BACKUP_TABLES = Object.freeze([
   "fantasy_private_league_members",
   "fantasy_formula_settings",
   "fantasy_price_simulations",
+  "fantasy_patrimony_history",
+  "fantasy_price_history",
+  "fantasy_valuation_rollbacks",
   "fantasy_audit_log",
   "fantasy_error_log"
 ]);
@@ -77,6 +87,7 @@ const RESTORE_TABLES = Object.freeze([
   "fantasy_teams",
   "fantasy_sessions",
   "fantasy_login_codes",
+  "fantasy_user_notices",
   "fantasy_lineups",
   "fantasy_lineup_picks",
   "fantasy_lineup_reserves",
@@ -85,6 +96,7 @@ const RESTORE_TABLES = Object.freeze([
   "fantasy_round_matches",
   "fantasy_market_snapshots",
   "fantasy_wealth_snapshots",
+  "fantasy_participant_patrimony",
   "fantasy_asset_map_scores",
   "fantasy_imports",
   "fantasy_round_processing",
@@ -92,6 +104,9 @@ const RESTORE_TABLES = Object.freeze([
   "fantasy_private_league_members",
   "fantasy_formula_settings",
   "fantasy_price_simulations",
+  "fantasy_patrimony_history",
+  "fantasy_price_history",
+  "fantasy_valuation_rollbacks",
   "fantasy_audit_log",
   "fantasy_error_log"
 ]);
@@ -129,6 +144,8 @@ export async function handleAdminRequest(request, env, requestId) {
     ["GET", "/api/fantasy/admin/scores", adminScores],
     ["POST", "/api/fantasy/admin/valuation/simulate", adminValuationSimulate],
     ["POST", "/api/fantasy/admin/valuation/apply", adminValuationApply],
+    ["POST", "/api/fantasy/admin/valuation/review", adminValuationReview],
+    ["POST", "/api/fantasy/admin/valuation/rollback", adminValuationRollback],
     ["POST", "/api/fantasy/admin/valuation/cancel", adminValuationCancel],
     ["GET", "/api/fantasy/admin/valuation/history", adminValuationHistory],
     ["GET", "/api/fantasy/admin/formula", adminGetFormula],
@@ -213,7 +230,7 @@ export async function recordError(env, request, requestId, error, actor = null) 
 
 export async function getGlobalMarketState(env) {
   return env.DB.prepare(`
-    SELECT id, status, opened_at, closes_at, closed_at, opened_by, closed_by,
+    SELECT id, status, access_mode, opened_at, closes_at, closed_at, opened_by, closed_by,
            close_reason, lock_match_id, lock_division, lock_round_number,
            version, updated_at
     FROM fantasy_market_state WHERE id = ?
@@ -233,6 +250,7 @@ export function publicMarketState(row) {
   return {
     id: row.id,
     status: row.status,
+    accessMode: row.access_mode || "public",
     openedAt: row.opened_at,
     closesAt: row.closes_at,
     closedAt: row.closed_at,
@@ -533,7 +551,7 @@ async function adminOpenMarket(request, env, requestId, auth) {
   await env.DB.batch([
     env.DB.prepare(`
       UPDATE fantasy_market_state
-      SET status = 'open', opened_at = ?, closes_at = ?, closed_at = NULL,
+      SET status = 'open', access_mode = 'public', opened_at = ?, closes_at = ?, closed_at = NULL,
           opened_by = ?, closed_by = NULL, close_reason = NULL,
           lock_match_id = ?, lock_division = ?, lock_round_number = ?,
           version = version + 1, updated_at = CURRENT_TIMESTAMP
@@ -593,6 +611,32 @@ export async function openMarketFromDiscordAdmin(request, env, requestId, userna
 
 export async function closeMarketFromDiscordAdmin(request, env, requestId, username) {
   return adminCloseMarket(request, env, requestId, { username });
+}
+
+export async function setMarketAccessFromDiscordAdmin(request, env, requestId, username) {
+  const body = await readJson(request);
+  const accessMode = clean(body.accessMode) === "admin" ? "admin" : "public";
+  const before = await getGlobalMarketState(env);
+  if (!before || before.status !== "open") {
+    return failure("MARKET_NOT_OPEN", "Abra o mercado antes de alterar o acesso.", 409);
+  }
+  await env.DB.prepare(`
+    UPDATE fantasy_market_state
+    SET access_mode = ?, version = version + 1, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ? AND status = 'open'
+  `).bind(accessMode, GLOBAL_MARKET_ID).run();
+  const after = await getGlobalMarketState(env);
+  await audit(env, {
+    actor: username,
+    action: "market.access",
+    targetType: "global_market",
+    targetId: GLOBAL_MARKET_ID,
+    before,
+    after,
+    metadata: { accessMode },
+    requestId
+  });
+  return success({ market: publicMarketState(after) });
 }
 
 async function adminMarketStatus(_request, env) {
@@ -1029,11 +1073,12 @@ function mergeLiveOfficialContent(source, liveContent, updatedAt = null) {
   for (const division of DIVISIONS) {
     const sourceDivision = source.divisions?.[division] || {};
     const liveDivision = liveContent.divisions?.[division];
-    if (!liveDivision?.teams) {
+    if (!liveDivision) {
       merged.divisions[division] = sourceDivision;
       continue;
     }
-    const teams = Object.entries(liveDivision.teams).map(([rawSlot, rawTeam]) => {
+    const liveTeams = liveDivision.teams || {};
+    const teams = Object.entries(liveTeams).map(([rawSlot, rawTeam]) => {
       const slot = clean(rawSlot).toUpperCase();
       return {
         id: `team:${division}:${slot}`,
@@ -1052,23 +1097,60 @@ function mergeLiveOfficialContent(source, liveContent, updatedAt = null) {
             riotIdAliases: arrayValues(player.riotIdAliases).map(clean).filter(Boolean),
             opgg: clean(player.opgg),
             captain: Boolean(player.captain)
-          }))
+        }))
       };
     });
-    const namesBySlot = new Map(teams.map((team) => [team.slot, team.name]));
+    const effectiveTeams = teams.length ? teams : arrayValues(sourceDivision.teams);
+    const namesBySlot = new Map(effectiveTeams.map((team) => [clean(team.slot).toUpperCase(), team.name]));
+    const statSeriesIds = new Set(arrayValues(sourceDivision.stats?.matches)
+      .map((match) => clean(match.seriesId))
+      .filter(Boolean));
+    const liveResults = liveDivision.results || {};
     const rounds = arrayValues(sourceDivision.rounds).map((round) => ({
       ...round,
-      matches: arrayValues(round.matches).map((match) => ({
-        ...match,
-        homeTeamName: namesBySlot.get(clean(match.homeTeamSlot || match.homeSlot).toUpperCase()) ||
-          clean(match.homeTeamName),
-        awayTeamName: namesBySlot.get(clean(match.awayTeamSlot || match.awaySlot).toUpperCase()) ||
-          clean(match.awayTeamName)
-      }))
+      matches: arrayValues(round.matches).map((match) => {
+        const roundNumber = Math.trunc(Number(round.roundNumber || round.number));
+        const sourceId = clean(match.sourceId || match.id);
+        const stage = clean(match.stage) || "groups";
+        const statsSeriesId = clean(match.statsSeriesId) || `${stage}-${sourceId}`;
+        const liveResult = liveResults[sourceId];
+        const homeScore = nullableInteger(liveResult?.homeScore);
+        const awayScore = nullableInteger(liveResult?.awayScore);
+        const hasFinalScore = homeScore !== null && awayScore !== null && homeScore !== awayScore;
+        const manualResult = Boolean(liveResult?.manualOverride);
+        const hasDetailedStats = statSeriesIds.has(statsSeriesId);
+        const override = OFFICIAL_MATCH_OVERRIDES[`${division}:${roundNumber}:${sourceId}`] || null;
+        const status = override?.status || (hasFinalScore ? "completed" : validMatchStatus(match.status));
+        const isWalkover = !override && hasFinalScore && manualResult && !hasDetailedStats;
+        const homeSlot = clean(match.homeTeamSlot || match.homeSlot).toUpperCase();
+        const awaySlot = clean(match.awayTeamSlot || match.awaySlot).toUpperCase();
+        const winnerSlot = hasFinalScore ? (homeScore > awayScore ? homeSlot : awaySlot) : "";
+        return {
+          ...match,
+          homeTeamName: namesBySlot.get(homeSlot) || clean(match.homeTeamName),
+          awayTeamName: namesBySlot.get(awaySlot) || clean(match.awayTeamName),
+          status,
+          homeScore: hasFinalScore ? homeScore : nullableInteger(match.homeScore),
+          awayScore: hasFinalScore ? awayScore : nullableInteger(match.awayScore),
+          winnerTeamId: winnerSlot ? `team:${division}:${winnerSlot}` : null,
+          statsSeriesId,
+          isWalkover,
+          excludedFromScoring: Boolean(
+            override?.excludedFromScoring || isWalkover || ["postponed", "cancelled"].includes(status)
+          ),
+          scheduleIssue: clean(override?.reason || match.scheduleIssue),
+          officialResult: liveResult ? {
+            homeScore,
+            awayScore,
+            manualOverride: manualResult,
+            updatedAt: isoDate(updatedAt) || clean(updatedAt) || null
+          } : null
+        };
+      })
     }));
     merged.divisions[division] = {
       ...sourceDivision,
-      teams,
+      teams: effectiveTeams,
       rounds
     };
   }
@@ -1187,7 +1269,8 @@ async function normalizeOfficialSource(source) {
         const homeTeam = teams.find((team) => team.division === division && team.slot === homeSlot);
         const awayTeam = teams.find((team) => team.division === division && team.slot === awaySlot);
         const startsAt = isoDate(rawMatch.startsAt);
-        const scheduleIssue = startsAt ? "" : "Horário ausente ou inválido";
+        const scheduleIssue = clean(rawMatch.scheduleIssue) ||
+          (startsAt ? "" : "Horário ausente ou inválido");
         if (scheduleIssue) warnings.push(`${division} ${sourceId}: ${scheduleIssue}.`);
         const match = {
           id,
@@ -1611,7 +1694,7 @@ async function normalizeFormulaV2Round(source, roundNumber, division) {
     });
     grouped.set(seriesId, series);
   }
-  const series = [...grouped.values()].map((item) => {
+  const allSeries = [...grouped.values()].map((item) => {
     item.mapas.sort((left, right) => left.gameNumber - right.gameNumber);
     const vitorias = new Map();
     for (const game of item.mapas) {
@@ -1639,17 +1722,47 @@ async function normalizeFormulaV2Round(source, roundNumber, division) {
     };
   });
   const scheduledMatches = arrayValues(scheduledRound.matches);
-  const completedSchedule = scheduledMatches.filter((match) => clean(match.status) === "completed");
+  const seriesIdForMatch = (match) => clean(match.statsSeriesId) ||
+    `${clean(match.stage) || "groups"}-${clean(match.sourceId || match.id)}`;
+  const terminalStatuses = new Set(["completed", "postponed", "cancelled"]);
+  const excludedMatches = scheduledMatches.filter((match) =>
+    Boolean(match.excludedFromScoring || match.isWalkover) ||
+    ["postponed", "cancelled"].includes(clean(match.status))
+  );
+  const excludedSeriesIds = new Set(excludedMatches.map(seriesIdForMatch));
+  const playableMatches = scheduledMatches.filter((match) => !excludedSeriesIds.has(seriesIdForMatch(match)));
+  const playableSeriesIds = new Set(playableMatches.map(seriesIdForMatch));
+  const scheduledSeriesIds = new Set(scheduledMatches.map(seriesIdForMatch));
+  const series = allSeries.filter((item) => playableSeriesIds.has(item.id));
+  const completedPlayableSeries = new Set(
+    series.filter((item) => item.concluida).map((item) => item.id)
+  );
+  const missingPlayableSeries = [...playableSeriesIds]
+    .filter((seriesId) => !completedPlayableSeries.has(seriesId));
+  const unknownSeries = allSeries.filter((item) => !scheduledSeriesIds.has(item.id));
+  const unresolvedSchedule = scheduledMatches.filter((match) =>
+    !terminalStatuses.has(clean(match.status))
+  );
+  const resolvedWithoutPlay = excludedMatches.filter((match) =>
+    terminalStatuses.has(clean(match.status))
+  );
   const ready = scheduledMatches.length > 0 &&
-    completedSchedule.length === scheduledMatches.length &&
-    series.length === scheduledMatches.length &&
-    series.every((item) => item.concluida);
+    unresolvedSchedule.length === 0 &&
+    missingPlayableSeries.length === 0 &&
+    unknownSeries.length === 0;
   const normalized = {
     roundNumber,
     division,
     roundId: clean(scheduledRound.id) || `${division}-r${roundNumber}`,
     expectedSeries: scheduledMatches.length,
-    completedSeries: series.filter((item) => item.concluida).length,
+    completedSeries: completedPlayableSeries.size + resolvedWithoutPlay.length,
+    playedSeries: completedPlayableSeries.size,
+    walkovers: excludedMatches.filter((match) => Boolean(match.isWalkover)).length,
+    postponed: excludedMatches.filter((match) => clean(match.status) === "postponed").length,
+    cancelled: excludedMatches.filter((match) => clean(match.status) === "cancelled").length,
+    ignoredStatSeries: allSeries.filter((item) => excludedSeriesIds.has(item.id)).map((item) => item.id),
+    missingPlayableSeries,
+    unknownSeries: unknownSeries.map((item) => item.id),
     ready,
     series
   };
@@ -1679,6 +1792,10 @@ async function adminRoundPreviewV2(request, env, requestId, auth) {
       ready: normalized.ready,
       expectedSeries: normalized.expectedSeries,
       completedSeries: normalized.completedSeries,
+      playedSeries: normalized.playedSeries,
+      walkovers: normalized.walkovers,
+      postponed: normalized.postponed,
+      cancelled: normalized.cancelled,
       maps: normalized.series.reduce((total, item) => total + item.mapas.length, 0),
       players: new Set(normalized.series.flatMap((item) =>
         item.mapas.flatMap((game) => game.participantes.map((participant) => participant.atletaId))
@@ -1751,7 +1868,13 @@ async function adminRoundProcessV2(request, env, requestId, auth) {
         divisions: notReady.map((item) => ({
           division: item.division,
           expectedSeries: item.expectedSeries,
-          completedSeries: item.completedSeries
+          completedSeries: item.completedSeries,
+          playedSeries: item.playedSeries,
+          walkovers: item.walkovers,
+          postponed: item.postponed,
+          cancelled: item.cancelled,
+          missingPlayableSeries: item.missingPlayableSeries,
+          unknownSeries: item.unknownSeries
         }))
       }
     );
@@ -1795,6 +1918,16 @@ async function adminRoundProcessV2(request, env, requestId, auth) {
         409
       );
     }
+    if (prior?.status === "scores_saved" && timingSafeEqual(prior.sourceHash, normalized.hash)) {
+      results.push({
+        division: normalized.division,
+        roundId: round.id,
+        idempotent: true,
+        sourceHash: normalized.hash,
+        valuationPending: true
+      });
+      continue;
+    }
     processable.push({ normalized, round });
   }
   if (!processable.length) {
@@ -1821,33 +1954,11 @@ async function adminRoundProcessV2(request, env, requestId, auth) {
       WHERE division = ? AND active = 1
       ORDER BY asset_type, asset_id
     `, [normalized.division]);
-    const history = await dbAll(env, `
-      SELECT s.asset_id AS assetId, s.points, s.games,
-             r.round_number AS roundNumber,
-             CASE WHEN r.status = 'cancelled' THEN 1 ELSE 0 END AS cancelled,
-             CASE WHEN r.status = 'scored' THEN 1 ELSE 0 END AS finalized
-      FROM fantasy_asset_round_scores s
-      JOIN fantasy_rounds r ON r.id = s.round_id
-      WHERE s.division = ? AND r.round_number < ?
-      ORDER BY r.round_number DESC
-    `, [normalized.division, roundNumber]);
-    const historicos = {};
-    for (const row of history) {
-      const list = historicos[String(row.assetId)] || [];
-      list.push(row);
-      historicos[String(row.assetId)] = list;
-    }
-    const precos = Object.fromEntries(
-      market.filter((item) => item.assetType === "player")
-        .map((item) => [String(item.assetId), Number(item.priceCents) / 100])
-    );
     const processed = processarRodadaFantasy({
       rodadaId: round.id,
       rodadaNumero: roundNumber,
       divisao: normalized.division,
-      series: normalized.series,
-      precos,
-      historicos
+      series: normalized.series
     });
     const byPlayer = new Map(processed.pontuacoes.map((item) => [String(item.atletaId), item]));
     for (const asset of market.filter((item) => item.assetType === "player")) {
@@ -2015,90 +2126,7 @@ async function adminRoundProcessV2(request, env, requestId, auth) {
     if (scoreStatements.length) await env.DB.batch(scoreStatements);
     await recalculateLineupsV2(env, round, normalized.division);
 
-    const formula = { version: FORMULA_ID, settings: DEFAULT_FORMULA_SETTINGS };
-    const valuationItems = await calculateValuation(env, round, formula);
-    const valuationStatements = [];
-    for (const item of valuationItems) {
-      valuationStatements.push(env.DB.prepare(`
-        INSERT INTO fantasy_market_snapshots
-          (round_id, division, asset_id, price_before_cents,
-           price_after_cents, formula_version, breakdown_json)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT(round_id, asset_id) DO UPDATE SET
-          price_before_cents = excluded.price_before_cents,
-          price_after_cents = excluded.price_after_cents,
-          formula_version = excluded.formula_version,
-          breakdown_json = excluded.breakdown_json
-      `).bind(
-        round.id,
-        normalized.division,
-        item.assetId,
-        item.currentPriceCents,
-        item.newPriceCents,
-        FORMULA_ID,
-        JSON.stringify(item)
-      ));
-      valuationStatements.push(env.DB.prepare(`
-        UPDATE fantasy_market
-        SET previous_price = price,
-            previous_price_cents = price_cents,
-            price = ?,
-            price_cents = ?,
-            last_valuation_breakdown_json = ?,
-            updated_at = CURRENT_TIMESTAMP
-        WHERE division = ? AND asset_id = ?
-      `).bind(
-        item.newPriceCents / 100,
-        item.newPriceCents,
-        JSON.stringify(item),
-        normalized.division,
-        item.assetId
-      ));
-    }
-    const simulationHash = await hashObject({
-      roundId: round.id,
-      sourceHash,
-      formula: FORMULA_ID,
-      items: valuationItems
-    });
-    valuationStatements.push(env.DB.prepare(`
-      INSERT INTO fantasy_price_simulations
-        (id, round_id, source_hash, formula_version, settings_json,
-         items_json, status, created_by, applied_at)
-      VALUES (?, ?, ?, ?, ?, ?, 'applied', ?, CURRENT_TIMESTAMP)
-      ON CONFLICT(round_id, source_hash, formula_version) DO UPDATE SET
-        items_json = excluded.items_json,
-        status = 'applied',
-        created_by = excluded.created_by,
-        applied_at = CURRENT_TIMESTAMP
-    `).bind(
-      `v2:${round.id}:${simulationHash.slice(0, 24)}`,
-      round.id,
-      sourceHash,
-      FORMULA_ID,
-      JSON.stringify(DEFAULT_FORMULA_SETTINGS),
-      JSON.stringify(valuationItems),
-      auth.username
-    ));
-    valuationStatements.push(env.DB.prepare(`
-      UPDATE fantasy_round_processing
-      SET status = 'completed', price_items = ?,
-          details_json = ?, processed_at = CURRENT_TIMESTAMP
-      WHERE round_id = ? AND formula_version = ?
-    `).bind(
-      valuationItems.length,
-      JSON.stringify({
-        processedBy: auth.username,
-        backupId,
-        scoreItems: playerScores.length + teamScores.length,
-        priceItems: valuationItems.length
-      }),
-      round.id,
-      FORMULA_ID
-    ));
-    if (valuationStatements.length) await env.DB.batch(valuationStatements);
     await updateMarketAverages(env, normalized.division);
-    await updateWealthAfterValuation(env, round.id, normalized.division, valuationItems);
     results.push({
       division: normalized.division,
       roundId: round.id,
@@ -2106,7 +2134,7 @@ async function adminRoundProcessV2(request, env, requestId, auth) {
       idempotent: false,
       scores: playerScores.length + teamScores.length,
       maps: processed.mapasProcessados,
-      prices: valuationSummary(valuationItems)
+      valuationPending: true
     });
   }
   await audit(env, {
@@ -2484,7 +2512,8 @@ async function adminValuationSimulate(request, env, requestId, auth) {
   const requestedDivision = optionalDivision(body.division);
   const formula = await getFormula(env);
   const rounds = await dbAll(env, `
-    SELECT id, division, round_number AS roundNumber, name
+    SELECT id, division, round_number AS roundNumber, name, status,
+           locks_at AS locksAt
     FROM fantasy_rounds
     WHERE round_number = ?
       ${requestedDivision ? "AND division = ?" : ""}
@@ -2494,13 +2523,30 @@ async function adminValuationSimulate(request, env, requestId, auth) {
 
   const simulations = [];
   for (const round of rounds) {
+    if (round.status !== "scored") {
+      return failure(
+        "ROUND_SCORES_REQUIRED",
+        `Processe primeiro a pontuação da rodada ${roundNumber} de ${round.division}.`,
+        409,
+        { division: round.division, status: round.status }
+      );
+    }
     const alreadyApplied = await env.DB.prepare(`
-      SELECT id, source_hash AS sourceHash, items_json AS itemsJson
+      SELECT id, source_hash AS sourceHash, items_json AS itemsJson,
+             formula_version AS formulaVersion
       FROM fantasy_price_simulations
-      WHERE round_id = ? AND formula_version = ? AND status = 'applied'
+      WHERE round_id = ? AND status = 'applied'
       ORDER BY applied_at DESC LIMIT 1
-    `).bind(round.id, formula.version).first();
+    `).bind(round.id).first();
     if (alreadyApplied) {
+      if (alreadyApplied.formulaVersion !== formula.version) {
+        return failure(
+          "ROUND_ALREADY_VALUED",
+          `A rodada ${roundNumber} de ${round.division} já foi valorizada por ${alreadyApplied.formulaVersion}. A fórmula dinâmica não será aplicada retroativamente.`,
+          409,
+          { division: round.division, previousFormula: alreadyApplied.formulaVersion }
+        );
+      }
       const items = safeJson(alreadyApplied.itemsJson, []);
       simulations.push({
         id: alreadyApplied.id,
@@ -2510,6 +2556,7 @@ async function adminValuationSimulate(request, env, requestId, auth) {
         status: "applied",
         idempotent: true,
         summary: valuationSummary(items),
+        patrimony: await publishedPatrimonyPreview(env, alreadyApplied.id),
         items
       });
       continue;
@@ -2527,12 +2574,11 @@ async function adminValuationSimulate(request, env, requestId, auth) {
       }))
     });
     const existing = await env.DB.prepare(`
-      SELECT id, status FROM fantasy_price_simulations
+      SELECT id, status, items_json AS itemsJson FROM fantasy_price_simulations
       WHERE round_id = ? AND source_hash = ? AND formula_version = ?
     `).bind(round.id, sourceHash, formula.version).first();
-    let simulationId = existing?.id;
-    if (!simulationId || existing.status === "cancelled" || existing.status === "failed") {
-      simulationId = crypto.randomUUID();
+    const simulationId = existing?.id || crypto.randomUUID();
+    if (!existing || existing.status === "cancelled" || existing.status === "failed") {
       await env.DB.prepare(`
         INSERT INTO fantasy_price_simulations
           (id, round_id, source_hash, formula_version, settings_json,
@@ -2552,14 +2598,18 @@ async function adminValuationSimulate(request, env, requestId, auth) {
         auth.username
       ).run();
     }
+    const previewItems = existing?.status === "previewed"
+      ? safeJson(existing.itemsJson, items)
+      : items;
     simulations.push({
       id: simulationId,
       round,
       sourceHash,
       formulaVersion: formula.version,
       status: existing?.status === "applied" ? "applied" : "previewed",
-      summary: valuationSummary(items),
-      items
+      summary: valuationSummary(previewItems),
+      patrimony: await calculatePatrimonyPreview(env, round, previewItems),
+      items: previewItems
     });
   }
   await audit(env, {
@@ -2581,6 +2631,79 @@ async function adminValuationSimulate(request, env, requestId, auth) {
   return success({ formula, simulations });
 }
 
+async function adminValuationReview(request, env, requestId, auth) {
+  const body = await readJson(request);
+  const simulationId = clean(body.simulationId);
+  const assetId = clean(body.assetId);
+  const reviewAction = clean(body.action).toLowerCase();
+  if (!simulationId || !assetId || !["approve", "ignore", "edit"].includes(reviewAction)) {
+    return failure("REVIEW_INVALID", "Informe simulação, atleta e ação de revisão válidos.", 400);
+  }
+  const simulation = await env.DB.prepare(`
+    SELECT s.id, s.status, s.items_json AS itemsJson,
+           r.id AS roundId, r.division, r.round_number AS roundNumber,
+           r.name, r.locks_at AS locksAt
+    FROM fantasy_price_simulations s
+    JOIN fantasy_rounds r ON r.id = s.round_id
+    WHERE s.id = ?
+  `).bind(simulationId).first();
+  if (!simulation) return failure("SIMULATION_NOT_FOUND", "Simulação não encontrada.", 404);
+  if (simulation.status !== "previewed") {
+    return failure("SIMULATION_NOT_REVIEWABLE", "Apenas prévias pendentes podem ser revisadas.", 409);
+  }
+  const items = safeJson(simulation.itemsJson, []);
+  const item = items.find((candidate) => String(candidate.assetId) === assetId);
+  if (!item) return failure("ASSET_NOT_FOUND", "Atleta ausente nesta simulação.", 404);
+  const before = structuredClone(item);
+  if (reviewAction === "edit") {
+    const newPrice = Number(body.newPrice);
+    if (!Number.isFinite(newPrice) || newPrice < DEFAULT_FORMULA_SETTINGS.minimumPrice) {
+      return failure("PRICE_INVALID", "O preço manual deve ser de pelo menos RK$ 4,00.", 400);
+    }
+    item.newPriceCents = Math.round(roundMoney(newPrice) * 100);
+    item.newPrice = item.newPriceCents / 100;
+    item.deltaCents = item.newPriceCents - Number(item.currentPriceCents);
+    item.delta = roundMoney(item.deltaCents / 100);
+    item.needsReview = Math.abs(item.delta) > DEFAULT_FORMULA_SETTINGS.reviewThreshold;
+    item.reviewStatus = "edited";
+    item.status = item.delta > 0 ? "increased" : item.delta < 0 ? "decreased" : "unchanged";
+    item.manualOverride = {
+      by: auth.username,
+      at: new Date().toISOString(),
+      reason: clean(body.reason) || "Ajuste manual na prévia",
+      formulaPrice: before.newPrice
+    };
+  } else {
+    item.reviewStatus = reviewAction === "approve" ? "approved" : "ignored";
+    item.reviewNote = {
+      by: auth.username,
+      at: new Date().toISOString(),
+      reason: clean(body.reason) || (reviewAction === "approve" ? "Variação aprovada" : "Alerta ignorado")
+    };
+  }
+  await env.DB.prepare(`
+    UPDATE fantasy_price_simulations
+    SET items_json = ? WHERE id = ? AND status = 'previewed'
+  `).bind(JSON.stringify(items), simulationId).run();
+  await audit(env, {
+    actor: auth.username,
+    action: `valuation.review.${reviewAction}`,
+    targetType: "valuation_item",
+    targetId: `${simulationId}:${assetId}`,
+    before,
+    after: item,
+    requestId
+  });
+  const patrimony = await calculatePatrimonyPreview(env, {
+    id: simulation.roundId,
+    division: simulation.division,
+    roundNumber: simulation.roundNumber,
+    name: simulation.name,
+    locksAt: simulation.locksAt
+  }, items);
+  return success({ simulationId, item, summary: valuationSummary(items), patrimony });
+}
+
 async function adminValuationApply(request, env, requestId, auth) {
   const body = await readJson(request);
   const simulationId = clean(body.simulationId);
@@ -2600,7 +2723,8 @@ async function adminValuationApply(request, env, requestId, auth) {
     );
   }
   const simulation = await env.DB.prepare(`
-    SELECT s.*, r.division, r.round_number AS roundNumber
+    SELECT s.*, r.division, r.round_number AS roundNumber,
+           r.name AS roundName, r.locks_at AS locksAt
     FROM fantasy_price_simulations s
     JOIN fantasy_rounds r ON r.id = s.round_id
     WHERE s.id = ?
@@ -2613,6 +2737,15 @@ async function adminValuationApply(request, env, requestId, auth) {
     return failure("SIMULATION_NOT_APPLICABLE", "A simulação não está pendente.", 409);
   }
   const items = safeJson(simulation.items_json, []);
+  const pendingReviews = items.filter((item) => item.needsReview && item.reviewStatus === "pending");
+  if (pendingReviews.length) {
+    return failure(
+      "VALUATION_REVIEW_REQUIRED",
+      "Revise todas as variações acima de RK$ 7,00 antes de aplicar.",
+      409,
+      { assets: pendingReviews.map((item) => item.assetId) }
+    );
+  }
   const current = await dbAll(env, `
     SELECT asset_id AS assetId, price_cents AS priceCents
     FROM fantasy_market WHERE division = ? AND active = 1
@@ -2635,8 +2768,16 @@ async function adminValuationApply(request, env, requestId, auth) {
     auth.username,
     `Antes da valorização ${simulationId}`
   );
+  const patrimonyPublication = await preparePatrimonyPublication(env, {
+    id: simulation.round_id,
+    division: simulation.division,
+    roundNumber: simulation.roundNumber,
+    name: simulation.roundName,
+    locksAt: simulation.locksAt
+  }, simulationId, items, auth.username);
   const statements = [];
   for (const item of items) {
+    const historyId = crypto.randomUUID();
     statements.push(env.DB.prepare(`
       INSERT INTO fantasy_market_snapshots
         (round_id, division, asset_id, price_before_cents,
@@ -2672,28 +2813,63 @@ async function adminValuationApply(request, env, requestId, auth) {
       simulation.division,
       item.assetId
     ));
+    statements.push(env.DB.prepare(`
+      INSERT INTO fantasy_price_history
+        (id, simulation_id, round_id, division, asset_id, asset_type,
+         formula_version, price_before_cents, price_after_cents, delta_cents,
+         points, expected_points, adjusted_performance, difference,
+         participation_factor, needs_review, review_status, details_json,
+         processed_by)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      historyId,
+      simulationId,
+      simulation.round_id,
+      simulation.division,
+      item.assetId,
+      item.assetType,
+      simulation.formula_version,
+      item.currentPriceCents,
+      item.newPriceCents,
+      item.deltaCents,
+      item.roundPoints,
+      item.expectedScore ?? null,
+      item.adjustedPerformance ?? null,
+      item.scoreDifference ?? null,
+      item.participationFactor || 0,
+      item.needsReview ? 1 : 0,
+      item.reviewStatus || "ok",
+      JSON.stringify(item),
+      auth.username
+    ));
   }
   statements.push(env.DB.prepare(`
     UPDATE fantasy_price_simulations
     SET status = 'applied', applied_at = CURRENT_TIMESTAMP
     WHERE id = ? AND status = 'previewed'
   `).bind(simulationId));
+  statements.push(env.DB.prepare(`
+    UPDATE fantasy_round_processing
+    SET status = 'completed', price_items = ?, processed_at = CURRENT_TIMESTAMP
+    WHERE round_id = ? AND formula_version = ?
+  `).bind(items.length, simulation.round_id, FORMULA_ID));
+  statements.push(...patrimonyPublication.statements);
   await env.DB.batch(statements);
-  await updateWealthAfterValuation(env, simulation.round_id, simulation.division, items);
   await audit(env, {
     actor: auth.username,
     action: "valuation.apply",
     targetType: "price_simulation",
     targetId: simulationId,
     before: { backupId, sourceHash: simulation.source_hash },
-    after: { summary: valuationSummary(items), formulaVersion: simulation.formula_version },
+    after: { summary: valuationSummary(items), patrimony: patrimonySummary(patrimonyPublication.preview), formulaVersion: simulation.formula_version },
     requestId
   });
   return success({
     simulationId,
     status: "applied",
     backupId,
-    summary: valuationSummary(items)
+    summary: valuationSummary(items),
+    patrimony: patrimonySummary(patrimonyPublication.preview)
   });
 }
 
@@ -2724,6 +2900,203 @@ async function adminValuationCancel(request, env, requestId, auth) {
   return success({ simulationId: id, status: "cancelled" });
 }
 
+async function adminValuationRollback(request, env, requestId, auth) {
+  const body = await readJson(request);
+  const simulationId = clean(body.simulationId);
+  if (!simulationId || !timingSafeEqual(simulationId, clean(body.confirmSimulationId))) {
+    return failure("CONFIRMATION_REQUIRED", "Confirme o mesmo ID da valorização aplicada.", 400);
+  }
+  const reason = clean(body.reason);
+  if (!reason) return failure("ROLLBACK_REASON_REQUIRED", "Informe o motivo do rollback.", 400);
+  const market = await ensureAutomaticMarketClose(env);
+  if (market?.status !== "closed") {
+    return failure("MARKET_MUST_BE_CLOSED", "O rollback exige o mercado global fechado.", 409);
+  }
+  const simulation = await env.DB.prepare(`
+    SELECT s.*, r.division, r.round_number AS roundNumber
+    FROM fantasy_price_simulations s
+    JOIN fantasy_rounds r ON r.id = s.round_id
+    WHERE s.id = ?
+  `).bind(simulationId).first();
+  if (!simulation) return failure("SIMULATION_NOT_FOUND", "Valorização não encontrada.", 404);
+  if (simulation.status !== "applied") {
+    return failure("VALUATION_NOT_APPLIED", "Somente uma valorização aplicada pode ser revertida.", 409);
+  }
+  const history = await dbAll(env, `
+    SELECT id, asset_id AS assetId, price_before_cents AS priceBeforeCents,
+           price_after_cents AS priceAfterCents, details_json AS detailsJson
+    FROM fantasy_price_history
+    WHERE simulation_id = ? AND review_status <> 'rolled_back'
+    ORDER BY processed_at DESC
+  `, [simulationId]);
+  if (!history.length) {
+    return failure("ROLLBACK_HISTORY_MISSING", "Esta aplicação não possui histórico reversível.", 409);
+  }
+  const current = await dbAll(env, `
+    SELECT asset_id AS assetId, price_cents AS priceCents
+    FROM fantasy_market WHERE division = ? AND active = 1
+  `, [simulation.division]);
+  const currentPrices = new Map(current.map((row) => [String(row.assetId), Number(row.priceCents)]));
+  const changed = history.filter((row) => currentPrices.get(String(row.assetId)) !== Number(row.priceAfterCents));
+  if (changed.length) {
+    return failure(
+      "ROLLBACK_PRICES_CHANGED",
+      "Há preços alterados depois desta valorização. O rollback foi bloqueado para não sobrescrever mudanças posteriores.",
+      409,
+      { assets: changed.map((row) => row.assetId) }
+    );
+  }
+  const patrimonyBefore = await dbAll(env, `
+    SELECT h.id, h.user_id AS userId, h.previous_cents AS previousCents,
+           h.new_cents AS newCents, h.variation_cents AS variationCents, h.status,
+           p.current_cents AS currentCents
+    FROM fantasy_patrimony_history h
+    JOIN fantasy_participant_patrimony p
+      ON p.user_id = h.user_id AND p.division = h.division
+    WHERE h.simulation_id = ?
+      AND h.status IN ('PUBLISHED','INCONSISTENT','NO_VALID_LINEUP')
+  `, [simulationId]);
+  const expectedPatrimony = await dbAll(env, `
+    SELECT u.id AS userId, d.division,
+           10000 + COALESCE(SUM(CASE
+             WHEN h.status IN ('PUBLISHED','INCONSISTENT') THEN h.variation_cents
+             ELSE 0 END), 0) AS expectedCents
+    FROM fantasy_users u
+    CROSS JOIN (SELECT 'elite' AS division UNION ALL SELECT 'ascension') d
+    LEFT JOIN fantasy_patrimony_history h
+      ON h.user_id = u.id AND h.division = d.division
+    GROUP BY u.id, d.division
+  `);
+  const expectedByUser = new Map(expectedPatrimony.map((row) => [
+    `${String(row.userId)}:${String(row.division)}`,
+    Number(row.expectedCents)
+  ]));
+  const patrimonyChanged = patrimonyBefore.filter(
+    (row) => Number(row.currentCents) !== expectedByUser.get(`${String(row.userId)}:${String(simulation.division)}`)
+  );
+  if (patrimonyChanged.length) {
+    return failure(
+      "ROLLBACK_PATRIMONY_CHANGED",
+      "Há patrimônios alterados por processamento posterior. Reverta primeiro a valorização mais recente.",
+      409,
+      { participants: patrimonyChanged.map((row) => row.userId) }
+    );
+  }
+  const backupId = await createBackupRecord(env, auth.username, `Antes do rollback ${simulationId}`);
+  const restoredItems = history.map((row) => {
+    const previous = safeJson(row.detailsJson, {});
+    return {
+      ...previous,
+      assetId: row.assetId,
+      currentPriceCents: Number(row.priceAfterCents),
+      newPriceCents: Number(row.priceBeforeCents),
+      currentPrice: Number(row.priceAfterCents) / 100,
+      newPrice: Number(row.priceBeforeCents) / 100,
+      deltaCents: Number(row.priceBeforeCents) - Number(row.priceAfterCents),
+      delta: roundMoney((Number(row.priceBeforeCents) - Number(row.priceAfterCents)) / 100)
+    };
+  });
+  const statements = [];
+  for (const item of restoredItems) {
+    statements.push(env.DB.prepare(`
+      UPDATE fantasy_market
+      SET price = ?, price_cents = ?,
+          previous_price = ?, previous_price_cents = ?,
+          last_valuation_breakdown_json = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE division = ? AND asset_id = ?
+    `).bind(
+      item.newPrice,
+      item.newPriceCents,
+      Number.isFinite(Number(item.previousPrice)) ? Number(item.previousPrice) : item.newPrice,
+      Number.isFinite(Number(item.previousPriceCents)) ? Number(item.previousPriceCents) : item.newPriceCents,
+      JSON.stringify(item.previousValuation || {}),
+      simulation.division,
+      item.assetId
+    ));
+  }
+  statements.push(env.DB.prepare(`
+    UPDATE fantasy_price_history
+    SET review_status = 'rolled_back', rolled_back_by = ?,
+        rolled_back_at = CURRENT_TIMESTAMP, rollback_reason = ?
+    WHERE simulation_id = ? AND review_status <> 'rolled_back'
+  `).bind(auth.username, reason, simulationId));
+  statements.push(env.DB.prepare(`
+    UPDATE fantasy_price_simulations
+    SET status = 'cancelled', cancelled_at = CURRENT_TIMESTAMP
+    WHERE id = ? AND status = 'applied'
+  `).bind(simulationId));
+  statements.push(env.DB.prepare(`
+    UPDATE fantasy_round_processing
+    SET status = 'scores_saved', price_items = 0, processed_at = CURRENT_TIMESTAMP
+    WHERE round_id = ? AND formula_version = ?
+  `).bind(simulation.round_id, FORMULA_ID));
+  for (const row of patrimonyBefore) {
+    statements.push(env.DB.prepare(`
+      UPDATE fantasy_participant_patrimony
+      SET current_cents = ?, formula_version = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE user_id = ? AND division = ?
+    `).bind(
+      Number(row.currentCents) - (
+        ['PUBLISHED', 'INCONSISTENT'].includes(String(row.status))
+          ? Number(row.variationCents || 0)
+          : 0
+      ),
+      PATRIMONY_FORMULA_ID,
+      row.userId,
+      simulation.division
+    ));
+  }
+  statements.push(env.DB.prepare(`
+    UPDATE fantasy_patrimony_history
+    SET status = 'ROLLED_BACK', rolled_back_by = ?,
+        rolled_back_at = CURRENT_TIMESTAMP, rollback_reason = ?
+    WHERE simulation_id = ?
+      AND status IN ('PUBLISHED','INCONSISTENT','NO_VALID_LINEUP')
+  `).bind(auth.username, reason, simulationId));
+  await env.DB.batch(statements);
+  const patrimonyAfter = await dbAll(env, `
+    SELECT user_id AS userId, current_cents AS currentCents
+    FROM fantasy_participant_patrimony
+    WHERE division = ? AND user_id IN (
+      SELECT user_id FROM fantasy_patrimony_history WHERE simulation_id = ?
+    )
+  `, [simulation.division, simulationId]);
+  const rollbackId = crypto.randomUUID();
+  await env.DB.prepare(`
+    INSERT INTO fantasy_valuation_rollbacks
+      (id, simulation_id, round_id, division, formula_version,
+       restored_prices_json, restored_wealth_json, reason, created_by)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).bind(
+    rollbackId,
+    simulationId,
+    simulation.round_id,
+    simulation.division,
+    simulation.formula_version,
+    JSON.stringify(restoredItems),
+    JSON.stringify({ before: patrimonyBefore, after: patrimonyAfter }),
+    reason,
+    auth.username
+  ).run();
+  await audit(env, {
+    actor: auth.username,
+    action: "valuation.rollback",
+    targetType: "price_simulation",
+    targetId: simulationId,
+    before: { status: "applied", backupId },
+    after: { status: "cancelled", rollbackId, restoredAssets: restoredItems.length },
+    metadata: { reason },
+    requestId
+  });
+  return success({
+    simulationId,
+    rollbackId,
+    backupId,
+    status: "rolled_back",
+    restoredAssets: restoredItems.length
+  });
+}
+
 async function adminValuationHistory(request, env) {
   const rows = await dbAll(env, `
     SELECT s.id, s.round_id AS roundId, r.round_number AS roundNumber,
@@ -2736,13 +3109,55 @@ async function adminValuationHistory(request, env) {
     JOIN fantasy_rounds r ON r.id = s.round_id
     ORDER BY s.created_at DESC LIMIT ?
   `, [queryLimit(request, 100)]);
+  const priceHistory = await dbAll(env, `
+    SELECT h.id, h.simulation_id AS simulationId, h.round_id AS roundId,
+           r.round_number AS roundNumber, h.division, h.asset_id AS assetId,
+           m.display_name AS name, h.formula_version AS formulaVersion,
+           h.price_before_cents AS priceBeforeCents,
+           h.price_after_cents AS priceAfterCents, h.delta_cents AS deltaCents,
+           h.points, h.expected_points AS expectedPoints,
+           h.adjusted_performance AS adjustedPerformance,
+           h.needs_review AS needsReview, h.review_status AS reviewStatus,
+           h.processed_by AS processedBy, h.processed_at AS processedAt,
+           h.rolled_back_by AS rolledBackBy, h.rolled_back_at AS rolledBackAt,
+           h.rollback_reason AS rollbackReason
+    FROM fantasy_price_history h
+    JOIN fantasy_rounds r ON r.id = h.round_id
+    LEFT JOIN fantasy_market m ON m.division = h.division AND m.asset_id = h.asset_id
+    ORDER BY h.processed_at DESC LIMIT ?
+  `, [queryLimit(request, 100)]);
+  const rollbacks = await dbAll(env, `
+    SELECT id, simulation_id AS simulationId, round_id AS roundId,
+           division, formula_version AS formulaVersion, reason,
+           created_by AS createdBy, created_at AS createdAt
+    FROM fantasy_valuation_rollbacks
+    ORDER BY created_at DESC LIMIT ?
+  `, [queryLimit(request, 100)]);
+  const patrimonyHistory = await dbAll(env, `
+    SELECT h.id, h.simulation_id AS simulationId, h.user_id AS userId,
+           u.username AS participant, h.round_id AS roundId,
+           r.round_number AS roundNumber, h.division,
+           h.previous_cents AS previousCents, h.new_cents AS newCents,
+           h.variation_cents AS variationCents,
+           h.available_balance_cents AS availableBalanceCents,
+           h.consistency_difference_cents AS consistencyDifferenceCents,
+           h.status, h.formula_version AS formulaVersion,
+           h.processed_by AS processedBy, h.processed_at AS processedAt
+    FROM fantasy_patrimony_history h
+    JOIN fantasy_users u ON u.id = h.user_id
+    JOIN fantasy_rounds r ON r.id = h.round_id
+    ORDER BY h.processed_at DESC LIMIT ?
+  `, [queryLimit(request, 300)]);
   return success({
     simulations: rows.map((row) => {
       const decoded = decodeJsonFields(row);
       decoded.summary = valuationSummary(decoded.items || []);
       delete decoded.items;
       return decoded;
-    })
+    }),
+    priceHistory,
+    patrimonyHistory,
+    rollbacks
   });
 }
 
@@ -2751,8 +3166,11 @@ async function calculateValuation(env, round, formula) {
     SELECT m.asset_id AS assetId, m.asset_type AS assetType, m.role,
            m.display_name AS name, m.team_name AS teamName,
            m.price_cents AS currentPriceCents,
+           m.previous_price_cents AS previousPriceCents,
            COALESCE(s.points, 0) AS roundPoints,
-           COALESCE(s.games, 0) AS games
+           COALESCE(s.games, 0) AS games,
+           COALESCE(s.breakdown_json, '{}') AS scoreDetailsJson,
+           m.last_valuation_breakdown_json AS previousValuationJson
     FROM fantasy_market m
     LEFT JOIN fantasy_asset_round_scores s
       ON s.asset_id = m.asset_id AND s.round_id = ?
@@ -2780,69 +3198,71 @@ async function calculateValuation(env, round, formula) {
     });
     historyByAsset.set(String(row.assetId), list);
   }
-  return market.map((asset) => valuationItem(asset, historyByAsset.get(String(asset.assetId)) || [], formula.settings));
+  return market.map((asset) => valuationItem(
+    asset,
+    historyByAsset.get(String(asset.assetId)) || [],
+    formula.settings,
+    round.roundNumber
+  ));
 }
 
-function valuationItem(asset, history, settings) {
+function valuationItem(asset, history, settings, roundNumber = null) {
   const price = Number(asset.currentPriceCents) / 100;
   const roundPoints = Number(asset.roundPoints) || 0;
   const games = Math.max(0, Math.trunc(Number(asset.games) || 0));
-  if (asset.assetType === "team") {
-    return {
-      formulaVersion: 2,
-      formulaId: FORMULA_ID,
-      assetId: asset.assetId,
-      assetType: asset.assetType,
-      role: asset.role,
-      name: asset.name,
-      teamName: asset.teamName,
-      currentPriceCents: Number(asset.currentPriceCents),
-      newPriceCents: Number(asset.currentPriceCents),
-      deltaCents: 0,
-      currentPrice: roundMoney(price),
-      newPrice: roundMoney(price),
-      delta: 0,
-      roundPoints: roundMoney(roundPoints),
-      historicalAverage: null,
-      recentAverage: null,
-      expectedScore: null,
-      games,
-      played: games > 0,
-      heldReason: "A fórmula v2 de valorização é individual; o ativo de equipe mantém o preço."
-    };
-  }
-  const valuation = calcularValorizacao({
-    precoAtual: price,
-    pontuacaoRodada: roundPoints,
-    historico: history,
-    jogou: games > 0
+  const scoreDetails = safeJson(asset.scoreDetailsJson, {});
+  const teamMaps = Math.max(
+    games,
+    Math.trunc(Number(scoreDetails.totalMapasEquipe ?? scoreDetails.mapasDisputados) || 0)
+  );
+  const valuation = calculateFantasyValuation({
+    currentPrice: price,
+    currentPoints: roundPoints,
+    history,
+    currentRound: roundNumber,
+    playerMaps: games,
+    teamMaps,
+    settings
   });
-  const newPriceCents = Math.round(valuation.precoNovo * 100);
+  const newPriceCents = Math.round(valuation.newPrice * 100);
   return {
-    formulaVersion: 2,
-    formulaId: FORMULA_ID,
+    formulaVersion: VALUATION_FORMULA_VERSION,
+    formulaId: VALUATION_FORMULA_ID,
     assetId: asset.assetId,
     assetType: asset.assetType,
     role: asset.role,
     name: asset.name,
     teamName: asset.teamName,
     currentPriceCents: Number(asset.currentPriceCents),
+    previousPriceCents: Number(asset.previousPriceCents),
+    previousPrice: Number(asset.previousPriceCents) / 100,
     newPriceCents,
     deltaCents: newPriceCents - Number(asset.currentPriceCents),
     currentPrice: roundMoney(price),
-    newPrice: valuation.precoNovo,
-    delta: valuation.variacaoMercado,
+    newPrice: valuation.newPrice,
+    delta: valuation.finalVariation,
     roundPoints: roundMoney(roundPoints),
-    historicalAverage: valuation.mediaUltimasTres,
-    recentAverage: valuation.mediaUltimasTres,
-    expectedPriceScore: valuation.pontuacaoEsperadaPreco,
-    expectedScore: valuation.pontuacaoEsperada,
-    scoreDifference: valuation.diferenca,
-    rawVariation: valuation.variacaoBruta,
-    marketVariation: valuation.variacaoMercado,
+    historicalAverage: valuation.seasonAverage,
+    recentAverage: valuation.recentAverage,
+    recentScores: valuation.recentScores,
+    adjustedPerformance: valuation.adjustedPerformance,
+    expectedScore: valuation.expectedScore,
+    necessaryScore: valuation.expectedScore,
+    scoreDifference: valuation.difference,
+    baseVariation: valuation.baseVariation,
+    priceFactor: valuation.priceFactor,
+    participationRate: valuation.participationRate,
+    participationFactor: valuation.participationFactor,
+    confidence: valuation.participationFactor,
     games,
-    totalGames: history.filter((row) => Number(row.games) > 0).length + (games > 0 ? 1 : 0),
+    playerMaps: games,
+    teamMaps,
+    totalGames: valuation.validHistoryRounds + (games > 0 ? 1 : 0),
     played: games > 0,
+    needsReview: valuation.needsReview,
+    reviewStatus: valuation.needsReview ? "pending" : "ok",
+    status: valuation.status,
+    previousValuation: safeJson(asset.previousValuationJson, {}),
     breakdown: valuation
   };
 }
@@ -2858,6 +3278,169 @@ function valuationSummary(items) {
   };
 }
 
+async function calculatePatrimonyPreview(env, round, items) {
+  const users = await dbAll(env, `
+    SELECT u.id AS userId, u.username,
+           COALESCE(p.current_cents, 10000) AS currentCents
+    FROM fantasy_users u
+    LEFT JOIN fantasy_participant_patrimony p
+      ON p.user_id = u.id AND p.division = ?
+    ORDER BY u.username, u.id
+  `, [round.division]);
+  const owned = await dbAll(env, `
+    SELECT t.user_id AS userId, t.name AS teamName, l.id AS lineupId,
+           l.updated_at AS lineupUpdatedAt,
+           o.asset_id AS assetId, o.role, o.price_paid AS purchasePrice,
+           o.ownership_type AS ownershipType
+    FROM fantasy_lineups l
+    JOIN fantasy_teams t ON t.id = l.fantasy_team_id
+    JOIN (
+      SELECT lineup_id, asset_id, role, price_paid, 'starter' AS ownership_type
+      FROM fantasy_lineup_picks
+      UNION ALL
+      SELECT lineup_id, asset_id, role, price_paid, 'reserve' AS ownership_type
+      FROM fantasy_lineup_reserves
+    ) o ON o.lineup_id = l.id
+    WHERE l.round_id = ? AND t.division = ?
+    ORDER BY t.user_id, l.id, o.ownership_type, o.role
+  `, [round.id, round.division]);
+  const activeHistory = await dbAll(env, `
+    SELECT h.user_id AS userId, h.simulation_id AS simulationId, h.status
+    FROM fantasy_patrimony_history h
+    WHERE h.round_id = ?
+      AND h.status IN ('PUBLISHED','INCONSISTENT','NO_VALID_LINEUP')
+  `, [round.id]);
+  const alreadyByUser = new Map(activeHistory.map((row) => [String(row.userId), row]));
+  const lineupsByUser = new Map();
+  for (const row of owned) {
+    const group = lineupsByUser.get(String(row.userId)) || {
+      lineupId: row.lineupId,
+      teamName: row.teamName,
+      updatedAt: row.lineupUpdatedAt,
+      assets: [],
+      starterRoles: new Set()
+    };
+    const isReserve = row.ownershipType === "reserve";
+    if (!isReserve) group.starterRoles.add(String(row.role));
+    group.assets.push({
+      assetId: String(row.assetId),
+      assetType: row.role === "TEAM" ? "team" : "player",
+      position: isReserve ? "RESERVE" : String(row.role),
+      role: String(row.role),
+      isReserve,
+      purchasePrice: roundMoney(row.purchasePrice)
+    });
+    lineupsByUser.set(String(row.userId), group);
+  }
+  const updatedPrices = Object.fromEntries(items.map((item) => [String(item.assetId), Number(item.newPrice)]));
+  const calculatedAt = new Date().toISOString();
+  return users.map((user) => {
+    const group = lineupsByUser.get(String(user.userId));
+    const submittedInTime = !group || !round.locksAt || timestampMillis(group.updatedAt) <= timestampMillis(round.locksAt);
+    const isValid = Boolean(group && group.starterRoles.size === 6 && ALL_ROLES.every((role) => group.starterRoles.has(role)) && submittedInTime);
+    const previousPatrimony = Number(user.currentCents) / 100;
+    const purchases = group ? roundMoney(group.assets.reduce((sum, asset) => sum + asset.purchasePrice, 0)) : 0;
+    const result = calculateParticipantPatrimony({
+      previousPatrimony,
+      availableBalance: roundMoney(previousPatrimony - purchases),
+      officialLineup: group ? { roundId: round.id, isValid, assets: group.assets } : null,
+      updatedAssetPrices: updatedPrices,
+      calculatedAt
+    });
+    const already = alreadyByUser.get(String(user.userId));
+    const variationCents = Math.round(result.assetsVariation * 100);
+    return {
+      userId: user.userId,
+      participant: user.username,
+      teamName: group?.teamName || "—",
+      lineupId: group?.lineupId || null,
+      division: round.division,
+      roundId: round.id,
+      previousCents: Math.round(result.previousPatrimony * 100),
+      purchasesCents: Math.round(purchases * 100),
+      availableBalanceCents: Math.round(result.availableBalance * 100),
+      previousAssetsCents: Math.round(result.previousAssetsValue * 100),
+      updatedAssetsCents: Math.round(result.updatedAssetsValue * 100),
+      variationCents,
+      newCents: Math.round(result.newPatrimony * 100),
+      consistencyDifferenceCents: Math.round(result.consistencyDifference * 100),
+      status: already ? "ALREADY_PROCESSED" : result.status,
+      originalStatus: result.status,
+      reason: !group ? "NO_LINEUP" : !submittedInTime ? "LINEUP_AFTER_LOCK" : !isValid ? "INCOMPLETE_LINEUP" : "",
+      alreadyProcessedBy: already?.simulationId || null,
+      assets: result.assets
+    };
+  });
+}
+
+async function publishedPatrimonyPreview(env, simulationId) {
+  return dbAll(env, `
+    SELECT h.user_id AS userId, u.username AS participant,
+           COALESCE(t.name, '—') AS teamName, h.lineup_id AS lineupId,
+           h.division, h.round_id AS roundId,
+           h.previous_cents AS previousCents, h.purchases_cents AS purchasesCents,
+           h.available_balance_cents AS availableBalanceCents,
+           h.previous_assets_cents AS previousAssetsCents,
+           h.updated_assets_cents AS updatedAssetsCents,
+           h.variation_cents AS variationCents, h.new_cents AS newCents,
+           h.consistency_difference_cents AS consistencyDifferenceCents,
+           h.status, h.asset_details_json AS assetsJson
+    FROM fantasy_patrimony_history h
+    JOIN fantasy_users u ON u.id = h.user_id
+    LEFT JOIN fantasy_lineups l ON l.id = h.lineup_id
+    LEFT JOIN fantasy_teams t ON t.id = l.fantasy_team_id
+    WHERE h.simulation_id = ? AND h.status <> 'ROLLED_BACK'
+    ORDER BY h.new_cents DESC, u.username
+  `, [simulationId]).then((rows) => rows.map((row) => ({
+    ...row,
+    originalStatus: row.status,
+    assets: safeJson(row.assetsJson, []),
+    assetsJson: undefined
+  })));
+}
+
+async function preparePatrimonyPublication(env, round, simulationId, items, actor) {
+  const preview = await calculatePatrimonyPreview(env, round, items);
+  const statements = [];
+  for (const row of preview) {
+    if (row.status === "ALREADY_PROCESSED") continue;
+    const historyStatus = row.originalStatus === "NO_VALID_LINEUP"
+      ? "NO_VALID_LINEUP"
+      : row.originalStatus === "INCONSISTENT" ? "INCONSISTENT" : "PUBLISHED";
+    statements.push(env.DB.prepare(`
+      UPDATE fantasy_participant_patrimony
+      SET current_cents = ?, formula_version = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE user_id = ? AND division = ?
+    `).bind(row.newCents, PATRIMONY_FORMULA_ID, row.userId, round.division));
+    statements.push(env.DB.prepare(`
+      INSERT INTO fantasy_patrimony_history
+        (id, simulation_id, user_id, round_id, division, lineup_id,
+         previous_cents, purchases_cents, available_balance_cents,
+         previous_assets_cents, updated_assets_cents, variation_cents,
+         new_cents, consistency_difference_cents, status,
+         asset_details_json, formula_version, processed_by)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      crypto.randomUUID(), simulationId, row.userId, round.id, round.division,
+      row.lineupId, row.previousCents, row.purchasesCents,
+      row.availableBalanceCents, row.previousAssetsCents, row.updatedAssetsCents,
+      row.variationCents, row.newCents, row.consistencyDifferenceCents,
+      historyStatus, JSON.stringify(row.assets), PATRIMONY_FORMULA_ID, actor
+    ));
+  }
+  return { preview, statements };
+}
+
+function patrimonySummary(rows) {
+  return {
+    participants: rows.length,
+    processed: rows.filter((row) => ["CALCULATED", "INCONSISTENT"].includes(row.originalStatus)).length,
+    noValidLineup: rows.filter((row) => row.originalStatus === "NO_VALID_LINEUP").length,
+    inconsistent: rows.filter((row) => row.originalStatus === "INCONSISTENT").length,
+    alreadyProcessed: rows.filter((row) => row.status === "ALREADY_PROCESSED").length
+  };
+}
+
 async function adminGetFormula(_request, env) {
   return success({ formula: await getFormula(env) });
 }
@@ -2867,10 +3450,10 @@ async function adminUpdateFormula(request, env, requestId, auth) {
   const before = await getFormula(env);
   const version = clean(body.version);
   const settings = validateFormulaSettings(body.settings);
-  if (version !== FORMULA_ID) {
+  if (version !== VALUATION_FORMULA_ID) {
     return failure(
       "FORMULA_VERSION_INVALID",
-      "A fórmula oficial ativa é fantasy-v2 e seus parâmetros são fixos.",
+      "A fórmula oficial ativa é fantasy-v3-dynamic e seus parâmetros são fixos.",
       400
     );
   }
@@ -2896,7 +3479,7 @@ async function adminResetFormula(_request, env, requestId, auth) {
   const before = await getFormula(env);
   await env.DB.prepare(`
     UPDATE fantasy_formula_settings
-    SET version = 'fantasy-v2', settings_json = ?,
+    SET version = 'fantasy-v3-dynamic', settings_json = ?,
         updated_by = ?, updated_at = CURRENT_TIMESTAMP
     WHERE id = 'global'
   `).bind(JSON.stringify(DEFAULT_FORMULA_SETTINGS), auth.username).run();
@@ -2929,19 +3512,12 @@ async function getFormula(env) {
 
 function validateFormulaSettings(input) {
   const source = input && typeof input === "object" ? input : {};
-  const settings = {
-    scoreMinimum: finiteBetween(source.scoreMinimum, -10, -10),
-    scoreMaximum: finiteBetween(source.scoreMaximum, 50, 50),
-    captainMultiplier: finiteBetween(source.captainMultiplier, 1.5, 1.5),
-    expectedPointsPerPrice: finiteBetween(source.expectedPointsPerPrice, 0.9, 0.9),
-    priceDeltaDivisor: finiteBetween(source.priceDeltaDivisor, 7, 7),
-    priceDeltaMinimum: finiteBetween(source.priceDeltaMinimum, -2, -2),
-    priceDeltaMaximum: finiteBetween(source.priceDeltaMaximum, 2, 2),
-    priceMinimum: finiteBetween(source.priceMinimum, 4, 4),
-    priceMaximum: finiteBetween(source.priceMaximum, 30, 30),
-    historyRounds: finiteBetween(source.historyRounds, 3, 3),
-    didNotPlay: source.didNotPlay === "hold" ? "hold" : "hold"
-  };
+  const settings = {};
+  for (const [key, value] of Object.entries(DEFAULT_FORMULA_SETTINGS)) {
+    settings[key] = typeof value === "number"
+      ? finiteBetween(source[key], value, value)
+      : value;
+  }
   return settings;
 }
 
@@ -2954,58 +3530,6 @@ function normalizedWeights(settings) {
     average: Number(settings.averageWeight ?? 0.25) / total,
     recent: Number(settings.recentWeight ?? 0.20) / total
   };
-}
-
-async function updateWealthAfterValuation(env, roundId, division, items) {
-  const priceMap = new Map(items.map((item) => [String(item.assetId), Number(item.newPriceCents)]));
-  const rows = await dbAll(env, `
-    SELECT l.fantasy_team_id AS fantasyTeamId, l.id AS lineupId,
-           p.asset_id AS assetId, l.total_cost AS totalCost,
-           COALESCE(w.initial_cents, 10000) AS initialCents,
-           COALESCE(w.purchases_cents, CAST(ROUND(l.total_cost * 100) AS INTEGER)) AS purchasesCents,
-           COALESCE(w.cash_cents, 10000 - CAST(ROUND(l.total_cost * 100) AS INTEGER)) AS cashCents
-    FROM fantasy_lineups l
-    JOIN fantasy_teams t ON t.id = l.fantasy_team_id
-    JOIN fantasy_lineup_picks p ON p.lineup_id = l.id
-    LEFT JOIN fantasy_wealth_snapshots w
-      ON w.fantasy_team_id = l.fantasy_team_id AND w.round_id = l.round_id
-    WHERE l.round_id = ? AND t.division = ?
-  `, [roundId, division]);
-  const grouped = new Map();
-  for (const row of rows) {
-    const entry = grouped.get(row.fantasyTeamId) || {
-      initialCents: Number(row.initialCents) || 10000,
-      purchasesCents: Number(row.purchasesCents) || 0,
-      cashCents: Number(row.cashCents) || 0,
-      assetsCents: 0
-    };
-    entry.assetsCents += priceMap.get(String(row.assetId)) || 0;
-    grouped.set(row.fantasyTeamId, entry);
-  }
-  const statements = [...grouped.entries()].map(([fantasyTeamId, value]) =>
-    env.DB.prepare(`
-      INSERT INTO fantasy_wealth_snapshots
-        (fantasy_team_id, round_id, initial_cents, purchases_cents,
-         cash_cents, final_cents, formula_version)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT(fantasy_team_id, round_id) DO UPDATE SET
-        initial_cents = excluded.initial_cents,
-        purchases_cents = excluded.purchases_cents,
-        cash_cents = excluded.cash_cents,
-        final_cents = excluded.final_cents,
-        formula_version = excluded.formula_version,
-        created_at = CURRENT_TIMESTAMP
-    `).bind(
-      fantasyTeamId,
-      roundId,
-      value.initialCents,
-      value.purchasesCents,
-      value.cashCents,
-      value.cashCents + value.assetsCents,
-      FORMULA_ID
-    )
-  );
-  if (statements.length) await env.DB.batch(statements);
 }
 
 async function adminOverview(_request, env) {
@@ -3471,7 +3995,7 @@ async function adminListLineups(request, env) {
 async function adminUpdateLineup(request, env, requestId, auth) {
   const id = decodePathId(request, "/api/fantasy/admin/lineups/");
   const lineup = await env.DB.prepare(`
-    SELECT l.*, t.division, t.name AS fantasy_team_name,
+    SELECT l.*, t.user_id, t.division, t.name AS fantasy_team_name,
            r.round_number AS round_number
     FROM fantasy_lineups l
     JOIN fantasy_teams t ON t.id = l.fantasy_team_id
@@ -3527,8 +4051,15 @@ async function adminUpdateLineup(request, env, requestId, auth) {
     return failure("LINEUP_CAPTAIN_INVALID", "O capitão deve ser um dos cinco jogadores titulares.", 400);
   }
   const totalCost = roundMoney(marketRows.reduce((sum, row) => sum + Number(row.price), 0));
-  if (totalCost > BUDGET_LIMIT) {
-    return failure("LINEUP_BUDGET", "A escalação ultrapassa o orçamento de RK$ 100.", 400);
+  const patrimony = await env.DB.prepare(`
+    SELECT current_cents FROM fantasy_participant_patrimony
+    WHERE user_id = ? AND division = ?
+  `).bind(lineup.user_id, lineup.division).first();
+  const budget = Number.isFinite(Number(patrimony?.current_cents))
+    ? Number(patrimony.current_cents) / 100
+    : BUDGET_LIMIT;
+  if (totalCost > budget + 0.001) {
+    return failure("LINEUP_BUDGET", `A escalação ultrapassa o patrimônio de RK$ ${budget.toFixed(2)}.`, 400);
   }
   let reserveRow = null;
   const reserveId = clean(body.reserve?.assetId || body.reserve?.id || body.reserveAssetId);
@@ -3543,10 +4074,7 @@ async function adminUpdateLineup(request, env, requestId, auth) {
     if (marketRows.some((row) => row.asset_id === reserveRow.asset_id)) {
       return failure("LINEUP_RESERVE_DUPLICATE", "O reserva não pode ser titular.", 400);
     }
-    const cheapestPlayer = Math.min(
-      ...marketRows.filter((row) => row.asset_type === "player").map((row) => Number(row.price))
-    );
-    const reserveBudget = roundMoney(BUDGET_LIMIT - totalCost + cheapestPlayer);
+    const reserveBudget = roundMoney(Math.max(0, budget - totalCost));
     if (Number(reserveRow.price) > reserveBudget + 0.001) {
       return failure("LINEUP_RESERVE_BUDGET", `O limite do reserva é RK$ ${reserveBudget.toFixed(2)}.`, 400);
     }
@@ -4123,6 +4651,11 @@ async function validatedBackup(env, id) {
 }
 
 async function createBackupRecord(env, actor, reason) {
+  if (typeof env.__maintenanceBackup === "function") {
+    const maintenanceBackupId = clean(await env.__maintenanceBackup({ actor, reason }));
+    if (!maintenanceBackupId) throw new Error("O backup externo de manutenção não foi confirmado.");
+    return maintenanceBackupId;
+  }
   const data = {
     format: "fantasy-rk-d1-json-backup-v1",
     createdAt: new Date().toISOString(),
@@ -4413,6 +4946,15 @@ function isoDate(value) {
   return Number.isFinite(parsed) ? new Date(parsed).toISOString() : "";
 }
 
+function timestampMillis(value) {
+  const source = clean(value);
+  const normalized = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(source)
+    ? `${source.replace(" ", "T")}Z`
+    : source;
+  const parsed = Date.parse(normalized);
+  return Number.isFinite(parsed) ? parsed : Number.POSITIVE_INFINITY;
+}
+
 function normalizeAssetPath(value) {
   return clean(value).replace(/\\/g, "/").replace(/^\/+/, "");
 }
@@ -4542,6 +5084,14 @@ class HttpError extends Error {
 export const __test = {
   LOCK_MINUTES,
   TIMEZONE,
+  adminRoundPreviewV2,
+  adminRoundProcessV2,
+  adminSyncApply,
+  adminSyncPreview,
+  adminValuationApply,
+  adminValuationReview,
+  adminValuationRollback,
+  adminValuationSimulate,
   adminCookie,
   arrayValues,
   calculateValuation,
@@ -4549,6 +5099,7 @@ export const __test = {
   hashObject,
   initialPrice,
   mergeLiveOfficialContent,
+  normalizeFormulaV2Round,
   normalizeOfficialSource,
   normalizeRoundStats,
   normalizeRiotIdentity,
@@ -4556,6 +5107,7 @@ export const __test = {
   publicMarketState,
   resolveMarketWindow,
   stableStringify,
+  timestampMillis,
   timingSafeEqual,
   validateFormulaSettings,
   valuationItem,

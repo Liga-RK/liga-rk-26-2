@@ -201,33 +201,34 @@ test("26. Valorização positiva", () => {
   const item = formula.calcularValorizacao({
     precoAtual: 8, pontuacaoRodada: 18, historico: [{ points: 8, games: 2 }], jogou: true
   });
-  assert.equal(item.pontuacaoEsperada, 7.44);
-  assert.equal(item.variacaoMercado, 1.5);
-  assert.equal(item.precoNovo, 9.5);
+  assert.equal(item.pontuacaoEsperada, 4.8);
+  assert.equal(item.desempenhoAjustado, 15.5);
+  assert.equal(item.variacaoMercado, 1.24);
+  assert.equal(item.precoNovo, 9.24);
 });
 
 test("27. Desvalorização", () => {
   const item = formula.calcularValorizacao({
     precoAtual: 20, pontuacaoRodada: 7, historico: [{ points: 18, games: 2 }], jogou: true
   });
-  assert.equal(item.variacaoMercado, -1.6);
-  assert.equal(item.precoNovo, 18.4);
+  assert.equal(item.variacaoMercado, -1.72);
+  assert.equal(item.precoNovo, 18.28);
 });
 
-test("28. Limite de +RK$ 2,00", () => {
-  assert.equal(formula.calcularVariacaoMercado(50, 1, true).variacaoMercado, 2);
+test("28. Variação positiva não possui teto fixo", () => {
+  assert.ok(formula.calcularVariacaoMercado(50, 1, true).variacaoMercado > 2);
 });
 
-test("29. Limite de -RK$ 2,00", () => {
-  assert.equal(formula.calcularVariacaoMercado(-10, 30, true).variacaoMercado, -2);
+test("29. Variação negativa não possui teto fixo", () => {
+  assert.ok(formula.calcularVariacaoMercado(-10, 30, true).variacaoMercado < -2);
 });
 
 test("30. Preço mínimo de RK$ 4,00", () => {
   assert.equal(formula.calcularNovoPreco(4.5, -2, true), 4);
 });
 
-test("31. Preço máximo de RK$ 30,00", () => {
-  assert.equal(formula.calcularNovoPreco(29, 2, true), 30);
+test("31. Não há preço máximo", () => {
+  assert.equal(formula.calcularNovoPreco(29, 2, true), 31);
 });
 
 test("32. Jogador sem histórico", () => {
@@ -235,7 +236,7 @@ test("32. Jogador sem histórico", () => {
     precoAtual: 10, pontuacaoRodada: 9, historico: [], jogou: true
   });
   assert.equal(item.mediaUltimasTres, null);
-  assert.equal(item.pontuacaoEsperada, 9);
+  assert.equal(item.pontuacaoEsperada, 8);
 });
 
 test("33. Jogador com uma rodada de histórico", () => {

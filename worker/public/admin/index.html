@@ -141,12 +141,12 @@
             <div id="stats-preview" class="result-box">Aguardando prévia.</div>
           </article>
           <article class="card">
-            <div class="card-heading"><div><span class="eyebrow">Fórmula oficial v2</span><h2>Processar rodada</h2></div></div>
+            <div class="card-heading"><div><span class="eyebrow">Pontuação oficial v2</span><h2>Processar rodada</h2></div></div>
             <form id="round-process-form" class="compact-form">
               <label>Rodada<input name="roundNumber" type="number" min="2" value="2" required></label>
               <label>Divisão<select name="division"><option value="">Ambas</option><option value="elite">Elite</option><option value="ascension">Ascensão</option></select></label>
               <button id="round-preview-button" class="primary" type="button">Gerar prévia v2</button>
-              <button id="round-process-button" class="danger" type="button" disabled>Processar pontos e preços</button>
+              <button id="round-process-button" class="danger" type="button" disabled>Processar pontuação</button>
             </form>
             <div id="round-process-preview" class="result-box">Aguardando prévia da rodada.</div>
           </article>
@@ -161,7 +161,7 @@
       <section id="panel-valuation" class="panel">
         <div class="two-columns">
           <article class="card">
-            <div class="card-heading"><div><span class="eyebrow">Determinística e configurável</span><h2>Fórmula</h2></div></div>
+            <div class="card-heading"><div><span class="eyebrow">Dinâmica e versionada</span><h2>Fórmula de valorização</h2></div></div>
             <form id="formula-form" class="formula-grid"></form>
           </article>
           <article class="card">
@@ -171,11 +171,34 @@
               <label>Divisão<select name="division"><option value="">Ambas</option><option value="elite">Elite</option><option value="ascension">Ascensão</option></select></label>
               <button class="primary" type="submit">Simular valorização</button>
             </form>
+            <div class="filters">
+              <label>Ordenar prévia
+                <select id="valuation-sort">
+                  <option value="increase">Maior alta</option>
+                  <option value="decrease">Maior queda</option>
+                  <option value="price">Maior preço</option>
+                  <option value="difference">Maior diferença</option>
+                  <option value="review">Revisão obrigatória</option>
+                </select>
+              </label>
+              <label>Ordenar patrimônio
+                <select id="patrimony-sort">
+                  <option value="highest">Maior patrimônio</option>
+                  <option value="lowest">Menor patrimônio</option>
+                  <option value="increase">Maior valorização</option>
+                  <option value="decrease">Maior desvalorização</option>
+                  <option value="inconsistent">Inconsistências</option>
+                  <option value="no-lineup">Sem escalação</option>
+                  <option value="unprocessed">Ainda não processado</option>
+                </select>
+              </label>
+            </div>
             <div id="valuation-actions" class="actions"></div>
           </article>
         </div>
         <article class="card"><div class="card-heading"><h2>Resultado da simulação</h2></div><div id="valuation-table" class="table-wrap"></div></article>
         <article class="card"><div class="card-heading"><h2>Histórico de valorizações</h2></div><div id="valuation-history" class="table-wrap"></div></article>
+        <article class="card"><div class="card-heading"><div><span class="eyebrow">Antes de publicar</span><h2>Prévia do patrimônio</h2></div></div><div id="patrimony-preview-table" class="table-wrap"></div></article>
       </section>
 
       <section id="panel-players" class="panel">
