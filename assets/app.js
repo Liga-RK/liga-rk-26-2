@@ -761,17 +761,32 @@
     const playerName = normalizeRosterPlayerName(player.player).toUpperCase();
     const isPlaceholder = !playerName;
     if (isPlaceholder && !player.opgg && !player.riotId) return "";
-    if (player.playerId) return player.playerId;
     const normalizedName = normalizeLookup(player.player);
-    const normalizedRiotId = normalizeLookup(player.riotId);
+    const normalizedRiotId = normalizeRiotIdLookup(player.riotId || riotIdFromOpgg(player.opgg));
     const match = (replayStats.players || []).find((candidate) => {
       const belongsToTeam = (candidate.teams || []).some((team) => team.slot === player.teamSlot);
       return belongsToTeam && (
-        (normalizedName && normalizeLookup(candidate.displayName) === normalizedName) ||
-        (normalizedRiotId && normalizeLookup(candidate.riotId) === normalizedRiotId)
+        (normalizedRiotId && normalizeRiotIdLookup(candidate.riotId) === normalizedRiotId) ||
+        (normalizedName && normalizeLookup(candidate.displayName) === normalizedName)
       );
     });
-    return match && (match.playerId || match.id) || "";
+    return match && (match.playerId || match.id) || player.playerId || "";
+  }
+
+  function riotIdFromOpgg(value) {
+    const match = String(value || "").match(/\/summoners\/[^/]+\/([^/?#]+)/i);
+    if (!match) return "";
+    try {
+      return decodeURIComponent(match[1]).replace(/-([^-]+)$/, "#$1");
+    } catch (_error) {
+      return match[1].replace(/-([^-]+)$/, "#$1");
+    }
+  }
+
+  function normalizeRiotIdLookup(value) {
+    const parts = String(value || "").trim().split("#");
+    if (parts.length !== 2) return "";
+    return `${normalizeLookup(parts[0])}#${normalizeLookup(parts[1])}`;
   }
 
   function normalizeLookup(value) {

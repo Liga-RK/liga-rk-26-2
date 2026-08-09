@@ -1,6 +1,6 @@
 const crypto = require("node:crypto");
 const { damageShare, kda, participation, perMinute, round, winRate } = require("./calculations");
-const { normalizeRiotId } = require("./player-identity");
+const { normalizeRiotId, parseOpggRiotId } = require("./player-identity");
 
 const DIVISIONS = ["elite", "ascension"];
 const MVP_MODEL_VERSION = "role-impact-v2";
@@ -36,14 +36,15 @@ function aggregateDatabase(database, content, fixedData = {}) {
     season: "Liga RK 26.2",
     divisions: Object.fromEntries(DIVISIONS.map((division) => [
       division,
-      aggregateDivision(database.divisions && database.divisions[division], content, fixedData, division)
+      aggregateDivision(database.divisions && database.divisions[division], content, fixedData, division, database.rosterIdentities)
     ]))
   };
 }
 
-function aggregateDivision(divisionDatabase, content, fixedData, division) {
+function aggregateDivision(divisionDatabase, content, fixedData, division, rosterIdentities = []) {
   const teams = teamsBySlot(content, fixedData, division);
-  const roster = rosterByPlayerId(teams);
+  const roster = rosterByPlayerId(teams, rosterIdentities, division);
+  const rosterByRiotId = indexRosterByRiotId(roster);
   const games = Array.isArray(divisionDatabase && divisionDatabase.games) ? divisionDatabase.games : [];
   const parsedGames = games.filter((game) => game && game.match && /^parsed_/.test(String(game.parserStatus || "")));
   const seriesWinners = buildSeriesWinners(parsedGames);
@@ -64,7 +65,7 @@ function aggregateDivision(divisionDatabase, content, fixedData, division) {
   }
 
   for (const game of parsedGames) {
-    const match = game.match;
+    const match = resolveMatchPlayerIds(game.match, rosterByRiotId);
     const durationSeconds = Number(match.durationSeconds || 0);
     if (!(durationSeconds > 0)) continue;
     const sides = [
@@ -237,23 +238,81 @@ function teamsBySlot(content, fixedData, division) {
   }));
 }
 
-function rosterByPlayerId(teams) {
+function rosterByPlayerId(teams, rosterIdentities = [], division = "") {
   const roster = new Map();
+  for (const identity of rosterIdentities || []) {
+    if (!identity || !identity.playerId) continue;
+    if (division && identity.division && identity.division !== division) continue;
+    const parsed = parseOpggRiotId(identity.opgg);
+    roster.set(identity.playerId, {
+      playerId: identity.playerId,
+      displayName: identity.displayName || parsed.gameName || "JOGADOR",
+      riotId: parsed.riotId || "",
+      riotIdAliases: [],
+      opgg: identity.opgg || "",
+      image: "",
+      lane: identity.lane || "",
+      teamSlot: identity.slot || "",
+      active: false
+    });
+  }
+  const historicalByRiotId = indexRosterByRiotId(roster);
   for (const [slot, team] of Object.entries(teams)) {
     for (const player of team.players || []) {
       if (!player || !player.playerId || !isRegisteredRosterPlayer(player)) continue;
-      roster.set(player.playerId, {
-        playerId: player.playerId,
+      const currentRiotId = normalizeRiotId(player.riotId || parseOpggRiotId(player.opgg).riotId);
+      const historicalIdentity = currentRiotId ? historicalByRiotId.get(currentRiotId) : null;
+      const canonicalPlayerId = historicalIdentity && historicalIdentity.playerId || player.playerId;
+      roster.set(canonicalPlayerId, {
+        playerId: canonicalPlayerId,
         displayName: player.player || player.name || player.riotId || "JOGADOR",
         riotId: player.riotId || "",
+        riotIdAliases: player.riotIdAliases || [],
         opgg: player.opgg || "",
         image: normalizeAssetPath(player.image || player.photo || ""),
         lane: player.lane || "",
-        teamSlot: slot
+        teamSlot: slot,
+        active: true
       });
     }
   }
   return roster;
+}
+
+function indexRosterByRiotId(roster) {
+  const index = new Map();
+  const conflicts = new Set();
+  for (const player of roster.values()) {
+    const identities = [
+      player.riotId,
+      ...(player.riotIdAliases || []).map((alias) => typeof alias === "string" ? alias : alias.riotId),
+      parseOpggRiotId(player.opgg).riotId
+    ];
+    for (const riotId of identities) {
+      const normalized = normalizeRiotId(riotId);
+      if (!normalized || conflicts.has(normalized)) continue;
+      const previous = index.get(normalized);
+      if (previous && previous.playerId !== player.playerId) {
+        index.delete(normalized);
+        conflicts.add(normalized);
+      } else {
+        index.set(normalized, player);
+      }
+    }
+  }
+  return index;
+}
+
+function resolveMatchPlayerIds(match, rosterByRiotId) {
+  return {
+    ...match,
+    participants: (match.participants || []).map((participant) => {
+      const registered = rosterByRiotId.get(normalizeRiotId(participant.riotId));
+      return registered && registered.playerId !== participant.playerId
+        ? { ...participant, playerId: registered.playerId, identificationMethod: "roster-riot-id" }
+        : participant;
+    })
+  };
 }
 
 function isRegisteredRosterPlayer(player) {
@@ -302,6 +361,7 @@ function createPlayerAggregate(id, participant, registered) {
     primaryRiotId: registered.riotId || "",
     opgg: registered.opgg || "",
     image: registered.image || "",
+    currentTeamSlot: registered.active ? registered.teamSlot || "" : "",
     riotIds: new Set(),
     games: 0,
     wins: 0,
@@ -392,6 +452,13 @@ function summarizePlayer(player) {
   const positions = sortedMap(player.positions, "position");
   const champions = sortedPlayerChampions(player.champions, player.championWins);
   const teams = sortedMap(player.teams, "slot");
+  if (player.currentTeamSlot) {
+    teams.sort((left, right) => (
+      Number(right.slot === player.currentTeamSlot) - Number(left.slot === player.currentTeamSlot) ||
+      right.games - left.games ||
+      left.slot.localeCompare(right.slot)
+    ));
+  }
   return {
     id: player.id,
     playerId: player.playerId,

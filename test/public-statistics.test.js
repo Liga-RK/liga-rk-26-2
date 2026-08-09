@@ -131,6 +131,72 @@ test("publica jogadores inscritos sem partidas com estatisticas zeradas", () => 
   assert.equal(player.teams[0].slot, "A1");
 });
 
+test("mantem o historico do jogador transferido mesmo quando o slot traz um ID antigo", () => {
+  const burraxaId = "player-burraxa";
+  const salameId = "player-salame";
+  const match = mvpTestMatch();
+  match.teams = { "100": {}, "200": {} };
+  match.participants = match.participants.map((participant, index) => ({
+    ...participant,
+    champion: index === 4 ? "Bard" : "Annie",
+    playerId: index === 4 ? salameId : `other-player-${index}`,
+    riotId: index === 4 ? "FEMBuurraxa#FLU" : participant.riotId
+  }));
+  const content = {
+    divisions: {
+      elite: { teams: {} },
+      ascension: {
+        teams: {
+          C2: {
+            name: "Favelinha Reformed",
+            tag: "FVLR",
+            players: [{
+              playerId: salameId,
+              player: "BURRAXA",
+              riotId: "",
+              lane: "SUB",
+              opgg: "https://op.gg/pt/lol/summoners/br/FEMBuurraxa-FLU"
+            }]
+          },
+          C3: { name: "Adversario", tag: "ADV", players: [] }
+        }
+      }
+    }
+  };
+  const database = {
+    version: 2,
+    rosterIdentities: [
+      { playerId: burraxaId, division: "ascension", displayName: "BURRAXA", slot: "D2", lane: "SUP", opgg: "https://op.gg/pt/lol/summoners/br/FEMBuurraxa-FLU" },
+      { playerId: salameId, division: "ascension", displayName: "SALAME", slot: "C2", lane: "SUB", opgg: "https://op.gg/pt/lol/summoners/br/benihime-sasa" }
+    ],
+    divisions: {
+      elite: { games: [] },
+      ascension: { games: [{
+        id: "transfer-game",
+        division: "ascension",
+        seriesId: "groups-r2-transfer",
+        gameNumber: 1,
+        blueTeamSlot: "C2",
+        redTeamSlot: "C3",
+        parserStatus: "parsed_rofl2",
+        stage: "GRUPOS",
+        round: "RODADA 2",
+        match
+      }] }
+    }
+  };
+
+  const players = aggregateDatabase(database, content, {}).divisions.ascension.players;
+  const burraxa = players.find((player) => player.id === burraxaId);
+  const salame = players.find((player) => player.id === salameId);
+
+  assert.equal(burraxa.games, 1);
+  assert.equal(burraxa.displayName, "BURRAXA");
+  assert.equal(burraxa.teams[0].slot, "C2");
+  assert.equal(salame.games, 0);
+  assert.equal(salame.displayName, "SALAME");
+});
+
 test("ordena equipes por nota media e preserva o TMV", { skip: !fs.existsSync(replayPath) }, () => {
   const first = parseReplay(fs.readFileSync(replayPath), { fileName: path.basename(replayPath) });
   first.durationSeconds = 1200;

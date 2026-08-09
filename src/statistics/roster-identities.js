@@ -39,19 +39,27 @@ function hydrateRosterIdentities(content, database) {
 }
 
 function findIdentity(registry, context) {
+  const opgg = normalize(context.player.opgg);
+  if (opgg) {
+    const matches = registry.filter((entry) => entry.opgg === opgg);
+    if (matches.length) return oldestIdentity(matches);
+  }
+
+  // The editor keeps a hidden ID in each roster slot. When a transfer is
+  // entered by replacing the slot contents, that stale ID belongs to the old
+  // occupant. A known player identity is therefore stronger than the slot ID.
+  const displayName = normalize(context.player.player || context.player.name);
+  if (displayName) {
+    const sameName = registry.filter((entry) => entry.division === context.division && entry.displayName === displayName);
+    if (sameName.length === 1) return sameName[0];
+  }
+
   const officialId = String(context.player.playerId || "").trim();
   if (officialId) {
     const exact = registry.find((entry) => entry.playerId === officialId);
     if (exact) return exact;
   }
 
-  const opgg = normalize(context.player.opgg);
-  if (opgg) {
-    const matches = registry.filter((entry) => entry.opgg === opgg);
-    if (matches.length === 1) return matches[0];
-  }
-
-  const displayName = normalize(context.player.player || context.player.name);
   const samePosition = registry.find((entry) => (
     entry.division === context.division &&
     entry.slot === context.slot &&
@@ -59,12 +67,14 @@ function findIdentity(registry, context) {
     entry.displayName === displayName
   ));
   if (samePosition) return samePosition;
-
-  if (displayName) {
-    const sameName = registry.filter((entry) => entry.division === context.division && entry.displayName === displayName);
-    if (sameName.length === 1) return sameName[0];
-  }
   return null;
+}
+
+function oldestIdentity(entries) {
+  return entries.slice().sort((left, right) => (
+    Date.parse(left.createdAt || 0) - Date.parse(right.createdAt || 0) ||
+    String(left.playerId || "").localeCompare(String(right.playerId || ""))
+  ))[0];
 }
 
 function identitySnapshot(entry, context) {
