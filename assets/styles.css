@@ -4828,7 +4828,6 @@ a.stats-postgame-team-logo:focus-visible {
 .about-hero p,
 .about-copy,
 .institution-card p,
-.ecosystem-grid p,
 .faq-grid p {
   color: rgba(255, 255, 255, 0.75);
   font-family: Arial, sans-serif;
@@ -4865,7 +4864,6 @@ a.stats-postgame-team-logo:focus-visible {
 }
 
 .institution-card h3,
-.ecosystem-grid h3,
 .faq-grid h3 {
   margin: 0;
   color: #fff;
@@ -4882,7 +4880,6 @@ a.stats-postgame-team-logo:focus-visible {
 }
 
 .institution-card p,
-.ecosystem-grid p,
 .faq-grid p {
   margin: 0;
   font-size: 0.96rem;
@@ -4949,7 +4946,7 @@ a.stats-postgame-team-logo:focus-visible {
 
 .about-hero {
   display: grid;
-  grid-template-columns: minmax(7rem, 12rem) minmax(0, 1fr);
+  grid-template-columns: minmax(9rem, 14rem) minmax(0, 1fr);
   align-items: center;
   gap: clamp(1rem, 4vw, 2.5rem);
   min-height: 24rem;
@@ -4961,13 +4958,14 @@ a.stats-postgame-team-logo:focus-visible {
 
 .about-logo {
   width: 100%;
-  max-width: 12rem;
+  max-width: 14rem;
   aspect-ratio: 1;
   object-fit: contain;
 }
 
 .about-hero h1 {
-  font-size: clamp(3.25rem, 9vw, 7rem);
+  font-size: clamp(3.25rem, 5.8vw, 5.25rem);
+  white-space: nowrap;
 }
 
 .about-hero p:last-child {
@@ -5001,7 +4999,6 @@ a.stats-postgame-team-logo:focus-visible {
 }
 
 .about-section-heading .kicker,
-.about-subsection-heading .kicker,
 .about-hero .kicker {
   color: rgba(255, 255, 255, 0.62);
   font-size: 1rem;
@@ -5024,35 +5021,13 @@ a.stats-postgame-team-logo:focus-visible {
   margin: 0;
 }
 
-.about-subsection-heading {
-  padding-left: 4.7rem;
-  margin-top: 0.6rem;
-}
-
-.about-subsection-heading h3 {
-  margin: 0;
-  color: #fff;
-  font-size: clamp(2rem, 4vw, 3rem);
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.ecosystem-grid,
 .faq-grid {
   display: grid;
   gap: 0.85rem;
   padding-left: 4.7rem;
-}
-
-.ecosystem-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.faq-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.ecosystem-grid article,
 .faq-grid article {
   display: grid;
   align-content: start;
@@ -5135,7 +5110,11 @@ a.stats-postgame-team-logo:focus-visible {
   }
 
   .about-logo {
-    width: 6rem;
+    width: 8rem;
+  }
+
+  .about-hero h1 {
+    font-size: clamp(1.75rem, 8.2vw, 3rem);
   }
 
   .about-section-heading > span {
@@ -5145,14 +5124,11 @@ a.stats-postgame-team-logo:focus-visible {
   }
 
   .about-copy,
-  .about-subsection-heading,
-  .ecosystem-grid,
   .faq-grid,
   .community-links {
     padding-left: 0;
   }
 
-  .ecosystem-grid,
   .faq-grid,
   .community-links {
     grid-template-columns: 1fr;
