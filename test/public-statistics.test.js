@@ -192,9 +192,63 @@ test("mantem o historico do jogador transferido mesmo quando o slot traz um ID a
 
   assert.equal(burraxa.games, 1);
   assert.equal(burraxa.displayName, "BURRAXA");
+  assert.equal(burraxa.mainPosition, "SUP");
   assert.equal(burraxa.teams[0].slot, "C2");
   assert.equal(salame.games, 0);
   assert.equal(salame.displayName, "SALAME");
+});
+
+test("nao associa jogador a equipe historica sem partidas disputadas", () => {
+  const littleNoctusId = "player-little-noctus";
+  const match = mvpTestMatch();
+  match.participants = match.participants.map((participant, index) => ({
+    ...participant,
+    playerId: index === 1 ? littleNoctusId : `historical-team-player-${index}`,
+    riotId: index === 1 ? "little noctus#gabi" : participant.riotId
+  }));
+  const content = {
+    divisions: {
+      elite: {
+        teams: {
+          A4: { name: "Quantum Rabbits", tag: "QR", players: [] },
+          A3: { name: "Adversario", tag: "ADV", players: [] },
+          D1: { name: "Favelao do Techy", tag: "FVL", players: [] }
+        }
+      },
+      ascension: { teams: {} }
+    }
+  };
+  const database = {
+    version: 2,
+    rosterIdentities: [{
+      playerId: littleNoctusId,
+      division: "elite",
+      displayName: "LITTLE NOCTUS",
+      slot: "D1",
+      lane: "MID",
+      opgg: "https://op.gg/pt/lol/summoners/br/little%20noctus-gabi"
+    }],
+    divisions: {
+      elite: { games: [{
+        id: "little-noctus-game",
+        division: "elite",
+        seriesId: "groups-r1g1",
+        gameNumber: 1,
+        blueTeamSlot: "A4",
+        redTeamSlot: "A3",
+        parserStatus: "parsed_rofl2",
+        stage: "GRUPOS",
+        round: "RODADA 1",
+        match
+      }] },
+      ascension: { games: [] }
+    }
+  };
+
+  const player = aggregateDatabase(database, content, {}).divisions.elite.players.find((entry) => entry.id === littleNoctusId);
+
+  assert.equal(player.mainPosition, "JG");
+  assert.deepEqual(player.teams, [{ slot: "A4", count: 1 }]);
 });
 
 test("ordena equipes por nota media e preserva o TMV", { skip: !fs.existsSync(replayPath) }, () => {
@@ -247,7 +301,7 @@ test("MVP e escolhido somente entre jogadores do time vencedor", () => {
 
   assert.equal(mvp.team, 100);
   assert.equal(mvp.won, true);
-  assert.equal(mvp.mvpModel, "role-impact-v2");
+  assert.equal(mvp.mvpModel, "role-impact-v3");
   assert.ok(mvp.mvpScore > 0 && mvp.mvpScore <= 100);
 });
 
@@ -257,6 +311,7 @@ test("suporte pode ser MVP por participacao, assistencias e visao", () => {
 
   assert.equal(mvp.position, "SUP");
   assert.equal(mvp.riotId, "Winner SUP#BR1");
+  assert.ok(mvp.performanceScore >= 90);
   assert.ok(mvp.mvpBreakdown.kp > 60);
   assert.ok(mvp.mvpBreakdown.vision > 50);
   assert.ok(mvp.mvpBreakdown.wards > 50);
@@ -268,7 +323,7 @@ test("atribui nota de desempenho para todos os jogadores da partida", () => {
 
   assert.equal(scores.length, 10);
   assert.ok(scores.every((player) => player.performanceScore >= 0 && player.performanceScore <= 100));
-  assert.ok(scores.every((player) => player.performanceModel === "role-impact-v2"));
+  assert.ok(scores.every((player) => player.performanceModel === "role-impact-v3"));
   assert.ok(scores.some((player) => player.team === 200 && player.performanceScore > 0));
 });
 

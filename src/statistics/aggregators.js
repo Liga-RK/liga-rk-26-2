@@ -3,7 +3,7 @@ const { damageShare, kda, participation, perMinute, round, winRate } = require("
 const { normalizeRiotId, parseOpggRiotId } = require("./player-identity");
 
 const DIVISIONS = ["elite", "ascension"];
-const MVP_MODEL_VERSION = "role-impact-v2";
+const MVP_MODEL_VERSION = "role-impact-v3";
 const ACTIVE_TEAM_OF_WEEK_ROUND = 2;
 const MIN_TEAM_OF_WEEK_GAMES = 2;
 const COMPETITIVE_LANES = ["TOP", "JG", "MID", "ADC", "SUP"];
@@ -27,6 +27,16 @@ const MVP_ROLE_BASELINES = Object.freeze({
   MID: Object.freeze({ kda: 0.50, kp: 0.58, damage: 0.24, gold: 0.21, efficiency: 0.72, vision: 0.12, wards: 0.12, towers: 0.20, objectives: 0.08, kills: 0.23, assists: 0.14, survival: 0.45 }),
   ADC: Object.freeze({ kda: 0.55, kp: 0.58, damage: 0.29, gold: 0.23, efficiency: 0.80, vision: 0.08, wards: 0.08, towers: 0.35, objectives: 0.07, kills: 0.32, assists: 0.13, survival: 0.50 }),
   SUP: Object.freeze({ kda: 0.45, kp: 0.68, damage: 0.09, gold: 0.14, efficiency: 0.45, vision: 0.45, wards: 0.50, towers: 0.04, objectives: 0.05, kills: 0.05, assists: 0.40, survival: 0.42 })
+});
+// Equalizes the upper performance range between roles after role-specific
+// normalization. Jungle remains the reference; support needs extra scale
+// because vision and assist shares naturally saturate below carry metrics.
+const MVP_ROLE_CALIBRATION = Object.freeze({
+  TOP: 1.12,
+  JG: 1,
+  MID: 1,
+  ADC: 1,
+  SUP: 1.2
 });
 
 function aggregateDatabase(database, content, fixedData = {}) {
@@ -451,7 +461,11 @@ function summarizePlayer(player) {
   const games = Math.max(1, player.games);
   const positions = sortedMap(player.positions, "position");
   const champions = sortedPlayerChampions(player.champions, player.championWins);
-  const teams = sortedMap(player.teams, "slot");
+  const allTeams = sortedMap(player.teams, "slot");
+  const hasPlayedTeam = allTeams.some((entry) => entry.count > 0);
+  const teams = allTeams.filter((entry) => (
+    !hasPlayedTeam || entry.count > 0 || entry.slot === player.currentTeamSlot
+  ));
   if (player.currentTeamSlot) {
     teams.sort((left, right) => (
       Number(right.slot === player.currentTeamSlot) - Number(left.slot === player.currentTeamSlot) ||
@@ -615,7 +629,8 @@ function scoreParticipant(match, participant, durationSeconds) {
   const metrics = normalizeMvpMetrics(rawMetrics, role);
   const roleEdge = mvpRoleEdge(match, participant, durationSeconds);
   const breakdown = { ...metrics, roleEdge };
-  const rawScore = weightedScore(breakdown, MVP_ROLE_WEIGHTS[role]) * 100;
+  const roleCalibration = MVP_ROLE_CALIBRATION[role] || 1;
+  const rawScore = weightedScore(breakdown, MVP_ROLE_WEIGHTS[role]) * 100 * roleCalibration;
   const score = performanceGrade(rawScore);
   return {
     ...participant,
@@ -636,6 +651,7 @@ function scoreParticipant(match, participant, durationSeconds) {
       assists: percentage(metrics.assists),
       survival: percentage(metrics.survival),
       roleEdge: percentage(roleEdge),
+      roleCalibration: round(roleCalibration),
       dpm: round(rawMetrics.dpm),
       gpm: round(rawMetrics.gpm)
     }

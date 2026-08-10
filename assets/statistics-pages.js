@@ -241,7 +241,9 @@
     const division = context.division;
     const data = divisionData(division);
     if (!team) return notFound("Equipe n&atilde;o encontrada", division);
-    const players = (data.players || []).filter((player) => (player.teams || []).some((entry) => entry.slot === team.slot));
+    const players = (data.players || []).filter((player) => (
+      player.teams && player.teams[0] && player.teams[0].slot === team.slot
+    ));
     const champions = (data.champions || []).filter((champion) => (champion.teams || []).includes(team.slot));
     const matches = (data.matches || []).filter((match) => match.blueTeamSlot === team.slot || match.redTeamSlot === team.slot);
     const group = teamGroupContext(data, team);
@@ -596,7 +598,7 @@
   function playerFilters(players, division) {
     const availableLanes = new Set(players.map((player) => normalizeLane(player.mainPosition)).filter(Boolean));
     const lanes = laneOrder.filter((lane) => availableLanes.has(lane));
-    const teamSlots = [...new Set(players.flatMap((player) => (player.teams || []).map((team) => team.slot)).filter(Boolean))];
+    const teamSlots = [...new Set(players.map((player) => player.teams && player.teams[0] && player.teams[0].slot).filter(Boolean))];
     const data = divisionData(division);
     return `<div class="stats-filters"><label>Buscar<input type="search" placeholder="Nome ou equipe" data-player-search /></label><div class="stats-filter-field"><span>Posi&ccedil;&atilde;o</span><div class="stats-lane-filter" role="group" aria-label="Filtrar por posi&ccedil;&atilde;o"><button type="button" class="active" data-player-lane-option="" aria-pressed="true">Todas</button>${lanes.map((lane) => `<button type="button" data-player-lane-option="${attribute(lane)}" aria-pressed="false" aria-label="${attribute(lane)}">${laneIcon(lane)}</button>`).join("")}</div><input type="hidden" value="" data-player-lane /></div><label>Equipe<select data-player-team><option value="">Todas</option>${teamSlots.map((slot) => {
       const team = findTeam(data, slot);
@@ -827,11 +829,11 @@
         tag: team.tag || savedTeam.tag || slot,
         logo: team.logo || savedTeam.logo || ""
       });
-      (team.players || []).filter(isRegisteredContentPlayer).forEach((player) => {
+      (team.players || []).filter(isRegisteredContentPlayer).forEach((player, playerIndex) => {
         const rosterPlayerId = String(player.playerId || "").trim();
         if (!rosterPlayerId) return;
         const matchedPlayer = findSavedPlayer(playersById, player, slot);
-        const canonicalId = String(matchedPlayer && (matchedPlayer.playerId || matchedPlayer.id) || rosterPlayerId);
+        const canonicalId = String(matchedPlayer && (matchedPlayer.playerId || matchedPlayer.id) || contentPlayerId(playersById, player, slot, playerIndex));
         currentRosterIds.add(canonicalId);
         const savedPlayer = matchedPlayer || zeroPlayer(player, canonicalId, slot);
         playersById.set(canonicalId, {
@@ -842,7 +844,7 @@
           displayName: player.player || player.name || savedPlayer.displayName || "JOGADOR",
           riotId: player.riotId || savedPlayer.riotId || "",
           opgg: player.opgg || savedPlayer.opgg || "",
-          mainPosition: player.lane || savedPlayer.mainPosition || "",
+          mainPosition: statisticalPosition(savedPlayer, player),
           teams: mergePlayerTeams(savedPlayer.teams, slot)
         });
       });
@@ -952,9 +954,6 @@
   }
 
   function findSavedPlayer(playersById, player, slot) {
-    const directId = String(player.playerId || "").trim();
-    if (directId && playersById.has(directId)) return playersById.get(directId);
-
     const opgg = normalizeIdentityValue(player.opgg);
     const riotId = normalizeIdentityValue(player.riotId);
     const displayName = normalizeIdentityValue(player.player || player.name);
@@ -975,7 +974,41 @@
       ));
       if (matches.length === 1) return matches[0];
     }
+
+    const directId = String(player.playerId || "").trim();
+    const directPlayer = directId ? playersById.get(directId) : null;
+    if (directPlayer && compatiblePlayerIdentity(directPlayer, player)) return directPlayer;
     return null;
+  }
+
+  function compatiblePlayerIdentity(savedPlayer, rosterPlayer) {
+    const identityPairs = [
+      [normalizeIdentityValue(savedPlayer && savedPlayer.opgg), normalizeIdentityValue(rosterPlayer && rosterPlayer.opgg)],
+      [normalizeIdentityValue(savedPlayer && savedPlayer.riotId), normalizeIdentityValue(rosterPlayer && rosterPlayer.riotId)]
+    ];
+    const comparable = identityPairs.filter(([saved, roster]) => saved && roster);
+    return comparable.length ? comparable.some(([saved, roster]) => saved === roster) : true;
+  }
+
+  function contentPlayerId(playersById, player, slot, playerIndex) {
+    const directId = String(player.playerId || "").trim();
+    if (directId && !playersById.has(directId)) return directId;
+    const identity = normalizeIdentityValue(player.opgg || player.riotId || player.player || player.name)
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "")
+      .slice(0, 48);
+    return `content-${slot}-${playerIndex}-${identity || "player"}`;
+  }
+
+  function statisticalPosition(savedPlayer, rosterPlayer) {
+    const positions = Array.isArray(savedPlayer && savedPlayer.positions) ? savedPlayer.positions : [];
+    const played = positions
+      .filter((entry) => laneOrder.includes(normalizeLane(entry && entry.position)) && numeric(entry && entry.count) > 0)
+      .sort((left, right) => numeric(right.count) - numeric(left.count) || laneIndex(left.position) - laneIndex(right.position));
+    const savedPosition = normalizeLane(savedPlayer && savedPlayer.mainPosition);
+    if (numeric(savedPlayer && savedPlayer.games) > 0 && laneOrder.includes(savedPosition)) return savedPosition;
+    if (played[0]) return normalizeLane(played[0].position);
+    return normalizeLane(rosterPlayer && rosterPlayer.lane) || savedPosition || "";
   }
 
   function normalizeIdentityValue(value) {
@@ -989,8 +1022,10 @@
   }
 
   function mergePlayerTeams(teams, slot) {
-    const list = Array.isArray(teams) ? teams.slice() : [];
-    return list.some((entry) => entry.slot === slot) ? list : [{ slot, count: 0 }, ...list];
+    const list = Array.isArray(teams) ? teams.filter((entry) => entry && entry.slot) : [];
+    const current = list.find((entry) => String(entry.slot) === String(slot)) || { slot, count: 0 };
+    const historical = list.filter((entry) => String(entry.slot) !== String(slot) && numeric(entry.count) > 0);
+    return [current, ...historical];
   }
 
   function isRegisteredContentPlayer(player) {
@@ -1018,7 +1053,7 @@
       <section class="stats-methodology" aria-labelledby="stats-methodology-title">
         <header class="stats-methodology-heading">
           <div>
-            <span>MODELO ROLE-IMPACT V2</span>
+            <span>MODELO ROLE-IMPACT V3</span>
             <h2 id="stats-methodology-title">COMO AS NOTAS S&Atilde;O CALCULADAS</h2>
           </div>
           <p>Modelo autom&aacute;tico, reproduz&iacute;vel e ajustado &agrave;s responsabilidades de cada posi&ccedil;&atilde;o.</p>
@@ -1030,7 +1065,7 @@
             <div>
               <h3>NOTA DE DESEMPENHO</h3>
               <p>Cada jogador recebe uma nota de <strong>0 a 100 por mapa</strong>. KDA, KP, dano, ouro, vis&atilde;o, sentinelas, torres, objetivos, sobreviv&ecirc;ncia e vantagem sobre o advers&aacute;rio da mesma lane s&atilde;o normalizados e ponderados conforme a fun&ccedil;&atilde;o.</p>
-              <code>nota = limitar(25 + impacto ponderado &times; 1,05, entre 0 e 100)</code>
+              <code>nota = limitar(25 + impacto ponderado &times; calibra&ccedil;&atilde;o da fun&ccedil;&atilde;o &times; 1,05, entre 0 e 100)</code>
             </div>
           </article>
 
@@ -1053,7 +1088,7 @@
             ${methodologyRole("ADC", "KDA 15% &middot; KP 13% &middot; dano 24% &middot; efici&ecirc;ncia 11% &middot; vis&atilde;o 2% &middot; sentinelas 1% &middot; torres 12% &middot; objetivos 2% &middot; abates 10% &middot; assist&ecirc;ncias 1% &middot; sobreviv&ecirc;ncia 6% &middot; confronto direto 3%")}
             ${methodologyRole("SUP", "KDA 10% &middot; KP 22% &middot; dano 3% &middot; efici&ecirc;ncia 2% &middot; vis&atilde;o 17% &middot; sentinelas 12% &middot; torres 1% &middot; objetivos 5% &middot; abates 1% &middot; assist&ecirc;ncias 18% &middot; sobreviv&ecirc;ncia 4% &middot; confronto direto 5%")}
           </div>
-          <p class="stats-methodology-footnote">A nota m&eacute;dia individual &eacute; a m&eacute;dia das notas de todos os mapas confirmados. A nota da equipe &eacute; a m&eacute;dia de todas as atua&ccedil;&otilde;es de seus jogadores.</p>
+          <p class="stats-methodology-footnote">A vers&atilde;o V3 calibra as escalas de TOP em 1,12&times; e de suporte em 1,20&times; depois da normaliza&ccedil;&atilde;o por fun&ccedil;&atilde;o, aproximando a faixa dos melhores jogadores entre as lanes sem alterar a r&eacute;gua da selva. A nota m&eacute;dia individual &eacute; a m&eacute;dia das notas de todos os mapas confirmados. A nota da equipe &eacute; a m&eacute;dia de todas as atua&ccedil;&otilde;es de seus jogadores.</p>
         </details>
       </section>
     `;
