@@ -3,8 +3,8 @@ const { damageShare, kda, participation, perMinute, round, winRate } = require("
 const { normalizeRiotId, parseOpggRiotId } = require("./player-identity");
 
 const DIVISIONS = ["elite", "ascension"];
-const MVP_MODEL_VERSION = "role-impact-v4";
-const ACTIVE_TEAM_OF_WEEK_ROUND = 2;
+const MVP_MODEL_VERSION = "role-impact-v5";
+const ACTIVE_TEAM_OF_WEEK_ROUND = 3;
 const MIN_TEAM_OF_WEEK_GAMES = 2;
 const COMPETITIVE_LANES = ["TOP", "JG", "MID", "ADC", "SUP"];
 const PLAYER_IDENTITY_MERGES = Object.freeze({
@@ -39,11 +39,11 @@ const MVP_ROLE_BASELINES = Object.freeze({
 // normalization. Jungle remains the reference while lanes whose core metrics
 // naturally saturate lower receive a small scale correction.
 const MVP_ROLE_CALIBRATION = Object.freeze({
-  TOP: 1.12,
+  TOP: 1.09,
   JG: 1,
-  MID: 1.06,
+  MID: 1.07,
   ADC: 1.1,
-  SUP: 1.2
+  SUP: 1.16
 });
 
 function aggregateDatabase(database, content, fixedData = {}) {

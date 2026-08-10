@@ -359,7 +359,7 @@ test("MVP e escolhido somente entre jogadores do time vencedor", () => {
 
   assert.equal(mvp.team, 100);
   assert.equal(mvp.won, true);
-  assert.equal(mvp.mvpModel, "role-impact-v4");
+  assert.equal(mvp.mvpModel, "role-impact-v5");
   assert.ok(mvp.mvpScore > 0 && mvp.mvpScore <= 100);
 });
 
@@ -381,7 +381,7 @@ test("atribui nota de desempenho para todos os jogadores da partida", () => {
 
   assert.equal(scores.length, 10);
   assert.ok(scores.every((player) => player.performanceScore >= 0 && player.performanceScore <= 100));
-  assert.ok(scores.every((player) => player.performanceModel === "role-impact-v4"));
+  assert.ok(scores.every((player) => player.performanceModel === "role-impact-v5"));
   assert.ok(scores.some((player) => player.team === 200 && player.performanceScore > 0));
 });
 
