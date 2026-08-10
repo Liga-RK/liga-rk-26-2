@@ -8,16 +8,26 @@
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body class="theme-home">
+    <header class="site-header home-header">
+      <a class="brand" href="index.html" aria-label="Página inicial da Liga RK">
+        <img class="brand-logo logo-white" src="assets/logo_liga_rk_nobg_512.png" alt="" />
+        <span>LIGA RK 26.2</span>
+      </a>
+      <nav class="division-nav home-primary-nav" aria-label="Navegação principal">
+        <a href="sobre/">Sobre a RK</a>
+        <a href="fantasy/">Fantasy</a>
+      </nav>
+    </header>
     <main class="home-shell">
-      <section class="home-panel">
+      <section class="home-panel" aria-labelledby="home-title">
         <img class="home-logo logo-white" src="assets/logo_liga_rk_nobg_512.png" alt="LIGA RK 26.2" />
         <p class="kicker">LIGA RK 26.2</p>
-        <h1>Boas-vindas à Liga RK!</h1>
+        <h1 id="home-title">Boas-vindas à Liga RK!</h1>
         <div class="division-actions">
           <a class="division-link elite" href="elite.html">Divisão Elite</a>
           <a class="division-link ascension" href="ascensao.html">Divisão Ascensão</a>
         </div>
-        <nav class="social-links home-socials" aria-label="Comunidade">
+        <nav class="social-links home-socials" aria-label="Redes oficiais da Comunidade RK">
           <a href="https://discord.gg/m9C7dbQUSV" target="_blank" rel="noreferrer" aria-label="Discord">
             <img src="assets/social/discord.svg" alt="" />
           </a>

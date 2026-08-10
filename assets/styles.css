@@ -4694,13 +4694,14 @@ a.stats-postgame-team-logo:focus-visible {
 .home-shell {
   display: grid;
   place-items: center;
-  min-height: 100vh;
+  min-height: calc(100vh - 4.72rem);
   padding: clamp(1rem, 3vw, 2rem);
 }
 
 .home-panel {
   display: grid;
   justify-items: center;
+  min-width: 0;
   width: min(100%, 48rem);
   padding: clamp(2rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2rem);
   background:
@@ -4780,6 +4781,386 @@ a.stats-postgame-team-logo:focus-visible {
 
 .division-link.ascension {
   --accent: var(--ascension);
+}
+
+.institution-section,
+.about-hero,
+.about-section {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(8, 7, 10, 0.96), rgba(16, 10, 13, 0.9));
+  border: 1px solid color-mix(in srgb, var(--home-red) 36%, rgba(255, 255, 255, 0.12));
+  box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.24);
+}
+
+.institution-section::before,
+.about-section::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.28rem;
+  background: linear-gradient(180deg, var(--home-red), transparent 84%);
+}
+
+.institution-section {
+  display: grid;
+  gap: clamp(1.3rem, 3vw, 2rem);
+  min-width: 0;
+  padding: clamp(1.4rem, 4vw, 3rem);
+  scroll-margin-top: 6rem;
+}
+
+.institution-heading {
+  max-width: 62rem;
+}
+
+.institution-heading h2,
+.about-section-heading h2,
+.about-hero h1 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2.65rem, 6vw, 5rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.institution-lead,
+.about-hero p,
+.about-copy,
+.institution-card p,
+.ecosystem-grid p,
+.faq-grid p {
+  color: rgba(255, 255, 255, 0.75);
+  font-family: Arial, sans-serif;
+  line-height: 1.58;
+}
+
+.institution-lead {
+  max-width: 58rem;
+  margin: 0.8rem 0 0;
+  font-size: clamp(1rem, 2vw, 1.16rem);
+}
+
+.institution-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.institution-card {
+  display: grid;
+  align-content: start;
+  gap: 0.55rem;
+  min-width: 0;
+  padding: 1.3rem;
+  background: rgba(255, 255, 255, 0.045);
+  border-top: 0.22rem solid color-mix(in srgb, var(--home-red) 78%, #fff);
+}
+
+.institution-card-label {
+  color: var(--home-red);
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.institution-card h3,
+.ecosystem-grid h3,
+.faq-grid h3 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.55rem, 2.8vw, 2.05rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.institution-card h3 small {
+  display: block;
+  margin-top: 0.3rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.7em;
+}
+
+.institution-card p,
+.ecosystem-grid p,
+.faq-grid p {
+  margin: 0;
+  font-size: 0.96rem;
+}
+
+.institution-link,
+.footer-about-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.institution-link {
+  justify-self: start;
+  min-height: 2.8rem;
+  padding: 0.65rem 1rem 0.5rem;
+  background: var(--home-red);
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  font-size: 1.05rem;
+}
+
+.institution-link:hover,
+.institution-link:focus-visible,
+.footer-about-link:hover,
+.footer-about-link:focus-visible {
+  border-color: #fff;
+  outline: none;
+}
+
+.home-footer,
+.about-footer {
+  width: min(calc(100% - 2rem), 84rem);
+  margin-bottom: 1rem;
+}
+
+.footer-copy {
+  max-width: 42rem;
+}
+
+.footer-copy > span {
+  margin-top: 0.2rem;
+  text-transform: none;
+}
+
+.footer-about-link {
+  justify-self: start;
+  margin-top: 0.45rem;
+  padding-bottom: 0.12rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.58);
+  font-size: 0.88rem;
+}
+
+.about-shell {
+  display: grid;
+  gap: 1.25rem;
+  width: min(100%, 88rem);
+  margin: 0 auto;
+  padding: clamp(1rem, 3vw, 2rem) clamp(0.8rem, 3vw, 2rem) 3rem;
+}
+
+.about-hero {
+  display: grid;
+  grid-template-columns: minmax(7rem, 12rem) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1rem, 4vw, 2.5rem);
+  min-height: 24rem;
+  padding: clamp(1.5rem, 5vw, 4rem);
+  background:
+    linear-gradient(90deg, rgba(5, 5, 7, 0.96), rgba(25, 5, 9, 0.78)),
+    url("fundo_home.jpg") center / cover;
+}
+
+.about-logo {
+  width: 100%;
+  max-width: 12rem;
+  aspect-ratio: 1;
+  object-fit: contain;
+}
+
+.about-hero h1 {
+  font-size: clamp(3.25rem, 9vw, 7rem);
+}
+
+.about-hero p:last-child {
+  max-width: 48rem;
+  margin: 1rem 0 0;
+  font-size: clamp(1rem, 2vw, 1.18rem);
+}
+
+.about-section {
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+  padding: clamp(1.3rem, 3vw, 2.2rem);
+}
+
+.about-section-heading {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+}
+
+.about-section-heading > span {
+  display: grid;
+  width: 3.7rem;
+  height: 3.7rem;
+  place-items: center;
+  color: #fff;
+  background: var(--home-red);
+  font-size: 1.4rem;
+}
+
+.about-section-heading .kicker,
+.about-subsection-heading .kicker,
+.about-hero .kicker {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.about-section-heading h2 {
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+}
+
+.about-copy {
+  display: grid;
+  gap: 0.85rem;
+  max-width: 68rem;
+  padding-left: 4.7rem;
+}
+
+.about-copy p {
+  margin: 0;
+}
+
+.about-subsection-heading {
+  padding-left: 4.7rem;
+  margin-top: 0.6rem;
+}
+
+.about-subsection-heading h3 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.ecosystem-grid,
+.faq-grid {
+  display: grid;
+  gap: 0.85rem;
+  padding-left: 4.7rem;
+}
+
+.ecosystem-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.faq-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ecosystem-grid article,
+.faq-grid article {
+  display: grid;
+  align-content: start;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 1.2rem;
+  background: rgba(255, 255, 255, 0.045);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.community-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  padding-left: 4.7rem;
+}
+
+.community-links a {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 3.2rem;
+  padding: 0.65rem 0.85rem;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.065);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.community-links a:hover,
+.community-links a:focus-visible {
+  background: var(--home-red);
+  border-color: transparent;
+  outline: none;
+}
+
+.community-links img {
+  width: 1.45rem;
+  height: 1.45rem;
+  object-fit: contain;
+}
+
+@media (max-width: 64rem) {
+  .institution-grid,
+  .faq-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-hero {
+    min-height: 20rem;
+  }
+}
+
+@media (max-width: 44rem) {
+  .home-header .brand span {
+    display: none;
+  }
+
+  .home-primary-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .home-primary-nav a {
+    min-width: 0;
+    padding: 0.45rem 0.25rem;
+    font-size: 0.78rem;
+  }
+
+  .institution-section {
+    padding: 1.2rem;
+  }
+
+  .about-hero {
+    grid-template-columns: 1fr;
+    justify-items: start;
+    min-height: auto;
+  }
+
+  .about-logo {
+    width: 6rem;
+  }
+
+  .about-section-heading > span {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.1rem;
+  }
+
+  .about-copy,
+  .about-subsection-heading,
+  .ecosystem-grid,
+  .faq-grid,
+  .community-links {
+    padding-left: 0;
+  }
+
+  .ecosystem-grid,
+  .faq-grid,
+  .community-links {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-about-link {
+    justify-self: center;
+  }
 }
 
 .division-link.editor {

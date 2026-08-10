@@ -77,9 +77,10 @@
               <img src="assets/social/${attribute(icon)}" alt="" />
             </a>`).join("")}
           </div>
-          <nav class="division-nav" aria-label="Divis&otilde;es">
+          <nav class="division-nav" aria-label="Navega&ccedil;&atilde;o principal">
             <a class="${division === "elite" ? "active" : ""}" href="estatisticas.html?division=elite">Elite</a>
             <a class="${division === "ascension" ? "active" : ""}" href="estatisticas.html?division=ascension">Ascens&atilde;o</a>
+            <a href="sobre/">Sobre a RK</a>
           </nav>
         </div>
       </header>
@@ -1151,7 +1152,7 @@
   }
 
   function renderFooter() {
-    return `<footer class="site-footer"><img class="footer-logo logo-white" src="assets/logo_liga_rk_nobg_512.png" alt="" /><div><strong>LIGA RK 26.2</strong><span>Estat&iacute;sticas oficiais</span></div></footer>`;
+    return `<footer class="site-footer"><img class="footer-logo logo-white" src="assets/logo_liga_rk_nobg_512.png" alt="" /><div class="footer-copy"><strong>LIGA RK 26.2</strong><span>Estat&iacute;sticas oficiais</span><span>Liga RK &mdash; uma competi&ccedil;&atilde;o da Comunidade RK.</span><a class="footer-about-link" href="sobre/">Sobre a RK</a></div></footer>`;
   }
 
   function numeric(value) {

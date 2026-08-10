@@ -136,8 +136,6 @@
     standingsByGroup = computeStandings();
     playoffState = computePlayoffState();
 
-    document.title = `${division.label} | LIGA RK 26.2`;
-
     app.innerHTML = `
       <header class="site-header">
         <a class="brand" href="index.html" aria-label="Voltar para seleção de divisão">
@@ -146,9 +144,10 @@
         </a>
         <div class="header-actions">
           ${renderSocialLinks("header-socials")}
-          <nav class="division-nav" aria-label="Divisões">
+          <nav class="division-nav" aria-label="Navegação principal">
             <a class="${divisionKey === "elite" ? "active" : ""}" href="elite.html">Elite</a>
             <a class="${divisionKey === "ascension" ? "active" : ""}" href="ascensao.html">Ascensão</a>
+            <a href="sobre/">Sobre a RK</a>
           </nav>
         </div>
       </header>
@@ -278,6 +277,8 @@
         <div class="footer-copy">
           <strong>LIGA RK 26.2</strong>
           <span>${escapeHtml(division.label)}</span>
+          <span>Liga RK — uma competição da Comunidade RK.</span>
+          <a class="footer-about-link" href="sobre/">Sobre a RK</a>
         </div>
         ${renderSocialLinks("footer-socials")}
       </footer>
