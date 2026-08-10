@@ -1,21 +1,21 @@
 window.LIGA_RK_STATS = {
   "version": 2,
-  "generatedAt": "2026-08-10T00:29:20.766Z",
+  "generatedAt": "2026-08-10T02:37:45.462Z",
   "season": "Liga RK 26.2",
   "divisions": {
     "elite": {
       "hasData": true,
       "overview": {
-        "games": 33,
+        "games": 37,
         "teams": 14,
         "players": 133,
-        "champions": 93
+        "champions": 97
       },
       "statistics": {
         "mostPicked": {
           "title": "MAIS ESCOLHAS",
           "champion": "AATROX",
-          "value": 11,
+          "value": 12,
           "image": "assets/champions/Aatrox.jpg"
         },
         "mostWins": {
@@ -33,9 +33,9 @@ window.LIGA_RK_STATS = {
           },
           {
             "label": "MELHOR KP",
-            "player": "TEARS",
-            "playerId": "4448fafa-ddb9-4a96-b9da-df67b2919733",
-            "value": "83.33%"
+            "player": "SSS",
+            "playerId": "adcf03a3-0794-4ec3-902e-c8894dfdbfc3",
+            "value": "80.22%"
           },
           {
             "label": "MELHOR DPM",
@@ -45,9 +45,9 @@ window.LIGA_RK_STATS = {
           },
           {
             "label": "MELHOR GPM",
-            "player": "DAVI",
-            "playerId": "87b0b01b-0c1d-44ca-8154-ec59da7b80a3",
-            "value": 589.25
+            "player": "MENTALGAP",
+            "playerId": "d98b2eb2-01a3-4f75-8d3f-f699a8974674",
+            "value": 586.56
           },
           {
             "label": "MELHOR VS",
@@ -94,31 +94,31 @@ window.LIGA_RK_STATS = {
           "name": "FAVELÃO DO TECHY",
           "tag": "FVL",
           "logo": "assets/uploads/equipes_elite/fvl.png",
-          "games": 5,
-          "wins": 4,
+          "games": 7,
+          "wins": 6,
           "losses": 1,
-          "averageScore": 78.66,
-          "scoreGames": 25,
-          "winRate": 80,
-          "kills": 145,
-          "deaths": 87,
-          "assists": 288,
-          "kda": 4.98,
-          "killsAvg": 29,
-          "deathsAvg": 17.4,
-          "assistsAvg": 57.6,
-          "goldAvg": 64874.8,
-          "gpmAvg": 2140.79,
-          "damageAvg": 95546.2,
-          "dpmAvg": 3152.92,
-          "towersAvg": 8.2,
-          "voidGrubsAvg": 1.6,
-          "heraldsAvg": 1,
-          "dragonsAvg": 3.6,
+          "averageScore": 78.56,
+          "scoreGames": 35,
+          "winRate": 85.71,
+          "kills": 194,
+          "deaths": 116,
+          "assists": 380,
+          "kda": 4.95,
+          "killsAvg": 27.71,
+          "deathsAvg": 16.57,
+          "assistsAvg": 54.29,
+          "goldAvg": 64418,
+          "gpmAvg": 2147.64,
+          "damageAvg": 94573.43,
+          "dpmAvg": 3152.99,
+          "towersAvg": 8.71,
+          "voidGrubsAvg": 2,
+          "heraldsAvg": 0.86,
+          "dragonsAvg": 3.57,
           "elderDragons": 0,
-          "baronsAvg": 0.8,
-          "avgDuration": "30:18",
-          "avgWinTime": "30:00"
+          "baronsAvg": 0.86,
+          "avgDuration": "30:00",
+          "avgWinTime": "29:44"
         },
         {
           "slot": "B4",
@@ -187,62 +187,31 @@ window.LIGA_RK_STATS = {
           "name": "SPACE DUCKS",
           "tag": "SDK",
           "logo": "assets/uploads/equipes_elite/sdk.png",
-          "games": 5,
-          "wins": 3,
+          "games": 7,
+          "wins": 5,
           "losses": 2,
-          "averageScore": 75.02,
-          "scoreGames": 25,
-          "winRate": 60,
-          "kills": 115,
-          "deaths": 126,
-          "assists": 248,
-          "kda": 2.88,
-          "killsAvg": 23,
-          "deathsAvg": 25.2,
-          "assistsAvg": 49.6,
-          "goldAvg": 64150,
-          "gpmAvg": 2105.46,
-          "damageAvg": 101483,
-          "dpmAvg": 3330.76,
-          "towersAvg": 7.2,
-          "voidGrubsAvg": 1.6,
-          "heraldsAvg": 0.4,
-          "dragonsAvg": 1.4,
+          "averageScore": 75.36,
+          "scoreGames": 35,
+          "winRate": 71.43,
+          "kills": 183,
+          "deaths": 176,
+          "assists": 393,
+          "kda": 3.27,
+          "killsAvg": 26.14,
+          "deathsAvg": 25.14,
+          "assistsAvg": 56.14,
+          "goldAvg": 64822.71,
+          "gpmAvg": 2136.5,
+          "damageAvg": 104429.14,
+          "dpmAvg": 3441.89,
+          "towersAvg": 7.43,
+          "voidGrubsAvg": 1.43,
+          "heraldsAvg": 0.57,
+          "dragonsAvg": 1.71,
           "elderDragons": 0,
           "baronsAvg": 1,
-          "avgDuration": "30:28",
-          "avgWinTime": "27:53"
-        },
-        {
-          "slot": "D4",
-          "name": "M7 ESPORTS",
-          "tag": "M7",
-          "logo": "assets/uploads/equipes_elite/m7.png",
-          "games": 4,
-          "wins": 2,
-          "losses": 2,
-          "averageScore": 74.35,
-          "scoreGames": 20,
-          "winRate": 50,
-          "kills": 87,
-          "deaths": 79,
-          "assists": 158,
-          "kda": 3.1,
-          "killsAvg": 21.75,
-          "deathsAvg": 19.75,
-          "assistsAvg": 39.5,
-          "goldAvg": 51247.5,
-          "gpmAvg": 1974.39,
-          "damageAvg": 91312,
-          "dpmAvg": 3517.94,
-          "towersAvg": 5.5,
-          "voidGrubsAvg": 2,
-          "heraldsAvg": 0.5,
-          "dragonsAvg": 1.5,
-          "elderDragons": 0,
-          "baronsAvg": 0.5,
-          "avgDuration": "25:57",
-          "avgWinTime": "25:51"
+          "avgDuration": "30:20",
+          "avgWinTime": "28:44"
         },
         {
           "slot": "A2",
@@ -369,6 +338,37 @@ window.LIGA_RK_STATS = {
           "avgWinTime": "30:26"
         },
         {
+          "slot": "D4",
+          "name": "M7 ESPORTS",
+          "tag": "M7",
+          "logo": "assets/uploads/equipes_elite/m7.png",
+          "games": 6,
+          "wins": 2,
+          "losses": 4,
+          "averageScore": 72.29,
+          "scoreGames": 30,
+          "winRate": 33.33,
+          "kills": 116,
+          "deaths": 128,
+          "assists": 210,
+          "kda": 2.55,
+          "killsAvg": 19.33,
+          "deathsAvg": 21.33,
+          "assistsAvg": 35,
+          "goldAvg": 52450.83,
+          "gpmAvg": 1939.42,
+          "damageAvg": 88734.67,
+          "dpmAvg": 3281.04,
+          "towersAvg": 4.17,
+          "voidGrubsAvg": 1.33,
+          "heraldsAvg": 0.5,
+          "dragonsAvg": 1.17,
+          "elderDragons": 0,
+          "baronsAvg": 0.33,
+          "avgDuration": "27:03",
+          "avgWinTime": "25:51"
+        },
+        {
           "slot": "B2",
           "name": "LENDINHAS",
           "tag": "IDL",
@@ -404,30 +404,30 @@ window.LIGA_RK_STATS = {
           "name": "BORRACHARIA FC",
           "tag": "BOR",
           "logo": "assets/uploads/equipes_elite/bor.png",
-          "games": 4,
+          "games": 6,
           "wins": 0,
-          "losses": 4,
-          "averageScore": 67.02,
-          "scoreGames": 20,
+          "losses": 6,
+          "averageScore": 67.26,
+          "scoreGames": 30,
           "winRate": 0,
-          "kills": 51,
-          "deaths": 107,
-          "assists": 98,
-          "kda": 1.39,
-          "killsAvg": 12.75,
-          "deathsAvg": 26.75,
-          "assistsAvg": 24.5,
-          "goldAvg": 43946.75,
-          "gpmAvg": 1706.63,
-          "damageAvg": 60335.5,
-          "dpmAvg": 2343.07,
-          "towersAvg": 0.75,
-          "voidGrubsAvg": 0.75,
+          "kills": 101,
+          "deaths": 175,
+          "assists": 187,
+          "kda": 1.65,
+          "killsAvg": 16.83,
+          "deathsAvg": 29.17,
+          "assistsAvg": 31.17,
+          "goldAvg": 48369,
+          "gpmAvg": 1779.96,
+          "damageAvg": 75215,
+          "dpmAvg": 2767.88,
+          "towersAvg": 1.33,
+          "voidGrubsAvg": 1.17,
           "heraldsAvg": 0,
-          "dragonsAvg": 0.75,
+          "dragonsAvg": 1,
           "elderDragons": 0,
-          "baronsAvg": 0,
-          "avgDuration": "25:45",
+          "baronsAvg": 0.17,
+          "avgDuration": "27:10",
           "avgWinTime": "00:00"
         },
         {
@@ -592,31 +592,31 @@ window.LIGA_RK_STATS = {
           "name": "FAVELÃO DO TECHY",
           "tag": "FVL",
           "logo": "assets/uploads/equipes_elite/fvl.png",
-          "games": 5,
-          "wins": 4,
+          "games": 7,
+          "wins": 6,
           "losses": 1,
-          "averageScore": 78.66,
-          "scoreGames": 25,
-          "winRate": 80,
-          "kills": 145,
-          "deaths": 87,
-          "assists": 288,
-          "kda": 4.98,
-          "killsAvg": 29,
-          "deathsAvg": 17.4,
-          "assistsAvg": 57.6,
-          "goldAvg": 64874.8,
-          "gpmAvg": 2140.79,
-          "damageAvg": 95546.2,
-          "dpmAvg": 3152.92,
-          "towersAvg": 8.2,
-          "voidGrubsAvg": 1.6,
-          "heraldsAvg": 1,
-          "dragonsAvg": 3.6,
+          "averageScore": 78.56,
+          "scoreGames": 35,
+          "winRate": 85.71,
+          "kills": 194,
+          "deaths": 116,
+          "assists": 380,
+          "kda": 4.95,
+          "killsAvg": 27.71,
+          "deathsAvg": 16.57,
+          "assistsAvg": 54.29,
+          "goldAvg": 64418,
+          "gpmAvg": 2147.64,
+          "damageAvg": 94573.43,
+          "dpmAvg": 3152.99,
+          "towersAvg": 8.71,
+          "voidGrubsAvg": 2,
+          "heraldsAvg": 0.86,
+          "dragonsAvg": 3.57,
           "elderDragons": 0,
-          "baronsAvg": 0.8,
-          "avgDuration": "30:18",
-          "avgWinTime": "30:00"
+          "baronsAvg": 0.86,
+          "avgDuration": "30:00",
+          "avgWinTime": "29:44"
         },
         "B4": {
           "slot": "B4",
@@ -685,62 +685,31 @@ window.LIGA_RK_STATS = {
           "name": "SPACE DUCKS",
           "tag": "SDK",
           "logo": "assets/uploads/equipes_elite/sdk.png",
-          "games": 5,
-          "wins": 3,
+          "games": 7,
+          "wins": 5,
           "losses": 2,
-          "averageScore": 75.02,
-          "scoreGames": 25,
-          "winRate": 60,
-          "kills": 115,
-          "deaths": 126,
-          "assists": 248,
-          "kda": 2.88,
-          "killsAvg": 23,
-          "deathsAvg": 25.2,
-          "assistsAvg": 49.6,
-          "goldAvg": 64150,
-          "gpmAvg": 2105.46,
-          "damageAvg": 101483,
-          "dpmAvg": 3330.76,
-          "towersAvg": 7.2,
-          "voidGrubsAvg": 1.6,
-          "heraldsAvg": 0.4,
-          "dragonsAvg": 1.4,
+          "averageScore": 75.36,
+          "scoreGames": 35,
+          "winRate": 71.43,
+          "kills": 183,
+          "deaths": 176,
+          "assists": 393,
+          "kda": 3.27,
+          "killsAvg": 26.14,
+          "deathsAvg": 25.14,
+          "assistsAvg": 56.14,
+          "goldAvg": 64822.71,
+          "gpmAvg": 2136.5,
+          "damageAvg": 104429.14,
+          "dpmAvg": 3441.89,
+          "towersAvg": 7.43,
+          "voidGrubsAvg": 1.43,
+          "heraldsAvg": 0.57,
+          "dragonsAvg": 1.71,
           "elderDragons": 0,
           "baronsAvg": 1,
-          "avgDuration": "30:28",
-          "avgWinTime": "27:53"
-        },
-        "D4": {
-          "slot": "D4",
-          "name": "M7 ESPORTS",
-          "tag": "M7",
-          "logo": "assets/uploads/equipes_elite/m7.png",
-          "games": 4,
-          "wins": 2,
-          "losses": 2,
-          "averageScore": 74.35,
-          "scoreGames": 20,
-          "winRate": 50,
-          "kills": 87,
-          "deaths": 79,
-          "assists": 158,
-          "kda": 3.1,
-          "killsAvg": 21.75,
-          "deathsAvg": 19.75,
-          "assistsAvg": 39.5,
-          "goldAvg": 51247.5,
-          "gpmAvg": 1974.39,
-          "damageAvg": 91312,
-          "dpmAvg": 3517.94,
-          "towersAvg": 5.5,
-          "voidGrubsAvg": 2,
-          "heraldsAvg": 0.5,
-          "dragonsAvg": 1.5,
-          "elderDragons": 0,
-          "baronsAvg": 0.5,
-          "avgDuration": "25:57",
-          "avgWinTime": "25:51"
+          "avgDuration": "30:20",
+          "avgWinTime": "28:44"
         },
         "A2": {
           "slot": "A2",
@@ -866,6 +835,37 @@ window.LIGA_RK_STATS = {
           "avgDuration": "28:12",
           "avgWinTime": "30:26"
         },
+        "D4": {
+          "slot": "D4",
+          "name": "M7 ESPORTS",
+          "tag": "M7",
+          "logo": "assets/uploads/equipes_elite/m7.png",
+          "games": 6,
+          "wins": 2,
+          "losses": 4,
+          "averageScore": 72.29,
+          "scoreGames": 30,
+          "winRate": 33.33,
+          "kills": 116,
+          "deaths": 128,
+          "assists": 210,
+          "kda": 2.55,
+          "killsAvg": 19.33,
+          "deathsAvg": 21.33,
+          "assistsAvg": 35,
+          "goldAvg": 52450.83,
+          "gpmAvg": 1939.42,
+          "damageAvg": 88734.67,
+          "dpmAvg": 3281.04,
+          "towersAvg": 4.17,
+          "voidGrubsAvg": 1.33,
+          "heraldsAvg": 0.5,
+          "dragonsAvg": 1.17,
+          "elderDragons": 0,
+          "baronsAvg": 0.33,
+          "avgDuration": "27:03",
+          "avgWinTime": "25:51"
+        },
         "B2": {
           "slot": "B2",
           "name": "LENDINHAS",
@@ -902,30 +902,30 @@ window.LIGA_RK_STATS = {
           "name": "BORRACHARIA FC",
           "tag": "BOR",
           "logo": "assets/uploads/equipes_elite/bor.png",
-          "games": 4,
+          "games": 6,
           "wins": 0,
-          "losses": 4,
-          "averageScore": 67.02,
-          "scoreGames": 20,
+          "losses": 6,
+          "averageScore": 67.26,
+          "scoreGames": 30,
           "winRate": 0,
-          "kills": 51,
-          "deaths": 107,
-          "assists": 98,
-          "kda": 1.39,
-          "killsAvg": 12.75,
-          "deathsAvg": 26.75,
-          "assistsAvg": 24.5,
-          "goldAvg": 43946.75,
-          "gpmAvg": 1706.63,
-          "damageAvg": 60335.5,
-          "dpmAvg": 2343.07,
-          "towersAvg": 0.75,
-          "voidGrubsAvg": 0.75,
+          "kills": 101,
+          "deaths": 175,
+          "assists": 187,
+          "kda": 1.65,
+          "killsAvg": 16.83,
+          "deathsAvg": 29.17,
+          "assistsAvg": 31.17,
+          "goldAvg": 48369,
+          "gpmAvg": 1779.96,
+          "damageAvg": 75215,
+          "dpmAvg": 2767.88,
+          "towersAvg": 1.33,
+          "voidGrubsAvg": 1.17,
           "heraldsAvg": 0,
-          "dragonsAvg": 0.75,
+          "dragonsAvg": 1,
           "elderDragons": 0,
-          "baronsAvg": 0,
-          "avgDuration": "25:45",
+          "baronsAvg": 0.17,
+          "avgDuration": "27:10",
           "avgWinTime": "00:00"
         },
         "A4": {
@@ -1287,123 +1287,6 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "87b0b01b-0c1d-44ca-8154-ec59da7b80a3",
-          "playerId": "87b0b01b-0c1d-44ca-8154-ec59da7b80a3",
-          "displayName": "DAVI",
-          "riotId": "DeyraF#LDavi",
-          "alsoPlayedAs": [
-            "Sereno#TOP"
-          ],
-          "opgg": "https://op.gg/pt/lol/summoners/br/DeyraF-LDavi",
-          "image": "",
-          "games": 2,
-          "wins": 2,
-          "losses": 0,
-          "winRate": 100,
-          "kills": 27,
-          "deaths": 7,
-          "assists": 14,
-          "kda": 5.86,
-          "killsAvg": 13.5,
-          "deathsAvg": 3.5,
-          "assistsAvg": 7,
-          "kp": 69.41,
-          "gold": 30207,
-          "goldAvg": 15103.5,
-          "gpm": 589.25,
-          "damage": 65004,
-          "damageAvg": 32502,
-          "dpm": 1271.73,
-          "damageShare": 30.47,
-          "visionScore": 46,
-          "visionScoreAvg": 23,
-          "vpm": 0.88,
-          "towers": 6,
-          "dragons": 0,
-          "heralds": 0,
-          "barons": 0,
-          "mvps": 2,
-          "averageScore": 91.98,
-          "scoreGames": 2,
-          "ratings": [
-            {
-              "matchId": "groups-r2g8-j2",
-              "seriesId": "groups-r2g8",
-              "round": 2,
-              "position": "TOP",
-              "teamSlot": "D4",
-              "score": 86.33,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r2g8-j1",
-              "seriesId": "groups-r2g8",
-              "round": 2,
-              "position": "TOP",
-              "teamSlot": "D4",
-              "score": 97.63,
-              "won": true,
-              "seriesWon": true
-            }
-          ],
-          "roundRatings": [
-            {
-              "round": 2,
-              "position": "TOP",
-              "teamSlot": "D4",
-              "averageScore": 91.98,
-              "games": 2,
-              "wins": 2,
-              "losses": 0,
-              "series": [
-                "groups-r2g8"
-              ],
-              "seriesWins": 1,
-              "matches": [
-                "groups-r2g8-j1",
-                "groups-r2g8-j2"
-              ]
-            }
-          ],
-          "positions": [
-            {
-              "position": "TOP",
-              "count": 2
-            }
-          ],
-          "mainPosition": "TOP",
-          "teams": [
-            {
-              "slot": "D4",
-              "count": 2
-            }
-          ],
-          "champions": [
-            {
-              "champion": "Ambessa",
-              "image": "assets/champions/Ambessa.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Olaf",
-              "image": "assets/champions/Olaf.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            }
-          ],
-          "mostPlayedChampion": "Ambessa",
-          "matches": [
-            "groups-r2g8-j2",
-            "groups-r2g8-j1"
-          ]
-        },
-        {
           "id": "a25fed6f-9af6-4f75-9b64-381f23c3d4d7",
           "playerId": "a25fed6f-9af6-4f75-9b64-381f23c3d4d7",
           "displayName": "MARONATO",
@@ -1641,36 +1524,56 @@ window.LIGA_RK_STATS = {
           "alsoPlayedAs": [],
           "opgg": "https://op.gg/pt/lol/summoners/br/TeteuCantoni-BR1",
           "image": "",
-          "games": 5,
-          "wins": 4,
+          "games": 7,
+          "wins": 6,
           "losses": 1,
-          "winRate": 80,
-          "kills": 38,
-          "deaths": 22,
-          "assists": 57,
-          "kda": 4.32,
-          "killsAvg": 7.6,
-          "deathsAvg": 4.4,
-          "assistsAvg": 11.4,
-          "kp": 67.66,
-          "gold": 73482,
-          "goldAvg": 14696.4,
-          "gpm": 489.89,
-          "damage": 106461,
-          "damageAvg": 21292.2,
-          "dpm": 694.09,
-          "damageShare": 22.34,
-          "visionScore": 256,
-          "visionScoreAvg": 51.2,
-          "vpm": 1.65,
-          "towers": 13,
-          "dragons": 18,
-          "heralds": 5,
-          "barons": 4,
-          "mvps": 3,
-          "averageScore": 89.15,
-          "scoreGames": 5,
+          "winRate": 85.71,
+          "kills": 56,
+          "deaths": 31,
+          "assists": 77,
+          "kda": 4.29,
+          "killsAvg": 8,
+          "deathsAvg": 4.43,
+          "assistsAvg": 11,
+          "kp": 70.45,
+          "gold": 103142,
+          "goldAvg": 14734.57,
+          "gpm": 494.96,
+          "damage": 157735,
+          "damageAvg": 22533.57,
+          "dpm": 745.18,
+          "damageShare": 23.89,
+          "visionScore": 343,
+          "visionScoreAvg": 49,
+          "vpm": 1.6,
+          "towers": 18,
+          "dragons": 25,
+          "heralds": 6,
+          "barons": 5,
+          "mvps": 4,
+          "averageScore": 90,
+          "scoreGames": 7,
           "ratings": [
+            {
+              "matchId": "groups-r3g8-j2",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "JG",
+              "teamSlot": "D1",
+              "score": 85.49,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r3g8-j1",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "JG",
+              "teamSlot": "D1",
+              "score": 98.73,
+              "won": true,
+              "seriesWon": true
+            },
             {
               "matchId": "groups-r2g7-j3",
               "seriesId": "groups-r2g7",
@@ -1757,41 +1660,58 @@ window.LIGA_RK_STATS = {
                 "groups-r2g7-j2",
                 "groups-r2g7-j3"
               ]
+            },
+            {
+              "round": 3,
+              "position": "JG",
+              "teamSlot": "D1",
+              "averageScore": 92.11,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r3g8"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r3g8-j1",
+                "groups-r3g8-j2"
+              ]
             }
           ],
           "positions": [
             {
               "position": "JG",
-              "count": 5
+              "count": 7
             }
           ],
           "mainPosition": "JG",
           "teams": [
             {
               "slot": "D1",
-              "count": 5
+              "count": 7
             }
           ],
           "champions": [
             {
               "champion": "MonkeyKing",
               "image": "assets/champions/MonkeyKing.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Naafiri",
-              "image": "assets/champions/Naafiri.jpg",
-              "count": 1,
-              "wins": 1,
+              "count": 2,
+              "wins": 2,
               "losses": 0,
               "winRate": 100
             },
             {
               "champion": "Olaf",
               "image": "assets/champions/Olaf.jpg",
+              "count": 2,
+              "wins": 2,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Naafiri",
+              "image": "assets/champions/Naafiri.jpg",
               "count": 1,
               "wins": 1,
               "losses": 0,
@@ -1816,11 +1736,242 @@ window.LIGA_RK_STATS = {
           ],
           "mostPlayedChampion": "MonkeyKing",
           "matches": [
+            "groups-r3g8-j2",
+            "groups-r3g8-j1",
             "groups-r2g7-j3",
             "groups-r2g7-j2",
             "groups-r2g7-j1",
             "groups-r1g7-j2",
             "groups-r1g7-j1"
+          ]
+        },
+        {
+          "id": "953d89dc-d2ac-4e77-bef7-88c66ad248d8",
+          "playerId": "953d89dc-d2ac-4e77-bef7-88c66ad248d8",
+          "displayName": "TECLAS",
+          "riotId": "LittleTeclas#0402",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/LittleTeclas-0402",
+          "image": "",
+          "games": 7,
+          "wins": 5,
+          "losses": 2,
+          "winRate": 71.43,
+          "kills": 38,
+          "deaths": 29,
+          "assists": 102,
+          "kda": 4.83,
+          "killsAvg": 5.43,
+          "deathsAvg": 4.14,
+          "assistsAvg": 14.57,
+          "kp": 72.46,
+          "gold": 91492,
+          "goldAvg": 13070.29,
+          "gpm": 430.83,
+          "damage": 135781,
+          "damageAvg": 19397.29,
+          "dpm": 626.26,
+          "damageShare": 18.37,
+          "visionScore": 297,
+          "visionScoreAvg": 42.43,
+          "vpm": 1.38,
+          "towers": 9,
+          "dragons": 11,
+          "heralds": 4,
+          "barons": 6,
+          "mvps": 3,
+          "averageScore": 86.89,
+          "scoreGames": 7,
+          "ratings": [
+            {
+              "matchId": "groups-r3g7-j2",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "JG",
+              "teamSlot": "D3",
+              "score": 87.32,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r3g7-j1",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "JG",
+              "teamSlot": "D3",
+              "score": 89.14,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g7-j3",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "JG",
+              "teamSlot": "D3",
+              "score": 69.87,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r2g7-j2",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "JG",
+              "teamSlot": "D3",
+              "score": 87.11,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r2g7-j1",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "JG",
+              "teamSlot": "D3",
+              "score": 82.76,
+              "won": true,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r1g8-j2",
+              "seriesId": "groups-r1g8",
+              "round": 1,
+              "position": "JG",
+              "teamSlot": "D3",
+              "score": 97.39,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r1g8-j1",
+              "seriesId": "groups-r1g8",
+              "round": 1,
+              "position": "JG",
+              "teamSlot": "D3",
+              "score": 94.65,
+              "won": true,
+              "seriesWon": true
+            }
+          ],
+          "roundRatings": [
+            {
+              "round": 1,
+              "position": "JG",
+              "teamSlot": "D3",
+              "averageScore": 96.02,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r1g8"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r1g8-j1",
+                "groups-r1g8-j2"
+              ]
+            },
+            {
+              "round": 2,
+              "position": "JG",
+              "teamSlot": "D3",
+              "averageScore": 79.91,
+              "games": 3,
+              "wins": 1,
+              "losses": 2,
+              "series": [
+                "groups-r2g7"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r2g7-j1",
+                "groups-r2g7-j2",
+                "groups-r2g7-j3"
+              ]
+            },
+            {
+              "round": 3,
+              "position": "JG",
+              "teamSlot": "D3",
+              "averageScore": 88.23,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r3g7"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r3g7-j1",
+                "groups-r3g7-j2"
+              ]
+            }
+          ],
+          "positions": [
+            {
+              "position": "JG",
+              "count": 7
+            }
+          ],
+          "mainPosition": "JG",
+          "teams": [
+            {
+              "slot": "D3",
+              "count": 7
+            }
+          ],
+          "champions": [
+            {
+              "champion": "Skarner",
+              "image": "assets/champions/Skarner.jpg",
+              "count": 2,
+              "wins": 2,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "MonkeyKing",
+              "image": "assets/champions/MonkeyKing.jpg",
+              "count": 2,
+              "wins": 1,
+              "losses": 1,
+              "winRate": 50
+            },
+            {
+              "champion": "LeeSin",
+              "image": "assets/champions/LeeSin.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Pantheon",
+              "image": "assets/champions/Pantheon.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "JarvanIV",
+              "image": "assets/champions/JarvanIV.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            }
+          ],
+          "mostPlayedChampion": "Skarner",
+          "matches": [
+            "groups-r3g7-j2",
+            "groups-r3g7-j1",
+            "groups-r2g7-j3",
+            "groups-r2g7-j2",
+            "groups-r2g7-j1",
+            "groups-r1g8-j2",
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -2078,188 +2229,6 @@ window.LIGA_RK_STATS = {
             "groups-r1g4-j3",
             "groups-r1g4-j2",
             "groups-r1g4-j1"
-          ]
-        },
-        {
-          "id": "953d89dc-d2ac-4e77-bef7-88c66ad248d8",
-          "playerId": "953d89dc-d2ac-4e77-bef7-88c66ad248d8",
-          "displayName": "TECLAS",
-          "riotId": "LittleTeclas#0402",
-          "alsoPlayedAs": [],
-          "opgg": "https://op.gg/pt/lol/summoners/br/LittleTeclas-0402",
-          "image": "",
-          "games": 5,
-          "wins": 3,
-          "losses": 2,
-          "winRate": 60,
-          "kills": 24,
-          "deaths": 20,
-          "assists": 63,
-          "kda": 4.35,
-          "killsAvg": 4.8,
-          "deathsAvg": 4,
-          "assistsAvg": 12.6,
-          "kp": 70.33,
-          "gold": 64777,
-          "goldAvg": 12955.4,
-          "gpm": 423.81,
-          "damage": 93916,
-          "damageAvg": 18783.2,
-          "dpm": 597,
-          "damageShare": 18.16,
-          "visionScore": 224,
-          "visionScoreAvg": 44.8,
-          "vpm": 1.46,
-          "towers": 7,
-          "dragons": 6,
-          "heralds": 2,
-          "barons": 5,
-          "mvps": 3,
-          "averageScore": 86.36,
-          "scoreGames": 5,
-          "ratings": [
-            {
-              "matchId": "groups-r2g7-j3",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "JG",
-              "teamSlot": "D3",
-              "score": 69.87,
-              "won": false,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r2g7-j2",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "JG",
-              "teamSlot": "D3",
-              "score": 87.11,
-              "won": false,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r2g7-j1",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "JG",
-              "teamSlot": "D3",
-              "score": 82.76,
-              "won": true,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r1g8-j2",
-              "seriesId": "groups-r1g8",
-              "round": 1,
-              "position": "JG",
-              "teamSlot": "D3",
-              "score": 97.39,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r1g8-j1",
-              "seriesId": "groups-r1g8",
-              "round": 1,
-              "position": "JG",
-              "teamSlot": "D3",
-              "score": 94.65,
-              "won": true,
-              "seriesWon": true
-            }
-          ],
-          "roundRatings": [
-            {
-              "round": 1,
-              "position": "JG",
-              "teamSlot": "D3",
-              "averageScore": 96.02,
-              "games": 2,
-              "wins": 2,
-              "losses": 0,
-              "series": [
-                "groups-r1g8"
-              ],
-              "seriesWins": 1,
-              "matches": [
-                "groups-r1g8-j1",
-                "groups-r1g8-j2"
-              ]
-            },
-            {
-              "round": 2,
-              "position": "JG",
-              "teamSlot": "D3",
-              "averageScore": 79.91,
-              "games": 3,
-              "wins": 1,
-              "losses": 2,
-              "series": [
-                "groups-r2g7"
-              ],
-              "seriesWins": 0,
-              "matches": [
-                "groups-r2g7-j1",
-                "groups-r2g7-j2",
-                "groups-r2g7-j3"
-              ]
-            }
-          ],
-          "positions": [
-            {
-              "position": "JG",
-              "count": 5
-            }
-          ],
-          "mainPosition": "JG",
-          "teams": [
-            {
-              "slot": "D3",
-              "count": 5
-            }
-          ],
-          "champions": [
-            {
-              "champion": "MonkeyKing",
-              "image": "assets/champions/MonkeyKing.jpg",
-              "count": 2,
-              "wins": 1,
-              "losses": 1,
-              "winRate": 50
-            },
-            {
-              "champion": "Pantheon",
-              "image": "assets/champions/Pantheon.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Skarner",
-              "image": "assets/champions/Skarner.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "JarvanIV",
-              "image": "assets/champions/JarvanIV.jpg",
-              "count": 1,
-              "wins": 0,
-              "losses": 1,
-              "winRate": 0
-            }
-          ],
-          "mostPlayedChampion": "MonkeyKing",
-          "matches": [
-            "groups-r2g7-j3",
-            "groups-r2g7-j2",
-            "groups-r2g7-j1",
-            "groups-r1g8-j2",
-            "groups-r1g8-j1"
           ]
         },
         {
@@ -2809,121 +2778,6 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "51ddf34b-a1bd-49d1-9989-9c36de9c16d5",
-          "playerId": "51ddf34b-a1bd-49d1-9989-9c36de9c16d5",
-          "displayName": "LOSTKING",
-          "riotId": "LOSTKING#MID",
-          "alsoPlayedAs": [],
-          "opgg": "https://op.gg/pt/lol/summoners/br/LOSTKING-MID",
-          "image": "",
-          "games": 2,
-          "wins": 2,
-          "losses": 0,
-          "winRate": 100,
-          "kills": 10,
-          "deaths": 9,
-          "assists": 29,
-          "kda": 4.33,
-          "killsAvg": 5,
-          "deathsAvg": 4.5,
-          "assistsAvg": 14.5,
-          "kp": 66.53,
-          "gold": 22536,
-          "goldAvg": 11268,
-          "gpm": 435.41,
-          "damage": 59931,
-          "damageAvg": 29965.5,
-          "dpm": 1138.24,
-          "damageShare": 26.9,
-          "visionScore": 39,
-          "visionScoreAvg": 19.5,
-          "vpm": 0.77,
-          "towers": 4,
-          "dragons": 0,
-          "heralds": 0,
-          "barons": 1,
-          "mvps": 0,
-          "averageScore": 82.3,
-          "scoreGames": 2,
-          "ratings": [
-            {
-              "matchId": "groups-r2g8-j2",
-              "seriesId": "groups-r2g8",
-              "round": 2,
-              "position": "MID",
-              "teamSlot": "D4",
-              "score": 82.61,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r2g8-j1",
-              "seriesId": "groups-r2g8",
-              "round": 2,
-              "position": "MID",
-              "teamSlot": "D4",
-              "score": 81.98,
-              "won": true,
-              "seriesWon": true
-            }
-          ],
-          "roundRatings": [
-            {
-              "round": 2,
-              "position": "MID",
-              "teamSlot": "D4",
-              "averageScore": 82.3,
-              "games": 2,
-              "wins": 2,
-              "losses": 0,
-              "series": [
-                "groups-r2g8"
-              ],
-              "seriesWins": 1,
-              "matches": [
-                "groups-r2g8-j1",
-                "groups-r2g8-j2"
-              ]
-            }
-          ],
-          "positions": [
-            {
-              "position": "MID",
-              "count": 2
-            }
-          ],
-          "mainPosition": "MID",
-          "teams": [
-            {
-              "slot": "D4",
-              "count": 2
-            }
-          ],
-          "champions": [
-            {
-              "champion": "Cassiopeia",
-              "image": "assets/champions/Cassiopeia.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Galio",
-              "image": "assets/champions/Galio.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            }
-          ],
-          "mostPlayedChampion": "Cassiopeia",
-          "matches": [
-            "groups-r2g8-j2",
-            "groups-r2g8-j1"
-          ]
-        },
-        {
           "id": "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
           "playerId": "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
           "displayName": "AZO",
@@ -3173,177 +3027,165 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "387bfab7-c5a6-4f05-a41a-980cb0bf4d42",
-          "playerId": "387bfab7-c5a6-4f05-a41a-980cb0bf4d42",
-          "displayName": "DYNAS",
-          "riotId": "Dynas#Alone",
+          "id": "51ddf34b-a1bd-49d1-9989-9c36de9c16d5",
+          "playerId": "51ddf34b-a1bd-49d1-9989-9c36de9c16d5",
+          "displayName": "LOSTKING",
+          "riotId": "LOSTKING#MID",
           "alsoPlayedAs": [],
-          "opgg": "https://op.gg/pt/lol/summoners/br/Dynas-Alone",
+          "opgg": "https://op.gg/pt/lol/summoners/br/LOSTKING-MID",
           "image": "",
-          "games": 5,
-          "wins": 3,
+          "games": 4,
+          "wins": 2,
           "losses": 2,
-          "winRate": 60,
-          "kills": 27,
-          "deaths": 22,
-          "assists": 57,
-          "kda": 3.82,
-          "killsAvg": 5.4,
-          "deathsAvg": 4.4,
-          "assistsAvg": 11.4,
-          "kp": 73.58,
-          "gold": 68417,
-          "goldAvg": 13683.4,
-          "gpm": 449.28,
-          "damage": 148550,
-          "damageAvg": 29710,
-          "dpm": 945,
-          "damageShare": 29.54,
-          "visionScore": 139,
-          "visionScoreAvg": 27.8,
-          "vpm": 0.9,
-          "towers": 4,
+          "winRate": 50,
+          "kills": 21,
+          "deaths": 19,
+          "assists": 38,
+          "kda": 3.11,
+          "killsAvg": 5.25,
+          "deathsAvg": 4.75,
+          "assistsAvg": 9.5,
+          "kp": 67.4,
+          "gold": 48451,
+          "goldAvg": 12112.75,
+          "gpm": 437.43,
+          "damage": 114705,
+          "damageAvg": 28676.25,
+          "dpm": 1041.26,
+          "damageShare": 29.92,
+          "visionScore": 101,
+          "visionScoreAvg": 25.25,
+          "vpm": 0.91,
+          "towers": 5,
           "dragons": 0,
-          "heralds": 0,
-          "barons": 0,
+          "heralds": 1,
+          "barons": 1,
           "mvps": 0,
-          "averageScore": 81.41,
-          "scoreGames": 5,
+          "averageScore": 82.22,
+          "scoreGames": 4,
           "ratings": [
             {
-              "matchId": "groups-r2g7-j3",
-              "seriesId": "groups-r2g7",
-              "round": 2,
+              "matchId": "groups-r3g8-j2",
+              "seriesId": "groups-r3g8",
+              "round": 3,
               "position": "MID",
-              "teamSlot": "D3",
-              "score": 78.09,
+              "teamSlot": "D4",
+              "score": 75.82,
               "won": false,
               "seriesWon": false
             },
             {
-              "matchId": "groups-r2g7-j2",
-              "seriesId": "groups-r2g7",
-              "round": 2,
+              "matchId": "groups-r3g8-j1",
+              "seriesId": "groups-r3g8",
+              "round": 3,
               "position": "MID",
-              "teamSlot": "D3",
-              "score": 76.42,
+              "teamSlot": "D4",
+              "score": 88.47,
               "won": false,
               "seriesWon": false
             },
             {
-              "matchId": "groups-r2g7-j1",
-              "seriesId": "groups-r2g7",
+              "matchId": "groups-r2g8-j2",
+              "seriesId": "groups-r2g8",
               "round": 2,
               "position": "MID",
-              "teamSlot": "D3",
-              "score": 81.43,
-              "won": true,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r1g8-j2",
-              "seriesId": "groups-r1g8",
-              "round": 1,
-              "position": "MID",
-              "teamSlot": "D3",
-              "score": 83.97,
+              "teamSlot": "D4",
+              "score": 82.61,
               "won": true,
               "seriesWon": true
             },
             {
-              "matchId": "groups-r1g8-j1",
-              "seriesId": "groups-r1g8",
-              "round": 1,
+              "matchId": "groups-r2g8-j1",
+              "seriesId": "groups-r2g8",
+              "round": 2,
               "position": "MID",
-              "teamSlot": "D3",
-              "score": 87.13,
+              "teamSlot": "D4",
+              "score": 81.98,
               "won": true,
               "seriesWon": true
             }
           ],
           "roundRatings": [
             {
-              "round": 1,
+              "round": 2,
               "position": "MID",
-              "teamSlot": "D3",
-              "averageScore": 85.55,
+              "teamSlot": "D4",
+              "averageScore": 82.3,
               "games": 2,
               "wins": 2,
               "losses": 0,
               "series": [
-                "groups-r1g8"
+                "groups-r2g8"
               ],
               "seriesWins": 1,
               "matches": [
-                "groups-r1g8-j1",
-                "groups-r1g8-j2"
+                "groups-r2g8-j1",
+                "groups-r2g8-j2"
               ]
             },
             {
-              "round": 2,
+              "round": 3,
               "position": "MID",
-              "teamSlot": "D3",
-              "averageScore": 78.65,
-              "games": 3,
-              "wins": 1,
+              "teamSlot": "D4",
+              "averageScore": 82.15,
+              "games": 2,
+              "wins": 0,
               "losses": 2,
               "series": [
-                "groups-r2g7"
+                "groups-r3g8"
               ],
               "seriesWins": 0,
               "matches": [
-                "groups-r2g7-j1",
-                "groups-r2g7-j2",
-                "groups-r2g7-j3"
+                "groups-r3g8-j1",
+                "groups-r3g8-j2"
               ]
             }
           ],
           "positions": [
             {
               "position": "MID",
-              "count": 5
+              "count": 4
             }
           ],
           "mainPosition": "MID",
           "teams": [
             {
-              "slot": "D3",
-              "count": 5
+              "slot": "D4",
+              "count": 4
             }
           ],
           "champions": [
             {
-              "champion": "Viktor",
-              "image": "assets/champions/Viktor.jpg",
-              "count": 2,
-              "wins": 2,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Hwei",
-              "image": "assets/champions/Hwei.jpg",
+              "champion": "Cassiopeia",
+              "image": "assets/champions/Cassiopeia.jpg",
               "count": 2,
               "wins": 1,
               "losses": 1,
               "winRate": 50
             },
             {
-              "champion": "TwistedFate",
-              "image": "assets/champions/TwistedFate.jpg",
+              "champion": "Galio",
+              "image": "assets/champions/Galio.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Azir",
+              "image": "assets/champions/Azir.jpg",
               "count": 1,
               "wins": 0,
               "losses": 1,
               "winRate": 0
             }
           ],
-          "mostPlayedChampion": "Viktor",
+          "mostPlayedChampion": "Cassiopeia",
           "matches": [
-            "groups-r2g7-j3",
-            "groups-r2g7-j2",
-            "groups-r2g7-j1",
-            "groups-r1g8-j2",
-            "groups-r1g8-j1"
+            "groups-r3g8-j2",
+            "groups-r3g8-j1",
+            "groups-r2g8-j2",
+            "groups-r2g8-j1"
           ]
         },
         {
@@ -3554,6 +3396,247 @@ window.LIGA_RK_STATS = {
             "groups-r2g3-j3",
             "groups-r2g3-j2",
             "groups-r2g3-j1"
+          ]
+        },
+        {
+          "id": "ee09cf39-13a1-4268-a363-dbd28955437b",
+          "playerId": "ee09cf39-13a1-4268-a363-dbd28955437b",
+          "displayName": "NIHIL",
+          "riotId": "N I H I L メ#CDRP",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/N%20I%20H%20I%20L%20%E3%83%A1-CDRP",
+          "image": "",
+          "games": 7,
+          "wins": 6,
+          "losses": 1,
+          "winRate": 85.71,
+          "kills": 41,
+          "deaths": 28,
+          "assists": 46,
+          "kda": 3.11,
+          "killsAvg": 5.86,
+          "deathsAvg": 4,
+          "assistsAvg": 6.57,
+          "kp": 44.75,
+          "gold": 90907,
+          "goldAvg": 12986.71,
+          "gpm": 433.64,
+          "damage": 155347,
+          "damageAvg": 22192.43,
+          "dpm": 737.32,
+          "damageShare": 23.52,
+          "visionScore": 236,
+          "visionScoreAvg": 33.71,
+          "vpm": 1.13,
+          "towers": 20,
+          "dragons": 0,
+          "heralds": 0,
+          "barons": 0,
+          "mvps": 2,
+          "averageScore": 81.04,
+          "scoreGames": 7,
+          "ratings": [
+            {
+              "matchId": "groups-r3g8-j2",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "TOP",
+              "teamSlot": "D1",
+              "score": 99.86,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r3g8-j1",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "TOP",
+              "teamSlot": "D1",
+              "score": 78.6,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g7-j3",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "TOP",
+              "teamSlot": "D1",
+              "score": 64.54,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g7-j2",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "TOP",
+              "teamSlot": "D1",
+              "score": 78.59,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g7-j1",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "TOP",
+              "teamSlot": "D1",
+              "score": 70.85,
+              "won": false,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r1g7-j2",
+              "seriesId": "groups-r1g7",
+              "round": 1,
+              "position": "TOP",
+              "teamSlot": "D1",
+              "score": 77.36,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r1g7-j1",
+              "seriesId": "groups-r1g7",
+              "round": 1,
+              "position": "TOP",
+              "teamSlot": "D1",
+              "score": 97.45,
+              "won": true,
+              "seriesWon": true
+            }
+          ],
+          "roundRatings": [
+            {
+              "round": 1,
+              "position": "TOP",
+              "teamSlot": "D1",
+              "averageScore": 87.41,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r1g7"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r1g7-j1",
+                "groups-r1g7-j2"
+              ]
+            },
+            {
+              "round": 2,
+              "position": "TOP",
+              "teamSlot": "D1",
+              "averageScore": 71.33,
+              "games": 3,
+              "wins": 2,
+              "losses": 1,
+              "series": [
+                "groups-r2g7"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r2g7-j1",
+                "groups-r2g7-j2",
+                "groups-r2g7-j3"
+              ]
+            },
+            {
+              "round": 3,
+              "position": "TOP",
+              "teamSlot": "D1",
+              "averageScore": 89.23,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r3g8"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r3g8-j1",
+                "groups-r3g8-j2"
+              ]
+            }
+          ],
+          "positions": [
+            {
+              "position": "TOP",
+              "count": 7
+            },
+            {
+              "position": "SUB",
+              "count": 0
+            }
+          ],
+          "mainPosition": "TOP",
+          "teams": [
+            {
+              "slot": "D1",
+              "count": 7
+            }
+          ],
+          "champions": [
+            {
+              "champion": "Aatrox",
+              "image": "assets/champions/Aatrox.jpg",
+              "count": 2,
+              "wins": 2,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Darius",
+              "image": "assets/champions/Darius.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Sion",
+              "image": "assets/champions/Sion.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Vayne",
+              "image": "assets/champions/Vayne.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Yorick",
+              "image": "assets/champions/Yorick.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "KSante",
+              "image": "assets/champions/KSante.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            }
+          ],
+          "mostPlayedChampion": "Aatrox",
+          "matches": [
+            "groups-r3g8-j2",
+            "groups-r3g8-j1",
+            "groups-r2g7-j3",
+            "groups-r2g7-j2",
+            "groups-r2g7-j1",
+            "groups-r1g7-j2",
+            "groups-r1g7-j1"
           ]
         },
         {
@@ -4167,192 +4250,6 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "ee09cf39-13a1-4268-a363-dbd28955437b",
-          "playerId": "ee09cf39-13a1-4268-a363-dbd28955437b",
-          "displayName": "NIHIL",
-          "riotId": "N I H I L メ#CDRP",
-          "alsoPlayedAs": [],
-          "opgg": "https://op.gg/pt/lol/summoners/br/N%20I%20H%20I%20L%20%E3%83%A1-CDRP",
-          "image": "",
-          "games": 5,
-          "wins": 4,
-          "losses": 1,
-          "winRate": 80,
-          "kills": 30,
-          "deaths": 26,
-          "assists": 36,
-          "kda": 2.54,
-          "killsAvg": 6,
-          "deathsAvg": 5.2,
-          "assistsAvg": 7.2,
-          "kp": 45.36,
-          "gold": 62578,
-          "goldAvg": 12515.6,
-          "gpm": 412.02,
-          "damage": 105286,
-          "damageAvg": 21057.2,
-          "dpm": 682.53,
-          "damageShare": 22.02,
-          "visionScore": 182,
-          "visionScoreAvg": 36.4,
-          "vpm": 1.21,
-          "towers": 13,
-          "dragons": 0,
-          "heralds": 0,
-          "barons": 0,
-          "mvps": 1,
-          "averageScore": 77.76,
-          "scoreGames": 5,
-          "ratings": [
-            {
-              "matchId": "groups-r2g7-j3",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "TOP",
-              "teamSlot": "D1",
-              "score": 64.54,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r2g7-j2",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "TOP",
-              "teamSlot": "D1",
-              "score": 78.59,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r2g7-j1",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "TOP",
-              "teamSlot": "D1",
-              "score": 70.85,
-              "won": false,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r1g7-j2",
-              "seriesId": "groups-r1g7",
-              "round": 1,
-              "position": "TOP",
-              "teamSlot": "D1",
-              "score": 77.36,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r1g7-j1",
-              "seriesId": "groups-r1g7",
-              "round": 1,
-              "position": "TOP",
-              "teamSlot": "D1",
-              "score": 97.45,
-              "won": true,
-              "seriesWon": true
-            }
-          ],
-          "roundRatings": [
-            {
-              "round": 1,
-              "position": "TOP",
-              "teamSlot": "D1",
-              "averageScore": 87.41,
-              "games": 2,
-              "wins": 2,
-              "losses": 0,
-              "series": [
-                "groups-r1g7"
-              ],
-              "seriesWins": 1,
-              "matches": [
-                "groups-r1g7-j1",
-                "groups-r1g7-j2"
-              ]
-            },
-            {
-              "round": 2,
-              "position": "TOP",
-              "teamSlot": "D1",
-              "averageScore": 71.33,
-              "games": 3,
-              "wins": 2,
-              "losses": 1,
-              "series": [
-                "groups-r2g7"
-              ],
-              "seriesWins": 1,
-              "matches": [
-                "groups-r2g7-j1",
-                "groups-r2g7-j2",
-                "groups-r2g7-j3"
-              ]
-            }
-          ],
-          "positions": [
-            {
-              "position": "TOP",
-              "count": 5
-            },
-            {
-              "position": "SUB",
-              "count": 0
-            }
-          ],
-          "mainPosition": "TOP",
-          "teams": [
-            {
-              "slot": "D1",
-              "count": 5
-            }
-          ],
-          "champions": [
-            {
-              "champion": "Aatrox",
-              "image": "assets/champions/Aatrox.jpg",
-              "count": 2,
-              "wins": 2,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Darius",
-              "image": "assets/champions/Darius.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Sion",
-              "image": "assets/champions/Sion.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "KSante",
-              "image": "assets/champions/KSante.jpg",
-              "count": 1,
-              "wins": 0,
-              "losses": 1,
-              "winRate": 0
-            }
-          ],
-          "mostPlayedChampion": "Aatrox",
-          "matches": [
-            "groups-r2g7-j3",
-            "groups-r2g7-j2",
-            "groups-r2g7-j1",
-            "groups-r1g7-j2",
-            "groups-r1g7-j1"
-          ]
-        },
-        {
           "id": "d087d8ce-da1b-419b-ac01-27f3d2ad83f5",
           "playerId": "d087d8ce-da1b-419b-ac01-27f3d2ad83f5",
           "displayName": "THIGAS",
@@ -4799,90 +4696,112 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "cdb7296d-9960-4a4e-99e8-835f8068f8e7",
-          "playerId": "cdb7296d-9960-4a4e-99e8-835f8068f8e7",
-          "displayName": "TECHY",
-          "riotId": "Techy#777",
-          "alsoPlayedAs": [],
-          "opgg": "https://op.gg/pt/lol/summoners/br/Techy-777",
+          "id": "df0e9d12-5f4f-4268-a80d-cefa44c76268",
+          "playerId": "df0e9d12-5f4f-4268-a80d-cefa44c76268",
+          "displayName": "EPI",
+          "riotId": "epilul#ROX",
+          "alsoPlayedAs": [
+            "franjudinha#0001"
+          ],
+          "opgg": "https://op.gg/pt/lol/summoners/br/epilul-ROX",
           "image": "",
-          "games": 5,
-          "wins": 4,
-          "losses": 1,
-          "winRate": 80,
-          "kills": 32,
-          "deaths": 15,
-          "assists": 58,
-          "kda": 6,
-          "killsAvg": 6.4,
-          "deathsAvg": 3,
-          "assistsAvg": 11.6,
-          "kp": 63.27,
-          "gold": 64855,
-          "goldAvg": 12971,
-          "gpm": 431.69,
-          "damage": 91584,
-          "damageAvg": 18316.8,
-          "dpm": 588.86,
-          "damageShare": 19.05,
-          "visionScore": 196,
-          "visionScoreAvg": 39.2,
-          "vpm": 1.31,
-          "towers": 5,
-          "dragons": 0,
+          "games": 7,
+          "wins": 5,
+          "losses": 2,
+          "winRate": 71.43,
+          "kills": 56,
+          "deaths": 28,
+          "assists": 53,
+          "kda": 3.89,
+          "killsAvg": 8,
+          "deathsAvg": 4,
+          "assistsAvg": 7.57,
+          "kp": 57.73,
+          "gold": 118682,
+          "goldAvg": 16954.57,
+          "gpm": 561.13,
+          "damage": 205030,
+          "damageAvg": 29290,
+          "dpm": 947.39,
+          "damageShare": 27.49,
+          "visionScore": 269,
+          "visionScoreAvg": 38.43,
+          "vpm": 1.25,
+          "towers": 24,
+          "dragons": 1,
           "heralds": 0,
-          "barons": 0,
-          "mvps": 0,
-          "averageScore": 77.64,
-          "scoreGames": 5,
+          "barons": 1,
+          "mvps": 2,
+          "averageScore": 77.5,
+          "scoreGames": 7,
           "ratings": [
+            {
+              "matchId": "groups-r3g7-j2",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "ADC",
+              "teamSlot": "D3",
+              "score": 100,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r3g7-j1",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "ADC",
+              "teamSlot": "D3",
+              "score": 100,
+              "won": true,
+              "seriesWon": true
+            },
             {
               "matchId": "groups-r2g7-j3",
               "seriesId": "groups-r2g7",
               "round": 2,
-              "position": "MID",
-              "teamSlot": "D1",
-              "score": 77.55,
-              "won": true,
-              "seriesWon": true
+              "position": "ADC",
+              "teamSlot": "D3",
+              "score": 55.05,
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r2g7-j2",
               "seriesId": "groups-r2g7",
               "round": 2,
-              "position": "MID",
-              "teamSlot": "D1",
-              "score": 69.2,
-              "won": true,
-              "seriesWon": true
+              "position": "ADC",
+              "teamSlot": "D3",
+              "score": 66.28,
+              "won": false,
+              "seriesWon": false
             },
             {
               "matchId": "groups-r2g7-j1",
               "seriesId": "groups-r2g7",
               "round": 2,
-              "position": "MID",
-              "teamSlot": "D1",
-              "score": 86.84,
-              "won": false,
-              "seriesWon": true
+              "position": "ADC",
+              "teamSlot": "D3",
+              "score": 65.95,
+              "won": true,
+              "seriesWon": false
             },
             {
-              "matchId": "groups-r1g7-j2",
-              "seriesId": "groups-r1g7",
+              "matchId": "groups-r1g8-j2",
+              "seriesId": "groups-r1g8",
               "round": 1,
-              "position": "MID",
-              "teamSlot": "D1",
-              "score": 68.27,
+              "position": "ADC",
+              "teamSlot": "D3",
+              "score": 65.28,
               "won": true,
               "seriesWon": true
             },
             {
-              "matchId": "groups-r1g7-j1",
-              "seriesId": "groups-r1g7",
+              "matchId": "groups-r1g8-j1",
+              "seriesId": "groups-r1g8",
               "round": 1,
-              "position": "MID",
-              "teamSlot": "D1",
-              "score": 86.36,
+              "position": "ADC",
+              "teamSlot": "D3",
+              "score": 89.96,
               "won": true,
               "seriesWon": true
             }
@@ -4890,94 +4809,129 @@ window.LIGA_RK_STATS = {
           "roundRatings": [
             {
               "round": 1,
-              "position": "MID",
-              "teamSlot": "D1",
-              "averageScore": 77.32,
+              "position": "ADC",
+              "teamSlot": "D3",
+              "averageScore": 77.62,
               "games": 2,
               "wins": 2,
               "losses": 0,
               "series": [
-                "groups-r1g7"
+                "groups-r1g8"
               ],
               "seriesWins": 1,
               "matches": [
-                "groups-r1g7-j1",
-                "groups-r1g7-j2"
+                "groups-r1g8-j1",
+                "groups-r1g8-j2"
               ]
             },
             {
               "round": 2,
-              "position": "MID",
-              "teamSlot": "D1",
-              "averageScore": 77.86,
+              "position": "ADC",
+              "teamSlot": "D3",
+              "averageScore": 62.43,
               "games": 3,
-              "wins": 2,
-              "losses": 1,
+              "wins": 1,
+              "losses": 2,
               "series": [
                 "groups-r2g7"
               ],
-              "seriesWins": 1,
+              "seriesWins": 0,
               "matches": [
                 "groups-r2g7-j1",
                 "groups-r2g7-j2",
                 "groups-r2g7-j3"
               ]
+            },
+            {
+              "round": 3,
+              "position": "ADC",
+              "teamSlot": "D3",
+              "averageScore": 100,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r3g7"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r3g7-j1",
+                "groups-r3g7-j2"
+              ]
             }
           ],
           "positions": [
             {
-              "position": "MID",
-              "count": 5
+              "position": "ADC",
+              "count": 7
             }
           ],
-          "mainPosition": "MID",
+          "mainPosition": "ADC",
           "teams": [
             {
-              "slot": "D1",
-              "count": 5
+              "slot": "D3",
+              "count": 7
             }
           ],
           "champions": [
             {
-              "champion": "Cassiopeia",
-              "image": "assets/champions/Cassiopeia.jpg",
+              "champion": "Yunara",
+              "image": "assets/champions/Yunara.jpg",
               "count": 2,
               "wins": 1,
               "losses": 1,
               "winRate": 50
             },
             {
-              "champion": "Orianna",
-              "image": "assets/champions/Orianna.jpg",
+              "champion": "Corki",
+              "image": "assets/champions/Corki.jpg",
               "count": 1,
               "wins": 1,
               "losses": 0,
               "winRate": 100
             },
             {
-              "champion": "Ryze",
-              "image": "assets/champions/Ryze.jpg",
+              "champion": "Ezreal",
+              "image": "assets/champions/Ezreal.jpg",
               "count": 1,
               "wins": 1,
               "losses": 0,
               "winRate": 100
             },
             {
-              "champion": "Taliyah",
-              "image": "assets/champions/Taliyah.jpg",
+              "champion": "Jhin",
+              "image": "assets/champions/Jhin.jpg",
               "count": 1,
               "wins": 1,
               "losses": 0,
               "winRate": 100
+            },
+            {
+              "champion": "Jinx",
+              "image": "assets/champions/Jinx.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Lucian",
+              "image": "assets/champions/Lucian.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
             }
           ],
-          "mostPlayedChampion": "Cassiopeia",
+          "mostPlayedChampion": "Yunara",
           "matches": [
+            "groups-r3g7-j2",
+            "groups-r3g7-j1",
             "groups-r2g7-j3",
             "groups-r2g7-j2",
             "groups-r2g7-j1",
-            "groups-r1g7-j2",
-            "groups-r1g7-j1"
+            "groups-r1g8-j2",
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -5160,6 +5114,628 @@ window.LIGA_RK_STATS = {
             "groups-r2g6-j1",
             "groups-r1g6-j2",
             "groups-r1g6-j1"
+          ]
+        },
+        {
+          "id": "cdb7296d-9960-4a4e-99e8-835f8068f8e7",
+          "playerId": "cdb7296d-9960-4a4e-99e8-835f8068f8e7",
+          "displayName": "TECHY",
+          "riotId": "Techy#777",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/Techy-777",
+          "image": "",
+          "games": 7,
+          "wins": 6,
+          "losses": 1,
+          "winRate": 85.71,
+          "kills": 43,
+          "deaths": 22,
+          "assists": 72,
+          "kda": 5.23,
+          "killsAvg": 6.14,
+          "deathsAvg": 3.14,
+          "assistsAvg": 10.29,
+          "kp": 59.67,
+          "gold": 89580,
+          "goldAvg": 12797.14,
+          "gpm": 428.46,
+          "damage": 127098,
+          "damageAvg": 18156.86,
+          "dpm": 592.33,
+          "damageShare": 19.09,
+          "visionScore": 260,
+          "visionScoreAvg": 37.14,
+          "vpm": 1.25,
+          "towers": 8,
+          "dragons": 0,
+          "heralds": 0,
+          "barons": 1,
+          "mvps": 0,
+          "averageScore": 77.13,
+          "scoreGames": 7,
+          "ratings": [
+            {
+              "matchId": "groups-r3g8-j2",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "MID",
+              "teamSlot": "D1",
+              "score": 79.08,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r3g8-j1",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "MID",
+              "teamSlot": "D1",
+              "score": 72.64,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g7-j3",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "MID",
+              "teamSlot": "D1",
+              "score": 77.55,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g7-j2",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "MID",
+              "teamSlot": "D1",
+              "score": 69.2,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g7-j1",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "MID",
+              "teamSlot": "D1",
+              "score": 86.84,
+              "won": false,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r1g7-j2",
+              "seriesId": "groups-r1g7",
+              "round": 1,
+              "position": "MID",
+              "teamSlot": "D1",
+              "score": 68.27,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r1g7-j1",
+              "seriesId": "groups-r1g7",
+              "round": 1,
+              "position": "MID",
+              "teamSlot": "D1",
+              "score": 86.36,
+              "won": true,
+              "seriesWon": true
+            }
+          ],
+          "roundRatings": [
+            {
+              "round": 1,
+              "position": "MID",
+              "teamSlot": "D1",
+              "averageScore": 77.32,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r1g7"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r1g7-j1",
+                "groups-r1g7-j2"
+              ]
+            },
+            {
+              "round": 2,
+              "position": "MID",
+              "teamSlot": "D1",
+              "averageScore": 77.86,
+              "games": 3,
+              "wins": 2,
+              "losses": 1,
+              "series": [
+                "groups-r2g7"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r2g7-j1",
+                "groups-r2g7-j2",
+                "groups-r2g7-j3"
+              ]
+            },
+            {
+              "round": 3,
+              "position": "MID",
+              "teamSlot": "D1",
+              "averageScore": 75.86,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r3g8"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r3g8-j1",
+                "groups-r3g8-j2"
+              ]
+            }
+          ],
+          "positions": [
+            {
+              "position": "MID",
+              "count": 7
+            }
+          ],
+          "mainPosition": "MID",
+          "teams": [
+            {
+              "slot": "D1",
+              "count": 7
+            }
+          ],
+          "champions": [
+            {
+              "champion": "Ryze",
+              "image": "assets/champions/Ryze.jpg",
+              "count": 2,
+              "wins": 2,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Cassiopeia",
+              "image": "assets/champions/Cassiopeia.jpg",
+              "count": 2,
+              "wins": 1,
+              "losses": 1,
+              "winRate": 50
+            },
+            {
+              "champion": "Ahri",
+              "image": "assets/champions/Ahri.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Orianna",
+              "image": "assets/champions/Orianna.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Taliyah",
+              "image": "assets/champions/Taliyah.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            }
+          ],
+          "mostPlayedChampion": "Ryze",
+          "matches": [
+            "groups-r3g8-j2",
+            "groups-r3g8-j1",
+            "groups-r2g7-j3",
+            "groups-r2g7-j2",
+            "groups-r2g7-j1",
+            "groups-r1g7-j2",
+            "groups-r1g7-j1"
+          ]
+        },
+        {
+          "id": "387bfab7-c5a6-4f05-a41a-980cb0bf4d42",
+          "playerId": "387bfab7-c5a6-4f05-a41a-980cb0bf4d42",
+          "displayName": "DYNAS",
+          "riotId": "Dynas#Alone",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/Dynas-Alone",
+          "image": "",
+          "games": 7,
+          "wins": 5,
+          "losses": 2,
+          "winRate": 71.43,
+          "kills": 37,
+          "deaths": 36,
+          "assists": 90,
+          "kda": 3.53,
+          "killsAvg": 5.29,
+          "deathsAvg": 5.14,
+          "assistsAvg": 12.86,
+          "kp": 70.7,
+          "gold": 92046,
+          "goldAvg": 13149.43,
+          "gpm": 435.33,
+          "damage": 188586,
+          "damageAvg": 26940.86,
+          "dpm": 870.84,
+          "damageShare": 26.4,
+          "visionScore": 184,
+          "visionScoreAvg": 26.29,
+          "vpm": 0.85,
+          "towers": 5,
+          "dragons": 0,
+          "heralds": 0,
+          "barons": 0,
+          "mvps": 0,
+          "averageScore": 77.09,
+          "scoreGames": 7,
+          "ratings": [
+            {
+              "matchId": "groups-r3g7-j2",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "MID",
+              "teamSlot": "D3",
+              "score": 56.93,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r3g7-j1",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "MID",
+              "teamSlot": "D3",
+              "score": 75.67,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g7-j3",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "MID",
+              "teamSlot": "D3",
+              "score": 78.09,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r2g7-j2",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "MID",
+              "teamSlot": "D3",
+              "score": 76.42,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r2g7-j1",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "MID",
+              "teamSlot": "D3",
+              "score": 81.43,
+              "won": true,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r1g8-j2",
+              "seriesId": "groups-r1g8",
+              "round": 1,
+              "position": "MID",
+              "teamSlot": "D3",
+              "score": 83.97,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r1g8-j1",
+              "seriesId": "groups-r1g8",
+              "round": 1,
+              "position": "MID",
+              "teamSlot": "D3",
+              "score": 87.13,
+              "won": true,
+              "seriesWon": true
+            }
+          ],
+          "roundRatings": [
+            {
+              "round": 1,
+              "position": "MID",
+              "teamSlot": "D3",
+              "averageScore": 85.55,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r1g8"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r1g8-j1",
+                "groups-r1g8-j2"
+              ]
+            },
+            {
+              "round": 2,
+              "position": "MID",
+              "teamSlot": "D3",
+              "averageScore": 78.65,
+              "games": 3,
+              "wins": 1,
+              "losses": 2,
+              "series": [
+                "groups-r2g7"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r2g7-j1",
+                "groups-r2g7-j2",
+                "groups-r2g7-j3"
+              ]
+            },
+            {
+              "round": 3,
+              "position": "MID",
+              "teamSlot": "D3",
+              "averageScore": 66.3,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r3g7"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r3g7-j1",
+                "groups-r3g7-j2"
+              ]
+            }
+          ],
+          "positions": [
+            {
+              "position": "MID",
+              "count": 7
+            }
+          ],
+          "mainPosition": "MID",
+          "teams": [
+            {
+              "slot": "D3",
+              "count": 7
+            }
+          ],
+          "champions": [
+            {
+              "champion": "Viktor",
+              "image": "assets/champions/Viktor.jpg",
+              "count": 3,
+              "wins": 3,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Hwei",
+              "image": "assets/champions/Hwei.jpg",
+              "count": 2,
+              "wins": 1,
+              "losses": 1,
+              "winRate": 50
+            },
+            {
+              "champion": "Renekton",
+              "image": "assets/champions/Renekton.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "TwistedFate",
+              "image": "assets/champions/TwistedFate.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            }
+          ],
+          "mostPlayedChampion": "Viktor",
+          "matches": [
+            "groups-r3g7-j2",
+            "groups-r3g7-j1",
+            "groups-r2g7-j3",
+            "groups-r2g7-j2",
+            "groups-r2g7-j1",
+            "groups-r1g8-j2",
+            "groups-r1g8-j1"
+          ]
+        },
+        {
+          "id": "87b0b01b-0c1d-44ca-8154-ec59da7b80a3",
+          "playerId": "87b0b01b-0c1d-44ca-8154-ec59da7b80a3",
+          "displayName": "DAVI",
+          "riotId": "DeyraF#LDavi",
+          "alsoPlayedAs": [
+            "Sereno#TOP"
+          ],
+          "opgg": "https://op.gg/pt/lol/summoners/br/DeyraF-LDavi",
+          "image": "",
+          "games": 4,
+          "wins": 2,
+          "losses": 2,
+          "winRate": 50,
+          "kills": 33,
+          "deaths": 15,
+          "assists": 16,
+          "kda": 3.27,
+          "killsAvg": 8.25,
+          "deathsAvg": 3.75,
+          "assistsAvg": 4,
+          "kp": 48.65,
+          "gold": 51688,
+          "goldAvg": 12922,
+          "gpm": 477.78,
+          "damage": 96421,
+          "damageAvg": 24105.25,
+          "dpm": 897.58,
+          "damageShare": 24.43,
+          "visionScore": 97,
+          "visionScoreAvg": 24.25,
+          "vpm": 0.88,
+          "towers": 7,
+          "dragons": 0,
+          "heralds": 0,
+          "barons": 0,
+          "mvps": 2,
+          "averageScore": 77.02,
+          "scoreGames": 4,
+          "ratings": [
+            {
+              "matchId": "groups-r3g8-j2",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "TOP",
+              "teamSlot": "D4",
+              "score": 66.75,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r3g8-j1",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "TOP",
+              "teamSlot": "D4",
+              "score": 57.37,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r2g8-j2",
+              "seriesId": "groups-r2g8",
+              "round": 2,
+              "position": "TOP",
+              "teamSlot": "D4",
+              "score": 86.33,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g8-j1",
+              "seriesId": "groups-r2g8",
+              "round": 2,
+              "position": "TOP",
+              "teamSlot": "D4",
+              "score": 97.63,
+              "won": true,
+              "seriesWon": true
+            }
+          ],
+          "roundRatings": [
+            {
+              "round": 2,
+              "position": "TOP",
+              "teamSlot": "D4",
+              "averageScore": 91.98,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r2g8"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r2g8-j1",
+                "groups-r2g8-j2"
+              ]
+            },
+            {
+              "round": 3,
+              "position": "TOP",
+              "teamSlot": "D4",
+              "averageScore": 62.06,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "groups-r3g8"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r3g8-j1",
+                "groups-r3g8-j2"
+              ]
+            }
+          ],
+          "positions": [
+            {
+              "position": "TOP",
+              "count": 4
+            }
+          ],
+          "mainPosition": "TOP",
+          "teams": [
+            {
+              "slot": "D4",
+              "count": 4
+            }
+          ],
+          "champions": [
+            {
+              "champion": "Ambessa",
+              "image": "assets/champions/Ambessa.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Olaf",
+              "image": "assets/champions/Olaf.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "KSante",
+              "image": "assets/champions/KSante.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            },
+            {
+              "champion": "Rumble",
+              "image": "assets/champions/Rumble.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            }
+          ],
+          "mostPlayedChampion": "Ambessa",
+          "matches": [
+            "groups-r3g8-j2",
+            "groups-r3g8-j1",
+            "groups-r2g8-j2",
+            "groups-r2g8-j1"
           ]
         },
         {
@@ -5776,373 +6352,6 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "60bed61b-e107-41bd-b0cc-943105c6e4c5",
-          "playerId": "60bed61b-e107-41bd-b0cc-943105c6e4c5",
-          "displayName": "IAN",
-          "riotId": "peido sniffer#6767",
-          "alsoPlayedAs": [],
-          "opgg": "https://op.gg/pt/lol/summoners/br/peido%20sniffer-6767",
-          "image": "",
-          "games": 5,
-          "wins": 3,
-          "losses": 2,
-          "winRate": 60,
-          "kills": 35,
-          "deaths": 27,
-          "assists": 36,
-          "kda": 2.63,
-          "killsAvg": 7,
-          "deathsAvg": 5.4,
-          "assistsAvg": 7.2,
-          "kp": 58.23,
-          "gold": 69769,
-          "goldAvg": 13953.8,
-          "gpm": 456.41,
-          "damage": 124031,
-          "damageAvg": 24806.2,
-          "dpm": 779.69,
-          "damageShare": 24.22,
-          "visionScore": 123,
-          "visionScoreAvg": 24.6,
-          "vpm": 0.8,
-          "towers": 11,
-          "dragons": 0,
-          "heralds": 0,
-          "barons": 0,
-          "mvps": 0,
-          "averageScore": 75.68,
-          "scoreGames": 5,
-          "ratings": [
-            {
-              "matchId": "groups-r2g7-j3",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "TOP",
-              "teamSlot": "D3",
-              "score": 81.4,
-              "won": false,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r2g7-j2",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "TOP",
-              "teamSlot": "D3",
-              "score": 77.92,
-              "won": false,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r2g7-j1",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "TOP",
-              "teamSlot": "D3",
-              "score": 75.57,
-              "won": true,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r1g8-j2",
-              "seriesId": "groups-r1g8",
-              "round": 1,
-              "position": "TOP",
-              "teamSlot": "D3",
-              "score": 78.29,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r1g8-j1",
-              "seriesId": "groups-r1g8",
-              "round": 1,
-              "position": "TOP",
-              "teamSlot": "D3",
-              "score": 65.21,
-              "won": true,
-              "seriesWon": true
-            }
-          ],
-          "roundRatings": [
-            {
-              "round": 1,
-              "position": "TOP",
-              "teamSlot": "D3",
-              "averageScore": 71.75,
-              "games": 2,
-              "wins": 2,
-              "losses": 0,
-              "series": [
-                "groups-r1g8"
-              ],
-              "seriesWins": 1,
-              "matches": [
-                "groups-r1g8-j1",
-                "groups-r1g8-j2"
-              ]
-            },
-            {
-              "round": 2,
-              "position": "TOP",
-              "teamSlot": "D3",
-              "averageScore": 78.3,
-              "games": 3,
-              "wins": 1,
-              "losses": 2,
-              "series": [
-                "groups-r2g7"
-              ],
-              "seriesWins": 0,
-              "matches": [
-                "groups-r2g7-j1",
-                "groups-r2g7-j2",
-                "groups-r2g7-j3"
-              ]
-            }
-          ],
-          "positions": [
-            {
-              "position": "TOP",
-              "count": 5
-            }
-          ],
-          "mainPosition": "TOP",
-          "teams": [
-            {
-              "slot": "D3",
-              "count": 5
-            }
-          ],
-          "champions": [
-            {
-              "champion": "Yone",
-              "image": "assets/champions/Yone.jpg",
-              "count": 2,
-              "wins": 1,
-              "losses": 1,
-              "winRate": 50
-            },
-            {
-              "champion": "DrMundo",
-              "image": "assets/champions/DrMundo.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Vayne",
-              "image": "assets/champions/Vayne.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Rumble",
-              "image": "assets/champions/Rumble.jpg",
-              "count": 1,
-              "wins": 0,
-              "losses": 1,
-              "winRate": 0
-            }
-          ],
-          "mostPlayedChampion": "Yone",
-          "matches": [
-            "groups-r2g7-j3",
-            "groups-r2g7-j2",
-            "groups-r2g7-j1",
-            "groups-r1g8-j2",
-            "groups-r1g8-j1"
-          ]
-        },
-        {
-          "id": "8827bd59-7836-4418-b5eb-d33dd8c3bee3",
-          "playerId": "8827bd59-7836-4418-b5eb-d33dd8c3bee3",
-          "displayName": "VINI",
-          "riotId": "FVL Vini#SUP",
-          "alsoPlayedAs": [
-            "Rekkles#FJCA",
-            "Starkben2#MGB"
-          ],
-          "opgg": "https://op.gg/pt/lol/summoners/br/FVL%20Vini-SUP",
-          "image": "",
-          "games": 5,
-          "wins": 4,
-          "losses": 1,
-          "winRate": 80,
-          "kills": 11,
-          "deaths": 13,
-          "assists": 87,
-          "kda": 7.54,
-          "killsAvg": 2.2,
-          "deathsAvg": 2.6,
-          "assistsAvg": 17.4,
-          "kp": 68.03,
-          "gold": 46871,
-          "goldAvg": 9374.2,
-          "gpm": 313.62,
-          "damage": 55587,
-          "damageAvg": 11117.4,
-          "dpm": 368.86,
-          "damageShare": 11.98,
-          "visionScore": 504,
-          "visionScoreAvg": 100.8,
-          "vpm": 3.25,
-          "towers": 1,
-          "dragons": 0,
-          "heralds": 0,
-          "barons": 0,
-          "mvps": 0,
-          "averageScore": 75.25,
-          "scoreGames": 5,
-          "ratings": [
-            {
-              "matchId": "groups-r2g7-j3",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "SUP",
-              "teamSlot": "D1",
-              "score": 81.03,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r2g7-j2",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "SUP",
-              "teamSlot": "D1",
-              "score": 70.89,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r2g7-j1",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "SUP",
-              "teamSlot": "D1",
-              "score": 69.45,
-              "won": false,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r1g7-j2",
-              "seriesId": "groups-r1g7",
-              "round": 1,
-              "position": "SUP",
-              "teamSlot": "D1",
-              "score": 79.94,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r1g7-j1",
-              "seriesId": "groups-r1g7",
-              "round": 1,
-              "position": "SUP",
-              "teamSlot": "D1",
-              "score": 74.95,
-              "won": true,
-              "seriesWon": true
-            }
-          ],
-          "roundRatings": [
-            {
-              "round": 1,
-              "position": "SUP",
-              "teamSlot": "D1",
-              "averageScore": 77.44,
-              "games": 2,
-              "wins": 2,
-              "losses": 0,
-              "series": [
-                "groups-r1g7"
-              ],
-              "seriesWins": 1,
-              "matches": [
-                "groups-r1g7-j1",
-                "groups-r1g7-j2"
-              ]
-            },
-            {
-              "round": 2,
-              "position": "SUP",
-              "teamSlot": "D1",
-              "averageScore": 73.79,
-              "games": 3,
-              "wins": 2,
-              "losses": 1,
-              "series": [
-                "groups-r2g7"
-              ],
-              "seriesWins": 1,
-              "matches": [
-                "groups-r2g7-j1",
-                "groups-r2g7-j2",
-                "groups-r2g7-j3"
-              ]
-            }
-          ],
-          "positions": [
-            {
-              "position": "SUP",
-              "count": 5
-            }
-          ],
-          "mainPosition": "SUP",
-          "teams": [
-            {
-              "slot": "D1",
-              "count": 5
-            }
-          ],
-          "champions": [
-            {
-              "champion": "Bard",
-              "image": "assets/champions/Bard.jpg",
-              "count": 2,
-              "wins": 2,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Karma",
-              "image": "assets/champions/Karma.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Nautilus",
-              "image": "assets/champions/Nautilus.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Seraphine",
-              "image": "assets/champions/Seraphine.jpg",
-              "count": 1,
-              "wins": 0,
-              "losses": 1,
-              "winRate": 0
-            }
-          ],
-          "mostPlayedChampion": "Bard",
-          "matches": [
-            "groups-r2g7-j3",
-            "groups-r2g7-j2",
-            "groups-r2g7-j1",
-            "groups-r1g7-j2",
-            "groups-r1g7-j1"
-          ]
-        },
-        {
           "id": "ac1b9d73-c323-4c9f-9c9d-072c880e9553",
           "playerId": "ac1b9d73-c323-4c9f-9c9d-072c880e9553",
           "displayName": "little noctus",
@@ -6401,6 +6610,238 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
+          "id": "8827bd59-7836-4418-b5eb-d33dd8c3bee3",
+          "playerId": "8827bd59-7836-4418-b5eb-d33dd8c3bee3",
+          "displayName": "VINI",
+          "riotId": "FVL Vini#SUP",
+          "alsoPlayedAs": [
+            "Rekkles#FJCA",
+            "Starkben2#MGB"
+          ],
+          "opgg": "https://op.gg/pt/lol/summoners/br/FVL%20Vini-SUP",
+          "image": "",
+          "games": 7,
+          "wins": 6,
+          "losses": 1,
+          "winRate": 85.71,
+          "kills": 13,
+          "deaths": 18,
+          "assists": 117,
+          "kda": 7.22,
+          "killsAvg": 1.86,
+          "deathsAvg": 2.57,
+          "assistsAvg": 16.71,
+          "kp": 67.19,
+          "gold": 63621,
+          "goldAvg": 9088.71,
+          "gpm": 306.08,
+          "damage": 72037,
+          "damageAvg": 10291,
+          "dpm": 343.9,
+          "damageShare": 11.1,
+          "visionScore": 656,
+          "visionScoreAvg": 93.71,
+          "vpm": 3.07,
+          "towers": 3,
+          "dragons": 0,
+          "heralds": 0,
+          "barons": 0,
+          "mvps": 0,
+          "averageScore": 74.53,
+          "scoreGames": 7,
+          "ratings": [
+            {
+              "matchId": "groups-r3g8-j2",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "SUP",
+              "teamSlot": "D1",
+              "score": 67.09,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r3g8-j1",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "SUP",
+              "teamSlot": "D1",
+              "score": 78.39,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g7-j3",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "SUP",
+              "teamSlot": "D1",
+              "score": 81.03,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g7-j2",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "SUP",
+              "teamSlot": "D1",
+              "score": 70.89,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g7-j1",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "SUP",
+              "teamSlot": "D1",
+              "score": 69.45,
+              "won": false,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r1g7-j2",
+              "seriesId": "groups-r1g7",
+              "round": 1,
+              "position": "SUP",
+              "teamSlot": "D1",
+              "score": 79.94,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r1g7-j1",
+              "seriesId": "groups-r1g7",
+              "round": 1,
+              "position": "SUP",
+              "teamSlot": "D1",
+              "score": 74.95,
+              "won": true,
+              "seriesWon": true
+            }
+          ],
+          "roundRatings": [
+            {
+              "round": 1,
+              "position": "SUP",
+              "teamSlot": "D1",
+              "averageScore": 77.44,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r1g7"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r1g7-j1",
+                "groups-r1g7-j2"
+              ]
+            },
+            {
+              "round": 2,
+              "position": "SUP",
+              "teamSlot": "D1",
+              "averageScore": 73.79,
+              "games": 3,
+              "wins": 2,
+              "losses": 1,
+              "series": [
+                "groups-r2g7"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r2g7-j1",
+                "groups-r2g7-j2",
+                "groups-r2g7-j3"
+              ]
+            },
+            {
+              "round": 3,
+              "position": "SUP",
+              "teamSlot": "D1",
+              "averageScore": 72.74,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r3g8"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r3g8-j1",
+                "groups-r3g8-j2"
+              ]
+            }
+          ],
+          "positions": [
+            {
+              "position": "SUP",
+              "count": 7
+            }
+          ],
+          "mainPosition": "SUP",
+          "teams": [
+            {
+              "slot": "D1",
+              "count": 7
+            }
+          ],
+          "champions": [
+            {
+              "champion": "Bard",
+              "image": "assets/champions/Bard.jpg",
+              "count": 2,
+              "wins": 2,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Karma",
+              "image": "assets/champions/Karma.jpg",
+              "count": 2,
+              "wins": 2,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Braum",
+              "image": "assets/champions/Braum.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Nautilus",
+              "image": "assets/champions/Nautilus.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Seraphine",
+              "image": "assets/champions/Seraphine.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            }
+          ],
+          "mostPlayedChampion": "Bard",
+          "matches": [
+            "groups-r3g8-j2",
+            "groups-r3g8-j1",
+            "groups-r2g7-j3",
+            "groups-r2g7-j2",
+            "groups-r2g7-j1",
+            "groups-r1g7-j2",
+            "groups-r1g7-j1"
+          ]
+        },
+        {
           "id": "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda",
           "playerId": "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda",
           "displayName": "XAND",
@@ -6623,188 +7064,6 @@ window.LIGA_RK_STATS = {
             "groups-r2g4-j1",
             "groups-r1g3-j2",
             "groups-r1g3-j1"
-          ]
-        },
-        {
-          "id": "f02fe465-ee85-45f5-ac28-7f4722ea3481",
-          "playerId": "f02fe465-ee85-45f5-ac28-7f4722ea3481",
-          "displayName": "SLEEP",
-          "riotId": "Sleepwalker#Hope",
-          "alsoPlayedAs": [],
-          "opgg": "https://op.gg/pt/lol/summoners/br/Sleepwalker-Hope",
-          "image": "",
-          "games": 5,
-          "wins": 4,
-          "losses": 1,
-          "winRate": 80,
-          "kills": 34,
-          "deaths": 11,
-          "assists": 50,
-          "kda": 7.64,
-          "killsAvg": 6.8,
-          "deathsAvg": 2.2,
-          "assistsAvg": 10,
-          "kp": 55.5,
-          "gold": 76588,
-          "goldAvg": 15317.6,
-          "gpm": 504.95,
-          "damage": 118813,
-          "damageAvg": 23762.6,
-          "dpm": 773.1,
-          "damageShare": 24.6,
-          "visionScore": 124,
-          "visionScoreAvg": 24.8,
-          "vpm": 0.83,
-          "towers": 9,
-          "dragons": 0,
-          "heralds": 0,
-          "barons": 0,
-          "mvps": 0,
-          "averageScore": 73.47,
-          "scoreGames": 5,
-          "ratings": [
-            {
-              "matchId": "groups-r2g7-j3",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "ADC",
-              "teamSlot": "D1",
-              "score": 85.16,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r2g7-j2",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "ADC",
-              "teamSlot": "D1",
-              "score": 70.39,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r2g7-j1",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "ADC",
-              "teamSlot": "D1",
-              "score": 66.33,
-              "won": false,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r1g7-j2",
-              "seriesId": "groups-r1g7",
-              "round": 1,
-              "position": "ADC",
-              "teamSlot": "D1",
-              "score": 84.82,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r1g7-j1",
-              "seriesId": "groups-r1g7",
-              "round": 1,
-              "position": "ADC",
-              "teamSlot": "D1",
-              "score": 60.67,
-              "won": true,
-              "seriesWon": true
-            }
-          ],
-          "roundRatings": [
-            {
-              "round": 1,
-              "position": "ADC",
-              "teamSlot": "D1",
-              "averageScore": 72.75,
-              "games": 2,
-              "wins": 2,
-              "losses": 0,
-              "series": [
-                "groups-r1g7"
-              ],
-              "seriesWins": 1,
-              "matches": [
-                "groups-r1g7-j1",
-                "groups-r1g7-j2"
-              ]
-            },
-            {
-              "round": 2,
-              "position": "ADC",
-              "teamSlot": "D1",
-              "averageScore": 73.96,
-              "games": 3,
-              "wins": 2,
-              "losses": 1,
-              "series": [
-                "groups-r2g7"
-              ],
-              "seriesWins": 1,
-              "matches": [
-                "groups-r2g7-j1",
-                "groups-r2g7-j2",
-                "groups-r2g7-j3"
-              ]
-            }
-          ],
-          "positions": [
-            {
-              "position": "ADC",
-              "count": 5
-            }
-          ],
-          "mainPosition": "ADC",
-          "teams": [
-            {
-              "slot": "D1",
-              "count": 5
-            }
-          ],
-          "champions": [
-            {
-              "champion": "Ezreal",
-              "image": "assets/champions/Ezreal.jpg",
-              "count": 2,
-              "wins": 1,
-              "losses": 1,
-              "winRate": 50
-            },
-            {
-              "champion": "Jhin",
-              "image": "assets/champions/Jhin.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Syndra",
-              "image": "assets/champions/Syndra.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Varus",
-              "image": "assets/champions/Varus.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            }
-          ],
-          "mostPlayedChampion": "Ezreal",
-          "matches": [
-            "groups-r2g7-j3",
-            "groups-r2g7-j2",
-            "groups-r2g7-j1",
-            "groups-r1g7-j2",
-            "groups-r1g7-j1"
           ]
         },
         {
@@ -7943,176 +8202,6 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "593a8ce7-a4c6-44cd-89ce-7abb03f88855",
-          "playerId": "593a8ce7-a4c6-44cd-89ce-7abb03f88855",
-          "displayName": "ESQUILO",
-          "riotId": "EsquiloTranquilo#br1",
-          "alsoPlayedAs": [],
-          "opgg": "https://op.gg/pt/lol/summoners/br/EsquiloTranquilo-br1",
-          "image": "",
-          "games": 4,
-          "wins": 0,
-          "losses": 4,
-          "winRate": 0,
-          "kills": 14,
-          "deaths": 25,
-          "assists": 15,
-          "kda": 1.16,
-          "killsAvg": 3.5,
-          "deathsAvg": 6.25,
-          "assistsAvg": 3.75,
-          "kp": 54.68,
-          "gold": 36355,
-          "goldAvg": 9088.75,
-          "gpm": 354.78,
-          "damage": 66542,
-          "damageAvg": 16635.5,
-          "dpm": 653.08,
-          "damageShare": 27.7,
-          "visionScore": 81,
-          "visionScoreAvg": 20.25,
-          "vpm": 0.78,
-          "towers": 2,
-          "dragons": 0,
-          "heralds": 0,
-          "barons": 0,
-          "mvps": 0,
-          "averageScore": 71.92,
-          "scoreGames": 4,
-          "ratings": [
-            {
-              "matchId": "groups-r2g8-j2",
-              "seriesId": "groups-r2g8",
-              "round": 2,
-              "position": "TOP",
-              "teamSlot": "D2",
-              "score": 84.27,
-              "won": false,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r2g8-j1",
-              "seriesId": "groups-r2g8",
-              "round": 2,
-              "position": "TOP",
-              "teamSlot": "D2",
-              "score": 54.94,
-              "won": false,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r1g7-j2",
-              "seriesId": "groups-r1g7",
-              "round": 1,
-              "position": "TOP",
-              "teamSlot": "D2",
-              "score": 95.96,
-              "won": false,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r1g7-j1",
-              "seriesId": "groups-r1g7",
-              "round": 1,
-              "position": "TOP",
-              "teamSlot": "D2",
-              "score": 52.51,
-              "won": false,
-              "seriesWon": false
-            }
-          ],
-          "roundRatings": [
-            {
-              "round": 1,
-              "position": "TOP",
-              "teamSlot": "D2",
-              "averageScore": 74.24,
-              "games": 2,
-              "wins": 0,
-              "losses": 2,
-              "series": [
-                "groups-r1g7"
-              ],
-              "seriesWins": 0,
-              "matches": [
-                "groups-r1g7-j1",
-                "groups-r1g7-j2"
-              ]
-            },
-            {
-              "round": 2,
-              "position": "TOP",
-              "teamSlot": "D2",
-              "averageScore": 69.6,
-              "games": 2,
-              "wins": 0,
-              "losses": 2,
-              "series": [
-                "groups-r2g8"
-              ],
-              "seriesWins": 0,
-              "matches": [
-                "groups-r2g8-j1",
-                "groups-r2g8-j2"
-              ]
-            }
-          ],
-          "positions": [
-            {
-              "position": "TOP",
-              "count": 4
-            }
-          ],
-          "mainPosition": "TOP",
-          "teams": [
-            {
-              "slot": "D2",
-              "count": 4
-            }
-          ],
-          "champions": [
-            {
-              "champion": "Gwen",
-              "image": "assets/champions/Gwen.jpg",
-              "count": 1,
-              "wins": 0,
-              "losses": 1,
-              "winRate": 0
-            },
-            {
-              "champion": "Jax",
-              "image": "assets/champions/Jax.jpg",
-              "count": 1,
-              "wins": 0,
-              "losses": 1,
-              "winRate": 0
-            },
-            {
-              "champion": "Sion",
-              "image": "assets/champions/Sion.jpg",
-              "count": 1,
-              "wins": 0,
-              "losses": 1,
-              "winRate": 0
-            },
-            {
-              "champion": "Volibear",
-              "image": "assets/champions/Volibear.jpg",
-              "count": 1,
-              "wins": 0,
-              "losses": 1,
-              "winRate": 0
-            }
-          ],
-          "mostPlayedChampion": "Gwen",
-          "matches": [
-            "groups-r2g8-j2",
-            "groups-r2g8-j1",
-            "groups-r1g7-j2",
-            "groups-r1g7-j1"
-          ]
-        },
-        {
           "id": "d76b03de-3dc2-4eb3-97c6-73cd5f58015b",
           "playerId": "d76b03de-3dc2-4eb3-97c6-73cd5f58015b",
           "displayName": "MUY",
@@ -8247,6 +8336,168 @@ window.LIGA_RK_STATS = {
             "groups-r2g6-j3",
             "groups-r2g6-j2",
             "groups-r2g6-j1"
+          ]
+        },
+        {
+          "id": "b115ad0f-e41a-43c8-bf5a-f7a9c697c5e3",
+          "playerId": "b115ad0f-e41a-43c8-bf5a-f7a9c697c5e3",
+          "displayName": "VIPER",
+          "riotId": "Kuwabara 愛#gumie",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/Kuwabara%20%E6%84%9B-gumie",
+          "image": "",
+          "games": 4,
+          "wins": 0,
+          "losses": 4,
+          "winRate": 0,
+          "kills": 26,
+          "deaths": 27,
+          "assists": 23,
+          "kda": 1.81,
+          "killsAvg": 6.5,
+          "deathsAvg": 6.75,
+          "assistsAvg": 5.75,
+          "kp": 59.58,
+          "gold": 43253,
+          "goldAvg": 10813.25,
+          "gpm": 387.01,
+          "damage": 89070,
+          "damageAvg": 22267.5,
+          "dpm": 766.72,
+          "damageShare": 24.73,
+          "visionScore": 82,
+          "visionScoreAvg": 20.5,
+          "vpm": 0.72,
+          "towers": 4,
+          "dragons": 0,
+          "heralds": 0,
+          "barons": 0,
+          "mvps": 0,
+          "averageScore": 71.72,
+          "scoreGames": 4,
+          "ratings": [
+            {
+              "matchId": "groups-r3g7-j2",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "MID",
+              "teamSlot": "D2",
+              "score": 80.32,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r3g7-j1",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "MID",
+              "teamSlot": "D2",
+              "score": 79.84,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r2g8-j2",
+              "seriesId": "groups-r2g8",
+              "round": 2,
+              "position": "MID",
+              "teamSlot": "D2",
+              "score": 60.53,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r2g8-j1",
+              "seriesId": "groups-r2g8",
+              "round": 2,
+              "position": "MID",
+              "teamSlot": "D2",
+              "score": 66.2,
+              "won": false,
+              "seriesWon": false
+            }
+          ],
+          "roundRatings": [
+            {
+              "round": 2,
+              "position": "MID",
+              "teamSlot": "D2",
+              "averageScore": 63.37,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "groups-r2g8"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r2g8-j1",
+                "groups-r2g8-j2"
+              ]
+            },
+            {
+              "round": 3,
+              "position": "MID",
+              "teamSlot": "D2",
+              "averageScore": 80.08,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "groups-r3g7"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r3g7-j1",
+                "groups-r3g7-j2"
+              ]
+            }
+          ],
+          "positions": [
+            {
+              "position": "MID",
+              "count": 4
+            }
+          ],
+          "mainPosition": "MID",
+          "teams": [
+            {
+              "slot": "D2",
+              "count": 4
+            }
+          ],
+          "champions": [
+            {
+              "champion": "Irelia",
+              "image": "assets/champions/Irelia.jpg",
+              "count": 2,
+              "wins": 0,
+              "losses": 2,
+              "winRate": 0
+            },
+            {
+              "champion": "Aurora",
+              "image": "assets/champions/Aurora.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            },
+            {
+              "champion": "Locke",
+              "image": "assets/champions/Locke.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            }
+          ],
+          "mostPlayedChampion": "Irelia",
+          "matches": [
+            "groups-r3g7-j2",
+            "groups-r3g7-j1",
+            "groups-r2g8-j2",
+            "groups-r2g8-j1"
           ]
         },
         {
@@ -8491,6 +8742,346 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
+          "id": "d461d7bf-887a-4969-9e94-2af9389b2f2a",
+          "playerId": "d461d7bf-887a-4969-9e94-2af9389b2f2a",
+          "displayName": "BLACKZERA",
+          "riotId": "Blackzera#CBLOL",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/Blackzera-CBLOL",
+          "image": "",
+          "games": 2,
+          "wins": 0,
+          "losses": 2,
+          "winRate": 0,
+          "kills": 7,
+          "deaths": 15,
+          "assists": 13,
+          "kda": 1.33,
+          "killsAvg": 3.5,
+          "deathsAvg": 7.5,
+          "assistsAvg": 6.5,
+          "kp": 68.27,
+          "gold": 22246,
+          "goldAvg": 11123,
+          "gpm": 380.37,
+          "damage": 27968,
+          "damageAvg": 13984,
+          "dpm": 480.73,
+          "damageShare": 16.78,
+          "visionScore": 85,
+          "visionScoreAvg": 42.5,
+          "vpm": 1.41,
+          "towers": 1,
+          "dragons": 1,
+          "heralds": 0,
+          "barons": 0,
+          "mvps": 0,
+          "averageScore": 71.63,
+          "scoreGames": 2,
+          "ratings": [
+            {
+              "matchId": "groups-r3g8-j2",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "JG",
+              "teamSlot": "D4",
+              "score": 73.37,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r3g8-j1",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "JG",
+              "teamSlot": "D4",
+              "score": 69.88,
+              "won": false,
+              "seriesWon": false
+            }
+          ],
+          "roundRatings": [
+            {
+              "round": 3,
+              "position": "JG",
+              "teamSlot": "D4",
+              "averageScore": 71.63,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "groups-r3g8"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r3g8-j1",
+                "groups-r3g8-j2"
+              ]
+            }
+          ],
+          "positions": [
+            {
+              "position": "JG",
+              "count": 2
+            }
+          ],
+          "mainPosition": "JG",
+          "teams": [
+            {
+              "slot": "D4",
+              "count": 2
+            }
+          ],
+          "champions": [
+            {
+              "champion": "Aatrox",
+              "image": "assets/champions/Aatrox.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            },
+            {
+              "champion": "JarvanIV",
+              "image": "assets/champions/JarvanIV.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            }
+          ],
+          "mostPlayedChampion": "Aatrox",
+          "matches": [
+            "groups-r3g8-j2",
+            "groups-r3g8-j1"
+          ]
+        },
+        {
+          "id": "593a8ce7-a4c6-44cd-89ce-7abb03f88855",
+          "playerId": "593a8ce7-a4c6-44cd-89ce-7abb03f88855",
+          "displayName": "ESQUILO",
+          "riotId": "EsquiloTranquilo#br1",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/EsquiloTranquilo-br1",
+          "image": "",
+          "games": 6,
+          "wins": 0,
+          "losses": 6,
+          "winRate": 0,
+          "kills": 26,
+          "deaths": 39,
+          "assists": 32,
+          "kda": 1.49,
+          "killsAvg": 4.33,
+          "deathsAvg": 6.5,
+          "assistsAvg": 5.33,
+          "kp": 54.4,
+          "gold": 58351,
+          "goldAvg": 9725.17,
+          "gpm": 357.54,
+          "damage": 118553,
+          "damageAvg": 19758.83,
+          "dpm": 725.33,
+          "damageShare": 27.08,
+          "visionScore": 143,
+          "visionScoreAvg": 23.83,
+          "vpm": 0.86,
+          "towers": 2,
+          "dragons": 0,
+          "heralds": 0,
+          "barons": 0,
+          "mvps": 0,
+          "averageScore": 71.04,
+          "scoreGames": 6,
+          "ratings": [
+            {
+              "matchId": "groups-r3g7-j2",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "TOP",
+              "teamSlot": "D2",
+              "score": 66.57,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r3g7-j1",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "TOP",
+              "teamSlot": "D2",
+              "score": 72.01,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r2g8-j2",
+              "seriesId": "groups-r2g8",
+              "round": 2,
+              "position": "TOP",
+              "teamSlot": "D2",
+              "score": 84.27,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r2g8-j1",
+              "seriesId": "groups-r2g8",
+              "round": 2,
+              "position": "TOP",
+              "teamSlot": "D2",
+              "score": 54.94,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r1g7-j2",
+              "seriesId": "groups-r1g7",
+              "round": 1,
+              "position": "TOP",
+              "teamSlot": "D2",
+              "score": 95.96,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r1g7-j1",
+              "seriesId": "groups-r1g7",
+              "round": 1,
+              "position": "TOP",
+              "teamSlot": "D2",
+              "score": 52.51,
+              "won": false,
+              "seriesWon": false
+            }
+          ],
+          "roundRatings": [
+            {
+              "round": 1,
+              "position": "TOP",
+              "teamSlot": "D2",
+              "averageScore": 74.24,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "groups-r1g7"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r1g7-j1",
+                "groups-r1g7-j2"
+              ]
+            },
+            {
+              "round": 2,
+              "position": "TOP",
+              "teamSlot": "D2",
+              "averageScore": 69.6,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "groups-r2g8"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r2g8-j1",
+                "groups-r2g8-j2"
+              ]
+            },
+            {
+              "round": 3,
+              "position": "TOP",
+              "teamSlot": "D2",
+              "averageScore": 69.29,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "groups-r3g7"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r3g7-j1",
+                "groups-r3g7-j2"
+              ]
+            }
+          ],
+          "positions": [
+            {
+              "position": "TOP",
+              "count": 6
+            }
+          ],
+          "mainPosition": "TOP",
+          "teams": [
+            {
+              "slot": "D2",
+              "count": 6
+            }
+          ],
+          "champions": [
+            {
+              "champion": "Gwen",
+              "image": "assets/champions/Gwen.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            },
+            {
+              "champion": "Jax",
+              "image": "assets/champions/Jax.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            },
+            {
+              "champion": "Jayce",
+              "image": "assets/champions/Jayce.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            },
+            {
+              "champion": "Rumble",
+              "image": "assets/champions/Rumble.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            },
+            {
+              "champion": "Sion",
+              "image": "assets/champions/Sion.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            },
+            {
+              "champion": "Volibear",
+              "image": "assets/champions/Volibear.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            }
+          ],
+          "mostPlayedChampion": "Gwen",
+          "matches": [
+            "groups-r3g7-j2",
+            "groups-r3g7-j1",
+            "groups-r2g8-j2",
+            "groups-r2g8-j1",
+            "groups-r1g7-j2",
+            "groups-r1g7-j1"
+          ]
+        },
+        {
           "id": "ae76fd2f-1c07-44e1-a35e-5f0512f28ebd",
           "playerId": "ae76fd2f-1c07-44e1-a35e-5f0512f28ebd",
           "displayName": "biel",
@@ -8609,6 +9200,235 @@ window.LIGA_RK_STATS = {
           "matches": [
             "groups-r2g8-j2",
             "groups-r2g8-j1"
+          ]
+        },
+        {
+          "id": "60bed61b-e107-41bd-b0cc-943105c6e4c5",
+          "playerId": "60bed61b-e107-41bd-b0cc-943105c6e4c5",
+          "displayName": "IAN",
+          "riotId": "peido sniffer#6767",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/peido%20sniffer-6767",
+          "image": "",
+          "games": 7,
+          "wins": 5,
+          "losses": 2,
+          "winRate": 71.43,
+          "kills": 41,
+          "deaths": 35,
+          "assists": 52,
+          "kda": 2.66,
+          "killsAvg": 5.86,
+          "deathsAvg": 5,
+          "assistsAvg": 7.43,
+          "kp": 50.7,
+          "gold": 91666,
+          "goldAvg": 13095.14,
+          "gpm": 429.7,
+          "damage": 155118,
+          "damageAvg": 22159.71,
+          "dpm": 699.62,
+          "damageShare": 21.13,
+          "visionScore": 171,
+          "visionScoreAvg": 24.43,
+          "vpm": 0.79,
+          "towers": 12,
+          "dragons": 0,
+          "heralds": 0,
+          "barons": 0,
+          "mvps": 0,
+          "averageScore": 70.81,
+          "scoreGames": 7,
+          "ratings": [
+            {
+              "matchId": "groups-r3g7-j2",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "TOP",
+              "teamSlot": "D3",
+              "score": 70.16,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r3g7-j1",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "TOP",
+              "teamSlot": "D3",
+              "score": 47.14,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g7-j3",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "TOP",
+              "teamSlot": "D3",
+              "score": 81.4,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r2g7-j2",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "TOP",
+              "teamSlot": "D3",
+              "score": 77.92,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r2g7-j1",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "TOP",
+              "teamSlot": "D3",
+              "score": 75.57,
+              "won": true,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r1g8-j2",
+              "seriesId": "groups-r1g8",
+              "round": 1,
+              "position": "TOP",
+              "teamSlot": "D3",
+              "score": 78.29,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r1g8-j1",
+              "seriesId": "groups-r1g8",
+              "round": 1,
+              "position": "TOP",
+              "teamSlot": "D3",
+              "score": 65.21,
+              "won": true,
+              "seriesWon": true
+            }
+          ],
+          "roundRatings": [
+            {
+              "round": 1,
+              "position": "TOP",
+              "teamSlot": "D3",
+              "averageScore": 71.75,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r1g8"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r1g8-j1",
+                "groups-r1g8-j2"
+              ]
+            },
+            {
+              "round": 2,
+              "position": "TOP",
+              "teamSlot": "D3",
+              "averageScore": 78.3,
+              "games": 3,
+              "wins": 1,
+              "losses": 2,
+              "series": [
+                "groups-r2g7"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r2g7-j1",
+                "groups-r2g7-j2",
+                "groups-r2g7-j3"
+              ]
+            },
+            {
+              "round": 3,
+              "position": "TOP",
+              "teamSlot": "D3",
+              "averageScore": 58.65,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r3g7"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r3g7-j1",
+                "groups-r3g7-j2"
+              ]
+            }
+          ],
+          "positions": [
+            {
+              "position": "TOP",
+              "count": 7
+            }
+          ],
+          "mainPosition": "TOP",
+          "teams": [
+            {
+              "slot": "D3",
+              "count": 7
+            }
+          ],
+          "champions": [
+            {
+              "champion": "Yone",
+              "image": "assets/champions/Yone.jpg",
+              "count": 3,
+              "wins": 2,
+              "losses": 1,
+              "winRate": 66.67
+            },
+            {
+              "champion": "Anivia",
+              "image": "assets/champions/Anivia.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "DrMundo",
+              "image": "assets/champions/DrMundo.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Vayne",
+              "image": "assets/champions/Vayne.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Rumble",
+              "image": "assets/champions/Rumble.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            }
+          ],
+          "mostPlayedChampion": "Yone",
+          "matches": [
+            "groups-r3g7-j2",
+            "groups-r3g7-j1",
+            "groups-r2g7-j3",
+            "groups-r2g7-j2",
+            "groups-r2g7-j1",
+            "groups-r1g8-j2",
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -9511,6 +10331,235 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
+          "id": "f02fe465-ee85-45f5-ac28-7f4722ea3481",
+          "playerId": "f02fe465-ee85-45f5-ac28-7f4722ea3481",
+          "displayName": "SLEEP",
+          "riotId": "Sleepwalker#Hope",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/Sleepwalker-Hope",
+          "image": "",
+          "games": 7,
+          "wins": 6,
+          "losses": 1,
+          "winRate": 85.71,
+          "kills": 41,
+          "deaths": 17,
+          "assists": 68,
+          "kda": 6.41,
+          "killsAvg": 5.86,
+          "deathsAvg": 2.43,
+          "assistsAvg": 9.71,
+          "kp": 54.21,
+          "gold": 103676,
+          "goldAvg": 14810.86,
+          "gpm": 492.73,
+          "damage": 149797,
+          "damageAvg": 21399.57,
+          "dpm": 705.79,
+          "damageShare": 22.39,
+          "visionScore": 174,
+          "visionScoreAvg": 24.86,
+          "vpm": 0.83,
+          "towers": 12,
+          "dragons": 0,
+          "heralds": 0,
+          "barons": 0,
+          "mvps": 0,
+          "averageScore": 70.12,
+          "scoreGames": 7,
+          "ratings": [
+            {
+              "matchId": "groups-r3g8-j2",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "ADC",
+              "teamSlot": "D1",
+              "score": 62.97,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r3g8-j1",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "ADC",
+              "teamSlot": "D1",
+              "score": 60.51,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g7-j3",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "ADC",
+              "teamSlot": "D1",
+              "score": 85.16,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g7-j2",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "ADC",
+              "teamSlot": "D1",
+              "score": 70.39,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g7-j1",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "ADC",
+              "teamSlot": "D1",
+              "score": 66.33,
+              "won": false,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r1g7-j2",
+              "seriesId": "groups-r1g7",
+              "round": 1,
+              "position": "ADC",
+              "teamSlot": "D1",
+              "score": 84.82,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r1g7-j1",
+              "seriesId": "groups-r1g7",
+              "round": 1,
+              "position": "ADC",
+              "teamSlot": "D1",
+              "score": 60.67,
+              "won": true,
+              "seriesWon": true
+            }
+          ],
+          "roundRatings": [
+            {
+              "round": 1,
+              "position": "ADC",
+              "teamSlot": "D1",
+              "averageScore": 72.75,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r1g7"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r1g7-j1",
+                "groups-r1g7-j2"
+              ]
+            },
+            {
+              "round": 2,
+              "position": "ADC",
+              "teamSlot": "D1",
+              "averageScore": 73.96,
+              "games": 3,
+              "wins": 2,
+              "losses": 1,
+              "series": [
+                "groups-r2g7"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r2g7-j1",
+                "groups-r2g7-j2",
+                "groups-r2g7-j3"
+              ]
+            },
+            {
+              "round": 3,
+              "position": "ADC",
+              "teamSlot": "D1",
+              "averageScore": 61.74,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r3g8"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r3g8-j1",
+                "groups-r3g8-j2"
+              ]
+            }
+          ],
+          "positions": [
+            {
+              "position": "ADC",
+              "count": 7
+            }
+          ],
+          "mainPosition": "ADC",
+          "teams": [
+            {
+              "slot": "D1",
+              "count": 7
+            }
+          ],
+          "champions": [
+            {
+              "champion": "Ezreal",
+              "image": "assets/champions/Ezreal.jpg",
+              "count": 3,
+              "wins": 2,
+              "losses": 1,
+              "winRate": 66.67
+            },
+            {
+              "champion": "Jhin",
+              "image": "assets/champions/Jhin.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Lucian",
+              "image": "assets/champions/Lucian.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Syndra",
+              "image": "assets/champions/Syndra.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Varus",
+              "image": "assets/champions/Varus.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            }
+          ],
+          "mostPlayedChampion": "Ezreal",
+          "matches": [
+            "groups-r3g8-j2",
+            "groups-r3g8-j1",
+            "groups-r2g7-j3",
+            "groups-r2g7-j2",
+            "groups-r2g7-j1",
+            "groups-r1g7-j2",
+            "groups-r1g7-j1"
+          ]
+        },
+        {
           "id": "e324f47c-9a31-4cd4-a5b9-3af94e2f3c38",
           "playerId": "e324f47c-9a31-4cd4-a5b9-3af94e2f3c38",
           "displayName": "SUZUKI",
@@ -9813,176 +10862,6 @@ window.LIGA_RK_STATS = {
           "matches": [
             "groups-r2g2-j2",
             "groups-r2g2-j1"
-          ]
-        },
-        {
-          "id": "c0252d66-bd2d-4f35-b210-c03943520a05",
-          "playerId": "c0252d66-bd2d-4f35-b210-c03943520a05",
-          "displayName": "PEWTZ",
-          "riotId": "Pewtz#Pewtz",
-          "alsoPlayedAs": [],
-          "opgg": "https://op.gg/pt/lol/summoners/br/Pewtz-Pewtz",
-          "image": "",
-          "games": 4,
-          "wins": 2,
-          "losses": 2,
-          "winRate": 50,
-          "kills": 22,
-          "deaths": 13,
-          "assists": 28,
-          "kda": 3.85,
-          "killsAvg": 5.5,
-          "deathsAvg": 3.25,
-          "assistsAvg": 7,
-          "kp": 53.2,
-          "gold": 46967,
-          "goldAvg": 11741.75,
-          "gpm": 453.69,
-          "damage": 93197,
-          "damageAvg": 23299.25,
-          "dpm": 891.67,
-          "damageShare": 25.21,
-          "visionScore": 35,
-          "visionScoreAvg": 8.75,
-          "vpm": 0.34,
-          "towers": 6,
-          "dragons": 0,
-          "heralds": 0,
-          "barons": 0,
-          "mvps": 0,
-          "averageScore": 69.07,
-          "scoreGames": 4,
-          "ratings": [
-            {
-              "matchId": "groups-r2g8-j2",
-              "seriesId": "groups-r2g8",
-              "round": 2,
-              "position": "ADC",
-              "teamSlot": "D4",
-              "score": 71.26,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r2g8-j1",
-              "seriesId": "groups-r2g8",
-              "round": 2,
-              "position": "ADC",
-              "teamSlot": "D4",
-              "score": 75.02,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r1g8-j2",
-              "seriesId": "groups-r1g8",
-              "round": 1,
-              "position": "ADC",
-              "teamSlot": "D4",
-              "score": 64.49,
-              "won": false,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r1g8-j1",
-              "seriesId": "groups-r1g8",
-              "round": 1,
-              "position": "ADC",
-              "teamSlot": "D4",
-              "score": 65.52,
-              "won": false,
-              "seriesWon": false
-            }
-          ],
-          "roundRatings": [
-            {
-              "round": 1,
-              "position": "ADC",
-              "teamSlot": "D4",
-              "averageScore": 65.01,
-              "games": 2,
-              "wins": 0,
-              "losses": 2,
-              "series": [
-                "groups-r1g8"
-              ],
-              "seriesWins": 0,
-              "matches": [
-                "groups-r1g8-j1",
-                "groups-r1g8-j2"
-              ]
-            },
-            {
-              "round": 2,
-              "position": "ADC",
-              "teamSlot": "D4",
-              "averageScore": 73.14,
-              "games": 2,
-              "wins": 2,
-              "losses": 0,
-              "series": [
-                "groups-r2g8"
-              ],
-              "seriesWins": 1,
-              "matches": [
-                "groups-r2g8-j1",
-                "groups-r2g8-j2"
-              ]
-            }
-          ],
-          "positions": [
-            {
-              "position": "ADC",
-              "count": 4
-            }
-          ],
-          "mainPosition": "ADC",
-          "teams": [
-            {
-              "slot": "D4",
-              "count": 4
-            }
-          ],
-          "champions": [
-            {
-              "champion": "Caitlyn",
-              "image": "assets/champions/Caitlyn.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Ziggs",
-              "image": "assets/champions/Ziggs.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Cassiopeia",
-              "image": "assets/champions/Cassiopeia.jpg",
-              "count": 1,
-              "wins": 0,
-              "losses": 1,
-              "winRate": 0
-            },
-            {
-              "champion": "Sivir",
-              "image": "assets/champions/Sivir.jpg",
-              "count": 1,
-              "wins": 0,
-              "losses": 1,
-              "winRate": 0
-            }
-          ],
-          "mostPlayedChampion": "Caitlyn",
-          "matches": [
-            "groups-r2g8-j2",
-            "groups-r2g8-j1",
-            "groups-r1g8-j2",
-            "groups-r1g8-j1"
           ]
         },
         {
@@ -10536,198 +11415,6 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "df0e9d12-5f4f-4268-a80d-cefa44c76268",
-          "playerId": "df0e9d12-5f4f-4268-a80d-cefa44c76268",
-          "displayName": "EPI",
-          "riotId": "epilul#ROX",
-          "alsoPlayedAs": [
-            "franjudinha#0001"
-          ],
-          "opgg": "https://op.gg/pt/lol/summoners/br/epilul-ROX",
-          "image": "",
-          "games": 5,
-          "wins": 3,
-          "losses": 2,
-          "winRate": 60,
-          "kills": 24,
-          "deaths": 22,
-          "assists": 33,
-          "kda": 2.59,
-          "killsAvg": 4.8,
-          "deathsAvg": 4.4,
-          "assistsAvg": 6.6,
-          "kp": 50.31,
-          "gold": 76215,
-          "goldAvg": 15243,
-          "gpm": 503.91,
-          "damage": 110476,
-          "damageAvg": 22095.2,
-          "dpm": 706.54,
-          "damageShare": 21.79,
-          "visionScore": 188,
-          "visionScoreAvg": 37.6,
-          "vpm": 1.21,
-          "towers": 12,
-          "dragons": 1,
-          "heralds": 0,
-          "barons": 0,
-          "mvps": 0,
-          "averageScore": 68.5,
-          "scoreGames": 5,
-          "ratings": [
-            {
-              "matchId": "groups-r2g7-j3",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "ADC",
-              "teamSlot": "D3",
-              "score": 55.05,
-              "won": false,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r2g7-j2",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "ADC",
-              "teamSlot": "D3",
-              "score": 66.28,
-              "won": false,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r2g7-j1",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "ADC",
-              "teamSlot": "D3",
-              "score": 65.95,
-              "won": true,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r1g8-j2",
-              "seriesId": "groups-r1g8",
-              "round": 1,
-              "position": "ADC",
-              "teamSlot": "D3",
-              "score": 65.28,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r1g8-j1",
-              "seriesId": "groups-r1g8",
-              "round": 1,
-              "position": "ADC",
-              "teamSlot": "D3",
-              "score": 89.96,
-              "won": true,
-              "seriesWon": true
-            }
-          ],
-          "roundRatings": [
-            {
-              "round": 1,
-              "position": "ADC",
-              "teamSlot": "D3",
-              "averageScore": 77.62,
-              "games": 2,
-              "wins": 2,
-              "losses": 0,
-              "series": [
-                "groups-r1g8"
-              ],
-              "seriesWins": 1,
-              "matches": [
-                "groups-r1g8-j1",
-                "groups-r1g8-j2"
-              ]
-            },
-            {
-              "round": 2,
-              "position": "ADC",
-              "teamSlot": "D3",
-              "averageScore": 62.43,
-              "games": 3,
-              "wins": 1,
-              "losses": 2,
-              "series": [
-                "groups-r2g7"
-              ],
-              "seriesWins": 0,
-              "matches": [
-                "groups-r2g7-j1",
-                "groups-r2g7-j2",
-                "groups-r2g7-j3"
-              ]
-            }
-          ],
-          "positions": [
-            {
-              "position": "ADC",
-              "count": 5
-            }
-          ],
-          "mainPosition": "ADC",
-          "teams": [
-            {
-              "slot": "D3",
-              "count": 5
-            }
-          ],
-          "champions": [
-            {
-              "champion": "Ezreal",
-              "image": "assets/champions/Ezreal.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Jhin",
-              "image": "assets/champions/Jhin.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Jinx",
-              "image": "assets/champions/Jinx.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Lucian",
-              "image": "assets/champions/Lucian.jpg",
-              "count": 1,
-              "wins": 0,
-              "losses": 1,
-              "winRate": 0
-            },
-            {
-              "champion": "Yunara",
-              "image": "assets/champions/Yunara.jpg",
-              "count": 1,
-              "wins": 0,
-              "losses": 1,
-              "winRate": 0
-            }
-          ],
-          "mostPlayedChampion": "Ezreal",
-          "matches": [
-            "groups-r2g7-j3",
-            "groups-r2g7-j2",
-            "groups-r2g7-j1",
-            "groups-r1g8-j2",
-            "groups-r1g8-j1"
-          ]
-        },
-        {
           "id": "afd38a2d-4c8e-44fb-b3d1-1c2bf4e8764e",
           "playerId": "afd38a2d-4c8e-44fb-b3d1-1c2bf4e8764e",
           "displayName": "PEPUXO",
@@ -10950,6 +11637,121 @@ window.LIGA_RK_STATS = {
             "groups-r2g4-j1",
             "groups-r1g3-j2",
             "groups-r1g3-j1"
+          ]
+        },
+        {
+          "id": "d34dc7d7-ee25-4b81-8c61-aa437acbe393",
+          "playerId": "d34dc7d7-ee25-4b81-8c61-aa437acbe393",
+          "displayName": "GHOZT",
+          "riotId": "Ghozt#123",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/Ghozt-123",
+          "image": "",
+          "games": 2,
+          "wins": 0,
+          "losses": 2,
+          "winRate": 0,
+          "kills": 1,
+          "deaths": 7,
+          "assists": 20,
+          "kda": 3,
+          "killsAvg": 0.5,
+          "deathsAvg": 3.5,
+          "assistsAvg": 10,
+          "kp": 72.12,
+          "gold": 15139,
+          "goldAvg": 7569.5,
+          "gpm": 259.07,
+          "damage": 9696,
+          "damageAvg": 4848,
+          "dpm": 169.55,
+          "damageShare": 5.9,
+          "visionScore": 116,
+          "visionScoreAvg": 58,
+          "vpm": 1.99,
+          "towers": 0,
+          "dragons": 0,
+          "heralds": 0,
+          "barons": 0,
+          "mvps": 0,
+          "averageScore": 67.94,
+          "scoreGames": 2,
+          "ratings": [
+            {
+              "matchId": "groups-r3g8-j2",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "SUP",
+              "teamSlot": "D4",
+              "score": 72.05,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r3g8-j1",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "SUP",
+              "teamSlot": "D4",
+              "score": 63.82,
+              "won": false,
+              "seriesWon": false
+            }
+          ],
+          "roundRatings": [
+            {
+              "round": 3,
+              "position": "SUP",
+              "teamSlot": "D4",
+              "averageScore": 67.94,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "groups-r3g8"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r3g8-j1",
+                "groups-r3g8-j2"
+              ]
+            }
+          ],
+          "positions": [
+            {
+              "position": "SUP",
+              "count": 2
+            }
+          ],
+          "mainPosition": "SUP",
+          "teams": [
+            {
+              "slot": "D4",
+              "count": 2
+            }
+          ],
+          "champions": [
+            {
+              "champion": "Milio",
+              "image": "assets/champions/Milio.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            },
+            {
+              "champion": "Nami",
+              "image": "assets/champions/Nami.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            }
+          ],
+          "mostPlayedChampion": "Milio",
+          "matches": [
+            "groups-r3g8-j2",
+            "groups-r3g8-j1"
           ]
         },
         {
@@ -11459,36 +12261,56 @@ window.LIGA_RK_STATS = {
           "alsoPlayedAs": [],
           "opgg": "https://op.gg/pt/lol/summoners/br/Bleyblade-Bleyd",
           "image": "",
-          "games": 2,
+          "games": 4,
           "wins": 0,
-          "losses": 2,
+          "losses": 4,
           "winRate": 0,
-          "kills": 4,
-          "deaths": 11,
-          "assists": 5,
-          "kda": 0.82,
-          "killsAvg": 2,
-          "deathsAvg": 5.5,
-          "assistsAvg": 2.5,
-          "kp": 63.33,
-          "gold": 16678,
-          "goldAvg": 8339,
-          "gpm": 325.38,
-          "damage": 26208,
-          "damageAvg": 13104,
-          "dpm": 512.5,
-          "damageShare": 26.18,
-          "visionScore": 31,
-          "visionScoreAvg": 15.5,
-          "vpm": 0.6,
+          "kills": 5,
+          "deaths": 28,
+          "assists": 37,
+          "kda": 1.5,
+          "killsAvg": 1.25,
+          "deathsAvg": 7,
+          "assistsAvg": 9.25,
+          "kp": 64.74,
+          "gold": 32843,
+          "goldAvg": 8210.75,
+          "gpm": 296.71,
+          "damage": 49067,
+          "damageAvg": 12266.75,
+          "dpm": 432.98,
+          "damageShare": 18.09,
+          "visionScore": 191,
+          "visionScoreAvg": 47.75,
+          "vpm": 1.59,
           "towers": 0,
           "dragons": 0,
           "heralds": 0,
           "barons": 0,
           "mvps": 0,
-          "averageScore": 66.07,
-          "scoreGames": 2,
+          "averageScore": 67.15,
+          "scoreGames": 4,
           "ratings": [
+            {
+              "matchId": "groups-r3g7-j2",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "SUP",
+              "teamSlot": "D2",
+              "score": 69.2,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r3g7-j1",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "SUP",
+              "teamSlot": "D2",
+              "score": 67.27,
+              "won": false,
+              "seriesWon": false
+            },
             {
               "matchId": "groups-r1g7-j2",
               "seriesId": "groups-r1g7",
@@ -11527,11 +12349,32 @@ window.LIGA_RK_STATS = {
                 "groups-r1g7-j1",
                 "groups-r1g7-j2"
               ]
+            },
+            {
+              "round": 3,
+              "position": "SUP",
+              "teamSlot": "D2",
+              "averageScore": 68.24,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "groups-r3g7"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r3g7-j1",
+                "groups-r3g7-j2"
+              ]
             }
           ],
           "positions": [
             {
               "position": "MID",
+              "count": 2
+            },
+            {
+              "position": "SUP",
               "count": 2
             },
             {
@@ -11543,7 +12386,7 @@ window.LIGA_RK_STATS = {
           "teams": [
             {
               "slot": "D2",
-              "count": 2
+              "count": 4
             }
           ],
           "champions": [
@@ -11556,8 +12399,24 @@ window.LIGA_RK_STATS = {
               "winRate": 0
             },
             {
+              "champion": "Rell",
+              "image": "assets/champions/Rell.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            },
+            {
               "champion": "Ryze",
               "image": "assets/champions/Ryze.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            },
+            {
+              "champion": "Sylas",
+              "image": "assets/champions/Sylas.jpg",
               "count": 1,
               "wins": 0,
               "losses": 1,
@@ -11566,6 +12425,165 @@ window.LIGA_RK_STATS = {
           ],
           "mostPlayedChampion": "Ahri",
           "matches": [
+            "groups-r3g7-j2",
+            "groups-r3g7-j1",
+            "groups-r1g7-j2",
+            "groups-r1g7-j1"
+          ]
+        },
+        {
+          "id": "4448fafa-ddb9-4a96-b9da-df67b2919733",
+          "playerId": "4448fafa-ddb9-4a96-b9da-df67b2919733",
+          "displayName": "TEARS",
+          "riotId": "tears#dude",
+          "alsoPlayedAs": [
+            "Acessório#br1",
+            "shameless#eva"
+          ],
+          "opgg": "https://op.gg/pt/lol/summoners/br/tears-dude",
+          "image": "",
+          "games": 4,
+          "wins": 0,
+          "losses": 4,
+          "winRate": 0,
+          "kills": 12,
+          "deaths": 25,
+          "assists": 31,
+          "kda": 1.72,
+          "killsAvg": 3,
+          "deathsAvg": 6.25,
+          "assistsAvg": 7.75,
+          "kp": 72.74,
+          "gold": 42139,
+          "goldAvg": 10534.75,
+          "gpm": 374.34,
+          "damage": 52078,
+          "damageAvg": 13019.5,
+          "dpm": 450.44,
+          "damageShare": 16.61,
+          "visionScore": 83,
+          "visionScoreAvg": 20.75,
+          "vpm": 0.74,
+          "towers": 0,
+          "dragons": 3,
+          "heralds": 0,
+          "barons": 1,
+          "mvps": 0,
+          "averageScore": 66.21,
+          "scoreGames": 4,
+          "ratings": [
+            {
+              "matchId": "groups-r3g7-j2",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "JG",
+              "teamSlot": "D2",
+              "score": 77.05,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r3g7-j1",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "JG",
+              "teamSlot": "D2",
+              "score": 56.26,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r1g7-j2",
+              "seriesId": "groups-r1g7",
+              "round": 1,
+              "position": "JG",
+              "teamSlot": "D2",
+              "score": 66.27,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r1g7-j1",
+              "seriesId": "groups-r1g7",
+              "round": 1,
+              "position": "JG",
+              "teamSlot": "D2",
+              "score": 65.26,
+              "won": false,
+              "seriesWon": false
+            }
+          ],
+          "roundRatings": [
+            {
+              "round": 1,
+              "position": "JG",
+              "teamSlot": "D2",
+              "averageScore": 65.77,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "groups-r1g7"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r1g7-j1",
+                "groups-r1g7-j2"
+              ]
+            },
+            {
+              "round": 3,
+              "position": "JG",
+              "teamSlot": "D2",
+              "averageScore": 66.66,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "groups-r3g7"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r3g7-j1",
+                "groups-r3g7-j2"
+              ]
+            }
+          ],
+          "positions": [
+            {
+              "position": "JG",
+              "count": 4
+            }
+          ],
+          "mainPosition": "JG",
+          "teams": [
+            {
+              "slot": "D2",
+              "count": 4
+            }
+          ],
+          "champions": [
+            {
+              "champion": "Hecarim",
+              "image": "assets/champions/Hecarim.jpg",
+              "count": 2,
+              "wins": 0,
+              "losses": 2,
+              "winRate": 0
+            },
+            {
+              "champion": "Nocturne",
+              "image": "assets/champions/Nocturne.jpg",
+              "count": 2,
+              "wins": 0,
+              "losses": 2,
+              "winRate": 0
+            }
+          ],
+          "mostPlayedChampion": "Hecarim",
+          "matches": [
+            "groups-r3g7-j2",
+            "groups-r3g7-j1",
             "groups-r1g7-j2",
             "groups-r1g7-j1"
           ]
@@ -11741,62 +12759,100 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "4448fafa-ddb9-4a96-b9da-df67b2919733",
-          "playerId": "4448fafa-ddb9-4a96-b9da-df67b2919733",
-          "displayName": "TEARS",
-          "riotId": "tears#dude",
-          "alsoPlayedAs": [
-            "Acessório#br1"
-          ],
-          "opgg": "https://op.gg/pt/lol/summoners/br/tears-dude",
+          "id": "c0252d66-bd2d-4f35-b210-c03943520a05",
+          "playerId": "c0252d66-bd2d-4f35-b210-c03943520a05",
+          "displayName": "PEWTZ",
+          "riotId": "Pewtz#Pewtz",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/Pewtz-Pewtz",
           "image": "",
-          "games": 2,
-          "wins": 0,
-          "losses": 2,
-          "winRate": 0,
-          "kills": 3,
-          "deaths": 11,
-          "assists": 8,
-          "kda": 1,
-          "killsAvg": 1.5,
-          "deathsAvg": 5.5,
-          "assistsAvg": 4,
-          "kp": 83.33,
-          "gold": 17692,
-          "goldAvg": 8846,
-          "gpm": 344.5,
-          "damage": 15685,
-          "damageAvg": 7842.5,
-          "dpm": 304.37,
-          "damageShare": 15.71,
-          "visionScore": 37,
-          "visionScoreAvg": 18.5,
-          "vpm": 0.72,
-          "towers": 0,
+          "games": 6,
+          "wins": 2,
+          "losses": 4,
+          "winRate": 33.33,
+          "kills": 26,
+          "deaths": 22,
+          "assists": 36,
+          "kda": 2.82,
+          "killsAvg": 4.33,
+          "deathsAvg": 3.67,
+          "assistsAvg": 6,
+          "kp": 49.65,
+          "gold": 71901,
+          "goldAvg": 11983.5,
+          "gpm": 444.84,
+          "damage": 136502,
+          "damageAvg": 22750.33,
+          "dpm": 843,
+          "damageShare": 25.48,
+          "visionScore": 87,
+          "visionScoreAvg": 14.5,
+          "vpm": 0.51,
+          "towers": 6,
           "dragons": 0,
           "heralds": 0,
           "barons": 0,
           "mvps": 0,
-          "averageScore": 65.77,
-          "scoreGames": 2,
+          "averageScore": 65.11,
+          "scoreGames": 6,
           "ratings": [
             {
-              "matchId": "groups-r1g7-j2",
-              "seriesId": "groups-r1g7",
-              "round": 1,
-              "position": "JG",
-              "teamSlot": "D2",
-              "score": 66.27,
+              "matchId": "groups-r3g8-j2",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "ADC",
+              "teamSlot": "D4",
+              "score": 59.25,
               "won": false,
               "seriesWon": false
             },
             {
-              "matchId": "groups-r1g7-j1",
-              "seriesId": "groups-r1g7",
+              "matchId": "groups-r3g8-j1",
+              "seriesId": "groups-r3g8",
+              "round": 3,
+              "position": "ADC",
+              "teamSlot": "D4",
+              "score": 55.12,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r2g8-j2",
+              "seriesId": "groups-r2g8",
+              "round": 2,
+              "position": "ADC",
+              "teamSlot": "D4",
+              "score": 71.26,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g8-j1",
+              "seriesId": "groups-r2g8",
+              "round": 2,
+              "position": "ADC",
+              "teamSlot": "D4",
+              "score": 75.02,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r1g8-j2",
+              "seriesId": "groups-r1g8",
               "round": 1,
-              "position": "JG",
-              "teamSlot": "D2",
-              "score": 65.26,
+              "position": "ADC",
+              "teamSlot": "D4",
+              "score": 64.49,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r1g8-j1",
+              "seriesId": "groups-r1g8",
+              "round": 1,
+              "position": "ADC",
+              "teamSlot": "D4",
+              "score": 65.52,
               "won": false,
               "seriesWon": false
             }
@@ -11804,57 +12860,111 @@ window.LIGA_RK_STATS = {
           "roundRatings": [
             {
               "round": 1,
-              "position": "JG",
-              "teamSlot": "D2",
-              "averageScore": 65.77,
+              "position": "ADC",
+              "teamSlot": "D4",
+              "averageScore": 65.01,
               "games": 2,
               "wins": 0,
               "losses": 2,
               "series": [
-                "groups-r1g7"
+                "groups-r1g8"
               ],
               "seriesWins": 0,
               "matches": [
-                "groups-r1g7-j1",
-                "groups-r1g7-j2"
+                "groups-r1g8-j1",
+                "groups-r1g8-j2"
+              ]
+            },
+            {
+              "round": 2,
+              "position": "ADC",
+              "teamSlot": "D4",
+              "averageScore": 73.14,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r2g8"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r2g8-j1",
+                "groups-r2g8-j2"
+              ]
+            },
+            {
+              "round": 3,
+              "position": "ADC",
+              "teamSlot": "D4",
+              "averageScore": 57.19,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "groups-r3g8"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r3g8-j1",
+                "groups-r3g8-j2"
               ]
             }
           ],
           "positions": [
             {
-              "position": "JG",
-              "count": 2
+              "position": "ADC",
+              "count": 6
             }
           ],
-          "mainPosition": "JG",
+          "mainPosition": "ADC",
           "teams": [
             {
-              "slot": "D2",
-              "count": 2
+              "slot": "D4",
+              "count": 6
             }
           ],
           "champions": [
             {
-              "champion": "Hecarim",
-              "image": "assets/champions/Hecarim.jpg",
-              "count": 1,
-              "wins": 0,
+              "champion": "Caitlyn",
+              "image": "assets/champions/Caitlyn.jpg",
+              "count": 2,
+              "wins": 1,
               "losses": 1,
+              "winRate": 50
+            },
+            {
+              "champion": "Sivir",
+              "image": "assets/champions/Sivir.jpg",
+              "count": 2,
+              "wins": 0,
+              "losses": 2,
               "winRate": 0
             },
             {
-              "champion": "Nocturne",
-              "image": "assets/champions/Nocturne.jpg",
+              "champion": "Ziggs",
+              "image": "assets/champions/Ziggs.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Cassiopeia",
+              "image": "assets/champions/Cassiopeia.jpg",
               "count": 1,
               "wins": 0,
               "losses": 1,
               "winRate": 0
             }
           ],
-          "mostPlayedChampion": "Hecarim",
+          "mostPlayedChampion": "Caitlyn",
           "matches": [
-            "groups-r1g7-j2",
-            "groups-r1g7-j1"
+            "groups-r3g8-j2",
+            "groups-r3g8-j1",
+            "groups-r2g8-j2",
+            "groups-r2g8-j1",
+            "groups-r1g8-j2",
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -11970,6 +13080,235 @@ window.LIGA_RK_STATS = {
           "matches": [
             "groups-r1g6-j2",
             "groups-r1g6-j1"
+          ]
+        },
+        {
+          "id": "8f58fb63-7765-463b-8688-89c4552fcae5",
+          "playerId": "8f58fb63-7765-463b-8688-89c4552fcae5",
+          "displayName": "OXOSSI",
+          "riotId": "Oxossi#SDK",
+          "alsoPlayedAs": [],
+          "opgg": "https://op.gg/pt/lol/summoners/br/Oxossi-SDK",
+          "image": "",
+          "games": 7,
+          "wins": 5,
+          "losses": 2,
+          "winRate": 71.43,
+          "kills": 11,
+          "deaths": 48,
+          "assists": 96,
+          "kda": 2.23,
+          "killsAvg": 1.57,
+          "deathsAvg": 6.86,
+          "assistsAvg": 13.71,
+          "kp": 56.75,
+          "gold": 59873,
+          "goldAvg": 8553.29,
+          "gpm": 282.31,
+          "damage": 46489,
+          "damageAvg": 6641.29,
+          "dpm": 221.39,
+          "damageShare": 6.61,
+          "visionScore": 657,
+          "visionScoreAvg": 93.86,
+          "vpm": 3.04,
+          "towers": 2,
+          "dragons": 0,
+          "heralds": 0,
+          "barons": 0,
+          "mvps": 0,
+          "averageScore": 64.5,
+          "scoreGames": 7,
+          "ratings": [
+            {
+              "matchId": "groups-r3g7-j2",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "SUP",
+              "teamSlot": "D3",
+              "score": 64.58,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r3g7-j1",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "SUP",
+              "teamSlot": "D3",
+              "score": 71.18,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r2g7-j3",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "SUP",
+              "teamSlot": "D3",
+              "score": 54.51,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r2g7-j2",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "SUP",
+              "teamSlot": "D3",
+              "score": 63.84,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r2g7-j1",
+              "seriesId": "groups-r2g7",
+              "round": 2,
+              "position": "SUP",
+              "teamSlot": "D3",
+              "score": 59.7,
+              "won": true,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r1g8-j2",
+              "seriesId": "groups-r1g8",
+              "round": 1,
+              "position": "SUP",
+              "teamSlot": "D3",
+              "score": 59.61,
+              "won": true,
+              "seriesWon": true
+            },
+            {
+              "matchId": "groups-r1g8-j1",
+              "seriesId": "groups-r1g8",
+              "round": 1,
+              "position": "SUP",
+              "teamSlot": "D3",
+              "score": 78.11,
+              "won": true,
+              "seriesWon": true
+            }
+          ],
+          "roundRatings": [
+            {
+              "round": 1,
+              "position": "SUP",
+              "teamSlot": "D3",
+              "averageScore": 68.86,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r1g8"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r1g8-j1",
+                "groups-r1g8-j2"
+              ]
+            },
+            {
+              "round": 2,
+              "position": "SUP",
+              "teamSlot": "D3",
+              "averageScore": 59.35,
+              "games": 3,
+              "wins": 1,
+              "losses": 2,
+              "series": [
+                "groups-r2g7"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r2g7-j1",
+                "groups-r2g7-j2",
+                "groups-r2g7-j3"
+              ]
+            },
+            {
+              "round": 3,
+              "position": "SUP",
+              "teamSlot": "D3",
+              "averageScore": 67.88,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "groups-r3g7"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "groups-r3g7-j1",
+                "groups-r3g7-j2"
+              ]
+            }
+          ],
+          "positions": [
+            {
+              "position": "SUP",
+              "count": 7
+            }
+          ],
+          "mainPosition": "SUP",
+          "teams": [
+            {
+              "slot": "D3",
+              "count": 7
+            }
+          ],
+          "champions": [
+            {
+              "champion": "Leona",
+              "image": "assets/champions/Leona.jpg",
+              "count": 2,
+              "wins": 2,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Nautilus",
+              "image": "assets/champions/Nautilus.jpg",
+              "count": 2,
+              "wins": 1,
+              "losses": 1,
+              "winRate": 50
+            },
+            {
+              "champion": "Braum",
+              "image": "assets/champions/Braum.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Sylas",
+              "image": "assets/champions/Sylas.jpg",
+              "count": 1,
+              "wins": 1,
+              "losses": 0,
+              "winRate": 100
+            },
+            {
+              "champion": "Rell",
+              "image": "assets/champions/Rell.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            }
+          ],
+          "mostPlayedChampion": "Leona",
+          "matches": [
+            "groups-r3g7-j2",
+            "groups-r3g7-j1",
+            "groups-r2g7-j3",
+            "groups-r2g7-j2",
+            "groups-r2g7-j1",
+            "groups-r1g8-j2",
+            "groups-r1g8-j1"
           ]
         },
         {
@@ -12190,121 +13529,6 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "b115ad0f-e41a-43c8-bf5a-f7a9c697c5e3",
-          "playerId": "b115ad0f-e41a-43c8-bf5a-f7a9c697c5e3",
-          "displayName": "VIPER",
-          "riotId": "Kuwabara 愛#gumie",
-          "alsoPlayedAs": [],
-          "opgg": "https://op.gg/pt/lol/summoners/br/Kuwabara%20%E6%84%9B-gumie",
-          "image": "",
-          "games": 2,
-          "wins": 0,
-          "losses": 2,
-          "winRate": 0,
-          "kills": 10,
-          "deaths": 14,
-          "assists": 11,
-          "kda": 1.5,
-          "killsAvg": 5,
-          "deathsAvg": 7,
-          "assistsAvg": 5.5,
-          "kp": 59.62,
-          "gold": 18073,
-          "goldAvg": 9036.5,
-          "gpm": 350.31,
-          "damage": 30431,
-          "damageAvg": 15215.5,
-          "dpm": 585.82,
-          "damageShare": 21.89,
-          "visionScore": 29,
-          "visionScoreAvg": 14.5,
-          "vpm": 0.55,
-          "towers": 0,
-          "dragons": 0,
-          "heralds": 0,
-          "barons": 0,
-          "mvps": 0,
-          "averageScore": 63.37,
-          "scoreGames": 2,
-          "ratings": [
-            {
-              "matchId": "groups-r2g8-j2",
-              "seriesId": "groups-r2g8",
-              "round": 2,
-              "position": "MID",
-              "teamSlot": "D2",
-              "score": 60.53,
-              "won": false,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r2g8-j1",
-              "seriesId": "groups-r2g8",
-              "round": 2,
-              "position": "MID",
-              "teamSlot": "D2",
-              "score": 66.2,
-              "won": false,
-              "seriesWon": false
-            }
-          ],
-          "roundRatings": [
-            {
-              "round": 2,
-              "position": "MID",
-              "teamSlot": "D2",
-              "averageScore": 63.37,
-              "games": 2,
-              "wins": 0,
-              "losses": 2,
-              "series": [
-                "groups-r2g8"
-              ],
-              "seriesWins": 0,
-              "matches": [
-                "groups-r2g8-j1",
-                "groups-r2g8-j2"
-              ]
-            }
-          ],
-          "positions": [
-            {
-              "position": "MID",
-              "count": 2
-            }
-          ],
-          "mainPosition": "MID",
-          "teams": [
-            {
-              "slot": "D2",
-              "count": 2
-            }
-          ],
-          "champions": [
-            {
-              "champion": "Irelia",
-              "image": "assets/champions/Irelia.jpg",
-              "count": 1,
-              "wins": 0,
-              "losses": 1,
-              "winRate": 0
-            },
-            {
-              "champion": "Locke",
-              "image": "assets/champions/Locke.jpg",
-              "count": 1,
-              "wins": 0,
-              "losses": 1,
-              "winRate": 0
-            }
-          ],
-          "mostPlayedChampion": "Irelia",
-          "matches": [
-            "groups-r2g8-j2",
-            "groups-r2g8-j1"
-          ]
-        },
-        {
           "id": "cbff23ae-a385-42a1-bf60-472e57ecb700",
           "playerId": "cbff23ae-a385-42a1-bf60-472e57ecb700",
           "displayName": "GALAXY",
@@ -12417,196 +13641,6 @@ window.LIGA_RK_STATS = {
           "matches": [
             "groups-r2g2-j2",
             "groups-r2g2-j1"
-          ]
-        },
-        {
-          "id": "8f58fb63-7765-463b-8688-89c4552fcae5",
-          "playerId": "8f58fb63-7765-463b-8688-89c4552fcae5",
-          "displayName": "OXOSSI",
-          "riotId": "Oxossi#SDK",
-          "alsoPlayedAs": [],
-          "opgg": "https://op.gg/pt/lol/summoners/br/Oxossi-SDK",
-          "image": "",
-          "games": 5,
-          "wins": 3,
-          "losses": 2,
-          "winRate": 60,
-          "kills": 5,
-          "deaths": 35,
-          "assists": 59,
-          "kda": 1.83,
-          "killsAvg": 1,
-          "deathsAvg": 7,
-          "assistsAvg": 11.8,
-          "kp": 54.15,
-          "gold": 41572,
-          "goldAvg": 8314.4,
-          "gpm": 270.94,
-          "damage": 30442,
-          "damageAvg": 6088.4,
-          "dpm": 200.1,
-          "damageShare": 6.29,
-          "visionScore": 478,
-          "visionScoreAvg": 95.6,
-          "vpm": 3.08,
-          "towers": 2,
-          "dragons": 0,
-          "heralds": 0,
-          "barons": 0,
-          "mvps": 0,
-          "averageScore": 63.15,
-          "scoreGames": 5,
-          "ratings": [
-            {
-              "matchId": "groups-r2g7-j3",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "SUP",
-              "teamSlot": "D3",
-              "score": 54.51,
-              "won": false,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r2g7-j2",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "SUP",
-              "teamSlot": "D3",
-              "score": 63.84,
-              "won": false,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r2g7-j1",
-              "seriesId": "groups-r2g7",
-              "round": 2,
-              "position": "SUP",
-              "teamSlot": "D3",
-              "score": 59.7,
-              "won": true,
-              "seriesWon": false
-            },
-            {
-              "matchId": "groups-r1g8-j2",
-              "seriesId": "groups-r1g8",
-              "round": 1,
-              "position": "SUP",
-              "teamSlot": "D3",
-              "score": 59.61,
-              "won": true,
-              "seriesWon": true
-            },
-            {
-              "matchId": "groups-r1g8-j1",
-              "seriesId": "groups-r1g8",
-              "round": 1,
-              "position": "SUP",
-              "teamSlot": "D3",
-              "score": 78.11,
-              "won": true,
-              "seriesWon": true
-            }
-          ],
-          "roundRatings": [
-            {
-              "round": 1,
-              "position": "SUP",
-              "teamSlot": "D3",
-              "averageScore": 68.86,
-              "games": 2,
-              "wins": 2,
-              "losses": 0,
-              "series": [
-                "groups-r1g8"
-              ],
-              "seriesWins": 1,
-              "matches": [
-                "groups-r1g8-j1",
-                "groups-r1g8-j2"
-              ]
-            },
-            {
-              "round": 2,
-              "position": "SUP",
-              "teamSlot": "D3",
-              "averageScore": 59.35,
-              "games": 3,
-              "wins": 1,
-              "losses": 2,
-              "series": [
-                "groups-r2g7"
-              ],
-              "seriesWins": 0,
-              "matches": [
-                "groups-r2g7-j1",
-                "groups-r2g7-j2",
-                "groups-r2g7-j3"
-              ]
-            }
-          ],
-          "positions": [
-            {
-              "position": "SUP",
-              "count": 5
-            }
-          ],
-          "mainPosition": "SUP",
-          "teams": [
-            {
-              "slot": "D3",
-              "count": 5
-            }
-          ],
-          "champions": [
-            {
-              "champion": "Braum",
-              "image": "assets/champions/Braum.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Leona",
-              "image": "assets/champions/Leona.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Sylas",
-              "image": "assets/champions/Sylas.jpg",
-              "count": 1,
-              "wins": 1,
-              "losses": 0,
-              "winRate": 100
-            },
-            {
-              "champion": "Nautilus",
-              "image": "assets/champions/Nautilus.jpg",
-              "count": 1,
-              "wins": 0,
-              "losses": 1,
-              "winRate": 0
-            },
-            {
-              "champion": "Rell",
-              "image": "assets/champions/Rell.jpg",
-              "count": 1,
-              "wins": 0,
-              "losses": 1,
-              "winRate": 0
-            }
-          ],
-          "mostPlayedChampion": "Braum",
-          "matches": [
-            "groups-r2g7-j3",
-            "groups-r2g7-j2",
-            "groups-r2g7-j1",
-            "groups-r1g8-j2",
-            "groups-r1g8-j1"
           ]
         },
         {
@@ -13711,36 +14745,56 @@ window.LIGA_RK_STATS = {
           "alsoPlayedAs": [],
           "opgg": "https://op.gg/pt/lol/summoners/br/Samsara-Fiore",
           "image": "",
-          "games": 4,
+          "games": 6,
           "wins": 0,
-          "losses": 4,
+          "losses": 6,
           "winRate": 0,
-          "kills": 14,
-          "deaths": 16,
-          "assists": 11,
-          "kda": 1.56,
-          "killsAvg": 3.5,
-          "deathsAvg": 4,
-          "assistsAvg": 2.75,
-          "kp": 44.48,
-          "gold": 44070,
-          "goldAvg": 11017.5,
-          "gpm": 426.83,
-          "damage": 52689,
-          "damageAvg": 13172.25,
-          "dpm": 501.96,
-          "damageShare": 21.04,
-          "visionScore": 52,
-          "visionScoreAvg": 13,
-          "vpm": 0.49,
-          "towers": 1,
+          "kills": 26,
+          "deaths": 26,
+          "assists": 16,
+          "kda": 1.62,
+          "killsAvg": 4.33,
+          "deathsAvg": 4.33,
+          "assistsAvg": 2.67,
+          "kp": 40.13,
+          "gold": 70709,
+          "goldAvg": 11784.83,
+          "gpm": 431.32,
+          "damage": 92735,
+          "damageAvg": 15455.83,
+          "dpm": 552.06,
+          "damageShare": 20.38,
+          "visionScore": 95,
+          "visionScoreAvg": 15.83,
+          "vpm": 0.56,
+          "towers": 2,
           "dragons": 0,
           "heralds": 0,
           "barons": 0,
           "mvps": 0,
-          "averageScore": 57.26,
-          "scoreGames": 4,
+          "averageScore": 56.33,
+          "scoreGames": 6,
           "ratings": [
+            {
+              "matchId": "groups-r3g7-j2",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "ADC",
+              "teamSlot": "D2",
+              "score": 61.23,
+              "won": false,
+              "seriesWon": false
+            },
+            {
+              "matchId": "groups-r3g7-j1",
+              "seriesId": "groups-r3g7",
+              "round": 3,
+              "position": "ADC",
+              "teamSlot": "D2",
+              "score": 47.74,
+              "won": false,
+              "seriesWon": false
+            },
             {
               "matchId": "groups-r2g8-j2",
               "seriesId": "groups-r2g8",
@@ -13816,19 +14870,36 @@ window.LIGA_RK_STATS = {
                 "groups-r2g8-j1",
                 "groups-r2g8-j2"
               ]
+            },
+            {
+              "round": 3,
+              "position": "ADC",
+              "teamSlot": "D2",
+              "averageScore": 54.49,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "groups-r3g7"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "groups-r3g7-j1",
+                "groups-r3g7-j2"
+              ]
             }
           ],
           "positions": [
             {
               "position": "ADC",
-              "count": 4
+              "count": 6
             }
           ],
           "mainPosition": "ADC",
           "teams": [
             {
               "slot": "D2",
-              "count": 4
+              "count": 6
             }
           ],
           "champions": [
@@ -13849,8 +14920,24 @@ window.LIGA_RK_STATS = {
               "winRate": 0
             },
             {
+              "champion": "Kaisa",
+              "image": "assets/champions/Kaisa.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            },
+            {
               "champion": "MissFortune",
               "image": "assets/champions/MissFortune.jpg",
+              "count": 1,
+              "wins": 0,
+              "losses": 1,
+              "winRate": 0
+            },
+            {
+              "champion": "Samira",
+              "image": "assets/champions/Samira.jpg",
               "count": 1,
               "wins": 0,
               "losses": 1,
@@ -13867,6 +14954,8 @@ window.LIGA_RK_STATS = {
           ],
           "mostPlayedChampion": "Caitlyn",
           "matches": [
+            "groups-r3g7-j2",
+            "groups-r3g7-j1",
             "groups-r2g8-j2",
             "groups-r2g8-j1",
             "groups-r1g7-j2",
@@ -14489,62 +15578,6 @@ window.LIGA_RK_STATS = {
           "matches": []
         },
         {
-          "id": "d461d7bf-887a-4969-9e94-2af9389b2f2a",
-          "playerId": "d461d7bf-887a-4969-9e94-2af9389b2f2a",
-          "displayName": "BLACKZERA",
-          "riotId": "Blackzera#CBLOL",
-          "alsoPlayedAs": [],
-          "opgg": "https://op.gg/pt/lol/summoners/br/Blackzera-CBLOL",
-          "image": "",
-          "games": 0,
-          "wins": 0,
-          "losses": 0,
-          "winRate": 0,
-          "kills": 0,
-          "deaths": 0,
-          "assists": 0,
-          "kda": 0,
-          "killsAvg": 0,
-          "deathsAvg": 0,
-          "assistsAvg": 0,
-          "kp": 0,
-          "gold": 0,
-          "goldAvg": 0,
-          "gpm": 0,
-          "damage": 0,
-          "damageAvg": 0,
-          "dpm": 0,
-          "damageShare": 0,
-          "visionScore": 0,
-          "visionScoreAvg": 0,
-          "vpm": 0,
-          "towers": 0,
-          "dragons": 0,
-          "heralds": 0,
-          "barons": 0,
-          "mvps": 0,
-          "averageScore": 0,
-          "scoreGames": 0,
-          "ratings": [],
-          "roundRatings": [],
-          "positions": [
-            {
-              "position": "JG",
-              "count": 0
-            }
-          ],
-          "mainPosition": "JG",
-          "teams": [
-            {
-              "slot": "D4",
-              "count": 0
-            }
-          ],
-          "champions": [],
-          "mostPlayedChampion": "",
-          "matches": []
-        },
-        {
           "id": "5217aacf-fac1-4c9c-b387-24344e34444e",
           "playerId": "5217aacf-fac1-4c9c-b387-24344e34444e",
           "displayName": "BLADE",
@@ -14985,62 +16018,6 @@ window.LIGA_RK_STATS = {
           "teams": [
             {
               "slot": "D1",
-              "count": 0
-            }
-          ],
-          "champions": [],
-          "mostPlayedChampion": "",
-          "matches": []
-        },
-        {
-          "id": "d34dc7d7-ee25-4b81-8c61-aa437acbe393",
-          "playerId": "d34dc7d7-ee25-4b81-8c61-aa437acbe393",
-          "displayName": "GHOZT",
-          "riotId": "Ghozt#123",
-          "alsoPlayedAs": [],
-          "opgg": "https://op.gg/pt/lol/summoners/br/Ghozt-123",
-          "image": "",
-          "games": 0,
-          "wins": 0,
-          "losses": 0,
-          "winRate": 0,
-          "kills": 0,
-          "deaths": 0,
-          "assists": 0,
-          "kda": 0,
-          "killsAvg": 0,
-          "deathsAvg": 0,
-          "assistsAvg": 0,
-          "kp": 0,
-          "gold": 0,
-          "goldAvg": 0,
-          "gpm": 0,
-          "damage": 0,
-          "damageAvg": 0,
-          "dpm": 0,
-          "damageShare": 0,
-          "visionScore": 0,
-          "visionScoreAvg": 0,
-          "vpm": 0,
-          "towers": 0,
-          "dragons": 0,
-          "heralds": 0,
-          "barons": 0,
-          "mvps": 0,
-          "averageScore": 0,
-          "scoreGames": 0,
-          "ratings": [],
-          "roundRatings": [],
-          "positions": [
-            {
-              "position": "SUP",
-              "count": 0
-            }
-          ],
-          "mainPosition": "SUP",
-          "teams": [
-            {
-              "slot": "D4",
               "count": 0
             }
           ],
@@ -17238,17 +18215,17 @@ window.LIGA_RK_STATS = {
           "id": "aatrox",
           "name": "Aatrox",
           "image": "assets/champions/Aatrox.jpg",
-          "picks": 11,
+          "picks": 12,
           "wins": 8,
-          "losses": 3,
-          "winRate": 72.73,
-          "kills": 54,
-          "deaths": 31,
-          "assists": 76,
-          "kda": 4.19,
-          "goldAvg": 11945.64,
-          "damageAvg": 18950.18,
-          "dpm": 673.88,
+          "losses": 4,
+          "winRate": 66.67,
+          "kills": 58,
+          "deaths": 40,
+          "assists": 80,
+          "kda": 3.45,
+          "goldAvg": 11797,
+          "damageAvg": 18514.58,
+          "dpm": 660.13,
           "positions": [
             {
               "position": "TOP",
@@ -17256,7 +18233,7 @@ window.LIGA_RK_STATS = {
             },
             {
               "position": "JG",
-              "count": 4
+              "count": 5
             }
           ],
           "players": [
@@ -17266,7 +18243,8 @@ window.LIGA_RK_STATS = {
             "a25fed6f-9af6-4f75-9b64-381f23c3d4d7",
             "7dbf3dbc-e976-4b54-ac60-b233d5c8f3ca",
             "d76b03de-3dc2-4eb3-97c6-73cd5f58015b",
-            "17dd1651-010a-4fc9-88da-66a1e0d3c0a8"
+            "17dd1651-010a-4fc9-88da-66a1e0d3c0a8",
+            "d461d7bf-887a-4969-9e94-2af9389b2f2a"
           ],
           "teams": [
             "B2",
@@ -17275,7 +18253,8 @@ window.LIGA_RK_STATS = {
             "A3",
             "C4",
             "C2",
-            "B1"
+            "B1",
+            "D4"
           ],
           "matches": [
             "groups-r1g3-j1",
@@ -17288,28 +18267,29 @@ window.LIGA_RK_STATS = {
             "groups-r2g6-j1",
             "groups-r2g7-j3",
             "groups-r3g3-j1",
-            "groups-r3g4-j1"
+            "groups-r3g4-j1",
+            "groups-r3g8-j2"
           ]
         },
         {
           "id": "monkeyking",
           "name": "MonkeyKing",
           "image": "assets/champions/MonkeyKing.jpg",
-          "picks": 11,
-          "wins": 6,
+          "picks": 12,
+          "wins": 7,
           "losses": 5,
-          "winRate": 54.55,
-          "kills": 43,
-          "deaths": 40,
-          "assists": 73,
-          "kda": 2.9,
-          "goldAvg": 10970.27,
-          "damageAvg": 11845.45,
-          "dpm": 431.76,
+          "winRate": 58.33,
+          "kills": 54,
+          "deaths": 43,
+          "assists": 83,
+          "kda": 3.19,
+          "goldAvg": 11383.5,
+          "damageAvg": 13298.75,
+          "dpm": 473.3,
           "positions": [
             {
               "position": "JG",
-              "count": 11
+              "count": 12
             }
           ],
           "players": [
@@ -17343,28 +18323,29 @@ window.LIGA_RK_STATS = {
             "groups-r2g8-j2",
             "groups-r2g7-j3",
             "groups-r3g3-j2",
-            "groups-r3g4-j1"
+            "groups-r3g4-j1",
+            "groups-r3g8-j1"
           ]
         },
         {
           "id": "nautilus",
           "name": "Nautilus",
           "image": "assets/champions/Nautilus.jpg",
-          "picks": 11,
-          "wins": 4,
+          "picks": 12,
+          "wins": 5,
           "losses": 7,
-          "winRate": 36.36,
-          "kills": 22,
-          "deaths": 58,
-          "assists": 143,
-          "kda": 2.84,
-          "goldAvg": 8300.82,
-          "damageAvg": 7422,
-          "dpm": 264.54,
+          "winRate": 41.67,
+          "kills": 25,
+          "deaths": 62,
+          "assists": 161,
+          "kda": 3,
+          "goldAvg": 8294.08,
+          "damageAvg": 7430.25,
+          "dpm": 268.49,
           "positions": [
             {
               "position": "SUP",
-              "count": 11
+              "count": 12
             }
           ],
           "players": [
@@ -17398,28 +18379,29 @@ window.LIGA_RK_STATS = {
             "groups-r2g8-j1",
             "groups-r2g7-j2",
             "groups-r3g3-j2",
-            "groups-r3g4-j1"
+            "groups-r3g4-j1",
+            "groups-r3g7-j1"
           ]
         },
         {
           "id": "leesin",
           "name": "LeeSin",
           "image": "assets/champions/LeeSin.jpg",
-          "picks": 9,
-          "wins": 5,
+          "picks": 10,
+          "wins": 6,
           "losses": 4,
-          "winRate": 55.56,
-          "kills": 49,
-          "deaths": 36,
-          "assists": 89,
-          "kda": 3.83,
-          "goldAvg": 12374.89,
-          "damageAvg": 14848.44,
-          "dpm": 504.19,
+          "winRate": 60,
+          "kills": 56,
+          "deaths": 43,
+          "assists": 111,
+          "kda": 3.88,
+          "goldAvg": 12685.8,
+          "damageAvg": 15837.8,
+          "dpm": 522.62,
           "positions": [
             {
               "position": "JG",
-              "count": 9
+              "count": 10
             }
           ],
           "players": [
@@ -17428,7 +18410,8 @@ window.LIGA_RK_STATS = {
             "001cfda8-ffe9-4c3d-aabd-964b30402cab",
             "a25fed6f-9af6-4f75-9b64-381f23c3d4d7",
             "7dbf3dbc-e976-4b54-ac60-b233d5c8f3ca",
-            "6e241754-e4e8-4f57-9818-b2279e3bd0a6"
+            "6e241754-e4e8-4f57-9818-b2279e3bd0a6",
+            "953d89dc-d2ac-4e77-bef7-88c66ad248d8"
           ],
           "teams": [
             "B1",
@@ -17436,7 +18419,8 @@ window.LIGA_RK_STATS = {
             "D4",
             "A3",
             "C4",
-            "D1"
+            "D1",
+            "D3"
           ],
           "matches": [
             "groups-r1g3-j2",
@@ -17447,28 +18431,29 @@ window.LIGA_RK_STATS = {
             "groups-r2g4-j1",
             "groups-r2g6-j1",
             "groups-r2g7-j1",
-            "groups-r3g4-j1"
+            "groups-r3g4-j1",
+            "groups-r3g7-j2"
           ]
         },
         {
           "id": "ezreal",
           "name": "Ezreal",
           "image": "assets/champions/Ezreal.jpg",
-          "picks": 9,
-          "wins": 4,
+          "picks": 10,
+          "wins": 5,
           "losses": 5,
-          "winRate": 44.44,
-          "kills": 36,
-          "deaths": 31,
-          "assists": 65,
-          "kda": 3.26,
-          "goldAvg": 12434.89,
-          "damageAvg": 23988.56,
-          "dpm": 905.99,
+          "winRate": 50,
+          "kills": 39,
+          "deaths": 34,
+          "assists": 74,
+          "kda": 3.32,
+          "goldAvg": 12391,
+          "damageAvg": 23295.2,
+          "dpm": 878.65,
           "positions": [
             {
               "position": "ADC",
-              "count": 9
+              "count": 10
             }
           ],
           "players": [
@@ -17496,28 +18481,29 @@ window.LIGA_RK_STATS = {
             "groups-r2g4-j2",
             "groups-r2g3-j1",
             "groups-r2g7-j1",
-            "groups-r3g4-j2"
+            "groups-r3g4-j2",
+            "groups-r3g8-j2"
           ]
         },
         {
           "id": "cassiopeia",
           "name": "Cassiopeia",
           "image": "assets/champions/Cassiopeia.jpg",
-          "picks": 9,
+          "picks": 10,
           "wins": 4,
-          "losses": 5,
-          "winRate": 44.44,
-          "kills": 51,
-          "deaths": 40,
-          "assists": 62,
-          "kda": 2.83,
-          "goldAvg": 11320.89,
-          "damageAvg": 21865.56,
-          "dpm": 822.92,
+          "losses": 6,
+          "winRate": 40,
+          "kills": 59,
+          "deaths": 46,
+          "assists": 66,
+          "kda": 2.72,
+          "goldAvg": 11733.7,
+          "damageAvg": 22364,
+          "dpm": 825.91,
           "positions": [
             {
               "position": "MID",
-              "count": 8
+              "count": 9
             },
             {
               "position": "ADC",
@@ -17548,7 +18534,223 @@ window.LIGA_RK_STATS = {
             "groups-r2g3-j1",
             "groups-r2g8-j2",
             "groups-r2g7-j1",
-            "groups-r3g4-j2"
+            "groups-r3g4-j2",
+            "groups-r3g8-j1"
+          ]
+        },
+        {
+          "id": "rumble",
+          "name": "Rumble",
+          "image": "assets/champions/Rumble.jpg",
+          "picks": 9,
+          "wins": 3,
+          "losses": 6,
+          "winRate": 33.33,
+          "kills": 45,
+          "deaths": 50,
+          "assists": 58,
+          "kda": 2.06,
+          "goldAvg": 11807.33,
+          "damageAvg": 28627.67,
+          "dpm": 922.45,
+          "positions": [
+            {
+              "position": "TOP",
+              "count": 9
+            }
+          ],
+          "players": [
+            "afd38a2d-4c8e-44fb-b3d1-1c2bf4e8764e",
+            "8de67801-d9d0-45c6-ab35-5efaacdacf51",
+            "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
+            "13a72a46-d781-48f7-85cf-2316c9383cf7",
+            "60bed61b-e107-41bd-b0cc-943105c6e4c5",
+            "1fb278b9-1a2c-471d-992e-12a930836013",
+            "593a8ce7-a4c6-44cd-89ce-7abb03f88855",
+            "87b0b01b-0c1d-44ca-8154-ec59da7b80a3"
+          ],
+          "teams": [
+            "B2",
+            "D4",
+            "B4",
+            "C4",
+            "D3",
+            "B3",
+            "D2"
+          ],
+          "matches": [
+            "groups-r1g3-j2",
+            "groups-r1g8-j1",
+            "groups-r2g4-j1",
+            "groups-r2g6-j2",
+            "groups-r2g7-j2",
+            "groups-r3g3-j2",
+            "groups-r3g4-j1",
+            "groups-r3g7-j1",
+            "groups-r3g8-j1"
+          ]
+        },
+        {
+          "id": "jarvaniv",
+          "name": "JarvanIV",
+          "image": "assets/champions/JarvanIV.jpg",
+          "picks": 9,
+          "wins": 2,
+          "losses": 7,
+          "winRate": 22.22,
+          "kills": 35,
+          "deaths": 47,
+          "assists": 105,
+          "kda": 2.98,
+          "goldAvg": 11145,
+          "damageAvg": 15703.78,
+          "dpm": 544.99,
+          "positions": [
+            {
+              "position": "JG",
+              "count": 9
+            }
+          ],
+          "players": [
+            "d087d8ce-da1b-419b-ac01-27f3d2ad83f5",
+            "001cfda8-ffe9-4c3d-aabd-964b30402cab",
+            "37d5697c-d21a-4bc1-b104-1f580f396133",
+            "1d9ace8e-1f8c-4aba-a11d-1b6c25e2aa2e",
+            "adcf03a3-0794-4ec3-902e-c8894dfdbfc3",
+            "7dbf3dbc-e976-4b54-ac60-b233d5c8f3ca",
+            "953d89dc-d2ac-4e77-bef7-88c66ad248d8",
+            "d461d7bf-887a-4969-9e94-2af9389b2f2a"
+          ],
+          "teams": [
+            "B1",
+            "D4",
+            "B4",
+            "A4",
+            "B3",
+            "C4",
+            "D3"
+          ],
+          "matches": [
+            "groups-r1g3-j1",
+            "groups-r1g8-j1",
+            "groups-r2g4-j2",
+            "groups-r2g2-j1",
+            "groups-r2g3-j1",
+            "groups-r2g6-j2",
+            "groups-r2g7-j2",
+            "groups-r3g4-j3",
+            "groups-r3g8-j1"
+          ]
+        },
+        {
+          "id": "leona",
+          "name": "Leona",
+          "image": "assets/champions/Leona.jpg",
+          "picks": 8,
+          "wins": 5,
+          "losses": 3,
+          "winRate": 62.5,
+          "kills": 6,
+          "deaths": 46,
+          "assists": 103,
+          "kda": 2.37,
+          "goldAvg": 7646.38,
+          "damageAvg": 5725,
+          "dpm": 205.84,
+          "positions": [
+            {
+              "position": "SUP",
+              "count": 8
+            }
+          ],
+          "players": [
+            "005b1daf-fb8a-4258-b48b-90bde518a76f",
+            "6c07e8dd-9195-49ae-b8a9-8a1c360cf775",
+            "cbff23ae-a385-42a1-bf60-472e57ecb700",
+            "9fe112ee-c33c-474f-9a3e-2beeaa726c48",
+            "b1297dc1-2b88-4dcd-b558-edbf5474030f",
+            "8f58fb63-7765-463b-8688-89c4552fcae5"
+          ],
+          "teams": [
+            "B2",
+            "C4",
+            "A4",
+            "B3",
+            "D2",
+            "D3"
+          ],
+          "matches": [
+            "groups-r1g3-j2",
+            "groups-r1g6-j1",
+            "groups-r2g2-j2",
+            "groups-r2g3-j3",
+            "groups-r2g6-j1",
+            "groups-r2g8-j1",
+            "groups-r2g7-j1",
+            "groups-r3g7-j2"
+          ]
+        },
+        {
+          "id": "sylas",
+          "name": "Sylas",
+          "image": "assets/champions/Sylas.jpg",
+          "picks": 8,
+          "wins": 5,
+          "losses": 3,
+          "winRate": 62.5,
+          "kills": 29,
+          "deaths": 41,
+          "assists": 80,
+          "kda": 2.66,
+          "goldAvg": 11182.38,
+          "damageAvg": 17622.63,
+          "dpm": 589.54,
+          "positions": [
+            {
+              "position": "MID",
+              "count": 4
+            },
+            {
+              "position": "SUP",
+              "count": 2
+            },
+            {
+              "position": "JG",
+              "count": 1
+            },
+            {
+              "position": "TOP",
+              "count": 1
+            }
+          ],
+          "players": [
+            "2371331d-c5cf-4429-98cf-dff6ad161309",
+            "8f58fb63-7765-463b-8688-89c4552fcae5",
+            "13a72a46-d781-48f7-85cf-2316c9383cf7",
+            "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda",
+            "adcf03a3-0794-4ec3-902e-c8894dfdbfc3",
+            "f69e2f09-ab72-4ec3-ac6f-903f28b5acca",
+            "d35c2a75-1df0-48f3-8593-b19e47fd3a39",
+            "5ef6dac6-8daf-42e6-b3af-c8896a8554e1"
+          ],
+          "teams": [
+            "B3",
+            "D3",
+            "C4",
+            "B2",
+            "C2",
+            "B1",
+            "D2"
+          ],
+          "matches": [
+            "groups-r1g4-j1",
+            "groups-r1g8-j2",
+            "groups-r1g6-j1",
+            "groups-r2g4-j1",
+            "groups-r2g3-j3",
+            "groups-r2g6-j3",
+            "groups-r3g4-j1",
+            "groups-r3g7-j2"
           ]
         },
         {
@@ -17608,56 +18810,6 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "jarvaniv",
-          "name": "JarvanIV",
-          "image": "assets/champions/JarvanIV.jpg",
-          "picks": 8,
-          "wins": 2,
-          "losses": 6,
-          "winRate": 25,
-          "kills": 32,
-          "deaths": 41,
-          "assists": 96,
-          "kda": 3.12,
-          "goldAvg": 11027.63,
-          "damageAvg": 15886.13,
-          "dpm": 556.55,
-          "positions": [
-            {
-              "position": "JG",
-              "count": 8
-            }
-          ],
-          "players": [
-            "d087d8ce-da1b-419b-ac01-27f3d2ad83f5",
-            "001cfda8-ffe9-4c3d-aabd-964b30402cab",
-            "37d5697c-d21a-4bc1-b104-1f580f396133",
-            "1d9ace8e-1f8c-4aba-a11d-1b6c25e2aa2e",
-            "adcf03a3-0794-4ec3-902e-c8894dfdbfc3",
-            "7dbf3dbc-e976-4b54-ac60-b233d5c8f3ca",
-            "953d89dc-d2ac-4e77-bef7-88c66ad248d8"
-          ],
-          "teams": [
-            "B1",
-            "D4",
-            "B4",
-            "A4",
-            "B3",
-            "C4",
-            "D3"
-          ],
-          "matches": [
-            "groups-r1g3-j1",
-            "groups-r1g8-j1",
-            "groups-r2g4-j2",
-            "groups-r2g2-j1",
-            "groups-r2g3-j1",
-            "groups-r2g6-j2",
-            "groups-r2g7-j2",
-            "groups-r3g4-j3"
-          ]
-        },
-        {
           "id": "galio",
           "name": "Galio",
           "image": "assets/champions/Galio.jpg",
@@ -17700,113 +18852,6 @@ window.LIGA_RK_STATS = {
             "groups-r2g6-j1",
             "groups-r2g8-j1",
             "groups-r3g3-j1"
-          ]
-        },
-        {
-          "id": "sylas",
-          "name": "Sylas",
-          "image": "assets/champions/Sylas.jpg",
-          "picks": 7,
-          "wins": 5,
-          "losses": 2,
-          "winRate": 71.43,
-          "kills": 28,
-          "deaths": 31,
-          "assists": 60,
-          "kda": 2.84,
-          "goldAvg": 11373.14,
-          "damageAvg": 17615.29,
-          "dpm": 603.49,
-          "positions": [
-            {
-              "position": "MID",
-              "count": 4
-            },
-            {
-              "position": "JG",
-              "count": 1
-            },
-            {
-              "position": "SUP",
-              "count": 1
-            },
-            {
-              "position": "TOP",
-              "count": 1
-            }
-          ],
-          "players": [
-            "2371331d-c5cf-4429-98cf-dff6ad161309",
-            "8f58fb63-7765-463b-8688-89c4552fcae5",
-            "13a72a46-d781-48f7-85cf-2316c9383cf7",
-            "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda",
-            "adcf03a3-0794-4ec3-902e-c8894dfdbfc3",
-            "f69e2f09-ab72-4ec3-ac6f-903f28b5acca",
-            "d35c2a75-1df0-48f3-8593-b19e47fd3a39"
-          ],
-          "teams": [
-            "B3",
-            "D3",
-            "C4",
-            "B2",
-            "C2",
-            "B1"
-          ],
-          "matches": [
-            "groups-r1g4-j1",
-            "groups-r1g8-j2",
-            "groups-r1g6-j1",
-            "groups-r2g4-j1",
-            "groups-r2g3-j3",
-            "groups-r2g6-j3",
-            "groups-r3g4-j1"
-          ]
-        },
-        {
-          "id": "leona",
-          "name": "Leona",
-          "image": "assets/champions/Leona.jpg",
-          "picks": 7,
-          "wins": 4,
-          "losses": 3,
-          "winRate": 57.14,
-          "kills": 3,
-          "deaths": 37,
-          "assists": 84,
-          "kda": 2.35,
-          "goldAvg": 7298.57,
-          "damageAvg": 5324.86,
-          "dpm": 201.35,
-          "positions": [
-            {
-              "position": "SUP",
-              "count": 7
-            }
-          ],
-          "players": [
-            "005b1daf-fb8a-4258-b48b-90bde518a76f",
-            "6c07e8dd-9195-49ae-b8a9-8a1c360cf775",
-            "cbff23ae-a385-42a1-bf60-472e57ecb700",
-            "9fe112ee-c33c-474f-9a3e-2beeaa726c48",
-            "b1297dc1-2b88-4dcd-b558-edbf5474030f",
-            "8f58fb63-7765-463b-8688-89c4552fcae5"
-          ],
-          "teams": [
-            "B2",
-            "C4",
-            "A4",
-            "B3",
-            "D2",
-            "D3"
-          ],
-          "matches": [
-            "groups-r1g3-j2",
-            "groups-r1g6-j1",
-            "groups-r2g2-j2",
-            "groups-r2g3-j3",
-            "groups-r2g6-j1",
-            "groups-r2g8-j1",
-            "groups-r2g7-j1"
           ]
         },
         {
@@ -17900,53 +18945,6 @@ window.LIGA_RK_STATS = {
             "groups-r2g6-j3",
             "groups-r3g3-j1",
             "groups-r3g4-j3"
-          ]
-        },
-        {
-          "id": "rumble",
-          "name": "Rumble",
-          "image": "assets/champions/Rumble.jpg",
-          "picks": 7,
-          "wins": 3,
-          "losses": 4,
-          "winRate": 42.86,
-          "kills": 38,
-          "deaths": 40,
-          "assists": 54,
-          "kda": 2.3,
-          "goldAvg": 12268,
-          "damageAvg": 30572.29,
-          "dpm": 958.25,
-          "positions": [
-            {
-              "position": "TOP",
-              "count": 7
-            }
-          ],
-          "players": [
-            "afd38a2d-4c8e-44fb-b3d1-1c2bf4e8764e",
-            "8de67801-d9d0-45c6-ab35-5efaacdacf51",
-            "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
-            "13a72a46-d781-48f7-85cf-2316c9383cf7",
-            "60bed61b-e107-41bd-b0cc-943105c6e4c5",
-            "1fb278b9-1a2c-471d-992e-12a930836013"
-          ],
-          "teams": [
-            "B2",
-            "D4",
-            "B4",
-            "C4",
-            "D3",
-            "B3"
-          ],
-          "matches": [
-            "groups-r1g3-j2",
-            "groups-r1g8-j1",
-            "groups-r2g4-j1",
-            "groups-r2g6-j2",
-            "groups-r2g7-j2",
-            "groups-r3g3-j2",
-            "groups-r3g4-j1"
           ]
         },
         {
@@ -18082,6 +19080,52 @@ window.LIGA_RK_STATS = {
             "groups-r2g6-j2",
             "groups-r2g8-j1",
             "groups-r3g4-j2"
+          ]
+        },
+        {
+          "id": "yone",
+          "name": "Yone",
+          "image": "assets/champions/Yone.jpg",
+          "picks": 6,
+          "wins": 4,
+          "losses": 2,
+          "winRate": 66.67,
+          "kills": 30,
+          "deaths": 22,
+          "assists": 22,
+          "kda": 2.36,
+          "goldAvg": 12082.5,
+          "damageAvg": 17578.5,
+          "dpm": 610.61,
+          "positions": [
+            {
+              "position": "MID",
+              "count": 3
+            },
+            {
+              "position": "TOP",
+              "count": 3
+            }
+          ],
+          "players": [
+            "60bed61b-e107-41bd-b0cc-943105c6e4c5",
+            "3c6ed950-49ec-40b9-a970-dee831ab5faa",
+            "2371331d-c5cf-4429-98cf-dff6ad161309",
+            "f69e2f09-ab72-4ec3-ac6f-903f28b5acca"
+          ],
+          "teams": [
+            "D3",
+            "A3",
+            "B3",
+            "C2"
+          ],
+          "matches": [
+            "groups-r1g8-j1",
+            "groups-r1g2-j1",
+            "groups-r2g3-j3",
+            "groups-r2g6-j2",
+            "groups-r2g7-j3",
+            "groups-r3g7-j1"
           ]
         },
         {
@@ -18230,6 +19274,50 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
+          "id": "braum",
+          "name": "Braum",
+          "image": "assets/champions/Braum.jpg",
+          "picks": 6,
+          "wins": 3,
+          "losses": 3,
+          "winRate": 50,
+          "kills": 4,
+          "deaths": 22,
+          "assists": 84,
+          "kda": 4,
+          "goldAvg": 7809.33,
+          "damageAvg": 6948.83,
+          "dpm": 239.88,
+          "positions": [
+            {
+              "position": "SUP",
+              "count": 6
+            }
+          ],
+          "players": [
+            "8f58fb63-7765-463b-8688-89c4552fcae5",
+            "c113ef85-6838-47a2-b735-75b278b7c8ce",
+            "4e3e2af3-1217-4d2c-b525-b196a50878ee",
+            "b1297dc1-2b88-4dcd-b558-edbf5474030f",
+            "8827bd59-7836-4418-b5eb-d33dd8c3bee3"
+          ],
+          "teams": [
+            "D3",
+            "C3",
+            "B1",
+            "D2",
+            "D1"
+          ],
+          "matches": [
+            "groups-r1g8-j1",
+            "groups-r1g6-j2",
+            "groups-r2g3-j3",
+            "groups-r2g8-j2",
+            "groups-r3g4-j3",
+            "groups-r3g8-j1"
+          ]
+        },
+        {
           "id": "akali",
           "name": "Akali",
           "image": "assets/champions/Akali.jpg",
@@ -18327,6 +19415,52 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
+          "id": "rell",
+          "name": "Rell",
+          "image": "assets/champions/Rell.jpg",
+          "picks": 6,
+          "wins": 1,
+          "losses": 5,
+          "winRate": 16.67,
+          "kills": 4,
+          "deaths": 41,
+          "assists": 77,
+          "kda": 1.98,
+          "goldAvg": 8130.83,
+          "damageAvg": 7011.83,
+          "dpm": 225.49,
+          "positions": [
+            {
+              "position": "SUP",
+              "count": 6
+            }
+          ],
+          "players": [
+            "9fe112ee-c33c-474f-9a3e-2beeaa726c48",
+            "005b1daf-fb8a-4258-b48b-90bde518a76f",
+            "e39e7092-a6fa-435d-abd4-5622d8de7d8b",
+            "8f58fb63-7765-463b-8688-89c4552fcae5",
+            "dbfbe491-6dba-47a6-b29a-4f6307b4d132",
+            "5ef6dac6-8daf-42e6-b3af-c8896a8554e1"
+          ],
+          "teams": [
+            "B3",
+            "B2",
+            "C2",
+            "D3",
+            "B4",
+            "D2"
+          ],
+          "matches": [
+            "groups-r1g4-j2",
+            "groups-r2g4-j1",
+            "groups-r2g6-j2",
+            "groups-r2g7-j3",
+            "groups-r3g4-j1",
+            "groups-r3g7-j1"
+          ]
+        },
+        {
           "id": "ziggs",
           "name": "Ziggs",
           "image": "assets/champions/Ziggs.jpg",
@@ -18370,106 +19504,229 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "yone",
-          "name": "Yone",
-          "image": "assets/champions/Yone.jpg",
+          "id": "viktor",
+          "name": "Viktor",
+          "image": "assets/champions/Viktor.jpg",
+          "picks": 5,
+          "wins": 4,
+          "losses": 1,
+          "winRate": 80,
+          "kills": 23,
+          "deaths": 15,
+          "assists": 45,
+          "kda": 4.53,
+          "goldAvg": 11423.4,
+          "damageAvg": 25940.4,
+          "dpm": 923.87,
+          "positions": [
+            {
+              "position": "MID",
+              "count": 4
+            },
+            {
+              "position": "ADC",
+              "count": 1
+            }
+          ],
+          "players": [
+            "387bfab7-c5a6-4f05-a41a-980cb0bf4d42",
+            "b43b292e-f8b8-4b44-bcf6-806bc7c3afa1",
+            "85c29dba-efdf-44f0-9604-c743f96c49ce"
+          ],
+          "teams": [
+            "D3",
+            "A4",
+            "B4"
+          ],
+          "matches": [
+            "groups-r1g8-j1",
+            "groups-r2g2-j1",
+            "groups-r2g7-j1",
+            "groups-r3g4-j2",
+            "groups-r3g7-j1"
+          ]
+        },
+        {
+          "id": "kaisa",
+          "name": "Kaisa",
+          "image": "assets/champions/Kaisa.jpg",
           "picks": 5,
           "wins": 3,
           "losses": 2,
           "winRate": 60,
-          "kills": 27,
-          "deaths": 17,
-          "assists": 20,
-          "kda": 2.76,
-          "goldAvg": 12792.2,
-          "damageAvg": 19134,
-          "dpm": 651.42,
+          "kills": 36,
+          "deaths": 15,
+          "assists": 38,
+          "kda": 4.93,
+          "goldAvg": 14006.8,
+          "damageAvg": 24432.2,
+          "dpm": 913.16,
           "positions": [
             {
-              "position": "MID",
-              "count": 3
-            },
-            {
-              "position": "TOP",
-              "count": 2
+              "position": "ADC",
+              "count": 5
             }
           ],
           "players": [
-            "60bed61b-e107-41bd-b0cc-943105c6e4c5",
-            "3c6ed950-49ec-40b9-a970-dee831ab5faa",
-            "2371331d-c5cf-4429-98cf-dff6ad161309",
-            "f69e2f09-ab72-4ec3-ac6f-903f28b5acca"
+            "3160ff3e-da9b-4538-9162-8a3cfc3f78aa",
+            "a44b2125-85a3-4f69-9caa-97a385822b0a",
+            "e324f47c-9a31-4cd4-a5b9-3af94e2f3c38",
+            "a50ec03a-1b03-4d85-86f8-69cff19d0220"
           ],
           "teams": [
-            "D3",
-            "A3",
             "B3",
-            "C2"
+            "B4",
+            "C4",
+            "D2"
           ],
           "matches": [
-            "groups-r1g8-j1",
-            "groups-r1g2-j1",
-            "groups-r2g3-j3",
-            "groups-r2g6-j2",
-            "groups-r2g7-j3"
+            "groups-r1g4-j2",
+            "groups-r2g4-j2",
+            "groups-r2g6-j1",
+            "groups-r3g4-j2",
+            "groups-r3g7-j1"
           ]
         },
         {
-          "id": "braum",
-          "name": "Braum",
-          "image": "assets/champions/Braum.jpg",
+          "id": "caitlyn",
+          "name": "Caitlyn",
+          "image": "assets/champions/Caitlyn.jpg",
+          "picks": 5,
+          "wins": 3,
+          "losses": 2,
+          "winRate": 60,
+          "kills": 25,
+          "deaths": 18,
+          "assists": 31,
+          "kda": 3.11,
+          "goldAvg": 12975.8,
+          "damageAvg": 22609.2,
+          "dpm": 834.03,
+          "positions": [
+            {
+              "position": "ADC",
+              "count": 5
+            }
+          ],
+          "players": [
+            "a50ec03a-1b03-4d85-86f8-69cff19d0220",
+            "094a9436-c639-4195-a01b-0fd126ed96fe",
+            "ba719616-83d9-413d-9b47-4065aa9ab157",
+            "c0252d66-bd2d-4f35-b210-c03943520a05"
+          ],
+          "teams": [
+            "D2",
+            "A3",
+            "A2",
+            "D4"
+          ],
+          "matches": [
+            "groups-r1g7-j2",
+            "groups-r1g2-j2",
+            "groups-r2g2-j2",
+            "groups-r2g8-j2",
+            "groups-r3g8-j1"
+          ]
+        },
+        {
+          "id": "ksante",
+          "name": "KSante",
+          "image": "assets/champions/KSante.jpg",
+          "picks": 5,
+          "wins": 3,
+          "losses": 2,
+          "winRate": 60,
+          "kills": 19,
+          "deaths": 12,
+          "assists": 39,
+          "kda": 4.83,
+          "goldAvg": 10003.2,
+          "damageAvg": 15458,
+          "dpm": 609.59,
+          "positions": [
+            {
+              "position": "TOP",
+              "count": 5
+            }
+          ],
+          "players": [
+            "8f91a191-c2f0-4f3f-889f-44ac8192e596",
+            "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
+            "17dd1651-010a-4fc9-88da-66a1e0d3c0a8",
+            "ee09cf39-13a1-4268-a363-dbd28955437b",
+            "87b0b01b-0c1d-44ca-8154-ec59da7b80a3"
+          ],
+          "teams": [
+            "A3",
+            "B4",
+            "B1",
+            "D1",
+            "D4"
+          ],
+          "matches": [
+            "groups-r1g2-j2",
+            "groups-r2g4-j2",
+            "groups-r2g3-j1",
+            "groups-r2g7-j1",
+            "groups-r3g8-j2"
+          ]
+        },
+        {
+          "id": "ryze",
+          "name": "Ryze",
+          "image": "assets/champions/Ryze.jpg",
           "picks": 5,
           "wins": 2,
           "losses": 3,
           "winRate": 40,
-          "kills": 4,
-          "deaths": 20,
-          "assists": 65,
-          "kda": 3.45,
-          "goldAvg": 7613.4,
-          "damageAvg": 6569.8,
-          "dpm": 231.67,
+          "kills": 14,
+          "deaths": 15,
+          "assists": 25,
+          "kda": 2.6,
+          "goldAvg": 10237.4,
+          "damageAvg": 16157.6,
+          "dpm": 583.66,
           "positions": [
             {
-              "position": "SUP",
+              "position": "MID",
               "count": 5
             }
           ],
           "players": [
-            "8f58fb63-7765-463b-8688-89c4552fcae5",
-            "c113ef85-6838-47a2-b735-75b278b7c8ce",
-            "4e3e2af3-1217-4d2c-b525-b196a50878ee",
-            "b1297dc1-2b88-4dcd-b558-edbf5474030f"
+            "5ef6dac6-8daf-42e6-b3af-c8896a8554e1",
+            "54e50a29-e994-419f-90aa-04a96a22a3cd",
+            "cdb7296d-9960-4a4e-99e8-835f8068f8e7",
+            "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda"
           ],
           "teams": [
-            "D3",
-            "C3",
-            "B1",
-            "D2"
+            "D2",
+            "D4",
+            "D1",
+            "B2"
           ],
           "matches": [
+            "groups-r1g7-j1",
             "groups-r1g8-j1",
-            "groups-r1g6-j2",
-            "groups-r2g3-j3",
-            "groups-r2g8-j2",
-            "groups-r3g4-j3"
+            "groups-r2g7-j3",
+            "groups-r3g3-j1",
+            "groups-r3g8-j2"
           ]
         },
         {
-          "id": "rell",
-          "name": "Rell",
-          "image": "assets/champions/Rell.jpg",
+          "id": "karma",
+          "name": "Karma",
+          "image": "assets/champions/Karma.jpg",
           "picks": 5,
-          "wins": 1,
-          "losses": 4,
-          "winRate": 20,
-          "kills": 4,
-          "deaths": 34,
-          "assists": 65,
-          "kda": 2.03,
-          "goldAvg": 8493.4,
-          "damageAvg": 7377.2,
-          "dpm": 227.57,
+          "wins": 2,
+          "losses": 3,
+          "winRate": 40,
+          "kills": 5,
+          "deaths": 21,
+          "assists": 40,
+          "kda": 2.14,
+          "goldAvg": 7230.2,
+          "damageAvg": 7168,
+          "dpm": 258.93,
           "positions": [
             {
               "position": "SUP",
@@ -18477,25 +19734,23 @@ window.LIGA_RK_STATS = {
             }
           ],
           "players": [
-            "9fe112ee-c33c-474f-9a3e-2beeaa726c48",
-            "005b1daf-fb8a-4258-b48b-90bde518a76f",
-            "e39e7092-a6fa-435d-abd4-5622d8de7d8b",
-            "8f58fb63-7765-463b-8688-89c4552fcae5",
-            "dbfbe491-6dba-47a6-b29a-4f6307b4d132"
+            "b1297dc1-2b88-4dcd-b558-edbf5474030f",
+            "5a7a70e6-50d8-4117-9403-5842430ee03b",
+            "8827bd59-7836-4418-b5eb-d33dd8c3bee3",
+            "4e3e2af3-1217-4d2c-b525-b196a50878ee"
           ],
           "teams": [
-            "B3",
-            "B2",
-            "C2",
-            "D3",
-            "B4"
+            "D2",
+            "A4",
+            "D1",
+            "B1"
           ],
           "matches": [
-            "groups-r1g4-j2",
-            "groups-r2g4-j1",
-            "groups-r2g6-j2",
+            "groups-r1g7-j2",
+            "groups-r1g2-j1",
             "groups-r2g7-j3",
-            "groups-r3g4-j1"
+            "groups-r3g4-j2",
+            "groups-r3g8-j2"
           ]
         },
         {
@@ -18537,6 +19792,48 @@ window.LIGA_RK_STATS = {
             "groups-r1g2-j1",
             "groups-r2g3-j2",
             "groups-r3g3-j2"
+          ]
+        },
+        {
+          "id": "olaf",
+          "name": "Olaf",
+          "image": "assets/champions/Olaf.jpg",
+          "picks": 4,
+          "wins": 4,
+          "losses": 0,
+          "winRate": 100,
+          "kills": 31,
+          "deaths": 23,
+          "assists": 26,
+          "kda": 2.48,
+          "goldAvg": 12952,
+          "damageAvg": 22360,
+          "dpm": 825.69,
+          "positions": [
+            {
+              "position": "JG",
+              "count": 2
+            },
+            {
+              "position": "TOP",
+              "count": 2
+            }
+          ],
+          "players": [
+            "e716f2c0-24c9-4aac-a6ff-a3e14b8a61c0",
+            "87b0b01b-0c1d-44ca-8154-ec59da7b80a3",
+            "6e241754-e4e8-4f57-9818-b2279e3bd0a6"
+          ],
+          "teams": [
+            "A2",
+            "D4",
+            "D1"
+          ],
+          "matches": [
+            "groups-r2g2-j2",
+            "groups-r2g8-j2",
+            "groups-r2g7-j3",
+            "groups-r3g8-j2"
           ]
         },
         {
@@ -18582,166 +19879,6 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "kaisa",
-          "name": "Kaisa",
-          "image": "assets/champions/Kaisa.jpg",
-          "picks": 4,
-          "wins": 3,
-          "losses": 1,
-          "winRate": 75,
-          "kills": 34,
-          "deaths": 10,
-          "assists": 36,
-          "kda": 7,
-          "goldAvg": 14957.75,
-          "damageAvg": 27059.5,
-          "dpm": 997.07,
-          "positions": [
-            {
-              "position": "ADC",
-              "count": 4
-            }
-          ],
-          "players": [
-            "3160ff3e-da9b-4538-9162-8a3cfc3f78aa",
-            "a44b2125-85a3-4f69-9caa-97a385822b0a",
-            "e324f47c-9a31-4cd4-a5b9-3af94e2f3c38"
-          ],
-          "teams": [
-            "B3",
-            "B4",
-            "C4"
-          ],
-          "matches": [
-            "groups-r1g4-j2",
-            "groups-r2g4-j2",
-            "groups-r2g6-j1",
-            "groups-r3g4-j2"
-          ]
-        },
-        {
-          "id": "caitlyn",
-          "name": "Caitlyn",
-          "image": "assets/champions/Caitlyn.jpg",
-          "picks": 4,
-          "wins": 3,
-          "losses": 1,
-          "winRate": 75,
-          "kills": 23,
-          "deaths": 14,
-          "assists": 28,
-          "kda": 3.64,
-          "goldAvg": 12909.5,
-          "damageAvg": 22871,
-          "dpm": 871.31,
-          "positions": [
-            {
-              "position": "ADC",
-              "count": 4
-            }
-          ],
-          "players": [
-            "a50ec03a-1b03-4d85-86f8-69cff19d0220",
-            "094a9436-c639-4195-a01b-0fd126ed96fe",
-            "ba719616-83d9-413d-9b47-4065aa9ab157",
-            "c0252d66-bd2d-4f35-b210-c03943520a05"
-          ],
-          "teams": [
-            "D2",
-            "A3",
-            "A2",
-            "D4"
-          ],
-          "matches": [
-            "groups-r1g7-j2",
-            "groups-r1g2-j2",
-            "groups-r2g2-j2",
-            "groups-r2g8-j2"
-          ]
-        },
-        {
-          "id": "viktor",
-          "name": "Viktor",
-          "image": "assets/champions/Viktor.jpg",
-          "picks": 4,
-          "wins": 3,
-          "losses": 1,
-          "winRate": 75,
-          "kills": 16,
-          "deaths": 10,
-          "assists": 28,
-          "kda": 4.4,
-          "goldAvg": 11653.5,
-          "damageAvg": 27724,
-          "dpm": 959.82,
-          "positions": [
-            {
-              "position": "MID",
-              "count": 3
-            },
-            {
-              "position": "ADC",
-              "count": 1
-            }
-          ],
-          "players": [
-            "387bfab7-c5a6-4f05-a41a-980cb0bf4d42",
-            "b43b292e-f8b8-4b44-bcf6-806bc7c3afa1",
-            "85c29dba-efdf-44f0-9604-c743f96c49ce"
-          ],
-          "teams": [
-            "D3",
-            "A4",
-            "B4"
-          ],
-          "matches": [
-            "groups-r1g8-j1",
-            "groups-r2g2-j1",
-            "groups-r2g7-j1",
-            "groups-r3g4-j2"
-          ]
-        },
-        {
-          "id": "ksante",
-          "name": "KSante",
-          "image": "assets/champions/KSante.jpg",
-          "picks": 4,
-          "wins": 3,
-          "losses": 1,
-          "winRate": 75,
-          "kills": 16,
-          "deaths": 8,
-          "assists": 38,
-          "kda": 6.75,
-          "goldAvg": 10143,
-          "damageAvg": 17026.5,
-          "dpm": 676.83,
-          "positions": [
-            {
-              "position": "TOP",
-              "count": 4
-            }
-          ],
-          "players": [
-            "8f91a191-c2f0-4f3f-889f-44ac8192e596",
-            "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
-            "17dd1651-010a-4fc9-88da-66a1e0d3c0a8",
-            "ee09cf39-13a1-4268-a363-dbd28955437b"
-          ],
-          "teams": [
-            "A3",
-            "B4",
-            "B1",
-            "D1"
-          ],
-          "matches": [
-            "groups-r1g2-j2",
-            "groups-r2g4-j2",
-            "groups-r2g3-j1",
-            "groups-r2g7-j1"
-          ]
-        },
-        {
           "id": "alistar",
           "name": "Alistar",
           "image": "assets/champions/Alistar.jpg",
@@ -18780,6 +19917,44 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
+          "id": "lucian",
+          "name": "Lucian",
+          "image": "assets/champions/Lucian.jpg",
+          "picks": 4,
+          "wins": 2,
+          "losses": 2,
+          "winRate": 50,
+          "kills": 16,
+          "deaths": 15,
+          "assists": 23,
+          "kda": 2.6,
+          "goldAvg": 12844.25,
+          "damageAvg": 16349,
+          "dpm": 586.84,
+          "positions": [
+            {
+              "position": "ADC",
+              "count": 4
+            }
+          ],
+          "players": [
+            "3160ff3e-da9b-4538-9162-8a3cfc3f78aa",
+            "df0e9d12-5f4f-4268-a80d-cefa44c76268",
+            "f02fe465-ee85-45f5-ac28-7f4722ea3481"
+          ],
+          "teams": [
+            "B3",
+            "D3",
+            "D1"
+          ],
+          "matches": [
+            "groups-r1g4-j1",
+            "groups-r2g3-j1",
+            "groups-r2g7-j3",
+            "groups-r3g8-j1"
+          ]
+        },
+        {
           "id": "jhin",
           "name": "Jhin",
           "image": "assets/champions/Jhin.jpg",
@@ -18815,6 +19990,50 @@ window.LIGA_RK_STATS = {
             "groups-r1g2-j2",
             "groups-r2g2-j2",
             "groups-r2g7-j2"
+          ]
+        },
+        {
+          "id": "renekton",
+          "name": "Renekton",
+          "image": "assets/champions/Renekton.jpg",
+          "picks": 4,
+          "wins": 2,
+          "losses": 2,
+          "winRate": 50,
+          "kills": 10,
+          "deaths": 23,
+          "assists": 27,
+          "kda": 1.61,
+          "goldAvg": 11259.5,
+          "damageAvg": 23880,
+          "dpm": 789.66,
+          "positions": [
+            {
+              "position": "TOP",
+              "count": 3
+            },
+            {
+              "position": "MID",
+              "count": 1
+            }
+          ],
+          "players": [
+            "1fb278b9-1a2c-471d-992e-12a930836013",
+            "d76b03de-3dc2-4eb3-97c6-73cd5f58015b",
+            "17dd1651-010a-4fc9-88da-66a1e0d3c0a8",
+            "387bfab7-c5a6-4f05-a41a-980cb0bf4d42"
+          ],
+          "teams": [
+            "B3",
+            "C2",
+            "B1",
+            "D3"
+          ],
+          "matches": [
+            "groups-r2g3-j1",
+            "groups-r2g6-j3",
+            "groups-r3g4-j2",
+            "groups-r3g7-j2"
           ]
         },
         {
@@ -18934,124 +20153,41 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "ryze",
-          "name": "Ryze",
-          "image": "assets/champions/Ryze.jpg",
+          "id": "nocturne",
+          "name": "Nocturne",
+          "image": "assets/champions/Nocturne.jpg",
           "picks": 4,
           "wins": 1,
           "losses": 3,
           "winRate": 25,
-          "kills": 12,
-          "deaths": 14,
-          "assists": 19,
-          "kda": 2.21,
-          "goldAvg": 10193.75,
-          "damageAvg": 16726.75,
-          "dpm": 600.87,
+          "kills": 13,
+          "deaths": 21,
+          "assists": 34,
+          "kda": 2.24,
+          "goldAvg": 10491.5,
+          "damageAvg": 14930,
+          "dpm": 562.48,
           "positions": [
-            {
-              "position": "MID",
-              "count": 4
-            }
-          ],
-          "players": [
-            "5ef6dac6-8daf-42e6-b3af-c8896a8554e1",
-            "54e50a29-e994-419f-90aa-04a96a22a3cd",
-            "cdb7296d-9960-4a4e-99e8-835f8068f8e7",
-            "bf73f0f8-ef44-4bb5-b1dc-affad7df1bda"
-          ],
-          "teams": [
-            "D2",
-            "D4",
-            "D1",
-            "B2"
-          ],
-          "matches": [
-            "groups-r1g7-j1",
-            "groups-r1g8-j1",
-            "groups-r2g7-j3",
-            "groups-r3g3-j1"
-          ]
-        },
-        {
-          "id": "karma",
-          "name": "Karma",
-          "image": "assets/champions/Karma.jpg",
-          "picks": 4,
-          "wins": 1,
-          "losses": 3,
-          "winRate": 25,
-          "kills": 3,
-          "deaths": 18,
-          "assists": 29,
-          "kda": 1.78,
-          "goldAvg": 7047.5,
-          "damageAvg": 7058.5,
-          "dpm": 253.14,
-          "positions": [
-            {
-              "position": "SUP",
-              "count": 4
-            }
-          ],
-          "players": [
-            "b1297dc1-2b88-4dcd-b558-edbf5474030f",
-            "5a7a70e6-50d8-4117-9403-5842430ee03b",
-            "8827bd59-7836-4418-b5eb-d33dd8c3bee3",
-            "4e3e2af3-1217-4d2c-b525-b196a50878ee"
-          ],
-          "teams": [
-            "D2",
-            "A4",
-            "D1",
-            "B1"
-          ],
-          "matches": [
-            "groups-r1g7-j2",
-            "groups-r1g2-j1",
-            "groups-r2g7-j3",
-            "groups-r3g4-j2"
-          ]
-        },
-        {
-          "id": "olaf",
-          "name": "Olaf",
-          "image": "assets/champions/Olaf.jpg",
-          "picks": 3,
-          "wins": 3,
-          "losses": 0,
-          "winRate": 100,
-          "kills": 24,
-          "deaths": 17,
-          "assists": 16,
-          "kda": 2.35,
-          "goldAvg": 12692.33,
-          "damageAvg": 22483.67,
-          "dpm": 829.07,
-          "positions": [
-            {
-              "position": "TOP",
-              "count": 2
-            },
             {
               "position": "JG",
-              "count": 1
+              "count": 4
             }
           ],
           "players": [
-            "e716f2c0-24c9-4aac-a6ff-a3e14b8a61c0",
-            "87b0b01b-0c1d-44ca-8154-ec59da7b80a3",
-            "6e241754-e4e8-4f57-9818-b2279e3bd0a6"
+            "37d5697c-d21a-4bc1-b104-1f580f396133",
+            "4448fafa-ddb9-4a96-b9da-df67b2919733",
+            "adcf03a3-0794-4ec3-902e-c8894dfdbfc3"
           ],
           "teams": [
-            "A2",
-            "D4",
-            "D1"
+            "B4",
+            "D2",
+            "B3"
           ],
           "matches": [
-            "groups-r2g2-j2",
-            "groups-r2g8-j2",
-            "groups-r2g7-j3"
+            "groups-r1g4-j3",
+            "groups-r1g7-j2",
+            "groups-r3g3-j1",
+            "groups-r3g7-j1"
           ]
         },
         {
@@ -19092,55 +20228,20 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "lucian",
-          "name": "Lucian",
-          "image": "assets/champions/Lucian.jpg",
+          "id": "skarner",
+          "name": "Skarner",
+          "image": "assets/champions/Skarner.jpg",
           "picks": 3,
-          "wins": 1,
-          "losses": 2,
-          "winRate": 33.33,
-          "kills": 12,
-          "deaths": 12,
-          "assists": 14,
-          "kda": 2.17,
-          "goldAvg": 12095,
-          "damageAvg": 17155.67,
-          "dpm": 634.97,
-          "positions": [
-            {
-              "position": "ADC",
-              "count": 3
-            }
-          ],
-          "players": [
-            "3160ff3e-da9b-4538-9162-8a3cfc3f78aa",
-            "df0e9d12-5f4f-4268-a80d-cefa44c76268"
-          ],
-          "teams": [
-            "B3",
-            "D3"
-          ],
-          "matches": [
-            "groups-r1g4-j1",
-            "groups-r2g3-j1",
-            "groups-r2g7-j3"
-          ]
-        },
-        {
-          "id": "nocturne",
-          "name": "Nocturne",
-          "image": "assets/champions/Nocturne.jpg",
-          "picks": 3,
-          "wins": 1,
-          "losses": 2,
-          "winRate": 33.33,
-          "kills": 10,
-          "deaths": 15,
-          "assists": 27,
-          "kda": 2.47,
-          "goldAvg": 10861.67,
-          "damageAvg": 15505,
-          "dpm": 567.39,
+          "wins": 2,
+          "losses": 1,
+          "winRate": 66.67,
+          "kills": 15,
+          "deaths": 10,
+          "assists": 35,
+          "kda": 5,
+          "goldAvg": 10985,
+          "damageAvg": 14282.67,
+          "dpm": 539.59,
           "positions": [
             {
               "position": "JG",
@@ -19148,19 +20249,89 @@ window.LIGA_RK_STATS = {
             }
           ],
           "players": [
-            "37d5697c-d21a-4bc1-b104-1f580f396133",
-            "4448fafa-ddb9-4a96-b9da-df67b2919733",
-            "adcf03a3-0794-4ec3-902e-c8894dfdbfc3"
+            "f9133bce-2d98-4534-9d82-16dd768d7540",
+            "953d89dc-d2ac-4e77-bef7-88c66ad248d8"
+          ],
+          "teams": [
+            "C2",
+            "D3"
+          ],
+          "matches": [
+            "groups-r2g6-j1",
+            "groups-r2g7-j1",
+            "groups-r3g7-j1"
+          ]
+        },
+        {
+          "id": "milio",
+          "name": "Milio",
+          "image": "assets/champions/Milio.jpg",
+          "picks": 3,
+          "wins": 1,
+          "losses": 2,
+          "winRate": 33.33,
+          "kills": 1,
+          "deaths": 11,
+          "assists": 38,
+          "kda": 3.55,
+          "goldAvg": 7451.67,
+          "damageAvg": 3486.33,
+          "dpm": 126.3,
+          "positions": [
+            {
+              "position": "SUP",
+              "count": 3
+            }
+          ],
+          "players": [
+            "9fe112ee-c33c-474f-9a3e-2beeaa726c48",
+            "d34dc7d7-ee25-4b81-8c61-aa437acbe393"
+          ],
+          "teams": [
+            "B3",
+            "D4"
+          ],
+          "matches": [
+            "groups-r1g4-j1",
+            "groups-r2g3-j1",
+            "groups-r3g8-j1"
+          ]
+        },
+        {
+          "id": "yorick",
+          "name": "Yorick",
+          "image": "assets/champions/Yorick.jpg",
+          "picks": 3,
+          "wins": 1,
+          "losses": 2,
+          "winRate": 33.33,
+          "kills": 3,
+          "deaths": 7,
+          "assists": 11,
+          "kda": 2,
+          "goldAvg": 11971.33,
+          "damageAvg": 20918,
+          "dpm": 708.15,
+          "positions": [
+            {
+              "position": "TOP",
+              "count": 3
+            }
+          ],
+          "players": [
+            "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
+            "afd38a2d-4c8e-44fb-b3d1-1c2bf4e8764e",
+            "ee09cf39-13a1-4268-a363-dbd28955437b"
           ],
           "teams": [
             "B4",
-            "D2",
-            "B3"
+            "B2",
+            "D1"
           ],
           "matches": [
             "groups-r1g4-j3",
-            "groups-r1g7-j2",
-            "groups-r3g3-j1"
+            "groups-r2g4-j1",
+            "groups-r3g8-j1"
           ]
         },
         {
@@ -19201,40 +20372,147 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "renekton",
-          "name": "Renekton",
-          "image": "assets/champions/Renekton.jpg",
+          "id": "ahri",
+          "name": "Ahri",
+          "image": "assets/champions/Ahri.jpg",
           "picks": 3,
           "wins": 1,
           "losses": 2,
           "winRate": 33.33,
-          "kills": 7,
-          "deaths": 14,
-          "assists": 11,
-          "kda": 1.29,
-          "goldAvg": 10637.33,
-          "damageAvg": 24763.33,
-          "dpm": 855.95,
+          "kills": 17,
+          "deaths": 17,
+          "assists": 21,
+          "kda": 2.24,
+          "goldAvg": 12062,
+          "damageAvg": 21023.67,
+          "dpm": 708.57,
           "positions": [
             {
-              "position": "TOP",
+              "position": "MID",
               "count": 3
             }
           ],
           "players": [
-            "1fb278b9-1a2c-471d-992e-12a930836013",
-            "d76b03de-3dc2-4eb3-97c6-73cd5f58015b",
-            "17dd1651-010a-4fc9-88da-66a1e0d3c0a8"
+            "5ef6dac6-8daf-42e6-b3af-c8896a8554e1",
+            "a89f54a2-ff64-4647-8738-95c802959a50",
+            "cdb7296d-9960-4a4e-99e8-835f8068f8e7"
           ],
           "teams": [
-            "B3",
-            "C2",
-            "B1"
+            "D2",
+            "C4",
+            "D1"
           ],
           "matches": [
-            "groups-r2g3-j1",
+            "groups-r1g7-j2",
+            "groups-r2g6-j2",
+            "groups-r3g8-j1"
+          ]
+        },
+        {
+          "id": "sivir",
+          "name": "Sivir",
+          "image": "assets/champions/Sivir.jpg",
+          "picks": 3,
+          "wins": 1,
+          "losses": 2,
+          "winRate": 33.33,
+          "kills": 9,
+          "deaths": 10,
+          "assists": 12,
+          "kda": 2.1,
+          "goldAvg": 12844,
+          "damageAvg": 23606.33,
+          "dpm": 806.29,
+          "positions": [
+            {
+              "position": "ADC",
+              "count": 3
+            }
+          ],
+          "players": [
+            "c0252d66-bd2d-4f35-b210-c03943520a05",
+            "a44b2125-85a3-4f69-9caa-97a385822b0a"
+          ],
+          "teams": [
+            "D4",
+            "B4"
+          ],
+          "matches": [
+            "groups-r1g8-j1",
+            "groups-r2g4-j1",
+            "groups-r3g8-j2"
+          ]
+        },
+        {
+          "id": "corki",
+          "name": "Corki",
+          "image": "assets/champions/Corki.jpg",
+          "picks": 3,
+          "wins": 1,
+          "losses": 2,
+          "winRate": 33.33,
+          "kills": 26,
+          "deaths": 14,
+          "assists": 27,
+          "kda": 3.79,
+          "goldAvg": 15921,
+          "damageAvg": 34814.33,
+          "dpm": 1201.53,
+          "positions": [
+            {
+              "position": "ADC",
+              "count": 3
+            }
+          ],
+          "players": [
+            "e324f47c-9a31-4cd4-a5b9-3af94e2f3c38",
+            "a44b2125-85a3-4f69-9caa-97a385822b0a",
+            "df0e9d12-5f4f-4268-a80d-cefa44c76268"
+          ],
+          "teams": [
+            "C4",
+            "B4",
+            "D3"
+          ],
+          "matches": [
+            "groups-r2g6-j2",
+            "groups-r3g4-j1",
+            "groups-r3g7-j1"
+          ]
+        },
+        {
+          "id": "yunara",
+          "name": "Yunara",
+          "image": "assets/champions/Yunara.jpg",
+          "picks": 3,
+          "wins": 1,
+          "losses": 2,
+          "winRate": 33.33,
+          "kills": 28,
+          "deaths": 19,
+          "assists": 24,
+          "kda": 2.74,
+          "goldAvg": 19692,
+          "damageAvg": 38454.67,
+          "dpm": 1052.64,
+          "positions": [
+            {
+              "position": "ADC",
+              "count": 3
+            }
+          ],
+          "players": [
+            "e324f47c-9a31-4cd4-a5b9-3af94e2f3c38",
+            "df0e9d12-5f4f-4268-a80d-cefa44c76268"
+          ],
+          "teams": [
+            "C4",
+            "D3"
+          ],
+          "matches": [
             "groups-r2g6-j3",
-            "groups-r3g4-j2"
+            "groups-r2g7-j2",
+            "groups-r3g7-j2"
           ]
         },
         {
@@ -19272,6 +20550,43 @@ window.LIGA_RK_STATS = {
             "groups-r1g3-j1",
             "groups-r2g6-j3",
             "groups-r3g3-j2"
+          ]
+        },
+        {
+          "id": "jayce",
+          "name": "Jayce",
+          "image": "assets/champions/Jayce.jpg",
+          "picks": 3,
+          "wins": 0,
+          "losses": 3,
+          "winRate": 0,
+          "kills": 18,
+          "deaths": 20,
+          "assists": 22,
+          "kda": 2,
+          "goldAvg": 12622,
+          "damageAvg": 31106.33,
+          "dpm": 1033.21,
+          "positions": [
+            {
+              "position": "TOP",
+              "count": 3
+            }
+          ],
+          "players": [
+            "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
+            "8de67801-d9d0-45c6-ab35-5efaacdacf51",
+            "593a8ce7-a4c6-44cd-89ce-7abb03f88855"
+          ],
+          "teams": [
+            "B4",
+            "D4",
+            "D2"
+          ],
+          "matches": [
+            "groups-r1g4-j1",
+            "groups-r1g8-j2",
+            "groups-r3g7-j2"
           ]
         },
         {
@@ -19482,6 +20797,40 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
+          "id": "vayne",
+          "name": "Vayne",
+          "image": "assets/champions/Vayne.jpg",
+          "picks": 2,
+          "wins": 2,
+          "losses": 0,
+          "winRate": 100,
+          "kills": 19,
+          "deaths": 4,
+          "assists": 10,
+          "kda": 7.25,
+          "goldAvg": 14748,
+          "damageAvg": 27083.5,
+          "dpm": 938.81,
+          "positions": [
+            {
+              "position": "TOP",
+              "count": 2
+            }
+          ],
+          "players": [
+            "60bed61b-e107-41bd-b0cc-943105c6e4c5",
+            "ee09cf39-13a1-4268-a363-dbd28955437b"
+          ],
+          "teams": [
+            "D3",
+            "D1"
+          ],
+          "matches": [
+            "groups-r2g7-j1",
+            "groups-r3g8-j2"
+          ]
+        },
+        {
           "id": "varus",
           "name": "Varus",
           "image": "assets/champions/Varus.jpg",
@@ -19516,38 +20865,6 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "milio",
-          "name": "Milio",
-          "image": "assets/champions/Milio.jpg",
-          "picks": 2,
-          "wins": 1,
-          "losses": 1,
-          "winRate": 50,
-          "kills": 1,
-          "deaths": 6,
-          "assists": 26,
-          "kda": 4.5,
-          "goldAvg": 7105.5,
-          "damageAvg": 3303,
-          "dpm": 128.25,
-          "positions": [
-            {
-              "position": "SUP",
-              "count": 2
-            }
-          ],
-          "players": [
-            "9fe112ee-c33c-474f-9a3e-2beeaa726c48"
-          ],
-          "teams": [
-            "B3"
-          ],
-          "matches": [
-            "groups-r1g4-j1",
-            "groups-r2g3-j1"
-          ]
-        },
-        {
           "id": "gwen",
           "name": "Gwen",
           "image": "assets/champions/Gwen.jpg",
@@ -19579,40 +20896,6 @@ window.LIGA_RK_STATS = {
           "matches": [
             "groups-r1g7-j2",
             "groups-r2g3-j3"
-          ]
-        },
-        {
-          "id": "sivir",
-          "name": "Sivir",
-          "image": "assets/champions/Sivir.jpg",
-          "picks": 2,
-          "wins": 1,
-          "losses": 1,
-          "winRate": 50,
-          "kills": 7,
-          "deaths": 5,
-          "assists": 7,
-          "kda": 2.8,
-          "goldAvg": 13419.5,
-          "damageAvg": 24538,
-          "dpm": 806.22,
-          "positions": [
-            {
-              "position": "ADC",
-              "count": 2
-            }
-          ],
-          "players": [
-            "c0252d66-bd2d-4f35-b210-c03943520a05",
-            "a44b2125-85a3-4f69-9caa-97a385822b0a"
-          ],
-          "teams": [
-            "D4",
-            "B4"
-          ],
-          "matches": [
-            "groups-r1g8-j1",
-            "groups-r2g4-j1"
           ]
         },
         {
@@ -19718,20 +21001,54 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "skarner",
-          "name": "Skarner",
-          "image": "assets/champions/Skarner.jpg",
+          "id": "samira",
+          "name": "Samira",
+          "image": "assets/champions/Samira.jpg",
           "picks": 2,
-          "wins": 1,
-          "losses": 1,
-          "winRate": 50,
+          "wins": 0,
+          "losses": 2,
+          "winRate": 0,
+          "kills": 17,
+          "deaths": 11,
+          "assists": 6,
+          "kda": 2.09,
+          "goldAvg": 14677.5,
+          "damageAvg": 20182.5,
+          "dpm": 634.78,
+          "positions": [
+            {
+              "position": "ADC",
+              "count": 2
+            }
+          ],
+          "players": [
+            "a44b2125-85a3-4f69-9caa-97a385822b0a",
+            "a50ec03a-1b03-4d85-86f8-69cff19d0220"
+          ],
+          "teams": [
+            "B4",
+            "D2"
+          ],
+          "matches": [
+            "groups-r1g4-j3",
+            "groups-r3g7-j2"
+          ]
+        },
+        {
+          "id": "hecarim",
+          "name": "Hecarim",
+          "image": "assets/champions/Hecarim.jpg",
+          "picks": 2,
+          "wins": 0,
+          "losses": 2,
+          "winRate": 0,
           "kills": 8,
-          "deaths": 8,
-          "assists": 18,
-          "kda": 3.25,
-          "goldAvg": 10862,
-          "damageAvg": 12862.5,
-          "dpm": 454.26,
+          "deaths": 12,
+          "assists": 19,
+          "kda": 2.25,
+          "goldAvg": 12382,
+          "damageAvg": 16061.5,
+          "dpm": 484.06,
           "positions": [
             {
               "position": "JG",
@@ -19739,118 +21056,14 @@ window.LIGA_RK_STATS = {
             }
           ],
           "players": [
-            "f9133bce-2d98-4534-9d82-16dd768d7540",
-            "953d89dc-d2ac-4e77-bef7-88c66ad248d8"
+            "4448fafa-ddb9-4a96-b9da-df67b2919733"
           ],
           "teams": [
-            "C2",
-            "D3"
+            "D2"
           ],
           "matches": [
-            "groups-r2g6-j1",
-            "groups-r2g7-j1"
-          ]
-        },
-        {
-          "id": "jayce",
-          "name": "Jayce",
-          "image": "assets/champions/Jayce.jpg",
-          "picks": 2,
-          "wins": 0,
-          "losses": 2,
-          "winRate": 0,
-          "kills": 10,
-          "deaths": 12,
-          "assists": 8,
-          "kda": 1.5,
-          "goldAvg": 12111.5,
-          "damageAvg": 31359,
-          "dpm": 1124.02,
-          "positions": [
-            {
-              "position": "TOP",
-              "count": 2
-            }
-          ],
-          "players": [
-            "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
-            "8de67801-d9d0-45c6-ab35-5efaacdacf51"
-          ],
-          "teams": [
-            "B4",
-            "D4"
-          ],
-          "matches": [
-            "groups-r1g4-j1",
-            "groups-r1g8-j2"
-          ]
-        },
-        {
-          "id": "yorick",
-          "name": "Yorick",
-          "image": "assets/champions/Yorick.jpg",
-          "picks": 2,
-          "wins": 0,
-          "losses": 2,
-          "winRate": 0,
-          "kills": 2,
-          "deaths": 5,
-          "assists": 6,
-          "kda": 1.6,
-          "goldAvg": 10886,
-          "damageAvg": 21218,
-          "dpm": 739.53,
-          "positions": [
-            {
-              "position": "TOP",
-              "count": 2
-            }
-          ],
-          "players": [
-            "22fe804c-9fde-49df-94fe-c6a9f1ae60f4",
-            "afd38a2d-4c8e-44fb-b3d1-1c2bf4e8764e"
-          ],
-          "teams": [
-            "B4",
-            "B2"
-          ],
-          "matches": [
-            "groups-r1g4-j3",
-            "groups-r2g4-j1"
-          ]
-        },
-        {
-          "id": "ahri",
-          "name": "Ahri",
-          "image": "assets/champions/Ahri.jpg",
-          "picks": 2,
-          "wins": 0,
-          "losses": 2,
-          "winRate": 0,
-          "kills": 8,
-          "deaths": 11,
-          "assists": 13,
-          "kda": 1.91,
-          "goldAvg": 10936.5,
-          "damageAvg": 20719,
-          "dpm": 719.27,
-          "positions": [
-            {
-              "position": "MID",
-              "count": 2
-            }
-          ],
-          "players": [
-            "5ef6dac6-8daf-42e6-b3af-c8896a8554e1",
-            "a89f54a2-ff64-4647-8738-95c802959a50"
-          ],
-          "teams": [
-            "D2",
-            "C4"
-          ],
-          "matches": [
-            "groups-r1g7-j2",
-            "groups-r2g6-j2"
+            "groups-r1g7-j1",
+            "groups-r3g7-j2"
           ]
         },
         {
@@ -19954,71 +21167,35 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "corki",
-          "name": "Corki",
-          "image": "assets/champions/Corki.jpg",
+          "id": "irelia",
+          "name": "Irelia",
+          "image": "assets/champions/Irelia.jpg",
           "picks": 2,
           "wins": 0,
           "losses": 2,
           "winRate": 0,
-          "kills": 13,
-          "deaths": 12,
-          "assists": 17,
-          "kda": 2.5,
-          "goldAvg": 15584,
-          "damageAvg": 35090.5,
-          "dpm": 1091.71,
+          "kills": 14,
+          "deaths": 16,
+          "assists": 11,
+          "kda": 1.56,
+          "goldAvg": 10193.5,
+          "damageAvg": 18321.5,
+          "dpm": 707.12,
           "positions": [
             {
-              "position": "ADC",
+              "position": "MID",
               "count": 2
             }
           ],
           "players": [
-            "e324f47c-9a31-4cd4-a5b9-3af94e2f3c38",
-            "a44b2125-85a3-4f69-9caa-97a385822b0a"
+            "b115ad0f-e41a-43c8-bf5a-f7a9c697c5e3"
           ],
           "teams": [
-            "C4",
-            "B4"
+            "D2"
           ],
           "matches": [
-            "groups-r2g6-j2",
-            "groups-r3g4-j1"
-          ]
-        },
-        {
-          "id": "yunara",
-          "name": "Yunara",
-          "image": "assets/champions/Yunara.jpg",
-          "picks": 2,
-          "wins": 0,
-          "losses": 2,
-          "winRate": 0,
-          "kills": 9,
-          "deaths": 15,
-          "assists": 14,
-          "kda": 1.53,
-          "goldAvg": 16602,
-          "damageAvg": 27536,
-          "dpm": 740.04,
-          "positions": [
-            {
-              "position": "ADC",
-              "count": 2
-            }
-          ],
-          "players": [
-            "e324f47c-9a31-4cd4-a5b9-3af94e2f3c38",
-            "df0e9d12-5f4f-4268-a80d-cefa44c76268"
-          ],
-          "teams": [
-            "C4",
-            "D3"
-          ],
-          "matches": [
-            "groups-r2g6-j3",
-            "groups-r2g7-j2"
+            "groups-r2g8-j2",
+            "groups-r3g7-j1"
           ]
         },
         {
@@ -20208,37 +21385,6 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "vayne",
-          "name": "Vayne",
-          "image": "assets/champions/Vayne.jpg",
-          "picks": 1,
-          "wins": 1,
-          "losses": 0,
-          "winRate": 100,
-          "kills": 9,
-          "deaths": 4,
-          "assists": 5,
-          "kda": 3.5,
-          "goldAvg": 15309,
-          "damageAvg": 24424,
-          "dpm": 774.47,
-          "positions": [
-            {
-              "position": "TOP",
-              "count": 1
-            }
-          ],
-          "players": [
-            "60bed61b-e107-41bd-b0cc-943105c6e4c5"
-          ],
-          "teams": [
-            "D3"
-          ],
-          "matches": [
-            "groups-r2g7-j1"
-          ]
-        },
-        {
           "id": "darius",
           "name": "Darius",
           "image": "assets/champions/Darius.jpg",
@@ -20332,65 +21478,34 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "samira",
-          "name": "Samira",
-          "image": "assets/champions/Samira.jpg",
+          "id": "anivia",
+          "name": "Anivia",
+          "image": "assets/champions/Anivia.jpg",
           "picks": 1,
-          "wins": 0,
-          "losses": 1,
-          "winRate": 0,
-          "kills": 7,
-          "deaths": 6,
-          "assists": 3,
-          "kda": 1.67,
-          "goldAvg": 12919,
-          "damageAvg": 14242,
-          "dpm": 542.59,
+          "wins": 1,
+          "losses": 0,
+          "winRate": 100,
+          "kills": 3,
+          "deaths": 3,
+          "assists": 14,
+          "kda": 5.67,
+          "goldAvg": 13363,
+          "damageAvg": 21286,
+          "dpm": 592.36,
           "positions": [
             {
-              "position": "ADC",
+              "position": "TOP",
               "count": 1
             }
           ],
           "players": [
-            "a44b2125-85a3-4f69-9caa-97a385822b0a"
+            "60bed61b-e107-41bd-b0cc-943105c6e4c5"
           ],
           "teams": [
-            "B4"
+            "D3"
           ],
           "matches": [
-            "groups-r1g4-j3"
-          ]
-        },
-        {
-          "id": "hecarim",
-          "name": "Hecarim",
-          "image": "assets/champions/Hecarim.jpg",
-          "picks": 1,
-          "wins": 0,
-          "losses": 1,
-          "winRate": 0,
-          "kills": 2,
-          "deaths": 4,
-          "assists": 3,
-          "kda": 1.25,
-          "goldAvg": 9698,
-          "damageAvg": 8935,
-          "dpm": 322.83,
-          "positions": [
-            {
-              "position": "JG",
-              "count": 1
-            }
-          ],
-          "players": [
-            "4448fafa-ddb9-4a96-b9da-df67b2919733"
-          ],
-          "teams": [
-            "D2"
-          ],
-          "matches": [
-            "groups-r1g7-j1"
+            "groups-r3g7-j2"
           ]
         },
         {
@@ -20642,37 +21757,6 @@ window.LIGA_RK_STATS = {
           ]
         },
         {
-          "id": "irelia",
-          "name": "Irelia",
-          "image": "assets/champions/Irelia.jpg",
-          "picks": 1,
-          "wins": 0,
-          "losses": 1,
-          "winRate": 0,
-          "kills": 5,
-          "deaths": 7,
-          "assists": 7,
-          "kda": 1.71,
-          "goldAvg": 9641,
-          "damageAvg": 17347,
-          "dpm": 613.87,
-          "positions": [
-            {
-              "position": "MID",
-              "count": 1
-            }
-          ],
-          "players": [
-            "b115ad0f-e41a-43c8-bf5a-f7a9c697c5e3"
-          ],
-          "teams": [
-            "D2"
-          ],
-          "matches": [
-            "groups-r2g8-j2"
-          ]
-        },
-        {
           "id": "missfortune",
           "name": "MissFortune",
           "image": "assets/champions/MissFortune.jpg",
@@ -20794,6 +21878,99 @@ window.LIGA_RK_STATS = {
           ],
           "matches": [
             "groups-r3g4-j2"
+          ]
+        },
+        {
+          "id": "aurora",
+          "name": "Aurora",
+          "image": "assets/champions/Aurora.jpg",
+          "picks": 1,
+          "wins": 0,
+          "losses": 1,
+          "winRate": 0,
+          "kills": 7,
+          "deaths": 4,
+          "assists": 8,
+          "kda": 3.75,
+          "goldAvg": 14434,
+          "damageAvg": 39343,
+          "dpm": 1094.86,
+          "positions": [
+            {
+              "position": "MID",
+              "count": 1
+            }
+          ],
+          "players": [
+            "b115ad0f-e41a-43c8-bf5a-f7a9c697c5e3"
+          ],
+          "teams": [
+            "D2"
+          ],
+          "matches": [
+            "groups-r3g7-j2"
+          ]
+        },
+        {
+          "id": "azir",
+          "name": "Azir",
+          "image": "assets/champions/Azir.jpg",
+          "picks": 1,
+          "wins": 0,
+          "losses": 1,
+          "winRate": 0,
+          "kills": 3,
+          "deaths": 4,
+          "assists": 5,
+          "kda": 2,
+          "goldAvg": 10466,
+          "damageAvg": 27924,
+          "dpm": 1035.68,
+          "positions": [
+            {
+              "position": "MID",
+              "count": 1
+            }
+          ],
+          "players": [
+            "51ddf34b-a1bd-49d1-9989-9c36de9c16d5"
+          ],
+          "teams": [
+            "D4"
+          ],
+          "matches": [
+            "groups-r3g8-j2"
+          ]
+        },
+        {
+          "id": "nami",
+          "name": "Nami",
+          "image": "assets/champions/Nami.jpg",
+          "picks": 1,
+          "wins": 0,
+          "losses": 1,
+          "winRate": 0,
+          "kills": 1,
+          "deaths": 2,
+          "assists": 8,
+          "kda": 4.5,
+          "goldAvg": 6995,
+          "damageAvg": 5843,
+          "dpm": 216.71,
+          "positions": [
+            {
+              "position": "SUP",
+              "count": 1
+            }
+          ],
+          "players": [
+            "d34dc7d7-ee25-4b81-8c61-aa437acbe393"
+          ],
+          "teams": [
+            "D4"
+          ],
+          "matches": [
+            "groups-r3g8-j2"
           ]
         }
       ],
@@ -42905,6 +44082,2686 @@ window.LIGA_RK_STATS = {
                 "gpm": 277.2
               },
               "identificationMethod": "primary-riot-id"
+            }
+          ]
+        },
+        {
+          "id": "groups-r3g7-j1",
+          "division": "elite",
+          "seriesId": "groups-r3g7",
+          "stage": "grupos",
+          "round": "RODADA 3 - BOR x SDK",
+          "gameNumber": 1,
+          "date": "09/08 20:30",
+          "gameId": "",
+          "clientVersion": "16.15.802.4387",
+          "durationSeconds": 1446.509,
+          "duration": "24:07",
+          "blueTeamSlot": "D2",
+          "redTeamSlot": "D3",
+          "blueTeam": {
+            "slot": "D2",
+            "name": "BORRACHARIA FC",
+            "tag": "BOR",
+            "logo": "assets/uploads/equipes_elite/bor.png"
+          },
+          "redTeam": {
+            "slot": "D3",
+            "name": "SPACE DUCKS",
+            "tag": "SDK",
+            "logo": "assets/uploads/equipes_elite/sdk.png"
+          },
+          "winnerSlot": "D3",
+          "loserSlot": "D2",
+          "goldDiff": 10082,
+          "killsDiff": 15,
+          "mvp": {
+            "participantIndex": 8,
+            "riotId": "epilul#ROX",
+            "playerId": "df0e9d12-5f4f-4268-a80d-cefa44c76268",
+            "position": "ADC",
+            "score": 100,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 90.91,
+              "kp": 60.08,
+              "damage": 67.5,
+              "gold": 65.49,
+              "efficiency": 50.76,
+              "vision": 100,
+              "wards": 100,
+              "towers": 100,
+              "objectives": 100,
+              "kills": 61.55,
+              "assists": 60.1,
+              "survival": 43.48,
+              "roleEdge": 78.09,
+              "dpm": 1421.16,
+              "gpm": 688.35
+            }
+          },
+          "teams": {
+            "100": {
+              "team": 100,
+              "side": "blue",
+              "won": false,
+              "kills": 18,
+              "deaths": 33,
+              "assists": 28,
+              "gold": 45001,
+              "damageToChampions": 73019,
+              "visionScore": 128,
+              "wardsPlaced": 62,
+              "wardsKilled": 11,
+              "towers": 1,
+              "voidGrubs": 3,
+              "heralds": 0,
+              "dragons": 0,
+              "elderDragons": 0,
+              "barons": 0,
+              "slot": "D2"
+            },
+            "200": {
+              "team": 200,
+              "side": "red",
+              "won": true,
+              "kills": 33,
+              "deaths": 18,
+              "assists": 64,
+              "gold": 55083,
+              "damageToChampions": 87513,
+              "visionScore": 150,
+              "wardsPlaced": 56,
+              "wardsKilled": 14,
+              "towers": 7,
+              "voidGrubs": 0,
+              "heralds": 1,
+              "dragons": 3,
+              "elderDragons": 0,
+              "barons": 1,
+              "slot": "D3"
+            }
+          },
+          "participants": [
+            {
+              "participantIndex": 0,
+              "playerId": "593a8ce7-a4c6-44cd-89ce-7abb03f88855",
+              "riotId": "EsquiloTranquilo#br1",
+              "gameName": "EsquiloTranquilo",
+              "tagLine": "br1",
+              "team": 100,
+              "teamSlot": "D2",
+              "position": "TOP",
+              "champion": "Rumble",
+              "won": false,
+              "kills": 4,
+              "deaths": 6,
+              "assists": 3,
+              "gold": 8353,
+              "damageToChampions": 21410,
+              "visionScore": 24,
+              "wardsPlaced": 9,
+              "wardsKilled": 4,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 3,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                1056,
+                1052,
+                0,
+                8010,
+                6653,
+                3047,
+                3340
+              ],
+              "score": 72.01,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 16.2,
+                "kp": 38.89,
+                "damage": 63.74,
+                "gold": 46.4,
+                "efficiency": 68.56,
+                "vision": 93.75,
+                "wards": 95.54,
+                "towers": 0,
+                "objectives": 100,
+                "kills": 61.73,
+                "assists": 41.21,
+                "survival": 22.68,
+                "roleEdge": 58.43,
+                "dpm": 888.07,
+                "gpm": 346.48
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 1,
+              "playerId": "4448fafa-ddb9-4a96-b9da-df67b2919733",
+              "riotId": "shameless#eva",
+              "gameName": "shameless",
+              "tagLine": "eva",
+              "team": 100,
+              "teamSlot": "D2",
+              "position": "JG",
+              "champion": "Nocturne",
+              "won": false,
+              "kills": 3,
+              "deaths": 6,
+              "assists": 7,
+              "gold": 9381,
+              "damageToChampions": 13205,
+              "visionScore": 17,
+              "wardsPlaced": 7,
+              "wardsKilled": 0,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3073,
+                6631,
+                3111,
+                1036,
+                1037,
+                0,
+                3364
+              ],
+              "score": 56.26,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 23.15,
+                "kp": 42.74,
+                "damage": 60.28,
+                "gold": 57.91,
+                "efficiency": 49.29,
+                "vision": 36.89,
+                "wards": 24.77,
+                "towers": 0,
+                "objectives": 0,
+                "kills": 46.3,
+                "assists": 54.35,
+                "survival": 22.68,
+                "roleEdge": 25.65,
+                "dpm": 547.73,
+                "gpm": 389.12
+              },
+              "identificationMethod": "manual"
+            },
+            {
+              "participantIndex": 2,
+              "playerId": "b115ad0f-e41a-43c8-bf5a-f7a9c697c5e3",
+              "riotId": "Kuwabara 愛#gumie",
+              "gameName": "Kuwabara 愛",
+              "tagLine": "gumie",
+              "team": 100,
+              "teamSlot": "D2",
+              "position": "MID",
+              "champion": "Irelia",
+              "won": false,
+              "kills": 9,
+              "deaths": 9,
+              "assists": 4,
+              "gold": 10746,
+              "damageToChampions": 19296,
+              "visionScore": 21,
+              "wardsPlaced": 11,
+              "wardsKilled": 2,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3091,
+                3153,
+                3173,
+                2019,
+                1037,
+                1086,
+                3340
+              ],
+              "score": 79.84,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 18.06,
+                "kp": 62.26,
+                "damage": 55.05,
+                "gold": 56.86,
+                "efficiency": 48.03,
+                "vision": 68.36,
+                "wards": 74.31,
+                "towers": 100,
+                "objectives": 0,
+                "kills": 100,
+                "assists": 51.02,
+                "survival": 16.22,
+                "roleEdge": 45.37,
+                "dpm": 800.38,
+                "gpm": 445.74
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 3,
+              "playerId": "a50ec03a-1b03-4d85-86f8-69cff19d0220",
+              "riotId": "Samsara#Fiore",
+              "gameName": "Samsara",
+              "tagLine": "Fiore",
+              "team": 100,
+              "teamSlot": "D2",
+              "position": "ADC",
+              "champion": "Kaisa",
+              "won": false,
+              "kills": 2,
+              "deaths": 5,
+              "assists": 2,
+              "gold": 10203,
+              "damageToChampions": 13923,
+              "visionScore": 15,
+              "wardsPlaced": 8,
+              "wardsKilled": 1,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                6672,
+                3124,
+                1086,
+                3115,
+                0,
+                0,
+                3340
+              ],
+              "score": 47.74,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 9.09,
+                "kp": 19.16,
+                "damage": 32.88,
+                "gold": 49.29,
+                "efficiency": 32.85,
+                "vision": 73.24,
+                "wards": 75.64,
+                "towers": 0,
+                "objectives": 0,
+                "kills": 17.36,
+                "assists": 27.47,
+                "survival": 23.53,
+                "roleEdge": 21.91,
+                "dpm": 577.51,
+                "gpm": 423.21
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 4,
+              "playerId": "5ef6dac6-8daf-42e6-b3af-c8896a8554e1",
+              "riotId": "Bleyblade#Bleyd",
+              "gameName": "Bleyblade",
+              "tagLine": "Bleyd",
+              "team": 100,
+              "teamSlot": "D2",
+              "position": "SUP",
+              "champion": "Rell",
+              "won": false,
+              "kills": 0,
+              "deaths": 7,
+              "assists": 12,
+              "gold": 6318,
+              "damageToChampions": 5185,
+              "visionScore": 51,
+              "wardsPlaced": 27,
+              "wardsKilled": 4,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3047,
+                3869,
+                3050,
+                3067,
+                1031,
+                1006,
+                3364
+              ],
+              "score": 67.27,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 23.81,
+                "kp": 49.02,
+                "damage": 39.45,
+                "gold": 50.14,
+                "efficiency": 35.12,
+                "vision": 44.27,
+                "wards": 42.04,
+                "towers": 0,
+                "objectives": 0,
+                "kills": 0,
+                "assists": 53.57,
+                "survival": 21.45,
+                "roleEdge": 42.64,
+                "dpm": 215.07,
+                "gpm": 262.07
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 5,
+              "playerId": "60bed61b-e107-41bd-b0cc-943105c6e4c5",
+              "riotId": "peido sniffer#6767",
+              "gameName": "peido sniffer",
+              "tagLine": "6767",
+              "team": 200,
+              "teamSlot": "D3",
+              "position": "TOP",
+              "champion": "Yone",
+              "won": true,
+              "kills": 3,
+              "deaths": 5,
+              "assists": 2,
+              "gold": 8534,
+              "damageToChampions": 9801,
+              "visionScore": 13,
+              "wardsPlaced": 8,
+              "wardsKilled": 1,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                1086,
+                3153,
+                3006,
+                6673,
+                0,
+                0,
+                3363
+              ],
+              "score": 47.14,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 13.89,
+                "kp": 15.15,
+                "damage": 24.35,
+                "gold": 38.73,
+                "efficiency": 31.37,
+                "vision": 43.33,
+                "wards": 61.69,
+                "towers": 0,
+                "objectives": 0,
+                "kills": 25.25,
+                "assists": 12.02,
+                "survival": 26.14,
+                "roleEdge": 41.57,
+                "dpm": 406.54,
+                "gpm": 353.98
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 6,
+              "playerId": "953d89dc-d2ac-4e77-bef7-88c66ad248d8",
+              "riotId": "LittleTeclas#0402",
+              "gameName": "LittleTeclas",
+              "tagLine": "0402",
+              "team": 200,
+              "teamSlot": "D3",
+              "position": "JG",
+              "champion": "Skarner",
+              "won": true,
+              "kills": 7,
+              "deaths": 2,
+              "assists": 17,
+              "gold": 11231,
+              "damageToChampions": 17123,
+              "visionScore": 25,
+              "wardsPlaced": 6,
+              "wardsKilled": 2,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 0,
+                "heralds": 1,
+                "dragons": 3,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3047,
+                2502,
+                2055,
+                3075,
+                2525,
+                1028,
+                3364
+              ],
+              "score": 89.14,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 100,
+                "kp": 55.94,
+                "damage": 65.22,
+                "gold": 56.64,
+                "efficiency": 54.52,
+                "vision": 46.3,
+                "wards": 32.47,
+                "towers": 89.29,
+                "objectives": 54.13,
+                "kills": 58.92,
+                "assists": 57.74,
+                "survival": 48.31,
+                "roleEdge": 74.35,
+                "dpm": 710.25,
+                "gpm": 465.85
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 7,
+              "playerId": "387bfab7-c5a6-4f05-a41a-980cb0bf4d42",
+              "riotId": "Dynas#Alone",
+              "gameName": "Dynas",
+              "tagLine": "Alone",
+              "team": 200,
+              "teamSlot": "D3",
+              "position": "MID",
+              "champion": "Viktor",
+              "won": true,
+              "kills": 7,
+              "deaths": 5,
+              "assists": 17,
+              "gold": 10503,
+              "damageToChampions": 18806,
+              "visionScore": 16,
+              "wardsPlaced": 8,
+              "wardsKilled": 2,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3171,
+                2031,
+                2503,
+                3916,
+                3157,
+                3108,
+                3363
+              ],
+              "score": 75.67,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 60,
+                "kp": 62.7,
+                "damage": 44.77,
+                "gold": 45.4,
+                "efficiency": 48.92,
+                "vision": 44.44,
+                "wards": 59.52,
+                "towers": 35.71,
+                "objectives": 0,
+                "kills": 46.11,
+                "assists": 94.87,
+                "survival": 26.14,
+                "roleEdge": 54.63,
+                "dpm": 780.06,
+                "gpm": 435.66
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 8,
+              "playerId": "df0e9d12-5f4f-4268-a80d-cefa44c76268",
+              "riotId": "epilul#ROX",
+              "gameName": "epilul",
+              "tagLine": "ROX",
+              "team": 200,
+              "teamSlot": "D3",
+              "position": "ADC",
+              "champion": "Corki",
+              "won": true,
+              "kills": 13,
+              "deaths": 2,
+              "assists": 10,
+              "gold": 16595,
+              "damageToChampions": 34262,
+              "visionScore": 32,
+              "wardsPlaced": 10,
+              "wardsKilled": 5,
+              "objectives": {
+                "towers": 5,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 1
+              },
+              "items": [
+                3031,
+                3042,
+                1018,
+                3078,
+                2523,
+                1086,
+                3363
+              ],
+              "score": 100,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 90.91,
+                "kp": 60.08,
+                "damage": 67.5,
+                "gold": 65.49,
+                "efficiency": 50.76,
+                "vision": 100,
+                "wards": 100,
+                "towers": 100,
+                "objectives": 100,
+                "kills": 61.55,
+                "assists": 60.1,
+                "survival": 43.48,
+                "roleEdge": 78.09,
+                "dpm": 1421.16,
+                "gpm": 688.35
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 9,
+              "playerId": "8f58fb63-7765-463b-8688-89c4552fcae5",
+              "riotId": "Oxossi#SDK",
+              "gameName": "Oxossi",
+              "tagLine": "SDK",
+              "team": 200,
+              "teamSlot": "D3",
+              "position": "SUP",
+              "champion": "Nautilus",
+              "won": true,
+              "kills": 3,
+              "deaths": 4,
+              "assists": 18,
+              "gold": 8220,
+              "damageToChampions": 7521,
+              "visionScore": 64,
+              "wardsPlaced": 24,
+              "wardsKilled": 4,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3869,
+                3047,
+                3190,
+                2524,
+                0,
+                0,
+                3364
+              ],
+              "score": 71.18,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 72.92,
+                "kp": 46.79,
+                "damage": 47.75,
+                "gold": 53.3,
+                "efficiency": 39.99,
+                "vision": 47.41,
+                "wards": 38.96,
+                "towers": 0,
+                "objectives": 0,
+                "kills": 90.91,
+                "assists": 35.16,
+                "survival": 33.07,
+                "roleEdge": 57.36,
+                "dpm": 311.96,
+                "gpm": 340.96
+              },
+              "identificationMethod": "primary-riot-id"
+            }
+          ]
+        },
+        {
+          "id": "groups-r3g7-j2",
+          "division": "elite",
+          "seriesId": "groups-r3g7",
+          "stage": "grupos",
+          "round": "RODADA 3 - BOR x SDK",
+          "gameNumber": 2,
+          "date": "09/08 20:30",
+          "gameId": "",
+          "clientVersion": "16.15.802.4387",
+          "durationSeconds": 2156.049,
+          "duration": "35:56",
+          "blueTeamSlot": "D3",
+          "redTeamSlot": "D2",
+          "blueTeam": {
+            "slot": "D3",
+            "name": "SPACE DUCKS",
+            "tag": "SDK",
+            "logo": "assets/uploads/equipes_elite/sdk.png"
+          },
+          "redTeam": {
+            "slot": "D2",
+            "name": "BORRACHARIA FC",
+            "tag": "BOR",
+            "logo": "assets/uploads/equipes_elite/bor.png"
+          },
+          "winnerSlot": "D3",
+          "loserSlot": "D2",
+          "goldDiff": 8500,
+          "killsDiff": 3,
+          "mvp": {
+            "participantIndex": 3,
+            "riotId": "epilul#ROX",
+            "playerId": "df0e9d12-5f4f-4268-a80d-cefa44c76268",
+            "position": "ADC",
+            "score": 100,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 82.39,
+              "kp": 71.43,
+              "damage": 76.39,
+              "gold": 72.18,
+              "efficiency": 52.13,
+              "vision": 100,
+              "wards": 100,
+              "towers": 100,
+              "objectives": 0,
+              "kills": 84.82,
+              "assists": 47.48,
+              "survival": 27.78,
+              "roleEdge": 69.74,
+              "dpm": 1677.85,
+              "gpm": 719.98
+            }
+          },
+          "teams": {
+            "100": {
+              "team": 100,
+              "side": "blue",
+              "won": true,
+              "kills": 35,
+              "deaths": 32,
+              "assists": 81,
+              "gold": 77926,
+              "damageToChampions": 136076,
+              "visionScore": 276,
+              "wardsPlaced": 113,
+              "wardsKilled": 25,
+              "towers": 9,
+              "voidGrubs": 2,
+              "heralds": 1,
+              "dragons": 2,
+              "elderDragons": 0,
+              "barons": 1,
+              "slot": "D3"
+            },
+            "200": {
+              "team": 200,
+              "side": "red",
+              "won": false,
+              "kills": 32,
+              "deaths": 35,
+              "assists": 61,
+              "gold": 69426,
+              "damageToChampions": 136929,
+              "visionScore": 236,
+              "wardsPlaced": 76,
+              "wardsKilled": 36,
+              "towers": 4,
+              "voidGrubs": 1,
+              "heralds": 0,
+              "dragons": 3,
+              "elderDragons": 0,
+              "barons": 1,
+              "slot": "D2"
+            }
+          },
+          "participants": [
+            {
+              "participantIndex": 0,
+              "playerId": "60bed61b-e107-41bd-b0cc-943105c6e4c5",
+              "riotId": "peido sniffer#6767",
+              "gameName": "peido sniffer",
+              "tagLine": "6767",
+              "team": 100,
+              "teamSlot": "D3",
+              "position": "TOP",
+              "champion": "Anivia",
+              "won": true,
+              "kills": 3,
+              "deaths": 3,
+              "assists": 14,
+              "gold": 13363,
+              "damageToChampions": 21286,
+              "visionScore": 35,
+              "wardsPlaced": 13,
+              "wardsKilled": 3,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                1052,
+                3157,
+                2508,
+                3040,
+                3047,
+                6657,
+                3363
+              ],
+              "score": 70.16,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 78.7,
+                "kp": 48.57,
+                "damage": 34.01,
+                "gold": 42.87,
+                "efficiency": 39.59,
+                "vision": 63.41,
+                "wards": 58.14,
+                "towers": 22.22,
+                "objectives": 0,
+                "kills": 23.81,
+                "assists": 66.48,
+                "survival": 37.66,
+                "roleEdge": 58.68,
+                "dpm": 592.36,
+                "gpm": 371.87
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 1,
+              "playerId": "953d89dc-d2ac-4e77-bef7-88c66ad248d8",
+              "riotId": "LittleTeclas#0402",
+              "gameName": "LittleTeclas",
+              "tagLine": "0402",
+              "team": 100,
+              "teamSlot": "D3",
+              "position": "JG",
+              "champion": "LeeSin",
+              "won": true,
+              "kills": 7,
+              "deaths": 7,
+              "assists": 22,
+              "gold": 15484,
+              "damageToChampions": 24742,
+              "visionScore": 48,
+              "wardsPlaced": 18,
+              "wardsKilled": 2,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 2,
+                "heralds": 1,
+                "dragons": 2,
+                "elderDragons": 0,
+                "barons": 1
+              },
+              "items": [
+                6610,
+                6692,
+                2055,
+                6333,
+                3026,
+                3111,
+                3340
+              ],
+              "score": 87.32,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 57.54,
+                "kp": 63.74,
+                "damage": 60.61,
+                "gold": 55.19,
+                "efficiency": 51.99,
+                "vision": 48.31,
+                "wards": 38.76,
+                "towers": 69.44,
+                "objectives": 76.92,
+                "kills": 55.56,
+                "assists": 59.04,
+                "survival": 20.02,
+                "roleEdge": 54.62,
+                "dpm": 688.54,
+                "gpm": 430.9
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 2,
+              "playerId": "387bfab7-c5a6-4f05-a41a-980cb0bf4d42",
+              "riotId": "Dynas#Alone",
+              "gameName": "Dynas",
+              "tagLine": "Alone",
+              "team": 100,
+              "teamSlot": "D3",
+              "position": "MID",
+              "champion": "Renekton",
+              "won": true,
+              "kills": 3,
+              "deaths": 9,
+              "assists": 16,
+              "gold": 13126,
+              "damageToChampions": 21230,
+              "visionScore": 29,
+              "wardsPlaced": 15,
+              "wardsKilled": 1,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3071,
+                6692,
+                3173,
+                3161,
+                3082,
+                1028,
+                3340
+              ],
+              "score": 56.93,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 26.39,
+                "kp": 46.8,
+                "damage": 32.5,
+                "gold": 40.11,
+                "efficiency": 40.2,
+                "vision": 43.78,
+                "wards": 45.68,
+                "towers": 0,
+                "objectives": 0,
+                "kills": 18.63,
+                "assists": 70.55,
+                "survival": 16.22,
+                "roleEdge": 37.92,
+                "dpm": 590.8,
+                "gpm": 365.28
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 3,
+              "playerId": "df0e9d12-5f4f-4268-a80d-cefa44c76268",
+              "riotId": "epilul#ROX",
+              "gameName": "epilul",
+              "tagLine": "ROX",
+              "team": 100,
+              "teamSlot": "D3",
+              "position": "ADC",
+              "champion": "Yunara",
+              "won": true,
+              "kills": 19,
+              "deaths": 4,
+              "assists": 10,
+              "gold": 25872,
+              "damageToChampions": 60292,
+              "visionScore": 49,
+              "wardsPlaced": 21,
+              "wardsKilled": 6,
+              "objectives": {
+                "towers": 7,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3072,
+                6672,
+                3031,
+                2512,
+                2523,
+                3036,
+                3363
+              ],
+              "score": 100,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 82.39,
+                "kp": 71.43,
+                "damage": 76.39,
+                "gold": 72.18,
+                "efficiency": 52.13,
+                "vision": 100,
+                "wards": 100,
+                "towers": 100,
+                "objectives": 0,
+                "kills": 84.82,
+                "assists": 47.48,
+                "survival": 27.78,
+                "roleEdge": 69.74,
+                "dpm": 1677.85,
+                "gpm": 719.98
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 4,
+              "playerId": "8f58fb63-7765-463b-8688-89c4552fcae5",
+              "riotId": "Oxossi#SDK",
+              "gameName": "Oxossi",
+              "tagLine": "SDK",
+              "team": 100,
+              "teamSlot": "D3",
+              "position": "SUP",
+              "champion": "Leona",
+              "won": true,
+              "kills": 3,
+              "deaths": 9,
+              "assists": 19,
+              "gold": 10081,
+              "damageToChampions": 8526,
+              "visionScore": 115,
+              "wardsPlaced": 46,
+              "wardsKilled": 13,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3869,
+                3109,
+                3190,
+                2524,
+                3047,
+                0,
+                3364
+              ],
+              "score": 64.58,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 33.95,
+                "kp": 46.22,
+                "damage": 34.81,
+                "gold": 46.2,
+                "efficiency": 33.63,
+                "vision": 46.3,
+                "wards": 43.52,
+                "towers": 0,
+                "objectives": 0,
+                "kills": 85.71,
+                "assists": 29.32,
+                "survival": 17.38,
+                "roleEdge": 49.78,
+                "dpm": 237.27,
+                "gpm": 280.54
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 5,
+              "playerId": "593a8ce7-a4c6-44cd-89ce-7abb03f88855",
+              "riotId": "EsquiloTranquilo#br1",
+              "gameName": "EsquiloTranquilo",
+              "tagLine": "br1",
+              "team": 200,
+              "teamSlot": "D2",
+              "position": "TOP",
+              "champion": "Jayce",
+              "won": false,
+              "kills": 8,
+              "deaths": 8,
+              "assists": 14,
+              "gold": 13643,
+              "damageToChampions": 30601,
+              "visionScore": 38,
+              "wardsPlaced": 9,
+              "wardsKilled": 7,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                0,
+                3142,
+                3042,
+                6694,
+                6699,
+                3047,
+                3364
+              ],
+              "score": 66.57,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 38.19,
+                "kp": 68.75,
+                "damage": 48.58,
+                "gold": 49.13,
+                "efficiency": 49.36,
+                "vision": 80.51,
+                "wards": 75,
+                "towers": 0,
+                "objectives": 0,
+                "kills": 69.44,
+                "assists": 88.27,
+                "survival": 17.92,
+                "roleEdge": 41.32,
+                "dpm": 851.59,
+                "gpm": 379.67
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 6,
+              "playerId": "4448fafa-ddb9-4a96-b9da-df67b2919733",
+              "riotId": "shameless#eva",
+              "gameName": "shameless",
+              "tagLine": "eva",
+              "team": 200,
+              "teamSlot": "D2",
+              "position": "JG",
+              "champion": "Hecarim",
+              "won": false,
+              "kills": 6,
+              "deaths": 8,
+              "assists": 16,
+              "gold": 15066,
+              "damageToChampions": 23188,
+              "visionScore": 29,
+              "wardsPlaced": 4,
+              "wardsKilled": 5,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 1,
+                "heralds": 0,
+                "dragons": 3,
+                "elderDragons": 0,
+                "barons": 1
+              },
+              "items": [
+                3161,
+                3158,
+                6333,
+                2517,
+                6694,
+                1036,
+                3364
+              ],
+              "score": 77.05,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 38.19,
+                "kp": 52.88,
+                "damage": 56.45,
+                "gold": 60.28,
+                "efficiency": 44.34,
+                "vision": 34.13,
+                "wards": 24.57,
+                "towers": 0,
+                "objectives": 76.92,
+                "kills": 52.08,
+                "assists": 57.02,
+                "survival": 17.92,
+                "roleEdge": 45.38,
+                "dpm": 645.29,
+                "gpm": 419.27
+              },
+              "identificationMethod": "manual"
+            },
+            {
+              "participantIndex": 7,
+              "playerId": "b115ad0f-e41a-43c8-bf5a-f7a9c697c5e3",
+              "riotId": "Kuwabara 愛#gumie",
+              "gameName": "Kuwabara 愛",
+              "tagLine": "gumie",
+              "team": 200,
+              "teamSlot": "D2",
+              "position": "MID",
+              "champion": "Aurora",
+              "won": false,
+              "kills": 7,
+              "deaths": 4,
+              "assists": 8,
+              "gold": 14434,
+              "damageToChampions": 39343,
+              "visionScore": 32,
+              "wardsPlaced": 6,
+              "wardsKilled": 7,
+              "objectives": {
+                "towers": 3,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3152,
+                2420,
+                1058,
+                3174,
+                6655,
+                4645,
+                3364
+              ],
+              "score": 80.32,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 46.88,
+                "kp": 40.41,
+                "damage": 59.86,
+                "gold": 49.5,
+                "efficiency": 59.98,
+                "vision": 56.5,
+                "wards": 52.88,
+                "towers": 100,
+                "objectives": 0,
+                "kills": 47.55,
+                "assists": 46.84,
+                "survival": 30.86,
+                "roleEdge": 62.08,
+                "dpm": 1094.86,
+                "gpm": 401.68
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 8,
+              "playerId": "a50ec03a-1b03-4d85-86f8-69cff19d0220",
+              "riotId": "Samsara#Fiore",
+              "gameName": "Samsara",
+              "tagLine": "Fiore",
+              "team": 200,
+              "teamSlot": "D2",
+              "position": "ADC",
+              "champion": "Samira",
+              "won": false,
+              "kills": 10,
+              "deaths": 5,
+              "assists": 3,
+              "gold": 16436,
+              "damageToChampions": 26123,
+              "visionScore": 28,
+              "wardsPlaced": 10,
+              "wardsKilled": 8,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3072,
+                6676,
+                3031,
+                3036,
+                1037,
+                0,
+                3363
+              ],
+              "score": 61.23,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 29.55,
+                "kp": 35.02,
+                "damage": 32.89,
+                "gold": 51.47,
+                "efficiency": 31.48,
+                "vision": 74.15,
+                "wards": 100,
+                "towers": 35.71,
+                "objectives": 0,
+                "kills": 48.83,
+                "assists": 18.92,
+                "survival": 23.53,
+                "roleEdge": 30.26,
+                "dpm": 726.97,
+                "gpm": 457.39
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 9,
+              "playerId": "5ef6dac6-8daf-42e6-b3af-c8896a8554e1",
+              "riotId": "Bleyblade#Bleyd",
+              "gameName": "Bleyblade",
+              "tagLine": "Bleyd",
+              "team": 200,
+              "teamSlot": "D2",
+              "position": "SUP",
+              "champion": "Sylas",
+              "won": false,
+              "kills": 1,
+              "deaths": 10,
+              "assists": 20,
+              "gold": 9847,
+              "damageToChampions": 17674,
+              "visionScore": 109,
+              "wardsPlaced": 47,
+              "wardsKilled": 9,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                2420,
+                3869,
+                3152,
+                3916,
+                4646,
+                3020,
+                3364
+              ],
+              "score": 69.2,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 29.17,
+                "kp": 48.25,
+                "damage": 71.71,
+                "gold": 50.66,
+                "efficiency": 63.2,
+                "vision": 51.32,
+                "wards": 46.54,
+                "towers": 0,
+                "objectives": 0,
+                "kills": 31.25,
+                "assists": 40.98,
+                "survival": 15.87,
+                "roleEdge": 50.22,
+                "dpm": 491.84,
+                "gpm": 274.03
+              },
+              "identificationMethod": "primary-riot-id"
+            }
+          ]
+        },
+        {
+          "id": "groups-r3g8-j1",
+          "division": "elite",
+          "seriesId": "groups-r3g8",
+          "stage": "grupos",
+          "round": "RODADA 3 - M7 x FVL",
+          "gameNumber": 1,
+          "date": "09/08 20:30",
+          "gameId": "",
+          "clientVersion": "16.15.802.4387",
+          "durationSeconds": 1888.902,
+          "duration": "31:29",
+          "blueTeamSlot": "D4",
+          "redTeamSlot": "D1",
+          "blueTeam": {
+            "slot": "D4",
+            "name": "M7 ESPORTS",
+            "tag": "M7",
+            "logo": "assets/uploads/equipes_elite/m7.png"
+          },
+          "redTeam": {
+            "slot": "D1",
+            "name": "FAVELÃO DO TECHY",
+            "tag": "FVL",
+            "logo": "assets/uploads/equipes_elite/fvl.png"
+          },
+          "winnerSlot": "D1",
+          "loserSlot": "D4",
+          "goldDiff": 7310,
+          "killsDiff": 9,
+          "mvp": {
+            "participantIndex": 6,
+            "riotId": "TeteuCantoni#BR1",
+            "playerId": "6e241754-e4e8-4f57-9818-b2279e3bd0a6",
+            "position": "JG",
+            "score": 98.73,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 97.22,
+              "kp": 64.62,
+              "damage": 100,
+              "gold": 64.82,
+              "efficiency": 75.85,
+              "vision": 58.92,
+              "wards": 43.55,
+              "towers": 100,
+              "objectives": 67.87,
+              "kills": 100,
+              "assists": 42.63,
+              "survival": 37.66,
+              "roleEdge": 72.05,
+              "dpm": 930.22,
+              "gpm": 505.98
+            }
+          },
+          "teams": {
+            "100": {
+              "team": 100,
+              "side": "blue",
+              "won": false,
+              "kills": 16,
+              "deaths": 25,
+              "assists": 29,
+              "gold": 60955,
+              "damageToChampions": 88743,
+              "visionScore": 223,
+              "wardsPlaced": 74,
+              "wardsKilled": 38,
+              "towers": 2,
+              "voidGrubs": 0,
+              "heralds": 1,
+              "dragons": 0,
+              "elderDragons": 0,
+              "barons": 0,
+              "slot": "D4"
+            },
+            "200": {
+              "team": 200,
+              "side": "red",
+              "won": true,
+              "kills": 25,
+              "deaths": 16,
+              "assists": 51,
+              "gold": 68265,
+              "damageToChampions": 94009,
+              "visionScore": 231,
+              "wardsPlaced": 82,
+              "wardsKilled": 24,
+              "towers": 10,
+              "voidGrubs": 3,
+              "heralds": 0,
+              "dragons": 4,
+              "elderDragons": 0,
+              "barons": 1,
+              "slot": "D1"
+            }
+          },
+          "participants": [
+            {
+              "participantIndex": 0,
+              "playerId": "87b0b01b-0c1d-44ca-8154-ec59da7b80a3",
+              "riotId": "DeyraF#LDavi",
+              "gameName": "DeyraF",
+              "tagLine": "LDavi",
+              "team": 100,
+              "teamSlot": "D4",
+              "position": "TOP",
+              "champion": "Rumble",
+              "won": false,
+              "kills": 3,
+              "deaths": 4,
+              "assists": 1,
+              "gold": 12037,
+              "damageToChampions": 22233,
+              "visionScore": 28,
+              "wardsPlaced": 11,
+              "wardsKilled": 4,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                1056,
+                2031,
+                6653,
+                3020,
+                4645,
+                8010,
+                3363
+              ],
+              "score": 57.37,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 13.89,
+                "kp": 25,
+                "damage": 54.46,
+                "gold": 49.37,
+                "efficiency": 55.06,
+                "vision": 62.78,
+                "wards": 64.89,
+                "towers": 0,
+                "objectives": 0,
+                "kills": 52.08,
+                "assists": 13.26,
+                "survival": 30.86,
+                "roleEdge": 36.17,
+                "dpm": 706.22,
+                "gpm": 382.35
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 1,
+              "playerId": "d461d7bf-887a-4969-9e94-2af9389b2f2a",
+              "riotId": "Blackzera#CBLOL",
+              "gameName": "Blackzera",
+              "tagLine": "CBLOL",
+              "team": 100,
+              "teamSlot": "D4",
+              "position": "JG",
+              "champion": "JarvanIV",
+              "won": false,
+              "kills": 3,
+              "deaths": 6,
+              "assists": 9,
+              "gold": 12084,
+              "damageToChampions": 14245,
+              "visionScore": 62,
+              "wardsPlaced": 15,
+              "wardsKilled": 12,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3071,
+                3026,
+                6610,
+                3111,
+                0,
+                0,
+                3364
+              ],
+              "score": 69.88,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 27.78,
+                "kp": 57.69,
+                "damage": 53.51,
+                "gold": 55.07,
+                "efficiency": 46.01,
+                "vision": 77.23,
+                "wards": 69.97,
+                "towers": 100,
+                "objectives": 0,
+                "kills": 52.08,
+                "assists": 67.47,
+                "survival": 22.68,
+                "roleEdge": 27.95,
+                "dpm": 452.49,
+                "gpm": 383.84
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 2,
+              "playerId": "51ddf34b-a1bd-49d1-9989-9c36de9c16d5",
+              "riotId": "LOSTKING#MID",
+              "gameName": "LOSTKING",
+              "tagLine": "MID",
+              "team": 100,
+              "teamSlot": "D4",
+              "position": "MID",
+              "champion": "Cassiopeia",
+              "won": false,
+              "kills": 8,
+              "deaths": 6,
+              "assists": 4,
+              "gold": 15449,
+              "damageToChampions": 26850,
+              "visionScore": 36,
+              "wardsPlaced": 14,
+              "wardsKilled": 8,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 0,
+                "heralds": 1,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3152,
+                1058,
+                3135,
+                6653,
+                3173,
+                6657,
+                3363
+              ],
+              "score": 88.47,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 25,
+                "kp": 64.66,
+                "damage": 63.03,
+                "gold": 60.35,
+                "efficiency": 51.81,
+                "vision": 67.26,
+                "wards": 82.7,
+                "towers": 100,
+                "objectives": 100,
+                "kills": 100,
+                "assists": 49.26,
+                "survival": 22.68,
+                "roleEdge": 50.58,
+                "dpm": 852.88,
+                "gpm": 490.73
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 3,
+              "playerId": "c0252d66-bd2d-4f35-b210-c03943520a05",
+              "riotId": "Pewtz#Pewtz",
+              "gameName": "Pewtz",
+              "tagLine": "Pewtz",
+              "team": 100,
+              "teamSlot": "D4",
+              "position": "ADC",
+              "champion": "Caitlyn",
+              "won": false,
+              "kills": 2,
+              "deaths": 4,
+              "assists": 3,
+              "gold": 13241,
+              "damageToChampions": 21562,
+              "visionScore": 38,
+              "wardsPlaced": 11,
+              "wardsKilled": 8,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                1018,
+                1086,
+                2523,
+                3046,
+                3031,
+                3035,
+                3363
+              ],
+              "score": 55.12,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 14.2,
+                "kp": 26.94,
+                "damage": 41.89,
+                "gold": 47.22,
+                "efficiency": 43.69,
+                "vision": 100,
+                "wards": 100,
+                "towers": 0,
+                "objectives": 0,
+                "kills": 19.53,
+                "assists": 39.79,
+                "survival": 27.78,
+                "roleEdge": 39.24,
+                "dpm": 684.91,
+                "gpm": 420.59
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 4,
+              "playerId": "d34dc7d7-ee25-4b81-8c61-aa437acbe393",
+              "riotId": "Ghozt#123",
+              "gameName": "Ghozt",
+              "tagLine": "123",
+              "team": 100,
+              "teamSlot": "D4",
+              "position": "SUP",
+              "champion": "Milio",
+              "won": false,
+              "kills": 0,
+              "deaths": 5,
+              "assists": 12,
+              "gold": 8144,
+              "damageToChampions": 3853,
+              "visionScore": 59,
+              "wardsPlaced": 23,
+              "wardsKilled": 6,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3870,
+                6620,
+                3158,
+                6617,
+                3916,
+                3114,
+                3364
+              ],
+              "score": 63.82,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 33.33,
+                "kp": 55.15,
+                "damage": 24.12,
+                "gold": 47.72,
+                "efficiency": 22.57,
+                "vision": 29.4,
+                "wards": 24.43,
+                "towers": 0,
+                "objectives": 0,
+                "kills": 0,
+                "assists": 51.72,
+                "survival": 28.01,
+                "roleEdge": 39.41,
+                "dpm": 122.39,
+                "gpm": 258.69
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 5,
+              "playerId": "ee09cf39-13a1-4268-a363-dbd28955437b",
+              "riotId": "N I H I L メ#CDRP",
+              "gameName": "N I H I L メ",
+              "tagLine": "CDRP",
+              "team": 200,
+              "teamSlot": "D1",
+              "position": "TOP",
+              "champion": "Yorick",
+              "won": true,
+              "kills": 1,
+              "deaths": 2,
+              "assists": 5,
+              "gold": 14142,
+              "damageToChampions": 20318,
+              "visionScore": 31,
+              "wardsPlaced": 13,
+              "wardsKilled": 0,
+              "objectives": {
+                "towers": 4,
+                "voidGrubs": 2,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3156,
+                1057,
+                3211,
+                3078,
+                3161,
+                3111,
+                3363
+              ],
+              "score": 78.6,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 41.67,
+                "kp": 24,
+                "damage": 46.98,
+                "gold": 51.79,
+                "efficiency": 45.28,
+                "vision": 67.1,
+                "wards": 55.08,
+                "towers": 80,
+                "objectives": 73.53,
+                "kills": 11.11,
+                "assists": 37.71,
+                "survival": 48.31,
+                "roleEdge": 63.83,
+                "dpm": 645.39,
+                "gpm": 449.21
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 6,
+              "playerId": "6e241754-e4e8-4f57-9818-b2279e3bd0a6",
+              "riotId": "TeteuCantoni#BR1",
+              "gameName": "TeteuCantoni",
+              "tagLine": "BR1",
+              "team": 200,
+              "teamSlot": "D1",
+              "position": "JG",
+              "champion": "MonkeyKing",
+              "won": true,
+              "kills": 11,
+              "deaths": 3,
+              "assists": 10,
+              "gold": 15929,
+              "damageToChampions": 29285,
+              "visionScore": 49,
+              "wardsPlaced": 5,
+              "wardsKilled": 9,
+              "objectives": {
+                "towers": 2,
+                "voidGrubs": 1,
+                "heralds": 0,
+                "dragons": 4,
+                "elderDragons": 0,
+                "barons": 1
+              },
+              "items": [
+                3078,
+                0,
+                6610,
+                6333,
+                3156,
+                3111,
+                3364
+              ],
+              "score": 98.73,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 97.22,
+                "kp": 64.62,
+                "damage": 100,
+                "gold": 64.82,
+                "efficiency": 75.85,
+                "vision": 58.92,
+                "wards": 43.55,
+                "towers": 100,
+                "objectives": 67.87,
+                "kills": 100,
+                "assists": 42.63,
+                "survival": 37.66,
+                "roleEdge": 72.05,
+                "dpm": 930.22,
+                "gpm": 505.98
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 7,
+              "playerId": "cdb7296d-9960-4a4e-99e8-835f8068f8e7",
+              "riotId": "Techy#777",
+              "gameName": "Techy",
+              "tagLine": "777",
+              "team": 200,
+              "teamSlot": "D1",
+              "position": "MID",
+              "champion": "Ahri",
+              "won": true,
+              "kills": 9,
+              "deaths": 6,
+              "assists": 8,
+              "gold": 14313,
+              "damageToChampions": 21633,
+              "visionScore": 35,
+              "wardsPlaced": 14,
+              "wardsKilled": 1,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                4645,
+                3089,
+                4630,
+                3175,
+                1056,
+                3118,
+                3363
+              ],
+              "score": 72.64,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 35.42,
+                "kp": 58.62,
+                "damage": 47.94,
+                "gold": 49.92,
+                "efficiency": 47.64,
+                "vision": 63.13,
+                "wards": 54.73,
+                "towers": 25,
+                "objectives": 0,
+                "kills": 78.26,
+                "assists": 56.02,
+                "survival": 22.68,
+                "roleEdge": 49.42,
+                "dpm": 687.16,
+                "gpm": 454.65
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 8,
+              "playerId": "f02fe465-ee85-45f5-ac28-7f4722ea3481",
+              "riotId": "Sleepwalker#Hope",
+              "gameName": "Sleepwalker",
+              "tagLine": "Hope",
+              "team": 200,
+              "teamSlot": "D1",
+              "position": "ADC",
+              "champion": "Lucian",
+              "won": true,
+              "kills": 4,
+              "deaths": 3,
+              "assists": 9,
+              "gold": 15092,
+              "damageToChampions": 13929,
+              "visionScore": 34,
+              "wardsPlaced": 12,
+              "wardsKilled": 8,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                6675,
+                3508,
+                2055,
+                3031,
+                3036,
+                0,
+                3363
+              ],
+              "score": 60.51,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 49.24,
+                "kp": 44.83,
+                "damage": 25.55,
+                "gold": 48.06,
+                "efficiency": 26.18,
+                "vision": 91.99,
+                "wards": 100,
+                "towers": 14.29,
+                "objectives": 0,
+                "kills": 25,
+                "assists": 67.87,
+                "survival": 33.9,
+                "roleEdge": 60.76,
+                "dpm": 442.45,
+                "gpm": 479.39
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 9,
+              "playerId": "8827bd59-7836-4418-b5eb-d33dd8c3bee3",
+              "riotId": "Starkben2#MGB",
+              "gameName": "Starkben2",
+              "tagLine": "MGB",
+              "team": 200,
+              "teamSlot": "D1",
+              "position": "SUP",
+              "champion": "Braum",
+              "won": true,
+              "kills": 0,
+              "deaths": 2,
+              "assists": 19,
+              "gold": 8789,
+              "damageToChampions": 8844,
+              "visionScore": 82,
+              "wardsPlaced": 38,
+              "wardsKilled": 6,
+              "objectives": {
+                "towers": 2,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3190,
+                3109,
+                3869,
+                1011,
+                3111,
+                0,
+                3364
+              ],
+              "score": 78.39,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 100,
+                "kp": 55.88,
+                "damage": 52.26,
+                "gold": 45.98,
+                "efficiency": 50.74,
+                "vision": 39.44,
+                "wards": 39.83,
+                "towers": 100,
+                "objectives": 0,
+                "kills": 0,
+                "assists": 46.57,
+                "survival": 51.76,
+                "roleEdge": 60.59,
+                "dpm": 280.93,
+                "gpm": 279.18
+              },
+              "identificationMethod": "riot-id-alias"
+            }
+          ]
+        },
+        {
+          "id": "groups-r3g8-j2",
+          "division": "elite",
+          "seriesId": "groups-r3g8",
+          "stage": "grupos",
+          "round": "RODADA 3 - M7 x FVL",
+          "gameNumber": 2,
+          "date": "09/08 20:30",
+          "gameId": "",
+          "clientVersion": "16.15.802.4387",
+          "durationSeconds": 1617.712,
+          "duration": "26:58",
+          "blueTeamSlot": "D4",
+          "redTeamSlot": "D1",
+          "blueTeam": {
+            "slot": "D4",
+            "name": "M7 ESPORTS",
+            "tag": "M7",
+            "logo": "assets/uploads/equipes_elite/m7.png"
+          },
+          "redTeam": {
+            "slot": "D1",
+            "name": "FAVELÃO DO TECHY",
+            "tag": "FVL",
+            "logo": "assets/uploads/equipes_elite/fvl.png"
+          },
+          "winnerSlot": "D1",
+          "loserSlot": "D4",
+          "goldDiff": 9527,
+          "killsDiff": 11,
+          "mvp": {
+            "participantIndex": 5,
+            "riotId": "N I H I L メ#CDRP",
+            "playerId": "ee09cf39-13a1-4268-a363-dbd28955437b",
+            "position": "TOP",
+            "score": 99.86,
+            "model": "role-impact-v2",
+            "breakdown": {
+              "kda": 100,
+              "kp": 62.5,
+              "damage": 71.62,
+              "gold": 60.85,
+              "efficiency": 58.75,
+              "vision": 65.34,
+              "wards": 78.82,
+              "towers": 60,
+              "objectives": 0,
+              "kills": 100,
+              "assists": 46.9,
+              "survival": 100,
+              "roleEdge": 72.46,
+              "dpm": 1103.15,
+              "gpm": 526.19
+            }
+          },
+          "teams": {
+            "100": {
+              "team": 100,
+              "side": "blue",
+              "won": false,
+              "kills": 13,
+              "deaths": 24,
+              "assists": 23,
+              "gold": 48760,
+              "damageToChampions": 78417,
+              "visionScore": 143,
+              "wardsPlaced": 60,
+              "wardsKilled": 14,
+              "towers": 1,
+              "voidGrubs": 0,
+              "heralds": 0,
+              "dragons": 1,
+              "elderDragons": 0,
+              "barons": 0,
+              "slot": "D4"
+            },
+            "200": {
+              "team": 200,
+              "side": "red",
+              "won": true,
+              "kills": 24,
+              "deaths": 13,
+              "assists": 41,
+              "gold": 58287,
+              "damageToChampions": 90274,
+              "visionScore": 176,
+              "wardsPlaced": 64,
+              "wardsKilled": 25,
+              "towers": 10,
+              "voidGrubs": 3,
+              "heralds": 1,
+              "dragons": 3,
+              "elderDragons": 0,
+              "barons": 1,
+              "slot": "D1"
+            }
+          },
+          "participants": [
+            {
+              "participantIndex": 0,
+              "playerId": "87b0b01b-0c1d-44ca-8154-ec59da7b80a3",
+              "riotId": "DeyraF#LDavi",
+              "gameName": "DeyraF",
+              "tagLine": "LDavi",
+              "team": 100,
+              "teamSlot": "D4",
+              "position": "TOP",
+              "champion": "KSante",
+              "won": false,
+              "kills": 3,
+              "deaths": 4,
+              "assists": 1,
+              "gold": 9444,
+              "damageToChampions": 9184,
+              "visionScore": 23,
+              "wardsPlaced": 11,
+              "wardsKilled": 2,
+              "objectives": {
+                "towers": 1,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                1054,
+                1031,
+                3067,
+                3110,
+                3047,
+                2502,
+                3340
+              ],
+              "score": 66.75,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 13.89,
+                "kp": 30.77,
+                "damage": 25.46,
+                "gold": 48.42,
+                "efficiency": 26.25,
+                "vision": 80.42,
+                "wards": 86.42,
+                "towers": 100,
+                "objectives": 0,
+                "kills": 64.1,
+                "assists": 16.72,
+                "survival": 30.86,
+                "roleEdge": 27.54,
+                "dpm": 340.63,
+                "gpm": 350.27
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 1,
+              "playerId": "d461d7bf-887a-4969-9e94-2af9389b2f2a",
+              "riotId": "Blackzera#CBLOL",
+              "gameName": "Blackzera",
+              "tagLine": "CBLOL",
+              "team": 100,
+              "teamSlot": "D4",
+              "position": "JG",
+              "champion": "Aatrox",
+              "won": false,
+              "kills": 4,
+              "deaths": 9,
+              "assists": 4,
+              "gold": 10162,
+              "damageToChampions": 13723,
+              "visionScore": 23,
+              "wardsPlaced": 8,
+              "wardsKilled": 1,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 1,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3161,
+                2055,
+                3047,
+                1036,
+                1037,
+                6610,
+                3364
+              ],
+              "score": 73.37,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 12.35,
+                "kp": 47.34,
+                "damage": 58.33,
+                "gold": 57.89,
+                "efficiency": 47.71,
+                "vision": 44.68,
+                "wards": 32.58,
+                "towers": 0,
+                "objectives": 76.92,
+                "kills": 85.47,
+                "assists": 37.81,
+                "survival": 16.22,
+                "roleEdge": 31.35,
+                "dpm": 508.98,
+                "gpm": 376.9
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 2,
+              "playerId": "51ddf34b-a1bd-49d1-9989-9c36de9c16d5",
+              "riotId": "LOSTKING#MID",
+              "gameName": "LOSTKING",
+              "tagLine": "MID",
+              "team": 100,
+              "teamSlot": "D4",
+              "position": "MID",
+              "champion": "Azir",
+              "won": false,
+              "kills": 3,
+              "deaths": 4,
+              "assists": 5,
+              "gold": 10466,
+              "damageToChampions": 27924,
+              "visionScore": 26,
+              "wardsPlaced": 12,
+              "wardsKilled": 3,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                4630,
+                6653,
+                1056,
+                3115,
+                3175,
+                1026,
+                3363
+              ],
+              "score": 75.82,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 25,
+                "kp": 53.05,
+                "damage": 74.19,
+                "gold": 51.11,
+                "efficiency": 69.44,
+                "vision": 75.76,
+                "wards": 84.88,
+                "towers": 0,
+                "objectives": 0,
+                "kills": 50.17,
+                "assists": 77.64,
+                "survival": 30.86,
+                "roleEdge": 45.77,
+                "dpm": 1035.68,
+                "gpm": 388.18
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 3,
+              "playerId": "c0252d66-bd2d-4f35-b210-c03943520a05",
+              "riotId": "Pewtz#Pewtz",
+              "gameName": "Pewtz",
+              "tagLine": "Pewtz",
+              "team": 100,
+              "teamSlot": "D4",
+              "position": "ADC",
+              "champion": "Sivir",
+              "won": false,
+              "kills": 2,
+              "deaths": 5,
+              "assists": 5,
+              "gold": 11693,
+              "damageToChampions": 21743,
+              "visionScore": 14,
+              "wardsPlaced": 7,
+              "wardsKilled": 1,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                6675,
+                1086,
+                3508,
+                3031,
+                1036,
+                0,
+                3363
+              ],
+              "score": 59.25,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 15.91,
+                "kp": 46.42,
+                "damage": 47.81,
+                "gold": 52.13,
+                "efficiency": 45.17,
+                "vision": 61.19,
+                "wards": 65.59,
+                "towers": 0,
+                "objectives": 0,
+                "kills": 24.04,
+                "assists": 83.61,
+                "survival": 23.53,
+                "roleEdge": 40.77,
+                "dpm": 806.44,
+                "gpm": 433.69
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 4,
+              "playerId": "d34dc7d7-ee25-4b81-8c61-aa437acbe393",
+              "riotId": "Ghozt#123",
+              "gameName": "Ghozt",
+              "tagLine": "123",
+              "team": 100,
+              "teamSlot": "D4",
+              "position": "SUP",
+              "champion": "Nami",
+              "won": false,
+              "kills": 1,
+              "deaths": 2,
+              "assists": 8,
+              "gold": 6995,
+              "damageToChampions": 5843,
+              "visionScore": 57,
+              "wardsPlaced": 22,
+              "wardsKilled": 7,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3870,
+                6620,
+                3158,
+                6617,
+                3114,
+                0,
+                3364
+              ],
+              "score": 72.05,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 62.5,
+                "kp": 50.9,
+                "damage": 41.4,
+                "gold": 51.23,
+                "efficiency": 36.07,
+                "vision": 44.29,
+                "wards": 40.12,
+                "towers": 0,
+                "objectives": 0,
+                "kills": 76.92,
+                "assists": 43.48,
+                "survival": 51.76,
+                "roleEdge": 47.79,
+                "dpm": 216.71,
+                "gpm": 259.44
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 5,
+              "playerId": "ee09cf39-13a1-4268-a363-dbd28955437b",
+              "riotId": "N I H I L メ#CDRP",
+              "gameName": "N I H I L メ",
+              "tagLine": "CDRP",
+              "team": 200,
+              "teamSlot": "D1",
+              "position": "TOP",
+              "champion": "Vayne",
+              "won": true,
+              "kills": 10,
+              "deaths": 0,
+              "assists": 5,
+              "gold": 14187,
+              "damageToChampions": 29743,
+              "visionScore": 23,
+              "wardsPlaced": 13,
+              "wardsKilled": 2,
+              "objectives": {
+                "towers": 3,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3124,
+                3091,
+                1042,
+                3073,
+                1086,
+                3009,
+                3363
+              ],
+              "score": 99.86,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 100,
+                "kp": 62.5,
+                "damage": 71.62,
+                "gold": 60.85,
+                "efficiency": 58.75,
+                "vision": 65.34,
+                "wards": 78.82,
+                "towers": 60,
+                "objectives": 0,
+                "kills": 100,
+                "assists": 46.9,
+                "survival": 100,
+                "roleEdge": 72.46,
+                "dpm": 1103.15,
+                "gpm": 526.19
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 6,
+              "playerId": "6e241754-e4e8-4f57-9818-b2279e3bd0a6",
+              "riotId": "TeteuCantoni#BR1",
+              "gameName": "TeteuCantoni",
+              "tagLine": "BR1",
+              "team": 200,
+              "teamSlot": "D1",
+              "position": "JG",
+              "champion": "Olaf",
+              "won": true,
+              "kills": 7,
+              "deaths": 6,
+              "assists": 10,
+              "gold": 13731,
+              "damageToChampions": 21989,
+              "visionScore": 38,
+              "wardsPlaced": 5,
+              "wardsKilled": 8,
+              "objectives": {
+                "towers": 3,
+                "voidGrubs": 3,
+                "heralds": 1,
+                "dragons": 3,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                3073,
+                6631,
+                6333,
+                3047,
+                2021,
+                1037,
+                3364
+              ],
+              "score": 85.49,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 39.35,
+                "kp": 54.49,
+                "damage": 81.19,
+                "gold": 65.44,
+                "efficiency": 58.75,
+                "vision": 59.97,
+                "wards": 46.52,
+                "towers": 100,
+                "objectives": 58.28,
+                "kills": 81.02,
+                "assists": 53.02,
+                "survival": 22.68,
+                "roleEdge": 68.65,
+                "dpm": 815.56,
+                "gpm": 509.27
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 7,
+              "playerId": "cdb7296d-9960-4a4e-99e8-835f8068f8e7",
+              "riotId": "Techy#777",
+              "gameName": "Techy",
+              "tagLine": "777",
+              "team": 200,
+              "teamSlot": "D1",
+              "position": "MID",
+              "champion": "Ryze",
+              "won": true,
+              "kills": 2,
+              "deaths": 1,
+              "assists": 6,
+              "gold": 10412,
+              "damageToChampions": 13881,
+              "visionScore": 29,
+              "wardsPlaced": 12,
+              "wardsKilled": 4,
+              "objectives": {
+                "towers": 2,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 1
+              },
+              "items": [
+                3040,
+                0,
+                3173,
+                6657,
+                3802,
+                1056,
+                3363
+              ],
+              "score": 79.08,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 100,
+                "kp": 28.74,
+                "damage": 32.03,
+                "gold": 42.53,
+                "efficiency": 37.36,
+                "vision": 68.66,
+                "wards": 73.89,
+                "towers": 50,
+                "objectives": 100,
+                "kills": 18.12,
+                "assists": 52.26,
+                "survival": 67.34,
+                "roleEdge": 54.23,
+                "dpm": 514.84,
+                "gpm": 386.18
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 8,
+              "playerId": "f02fe465-ee85-45f5-ac28-7f4722ea3481",
+              "riotId": "Sleepwalker#Hope",
+              "gameName": "Sleepwalker",
+              "tagLine": "Hope",
+              "team": 200,
+              "teamSlot": "D1",
+              "position": "ADC",
+              "champion": "Ezreal",
+              "won": true,
+              "kills": 3,
+              "deaths": 3,
+              "assists": 9,
+              "gold": 11996,
+              "damageToChampions": 17055,
+              "visionScore": 16,
+              "wardsPlaced": 7,
+              "wardsKilled": 4,
+              "objectives": {
+                "towers": 2,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                1086,
+                3042,
+                1037,
+                3133,
+                1036,
+                3078,
+                3363
+              ],
+              "score": 62.97,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 45.45,
+                "kp": 43.1,
+                "damage": 32.57,
+                "gold": 44.74,
+                "efficiency": 35.86,
+                "vision": 56.82,
+                "wards": 80.05,
+                "towers": 28.57,
+                "objectives": 0,
+                "kills": 19.53,
+                "assists": 84.43,
+                "survival": 33.9,
+                "roleEdge": 59.23,
+                "dpm": 632.56,
+                "gpm": 444.92
+              },
+              "identificationMethod": "primary-riot-id"
+            },
+            {
+              "participantIndex": 9,
+              "playerId": "8827bd59-7836-4418-b5eb-d33dd8c3bee3",
+              "riotId": "Starkben2#MGB",
+              "gameName": "Starkben2",
+              "tagLine": "MGB",
+              "team": 200,
+              "teamSlot": "D1",
+              "position": "SUP",
+              "champion": "Karma",
+              "won": true,
+              "kills": 2,
+              "deaths": 3,
+              "assists": 11,
+              "gold": 7961,
+              "damageToChampions": 7606,
+              "visionScore": 70,
+              "wardsPlaced": 27,
+              "wardsKilled": 7,
+              "objectives": {
+                "towers": 0,
+                "voidGrubs": 0,
+                "heralds": 0,
+                "dragons": 0,
+                "elderDragons": 0,
+                "barons": 0
+              },
+              "items": [
+                6620,
+                2065,
+                3870,
+                4642,
+                3158,
+                2022,
+                3364
+              ],
+              "score": 67.09,
+              "scoreModel": "role-impact-v2",
+              "scoreBreakdown": {
+                "kda": 60.19,
+                "kp": 39.83,
+                "damage": 46.81,
+                "gold": 48.78,
+                "efficiency": 42.84,
+                "vision": 44.19,
+                "wards": 36.95,
+                "towers": 0,
+                "objectives": 0,
+                "kills": 83.33,
+                "assists": 33.54,
+                "survival": 40.36,
+                "roleEdge": 52.21,
+                "dpm": 282.1,
+                "gpm": 295.27
+              },
+              "identificationMethod": "riot-id-alias"
             }
           ]
         }
