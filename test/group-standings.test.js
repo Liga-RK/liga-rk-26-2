@@ -44,3 +44,15 @@ test("serie incompleta atualiza apenas o saldo de mapas e desempates seguem a or
   );
   assert.equal(away.gameDiff, 1);
 });
+
+test("TMV 00:00 fica abaixo de qualquer tempo valido no desempate", () => {
+  const entries = [
+    { wins: 1, losses: 0, gameDiff: 2, seed: 0, team: { avgWinTime: "00:00" } },
+    { wins: 1, losses: 0, gameDiff: 2, seed: 1, team: { avgWinTime: "31:45" } }
+  ].sort(standings.compareEntries);
+
+  assert.equal(entries[0].team.avgWinTime, "31:45");
+  assert.equal(entries[1].team.avgWinTime, "00:00");
+  assert.equal(standings.timeToSeconds("00:00"), 0);
+  assert.equal(standings.timeToTiebreakSeconds("00:00"), Number.MAX_SAFE_INTEGER);
+});

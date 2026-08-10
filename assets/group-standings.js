@@ -66,7 +66,7 @@
       b.wins - a.wins ||
       a.losses - b.losses ||
       b.gameDiff - a.gameDiff ||
-      timeToSeconds(a.team && a.team.avgWinTime) - timeToSeconds(b.team && b.team.avgWinTime) ||
+      timeToTiebreakSeconds(a.team && a.team.avgWinTime) - timeToTiebreakSeconds(b.team && b.team.avgWinTime) ||
       a.seed - b.seed
     );
   }
@@ -92,5 +92,10 @@
     return match ? Number(match[1]) * 60 + Number(match[2]) : Number.MAX_SAFE_INTEGER;
   }
 
-  return { applySeries, compareEntries, compute, isCompletedSeries, normalizeGame, parseScore, timeToSeconds };
+  function timeToTiebreakSeconds(value) {
+    const seconds = timeToSeconds(value);
+    return seconds > 0 ? seconds : Number.MAX_SAFE_INTEGER;
+  }
+
+  return { applySeries, compareEntries, compute, isCompletedSeries, normalizeGame, parseScore, timeToSeconds, timeToTiebreakSeconds };
 });

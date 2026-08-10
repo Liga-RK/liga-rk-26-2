@@ -185,7 +185,7 @@ function aggregateDivision(divisionDatabase, content, fixedData, division, roste
     b.averageScore - a.averageScore ||
     b.scoreGames - a.scoreGames ||
     b.winRate - a.winRate ||
-    timeStringToSeconds(a.avgWinTime) - timeStringToSeconds(b.avgWinTime) ||
+    timeStringToTiebreakSeconds(a.avgWinTime) - timeStringToTiebreakSeconds(b.avgWinTime) ||
     b.games - a.games ||
     a.name.localeCompare(b.name)
   ));
@@ -1040,6 +1040,11 @@ function normalizeAssetPath(value) {
 function timeStringToSeconds(value) {
   const match = /^(\d{1,3}):([0-5]\d)$/.exec(String(value || "").trim());
   return match ? Number(match[1]) * 60 + Number(match[2]) : Number.MAX_SAFE_INTEGER;
+}
+
+function timeStringToTiebreakSeconds(value) {
+  const seconds = timeStringToSeconds(value);
+  return seconds > 0 ? seconds : Number.MAX_SAFE_INTEGER;
 }
 
 function normalizeChampion(name) {
