@@ -1053,7 +1053,7 @@
       <section class="stats-methodology" aria-labelledby="stats-methodology-title">
         <header class="stats-methodology-heading">
           <div>
-            <span>MODELO ROLE-IMPACT V3</span>
+            <span>MODELO ROLE-IMPACT V4</span>
             <h2 id="stats-methodology-title">COMO AS NOTAS S&Atilde;O CALCULADAS</h2>
           </div>
           <p>Modelo autom&aacute;tico, reproduz&iacute;vel e ajustado &agrave;s responsabilidades de cada posi&ccedil;&atilde;o.</p>
@@ -1088,7 +1088,7 @@
             ${methodologyRole("ADC", "KDA 15% &middot; KP 13% &middot; dano 24% &middot; efici&ecirc;ncia 11% &middot; vis&atilde;o 2% &middot; sentinelas 1% &middot; torres 12% &middot; objetivos 2% &middot; abates 10% &middot; assist&ecirc;ncias 1% &middot; sobreviv&ecirc;ncia 6% &middot; confronto direto 3%")}
             ${methodologyRole("SUP", "KDA 10% &middot; KP 22% &middot; dano 3% &middot; efici&ecirc;ncia 2% &middot; vis&atilde;o 17% &middot; sentinelas 12% &middot; torres 1% &middot; objetivos 5% &middot; abates 1% &middot; assist&ecirc;ncias 18% &middot; sobreviv&ecirc;ncia 4% &middot; confronto direto 5%")}
           </div>
-          <p class="stats-methodology-footnote">A vers&atilde;o V3 calibra as escalas de TOP em 1,12&times; e de suporte em 1,20&times; depois da normaliza&ccedil;&atilde;o por fun&ccedil;&atilde;o, aproximando a faixa dos melhores jogadores entre as lanes sem alterar a r&eacute;gua da selva. A nota m&eacute;dia individual &eacute; a m&eacute;dia das notas de todos os mapas confirmados. A nota da equipe &eacute; a m&eacute;dia de todas as atua&ccedil;&otilde;es de seus jogadores.</p>
+          <p class="stats-methodology-footnote">A vers&atilde;o V4 calibra as escalas de TOP em 1,12&times;, MID em 1,06&times;, ADC em 1,10&times; e suporte em 1,20&times; depois da normaliza&ccedil;&atilde;o por fun&ccedil;&atilde;o, aproximando a faixa dos melhores jogadores entre as lanes sem alterar a r&eacute;gua da selva. Para ca&ccedil;adores, drag&otilde;es, arautos, larvas e bar&otilde;es entram diretamente no impacto objetivo e no confronto com o jungler advers&aacute;rio. A nota m&eacute;dia individual &eacute; a m&eacute;dia das notas de todos os mapas confirmados. A nota da equipe &eacute; a m&eacute;dia de todas as atua&ccedil;&otilde;es de seus jogadores.</p>
         </details>
       </section>
     `;

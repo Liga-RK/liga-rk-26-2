@@ -198,6 +198,64 @@ test("mantem o historico do jogador transferido mesmo quando o slot traz um ID a
   assert.equal(salame.displayName, "SALAME");
 });
 
+test("une DAVID e DAVI da M7 em uma unica identidade", () => {
+  const oldId = "8de67801-d9d0-45c6-ab35-5efaacdacf51";
+  const currentId = "87b0b01b-0c1d-44ca-8154-ec59da7b80a3";
+  const match = mvpTestMatch();
+  match.participants = match.participants.map((participant, index) => ({
+    ...participant,
+    playerId: index === 0 ? oldId : `m7-opponent-${index}`,
+    riotId: index === 0 ? "Little David#RBRN" : participant.riotId
+  }));
+  const content = {
+    divisions: {
+      elite: { teams: {
+        D4: { name: "M7 Esports", tag: "M7", players: [{
+          playerId: currentId,
+          player: "DAVI",
+          riotId: "DeyraF#LDavi",
+          lane: "TOP",
+          opgg: "https://op.gg/pt/lol/summoners/br/DeyraF-LDavi"
+        }] },
+        A1: { name: "Adversario", tag: "ADV", players: [] }
+      } },
+      ascension: { teams: {} }
+    }
+  };
+  const database = {
+    version: 2,
+    rosterIdentities: [
+      { playerId: oldId, division: "elite", displayName: "DAVID", slot: "D4", lane: "SUB", opgg: "https://op.gg/pt/lol/summoners/br/Little%20David-RBRN" },
+      { playerId: currentId, division: "elite", displayName: "DAVI", slot: "D4", lane: "TOP", opgg: "https://op.gg/pt/lol/summoners/br/DeyraF-LDavi" }
+    ],
+    divisions: {
+      elite: { games: [{
+        id: "m7-identity-merge",
+        division: "elite",
+        seriesId: "groups-r3-m7",
+        gameNumber: 1,
+        blueTeamSlot: "D4",
+        redTeamSlot: "A1",
+        parserStatus: "parsed_rofl2",
+        stage: "GRUPOS",
+        round: "RODADA 3",
+        match
+      }] },
+      ascension: { games: [] }
+    }
+  };
+
+  const m7Players = aggregateDatabase(database, content, {}).divisions.elite.players
+    .filter((player) => player.id === oldId || player.id === currentId);
+
+  assert.equal(m7Players.length, 1);
+  assert.equal(m7Players[0].id, currentId);
+  assert.equal(m7Players[0].displayName, "DAVI");
+  assert.equal(m7Players[0].riotId, "DeyraF#LDavi");
+  assert.equal(m7Players[0].games, 1);
+  assert.deepEqual(m7Players[0].alsoPlayedAs, ["Little David#RBRN"]);
+});
+
 test("nao associa jogador a equipe historica sem partidas disputadas", () => {
   const littleNoctusId = "player-little-noctus";
   const match = mvpTestMatch();
@@ -301,7 +359,7 @@ test("MVP e escolhido somente entre jogadores do time vencedor", () => {
 
   assert.equal(mvp.team, 100);
   assert.equal(mvp.won, true);
-  assert.equal(mvp.mvpModel, "role-impact-v3");
+  assert.equal(mvp.mvpModel, "role-impact-v4");
   assert.ok(mvp.mvpScore > 0 && mvp.mvpScore <= 100);
 });
 
@@ -323,7 +381,7 @@ test("atribui nota de desempenho para todos os jogadores da partida", () => {
 
   assert.equal(scores.length, 10);
   assert.ok(scores.every((player) => player.performanceScore >= 0 && player.performanceScore <= 100));
-  assert.ok(scores.every((player) => player.performanceModel === "role-impact-v3"));
+  assert.ok(scores.every((player) => player.performanceModel === "role-impact-v4"));
   assert.ok(scores.some((player) => player.team === 200 && player.performanceScore > 0));
 });
 

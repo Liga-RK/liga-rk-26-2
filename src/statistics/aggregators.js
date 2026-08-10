@@ -3,10 +3,17 @@ const { damageShare, kda, participation, perMinute, round, winRate } = require("
 const { normalizeRiotId, parseOpggRiotId } = require("./player-identity");
 
 const DIVISIONS = ["elite", "ascension"];
-const MVP_MODEL_VERSION = "role-impact-v3";
+const MVP_MODEL_VERSION = "role-impact-v4";
 const ACTIVE_TEAM_OF_WEEK_ROUND = 2;
 const MIN_TEAM_OF_WEEK_GAMES = 2;
 const COMPETITIVE_LANES = ["TOP", "JG", "MID", "ADC", "SUP"];
+const PLAYER_IDENTITY_MERGES = Object.freeze({
+  elite: Object.freeze({
+    // DAVID (Little David#RBRN) and DAVI (DeyraF#LDavi) are the same M7 player.
+    "8de67801-d9d0-45c6-ab35-5efaacdacf51": "87b0b01b-0c1d-44ca-8154-ec59da7b80a3"
+  }),
+  ascension: Object.freeze({})
+});
 const MVP_ROLE_WEIGHTS = Object.freeze({
   TOP: Object.freeze({ kda: 0.13, kp: 0.10, damage: 0.17, efficiency: 0.08, vision: 0.03, wards: 0.02, towers: 0.15, objectives: 0.05, kills: 0.05, assists: 0.02, survival: 0.08, roleEdge: 0.12 }),
   JG: Object.freeze({ kda: 0.11, kp: 0.18, damage: 0.07, efficiency: 0.04, vision: 0.08, wards: 0.06, towers: 0.03, objectives: 0.20, kills: 0.04, assists: 0.08, survival: 0.04, roleEdge: 0.07 }),
@@ -28,14 +35,14 @@ const MVP_ROLE_BASELINES = Object.freeze({
   ADC: Object.freeze({ kda: 0.55, kp: 0.58, damage: 0.29, gold: 0.23, efficiency: 0.80, vision: 0.08, wards: 0.08, towers: 0.35, objectives: 0.07, kills: 0.32, assists: 0.13, survival: 0.50 }),
   SUP: Object.freeze({ kda: 0.45, kp: 0.68, damage: 0.09, gold: 0.14, efficiency: 0.45, vision: 0.45, wards: 0.50, towers: 0.04, objectives: 0.05, kills: 0.05, assists: 0.40, survival: 0.42 })
 });
-// Equalizes the upper performance range between roles after role-specific
-// normalization. Jungle remains the reference; support needs extra scale
-// because vision and assist shares naturally saturate below carry metrics.
+// Equalizes the performance range between roles after role-specific
+// normalization. Jungle remains the reference while lanes whose core metrics
+// naturally saturate lower receive a small scale correction.
 const MVP_ROLE_CALIBRATION = Object.freeze({
   TOP: 1.12,
   JG: 1,
-  MID: 1,
-  ADC: 1,
+  MID: 1.06,
+  ADC: 1.1,
   SUP: 1.2
 });
 
@@ -75,7 +82,7 @@ function aggregateDivision(divisionDatabase, content, fixedData, division, roste
   }
 
   for (const game of parsedGames) {
-    const match = resolveMatchPlayerIds(game.match, rosterByRiotId);
+    const match = resolveMatchPlayerIds(game.match, rosterByRiotId, division);
     const durationSeconds = Number(match.durationSeconds || 0);
     if (!(durationSeconds > 0)) continue;
     const sides = [
@@ -254,8 +261,9 @@ function rosterByPlayerId(teams, rosterIdentities = [], division = "") {
     if (!identity || !identity.playerId) continue;
     if (division && identity.division && identity.division !== division) continue;
     const parsed = parseOpggRiotId(identity.opgg);
-    roster.set(identity.playerId, {
-      playerId: identity.playerId,
+    const playerId = canonicalPlayerId(identity.playerId, division);
+    upsertRosterPlayer(roster, playerId, {
+      playerId,
       displayName: identity.displayName || parsed.gameName || "JOGADOR",
       riotId: parsed.riotId || "",
       riotIdAliases: [],
@@ -264,7 +272,7 @@ function rosterByPlayerId(teams, rosterIdentities = [], division = "") {
       lane: identity.lane || "",
       teamSlot: identity.slot || "",
       active: false
-    });
+    }, false);
   }
   const historicalByRiotId = indexRosterByRiotId(roster);
   for (const [slot, team] of Object.entries(teams)) {
@@ -272,9 +280,9 @@ function rosterByPlayerId(teams, rosterIdentities = [], division = "") {
       if (!player || !player.playerId || !isRegisteredRosterPlayer(player)) continue;
       const currentRiotId = normalizeRiotId(player.riotId || parseOpggRiotId(player.opgg).riotId);
       const historicalIdentity = currentRiotId ? historicalByRiotId.get(currentRiotId) : null;
-      const canonicalPlayerId = historicalIdentity && historicalIdentity.playerId || player.playerId;
-      roster.set(canonicalPlayerId, {
-        playerId: canonicalPlayerId,
+      const playerId = canonicalPlayerId(historicalIdentity && historicalIdentity.playerId || player.playerId, division);
+      upsertRosterPlayer(roster, playerId, {
+        playerId,
         displayName: player.player || player.name || player.riotId || "JOGADOR",
         riotId: player.riotId || "",
         riotIdAliases: player.riotIdAliases || [],
@@ -283,10 +291,41 @@ function rosterByPlayerId(teams, rosterIdentities = [], division = "") {
         lane: player.lane || "",
         teamSlot: slot,
         active: true
-      });
+      }, true);
     }
   }
   return roster;
+}
+
+function canonicalPlayerId(playerId, division) {
+  const merges = PLAYER_IDENTITY_MERGES[division] || {};
+  return merges[playerId] || playerId;
+}
+
+function upsertRosterPlayer(roster, playerId, player, preferIncoming) {
+  const previous = roster.get(playerId);
+  const primary = preferIncoming || !previous ? player : previous;
+  const identities = [
+    previous && previous.riotId,
+    ...(previous && previous.riotIdAliases || []),
+    player.riotId,
+    ...(player.riotIdAliases || [])
+  ].filter(Boolean);
+  const primaryRiotId = normalizeRiotId(primary.riotId);
+  const riotIdAliases = Array.from(new Map(identities
+    .filter((riotId) => normalizeRiotId(typeof riotId === "string" ? riotId : riotId.riotId) !== primaryRiotId)
+    .map((riotId) => {
+      const value = typeof riotId === "string" ? riotId : riotId.riotId;
+      return [normalizeRiotId(value), value];
+    })
+    .filter(([normalized]) => normalized))
+    .values());
+  roster.set(playerId, {
+    ...(previous || {}),
+    ...(preferIncoming || !previous ? player : {}),
+    playerId,
+    riotIdAliases
+  });
 }
 
 function indexRosterByRiotId(roster) {
@@ -313,13 +352,14 @@ function indexRosterByRiotId(roster) {
   return index;
 }
 
-function resolveMatchPlayerIds(match, rosterByRiotId) {
+function resolveMatchPlayerIds(match, rosterByRiotId, division = "") {
   return {
     ...match,
     participants: (match.participants || []).map((participant) => {
       const registered = rosterByRiotId.get(normalizeRiotId(participant.riotId));
-      return registered && registered.playerId !== participant.playerId
-        ? { ...participant, playerId: registered.playerId, identificationMethod: "roster-riot-id" }
+      const playerId = registered && registered.playerId || canonicalPlayerId(participant.playerId, division);
+      return playerId && playerId !== participant.playerId
+        ? { ...participant, playerId, identificationMethod: registered ? "roster-riot-id" : "identity-merge" }
         : participant;
     })
   };
