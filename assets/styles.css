@@ -2585,6 +2585,10 @@ a {
   border-left: 0.2rem solid color-mix(in srgb, var(--accent) 70%, transparent);
 }
 
+.stats-match-row[hidden] {
+  display: none;
+}
+
 .stats-match-meta,
 .stats-match-team {
   min-width: 0;
