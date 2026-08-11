@@ -6413,6 +6413,17 @@ a.stats-postgame-team-logo:focus-visible {
   font-size: 0.9rem;
 }
 
+.playoff-editor-schedule {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin: 0.7rem 0 0.9rem;
+}
+
+.playoff-editor-schedule .editor-field {
+  margin: 0;
+}
+
 .playoff-editor-row {
   display: grid;
   grid-template-columns: 2rem minmax(0, 1fr) 4rem;

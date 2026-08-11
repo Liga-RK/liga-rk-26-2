@@ -243,6 +243,8 @@
         matches[key] = {
           teamA,
           teamB,
+          date: String(result.date || match.date || ""),
+          time: String(result.time || match.time || ""),
           scoreA,
           scoreB,
           winnerSide,
@@ -633,7 +635,7 @@
       <article class="match-card">
         <header>
           <strong>${escapeHtml(match.title)}</strong>
-          <span>${escapeHtml(match.date)}<br />${escapeHtml(match.time)}<br />${escapeHtml(match.format)}</span>
+          <span>${escapeHtml(state.date || match.date)}<br />${escapeHtml(state.time || match.time)}<br />${escapeHtml(match.format)}</span>
         </header>
         ${renderMatchTeam(state.teamA, state.scoreA, state.eliminatedSide === "A", state.winnerSide === "A")}
         ${renderMatchTeam(state.teamB, state.scoreB, state.eliminatedSide === "B", state.winnerSide === "B")}

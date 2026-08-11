@@ -204,6 +204,8 @@
       (column || []).forEach((match, matchIndex) => {
         const keyName = playoffKey(columnIndex, matchIndex);
         division.playoffResults[keyName] = {
+          date: match.date || "",
+          time: match.time || "",
           teamAScore: "",
           teamBScore: "",
           ...(division.playoffResults[keyName] || {})
@@ -610,7 +612,11 @@
 
     return `
       <article class="editor-card playoff-match-editor">
-        <h3>${escapeHtml(match.title)} <span>${escapeHtml(match.date)} ${escapeHtml(match.time)} ${escapeHtml(match.format)}</span></h3>
+        <h3>${escapeHtml(match.title)} <span>${escapeHtml(match.format)}</span></h3>
+        <div class="playoff-editor-schedule">
+          ${field("Data", `divisions.${key}.playoffResults.${resultKey}.date`, result.date, "DD/MM", "text", "", "", "5")}
+          ${field("Horário", `divisions.${key}.playoffResults.${resultKey}.time`, result.time, "HH:MM", "time")}
+        </div>
         <div class="playoff-editor-row">
           ${renderEditorPlayoffLogo(key, resolved.teamA && resolved.teamA.slot)}
           <strong>${escapeHtml((resolved.teamA && resolved.teamA.text) || match.teamA)}</strong>
