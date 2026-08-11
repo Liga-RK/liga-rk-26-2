@@ -23,7 +23,7 @@ const PAGE_METADATA = {
     title: "Liga RK 26.2 | Comunidade RK — League of Legends",
     description:
       "Site oficial da Liga RK, circuito competitivo da Comunidade RK, fundada por Raí Bezerra (RK) e atualmente liderada pelo CEO Henrique Marques (Rick).",
-    image: "assets/logo_liga_rk_nobg_512.png",
+    image: "assets/logo_liga_rk_seo_512.png",
     imageWidth: 512,
     imageHeight: 512,
     structuredData: true,
@@ -34,7 +34,7 @@ const PAGE_METADATA = {
     title: "Sobre a RK | Liga RK",
     description:
       "Conheça a Comunidade RK, fundada por Raí Bezerra (RK), e sua liderança atual: Henrique Marques (Rick), CEO da comunidade.",
-    image: "assets/logo_liga_rk_nobg_512.png",
+    image: "assets/logo_liga_rk_seo_512.png",
     imageWidth: 512,
     imageHeight: 512,
     structuredData: true,
@@ -65,7 +65,7 @@ const PAGE_METADATA = {
     title: "Estatísticas | Liga RK 26.2",
     description:
       "Estatísticas oficiais de jogadores, equipes e partidas das divisões Elite e Ascensão da Liga RK 26.2.",
-    image: "assets/logo_liga_rk_nobg_512.png",
+    image: "assets/logo_liga_rk_seo_512.png",
     imageWidth: 512,
     imageHeight: 512,
     sitemap: true
@@ -74,7 +74,7 @@ const PAGE_METADATA = {
     path: "bolao.html",
     title: "Bolão Liga RK | Liga RK 26.2",
     description: "Bolão oficial da Liga RK 26.2 para a comunidade acompanhar e registrar seus palpites.",
-    image: "assets/logo_liga_rk_nobg_512.png",
+    image: "assets/logo_liga_rk_seo_512.png",
     imageWidth: 512,
     imageHeight: 512,
     sitemap: true
@@ -109,7 +109,7 @@ function organizationGraph(pagePath = "") {
         name: "Comunidade RK",
         alternateName: "RK",
         url: homeUrl,
-        logo: siteUrl("assets/logo_liga_rk_nobg_512.png"),
+        logo: siteUrl("assets/logo_liga_rk_seo_512.png"),
         description:
           "Comunidade brasileira de League of Legends voltada a jogadores, Inhouses, campeonatos e experiências competitivas de esports.",
         founder: { "@id": founderId },
