@@ -161,11 +161,14 @@
     ,draftChampionSection: document.getElementById("draft-champion-section")
     ,draftChampionSearch: document.getElementById("draft-champion-search")
     ,draftChampionSort: document.getElementById("draft-champion-sort")
+    ,draftChampionCount: document.getElementById("draft-champion-count")
     ,draftChampionGrid: document.getElementById("draft-champion-grid")
     ,draftMapSection: document.getElementById("draft-map-section")
     ,draftMapOptions: document.getElementById("draft-map-options")
     ,draftPredictionPreview: document.getElementById("draft-prediction-preview")
     ,draftPredictionFeedback: document.getElementById("draft-prediction-feedback")
+    ,draftFooterHint: document.getElementById("draft-footer-hint")
+    ,confirmDraftPrediction: document.getElementById("confirm-draft-prediction")
   };
 
   init();
@@ -240,7 +243,18 @@
       closeDraftPredictionDialog();
     });
     if (el.draftPredictionForm) el.draftPredictionForm.addEventListener("submit", confirmDraftPrediction);
-    el.draftModeOptions.forEach((button) => button.addEventListener("click", () => setDraftMode(button.dataset.draftMode)));
+    el.draftModeOptions.forEach((button, index) => {
+      button.addEventListener("click", () => setDraftMode(button.dataset.draftMode));
+      button.addEventListener("keydown", (event) => {
+        if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
+        event.preventDefault();
+        const direction = ["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : -1;
+        const buttons = Array.from(el.draftModeOptions);
+        const target = buttons[(index + direction + buttons.length) % buttons.length];
+        target.focus();
+        setDraftMode(target.dataset.draftMode);
+      });
+    });
     if (el.draftChampionSearch) el.draftChampionSearch.addEventListener("input", renderDraftChampionGrid);
     if (el.draftChampionSort) el.draftChampionSort.addEventListener("input", renderDraftChampionGrid);
     el.saveLineup.addEventListener("click", saveLineup);
@@ -1114,7 +1128,12 @@
     el.draftPredictionFeedback.textContent = "";
     el.draftPredictionPlayer.textContent = `${item.name} · ${ROLE_LABELS[item.role]} · ${item.teamName || item.teamTag}`;
     renderDraftDialog();
-    if (!el.draftPredictionDialog.open) el.draftPredictionDialog.showModal();
+    if (!el.draftPredictionDialog.open) {
+      el.draftPredictionDialog.showModal();
+      window.requestAnimationFrame(() => {
+        Array.from(el.draftModeOptions).find((button) => button.classList.contains("active"))?.focus();
+      });
+    }
   }
 
   function closeDraftPredictionDialog() {
@@ -1125,6 +1144,7 @@
   function setDraftMode(mode) {
     const normalized = ["NONE", "SIMPLE", "PRECISE"].includes(mode) ? mode : "NONE";
     state.draftDialog.mode = normalized;
+    el.draftPredictionFeedback.textContent = "";
     if (normalized === "NONE") {
       state.draftDialog.championId = "";
       state.draftDialog.mapNumber = null;
@@ -1136,12 +1156,18 @@
 
   function renderDraftDialog() {
     const mode = state.draftDialog.mode;
-    el.draftModeOptions.forEach((button) => button.classList.toggle("active", button.dataset.draftMode === mode));
+    el.draftPredictionForm.dataset.mode = mode;
+    el.draftModeOptions.forEach((button) => {
+      const active = button.dataset.draftMode === mode;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-checked", String(active));
+    });
     el.draftChampionSection.hidden = mode === "NONE";
     el.draftMapSection.hidden = mode !== "PRECISE";
     if (mode !== "NONE") renderDraftChampionGrid();
     renderDraftMapOptions();
     renderDraftPredictionPreview();
+    renderDraftFooterState();
   }
 
   function currentDraftChampions() {
@@ -1177,8 +1203,10 @@
     return { baseReward, possibleReward: roundMoney(baseReward * multiplier), missPenalty: -1 };
   }
 
-  function renderDraftChampionGrid() {
+  function renderDraftChampionGrid({ preserveScroll = false } = {}) {
     if (!el.draftChampionGrid || state.draftDialog.mode === "NONE") return;
+    const previousScrollTop = preserveScroll ? el.draftChampionGrid.scrollTop : 0;
+    const restoreFocus = preserveScroll && el.draftChampionGrid.contains(document.activeElement);
     const query = cleanText(el.draftChampionSearch.value).toLocaleLowerCase("pt-BR");
     const sort = el.draftChampionSort.value;
     const champions = currentDraftChampions()
@@ -1189,12 +1217,23 @@
         if (sort === "reward-desc") return right.possibleReward - left.possibleReward || left.name.localeCompare(right.name, "pt-BR");
         return left.name.localeCompare(right.name, "pt-BR");
       });
-    el.draftChampionGrid.replaceChildren(...champions.map((champion) => {
+    if (el.draftChampionCount) el.draftChampionCount.textContent = `${champions.length} ${champions.length === 1 ? "campeão" : "campeões"}`;
+    if (!champions.length) {
+      const empty = document.createElement("p");
+      empty.className = "draft-champion-empty";
+      empty.textContent = "Nenhum campeão encontrado. Tente outro nome.";
+      el.draftChampionGrid.replaceChildren(empty);
+      return;
+    }
+    el.draftChampionGrid.replaceChildren(...champions.map((champion, index) => {
       const button = document.createElement("button");
       button.type = "button";
       button.className = `draft-champion-card${state.draftDialog.championId === champion.id ? " active" : ""}`;
       button.setAttribute("role", "option");
       button.setAttribute("aria-selected", String(state.draftDialog.championId === champion.id));
+      button.setAttribute("aria-label", `${champion.name}, ${champion.rarity}, Pick Rate ${formatPercent(champion.pickRate)}, acerto vale ${formatMoney(champion.possibleReward)} pontos`);
+      button.tabIndex = state.draftDialog.championId === champion.id || (!state.draftDialog.championId && index === 0) ? 0 : -1;
+      button.title = champion.name;
       const image = document.createElement("img");
       image.src = champion.image;
       image.alt = "";
@@ -1210,11 +1249,28 @@
       button.append(image, name, rarity, rate, reward);
       button.addEventListener("click", () => {
         state.draftDialog.championId = champion.id;
-        renderDraftChampionGrid();
+        el.draftPredictionFeedback.textContent = "";
+        renderDraftChampionGrid({ preserveScroll: true });
         renderDraftPredictionPreview();
+        renderDraftFooterState();
+      });
+      button.addEventListener("keydown", (event) => {
+        if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        const buttons = Array.from(el.draftChampionGrid.querySelectorAll(".draft-champion-card"));
+        const currentIndex = buttons.indexOf(event.currentTarget);
+        const columns = Math.max(1, getComputedStyle(el.draftChampionGrid).gridTemplateColumns.split(" ").length);
+        const offset = event.key === "ArrowLeft" ? -1 : event.key === "ArrowRight" ? 1 : event.key === "ArrowUp" ? -columns : event.key === "ArrowDown" ? columns : 0;
+        const nextIndex = event.key === "Home" ? 0 : event.key === "End" ? buttons.length - 1 : Math.min(buttons.length - 1, Math.max(0, currentIndex + offset));
+        buttons.forEach((entry, entryIndex) => { entry.tabIndex = entryIndex === nextIndex ? 0 : -1; });
+        buttons[nextIndex]?.focus();
       });
       return button;
     }));
+    if (preserveScroll) {
+      el.draftChampionGrid.scrollTop = previousScrollTop;
+      if (restoreFocus) el.draftChampionGrid.querySelector('[aria-selected="true"]')?.focus({ preventScroll: true });
+    }
   }
 
   function renderDraftMapOptions() {
@@ -1225,6 +1281,8 @@
       button.type = "button";
       button.className = `draft-map-button${state.draftDialog.mapNumber === mapNumber ? " active" : ""}`;
       button.disabled = format === "MD3" && mapNumber > 3;
+      button.setAttribute("role", "radio");
+      button.setAttribute("aria-checked", String(state.draftDialog.mapNumber === mapNumber));
       button.textContent = `Mapa ${mapNumber}`;
       if (button.disabled) {
         const note = document.createElement("small");
@@ -1233,8 +1291,18 @@
       }
       button.addEventListener("click", () => {
         state.draftDialog.mapNumber = mapNumber;
+        el.draftPredictionFeedback.textContent = "";
         renderDraftMapOptions();
         renderDraftPredictionPreview();
+        renderDraftFooterState();
+      });
+      button.addEventListener("keydown", (event) => {
+        if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
+        event.preventDefault();
+        const buttons = Array.from(el.draftMapOptions.querySelectorAll(".draft-map-button:not(:disabled)"));
+        const index = buttons.indexOf(event.currentTarget);
+        const direction = ["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : -1;
+        buttons[(index + direction + buttons.length) % buttons.length]?.focus();
       });
       return button;
     }));
@@ -1275,8 +1343,29 @@
         <div><span>Modo</span><strong>${modeLabel}</strong></div>
         <div><span>Campeão</span><strong>${escapeHtml(champion?.name || "—")}</strong></div>
         ${prediction.mode === "PRECISE" ? `<div><span>Mapa</span><strong>${prediction.mapNumber || "—"}</strong></div>` : ""}
-        ${prediction.mode !== "NONE" ? `<div><span>Pick Rate ${item.role}</span><strong>${formatPercent(prediction.pickRateAtLock)}</strong></div><div><span>Categoria</span><strong>${escapeHtml(champion?.rarity || "")}</strong></div><div><span>Multiplicador</span><strong>${formatMultiplier(prediction.multiplierAtLock)}</strong></div><div><span>Se acertar</span><strong>+${formatMoney(prediction.possibleReward)} pts</strong></div><div><span>Se errar</span><strong>−${formatMoney(Math.abs(prediction.missPenalty))} pts</strong></div>` : `<div><span>Resultado</span><strong>0 ponto</strong></div>`}
+        ${prediction.mode !== "NONE" ? `<div><span>Pick Rate ${item.role}</span><strong>${formatPercent(prediction.pickRateAtLock)}</strong></div><div><span>Categoria</span><strong>${escapeHtml(champion?.rarity || "")}</strong></div><div><span>Multiplicador</span><strong>${formatMultiplier(prediction.multiplierAtLock)}</strong></div><div class="draft-preview-reward"><span>Se acertar</span><strong>+${formatMoney(prediction.possibleReward)} pts</strong></div><div><span>Se errar</span><strong>−${formatMoney(Math.abs(prediction.missPenalty))} pts</strong></div>` : `<div><span>Resultado</span><strong>0 ponto</strong></div>`}
       </div>`;
+  }
+
+  function renderDraftFooterState() {
+    if (!el.confirmDraftPrediction || !el.draftFooterHint) return;
+    const prediction = draftPredictionFromDialog();
+    const editing = state.draftDialog.editing;
+    let valid = Boolean(prediction);
+    let hint = "Escolha como deseja participar do Palpite de Draft.";
+    if (state.draftDialog.mode === "NONE") {
+      hint = "Sem risco: esta escolha vale 0 ponto.";
+    } else if (!prediction) {
+      hint = state.draftDialog.mode === "PRECISE" ? "Escolha um campeão e depois o mapa exato." : "Escolha um campeão para continuar.";
+    } else if (prediction.mode === "PRECISE" && !prediction.mapNumber) {
+      valid = false;
+      hint = "Campeão escolhido. Agora selecione o mapa exato.";
+    } else {
+      hint = `Acerto: +${formatMoney(prediction.possibleReward)} pts · Erro: −${formatMoney(Math.abs(prediction.missPenalty))} pts`;
+    }
+    el.confirmDraftPrediction.disabled = !valid;
+    el.confirmDraftPrediction.textContent = editing ? "Salvar alteração" : "Confirmar e escalar";
+    el.draftFooterHint.textContent = hint;
   }
 
   function confirmDraftPrediction(event) {

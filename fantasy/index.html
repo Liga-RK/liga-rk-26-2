@@ -20,7 +20,7 @@
   <title>Fantasy RK | Liga RK 26.2</title>
   <link rel="icon" type="image/png" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
   <link rel="apple-touch-icon" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
-  <link rel="stylesheet" href="assets/fantasy.css?v=20260812-draft-prediction-v1" />
+  <link rel="stylesheet" href="assets/fantasy.css?v=20260813-draft-responsive-v2" />
 </head>
 <body>
   <header class="site-header">
@@ -472,46 +472,62 @@
 
   <dialog id="draft-prediction-dialog" aria-labelledby="draft-prediction-title" aria-describedby="draft-prediction-description">
     <form id="draft-prediction-form" class="dialog-card draft-prediction-dialog-card" method="dialog">
-      <button id="close-draft-prediction-dialog" class="dialog-close" type="button" aria-label="Cancelar Palpite de Draft">×</button>
-      <span class="eyebrow">Nova mecânica dos playoffs</span>
-      <h2 id="draft-prediction-title">Palpite de Draft</h2>
-      <p id="draft-prediction-player" class="draft-player-name"></p>
-      <p id="draft-prediction-description">Quer tentar prever o draft deste jogador na série? Quanto mais improvável o campeão escolhido, maior pode ser a recompensa.</p>
+      <header class="draft-dialog-header">
+        <div>
+          <span class="eyebrow">Nova mecânica dos playoffs</span>
+          <h2 id="draft-prediction-title">Palpite de Draft</h2>
+          <p id="draft-prediction-player" class="draft-player-name"></p>
+          <p id="draft-prediction-description">Preveja o campeão deste jogador. Escolhas menos populares podem render mais pontos.</p>
+        </div>
+        <button id="close-draft-prediction-dialog" class="dialog-close" type="button" aria-label="Cancelar Palpite de Draft">×</button>
+      </header>
 
       <div id="draft-mode-options" class="draft-mode-options" role="radiogroup" aria-label="Modo do Palpite de Draft">
-        <button type="button" data-draft-mode="NONE" class="draft-mode-card active">
+        <button type="button" role="radio" aria-checked="true" data-draft-mode="NONE" class="draft-mode-card active">
           <strong>Não dar palpite</strong><span>Sem ganho ou perda de pontos.</span><b>0 ponto</b>
         </button>
-        <button type="button" data-draft-mode="SIMPLE" class="draft-mode-card">
+        <button type="button" role="radio" aria-checked="false" data-draft-mode="SIMPLE" class="draft-mode-card">
           <strong>Palpite Simples</strong><span>O campeão pode aparecer em qualquer mapa.</span><b>Erro: −1,00</b>
         </button>
-        <button type="button" data-draft-mode="PRECISE" class="draft-mode-card">
+        <button type="button" role="radio" aria-checked="false" data-draft-mode="PRECISE" class="draft-mode-card">
           <strong>Palpite Preciso</strong><span>Acerte o campeão e o mapa exato.</span><b>Erro: −2,00</b>
         </button>
       </div>
 
-      <section id="draft-champion-section" class="draft-champion-section" hidden>
-        <div class="draft-tools">
-          <label><span>Buscar campeão</span><input id="draft-champion-search" type="search" placeholder="Buscar campeão..." autocomplete="off" /></label>
-          <label><span>Ordenar</span><select id="draft-champion-sort"><option value="name">Nome</option><option value="pick-desc">Maior Pick Rate</option><option value="pick-asc">Menor Pick Rate</option><option value="reward-desc">Maior recompensa</option></select></label>
-        </div>
-        <div id="draft-champion-grid" class="draft-champion-grid" role="listbox" aria-label="Campeões"></div>
-      </section>
+      <div class="draft-workspace">
+        <section id="draft-champion-section" class="draft-champion-section" hidden>
+          <div class="draft-section-heading">
+            <div><strong>Escolha o campeão</strong><span id="draft-champion-count" aria-live="polite"></span></div>
+            <small>Pick Rate calculado para a posição do jogador</small>
+          </div>
+          <div class="draft-tools">
+            <label><span>Buscar campeão</span><input id="draft-champion-search" type="search" placeholder="Digite o nome..." autocomplete="off" /></label>
+            <label><span>Ordenar</span><select id="draft-champion-sort"><option value="name">Nome</option><option value="pick-desc">Maior Pick Rate</option><option value="pick-asc">Menor Pick Rate</option><option value="reward-desc">Maior recompensa</option></select></label>
+          </div>
+          <div id="draft-champion-grid" class="draft-champion-grid" role="listbox" aria-label="Campeões"></div>
+        </section>
 
-      <section id="draft-map-section" class="draft-map-section" hidden>
-        <strong>Escolha o mapa exato</strong>
-        <div id="draft-map-options" class="draft-map-options" role="radiogroup" aria-label="Mapa do palpite"></div>
-      </section>
+        <aside class="draft-selection-panel" aria-label="Resumo do palpite">
+          <section id="draft-map-section" class="draft-map-section" hidden>
+            <strong>Em qual mapa?</strong>
+            <small>O campeão precisa aparecer exatamente neste mapa.</small>
+            <div id="draft-map-options" class="draft-map-options" role="radiogroup" aria-label="Mapa do palpite"></div>
+          </section>
+          <section id="draft-prediction-preview" class="draft-prediction-preview" aria-live="polite"></section>
+          <p id="draft-prediction-feedback" class="status-message" aria-live="polite"></p>
+        </aside>
+      </div>
 
-      <section id="draft-prediction-preview" class="draft-prediction-preview" aria-live="polite"></section>
-      <p id="draft-prediction-feedback" class="status-message" aria-live="polite"></p>
-      <button id="confirm-draft-prediction" class="primary-button" type="submit">Confirmar palpite e escalar</button>
+      <footer class="draft-dialog-footer">
+        <p id="draft-footer-hint" aria-live="polite"></p>
+        <button id="confirm-draft-prediction" class="primary-button" type="submit">Confirmar palpite e escalar</button>
+      </footer>
     </form>
   </dialog>
 
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/champion-list.js?v=20260812-draft-prediction-v1"></script>
-  <script src="assets/fantasy.js?v=20260812-draft-prediction-v1"></script>
-  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260812-draft-prediction-v1");</script>
+  <script src="assets/champion-list.js?v=20260813-draft-responsive-v2"></script>
+  <script src="assets/fantasy.js?v=20260813-draft-responsive-v2"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260813-draft-responsive-v2");</script>
 </body>
 </html>

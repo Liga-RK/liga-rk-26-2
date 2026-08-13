@@ -34,3 +34,19 @@ test("payload envia palpites somente dos cinco titulares", () => {
   assert.match(script, /draftPredictions: PLAYER_ROLES\.map/);
   assert.match(script, /delete lineup\.draftPredictions\[role\]/);
 });
+
+test("modal responsivo usa uma área ampla no desktop e tela inteira no celular", () => {
+  assert.match(css, /width: min\(1180px, calc\(100vw - 32px\)\)/);
+  assert.match(css, /height: min\(850px, calc\(100dvh - 32px\)\)/);
+  assert.match(css, /@media \(max-width: 620px\)[\s\S]*?width: 100vw;[\s\S]*?height: 100dvh;/);
+  assert.match(css, /grid-template-columns: repeat\(auto-fill, minmax\(148px, 1fr\)\)/);
+});
+
+test("UX mantém ação visível, informa o próximo passo e evita confirmação incompleta", () => {
+  assert.match(html, /class="draft-dialog-footer"/);
+  assert.match(html, /id="draft-footer-hint"/);
+  assert.match(html, /role="radio" aria-checked=/);
+  assert.match(script, /function renderDraftFooterState\(\)/);
+  assert.match(script, /el\.confirmDraftPrediction\.disabled = !valid/);
+  assert.match(script, /renderDraftChampionGrid\(\{ preserveScroll: true \}\)/);
+});

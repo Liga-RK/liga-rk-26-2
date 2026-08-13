@@ -1,5 +1,5 @@
-const CACHE="fantasy-rk-shell-v38-draft-prediction";
-const ASSET_VERSION="20260812-draft-prediction-v1";
+const CACHE="fantasy-rk-shell-v39-draft-responsive";
+const ASSET_VERSION="20260813-draft-responsive-v2";
 const BASE=new URL("./",self.location.href);
 const SHELL=["./","fantasy.html","offline.html",`assets/fantasy.css?v=${ASSET_VERSION}`,`assets/champion-list.js?v=${ASSET_VERSION}`,`assets/fantasy.js?v=${ASSET_VERSION}`,"assets/fantasy-config.js","assets/branding/logo-liga-rk.png","assets/branding/logo-rk-fantasy.png","assets/branding/favicon-rk-fantasy.png","assets/branding/wallpaper-rk.png"].map(path=>new URL(path,BASE).href);
 self.addEventListener("install",event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL))));
