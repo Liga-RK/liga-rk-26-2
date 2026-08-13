@@ -366,9 +366,17 @@ async function getMarket(request, env) {
            last_valuation_breakdown_json AS valuationDetailsJson
     FROM fantasy_market WHERE division = ? AND active = 1 ORDER BY role, price DESC, display_name
   `).bind(division).all();
+  const latestScoredRound = await env.DB.prepare(`
+    SELECT MAX(round_number) AS roundNumber
+    FROM fantasy_rounds
+    WHERE division = ? AND status = 'scored'
+  `).bind(division).first();
   const performanceRoundNumber = Math.max(
     0,
-    Math.trunc(Number(round?.round_number || marketState?.lock_round_number || 0)) - 1
+    Math.trunc(Number(
+      latestScoredRound?.roundNumber
+      || (Number(round?.round_number || marketState?.lock_round_number || 0) - 1)
+    ))
   );
   const recentResult = await env.DB.prepare(`
     SELECT s.asset_id AS id, ROUND(s.points, 2) AS points

@@ -10,6 +10,7 @@ const CONTENT_API_URL = "https://liga-rk-api.suporteinhouserk.workers.dev/api/co
 const mode = String(process.argv[2] || "preview").toLowerCase();
 const roundNumber = Math.trunc(Number(process.argv[3] || 2));
 const previewId = String(process.argv[4] || "").trim();
+const backupReference = String(process.argv[5] || "").trim();
 
 if (!Number.isInteger(roundNumber) || roundNumber < 2) {
   throw new TypeError("Informe uma rodada válida a partir da rodada 2.");
@@ -36,8 +37,10 @@ env = {
   DB,
   FANTASY_SOURCE_URL: SOURCE_URL,
   CONTENT_API_URL,
-  __maintenanceBackup: mode === "apply"
-    ? async () => previewId
+  __maintenanceBackup: mode === "process"
+    ? async () => backupReference
+    : mode === "apply"
+      ? async () => previewId
     : mode === "revalue-teams"
       ? async () => "external-sql:fantasy-production-before-round3-budget-and-team-valuation-20260806.sql"
       : null
@@ -143,6 +146,9 @@ if (mode === "preview") {
   console.log(JSON.stringify({ mode, roundNumber, latest }, null, 2));
 } else if (mode === "process") {
   if (!previewId) throw new Error("Informe o ID da prévia de sincronização.");
+  if (!backupReference.startsWith("d1-time-travel:")) {
+    throw new Error("Informe também o bookmark externo criado imediatamente antes do processamento.");
+  }
   await assertMarketClosed();
   const sync = await invoke(__test.adminSyncApply, { previewId });
   const preview = await invoke(__test.adminRoundPreviewV2, { roundNumber });
@@ -203,7 +209,7 @@ if (mode === "preview") {
         simulationId: simulation.id,
         assetId: item.assetId,
         action: "approve",
-        reason: "Dados oficiais da rodada, WOs e adiamento conferidos."
+        reason: "Dados oficiais da rodada, WOs, adiamento e eliminação conferidos."
       });
     }
     const applied = await invoke(__test.adminValuationApply, {
@@ -321,6 +327,16 @@ function assertRoundPreview(preview) {
       throw new Error("A composição oficial esperada da rodada 2 não confere.");
     }
   }
+  if (roundNumber === 3) {
+    const elite = preview.divisions.find((item) => item.division === "elite");
+    const ascension = preview.divisions.find((item) => item.division === "ascension");
+    if (
+      elite?.playedSeries !== 4 || elite?.walkovers !== 4 || elite?.postponed !== 0 || elite?.cancelled !== 0 ||
+      ascension?.playedSeries !== 7 || ascension?.walkovers !== 1 || ascension?.postponed !== 0 || ascension?.cancelled !== 0
+    ) {
+      throw new Error("A composição oficial esperada da rodada 3 não confere.");
+    }
+  }
 }
 
 function validateValuationItems(items, division) {
@@ -334,9 +350,13 @@ function validateValuationItems(items, division) {
     if (Number(item.games) === 0 && Number(item.deltaCents) !== 0) {
       throw new Error(`Ativo sem jogo teve preço alterado: ${division}:${item.assetId}.`);
     }
-    if (division === "elite" && isFvlSdk(item.teamName) &&
+    if (roundNumber === 2 && division === "elite" && isFvlSdk(item.teamName) &&
         (Number(item.games) !== 0 || Number(item.roundPoints) !== 0 || Number(item.deltaCents) !== 0)) {
       throw new Error(`Ativo de FVL/SDK não foi neutralizado: ${item.assetId}.`);
+    }
+    if (roundNumber === 3 && division === "elite" && isCashNkz(item.teamName) &&
+        (Number(item.games) !== 0 || Number(item.roundPoints) !== 0 || Number(item.deltaCents) !== 0)) {
+      throw new Error(`Ativo de CASH/NKZ não foi neutralizado: ${item.assetId}.`);
     }
   }
 }
@@ -345,6 +365,14 @@ function isFvlSdk(teamName) {
   const normalized = String(teamName || "").normalize("NFKD")
     .replace(/\p{M}/gu, "").toUpperCase();
   return normalized === "FAVELAO DO TECHY" || normalized === "SPACE DUCKS";
+}
+
+function isCashNkz(teamName) {
+  const normalized = String(teamName || "").normalize("NFKD")
+    .replace(/\p{M}/gu, "").toUpperCase();
+  return normalized === "CASHOUT & TRIMILIQUE LTDA" ||
+    normalized === "NKZ REVENGERS" ||
+    normalized === "NO KINGS ZONE";
 }
 
 function summarizeSimulation(simulation) {
@@ -375,6 +403,8 @@ function summarizeSimulation(simulation) {
 }
 
 async function scoringAudit() {
+  const excludedSlots = roundNumber === 2 ? ["D1", "D3"] :
+    roundNumber === 3 ? ["C1", "C4"] : ["", ""];
   const [state, rounds, scores, affected, substitutions] = await Promise.all([
     assertMarketClosed(),
     DB.prepare(`
@@ -397,8 +427,8 @@ async function scoringAudit() {
       JOIN fantasy_rounds r ON r.id = s.round_id
       JOIN fantasy_market m ON m.division = s.division AND m.asset_id = s.asset_id
       WHERE r.round_number = ? AND s.division = 'elite'
-        AND m.asset_type = 'player' AND m.team_slot IN ('D1','D3')
-    `).bind(roundNumber).first(),
+        AND m.team_slot IN (?, ?)
+    `).bind(roundNumber, ...excludedSlots).first(),
     DB.prepare(`
       SELECT COUNT(*) AS lineups,
              SUM(CASE WHEN json_extract(ts.breakdown_json, '$.substituidoId') IS NOT NULL THEN 1 ELSE 0 END) AS reserveSubstitutions
@@ -411,7 +441,11 @@ async function scoringAudit() {
     market: state,
     rounds: rounds.results,
     scores: scores.results,
-    affectedFvlSdkAssets: affected,
+    excludedAssets: {
+      reason: roundNumber === 2 ? "FVL x SDK adiado" :
+        roundNumber === 3 ? "CASH x NKZ sem pontuação" : "sem exceção específica",
+      ...affected
+    },
     lineups: substitutions
   };
 }
