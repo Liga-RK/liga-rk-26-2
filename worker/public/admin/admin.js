@@ -715,10 +715,10 @@
     const data = await api(`/lineups?${query}`);
     state.lineups = data.lineups || [];
     el.lineupsTable.innerHTML = table(
-      ["Divisão", "Rodada", "Usuário", "Time", "Custo", "Capitão", "Ativos", "Validação", "Atualizada", ""],
+      ["Divisão", "Rodada", "Usuário", "Time", "Utilizado / patrimônio", "Capitão", "Ativos", "Validação", "Atualizada", ""],
       state.lineups.map((row) => [
         row.division, row.roundNumber, row.username, row.fantasyTeamName,
-        `RK$ ${decimal(row.totalCost)}`, `<code>${escapeHtml(shortId(row.captainAssetId))}</code>`,
+        `RK$ ${decimal(row.totalUsed ?? row.totalCost)}<br><small>de RK$ ${decimal(row.budget)}</small>`, `<code>${escapeHtml(shortId(row.captainAssetId))}</code>`,
         (row.picks || []).map((pick) => `${pick.role}: ${shortId(pick.assetId)}`).join(", "),
         row.validationIssues?.length
           ? `<span class="negative">${escapeHtml(row.validationIssues.join("; "))}</span>`

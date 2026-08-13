@@ -432,6 +432,66 @@ sqliteTest("API administrativa rejeita CSRF inválido e limita senha errada", as
   assert.equal(blocked.response.status, 429);
 });
 
+sqliteTest("painel valida escalações pelo patrimônio individual e inclui o reserva no utilizado", async () => {
+  const database = createDatabase();
+  const password = "Senha administrativa!";
+  const env = {
+    DB: d1(database),
+    ADMIN_PASSWORD_LOGIN_ENABLED: "true",
+    ADMIN_USERNAME: "admin-rk",
+    ADMIN_PASSWORD_HASH: await passwordHash(password),
+    ADMIN_RATE_LIMIT_SALT: "test-only"
+  };
+  const login = await call(env, "/auth/login", {
+    method: "POST",
+    body: { username: "admin-rk", password }
+  });
+  const cookie = login.response.headers.get("set-cookie").split(";")[0];
+
+  database.exec(`
+    INSERT INTO fantasy_rounds(id,division,round_number,name,opens_at,locks_at,status)
+      VALUES('ascension-r4-budget','ascension',4,'Rodada 4','2026-08-10T00:00:00Z','2026-08-13T22:00:00Z','open');
+    INSERT INTO fantasy_users(id,discord_id,username) VALUES
+      ('budget-valid','budget-valid-discord','Cress Teste'),
+      ('budget-invalid','budget-invalid-discord','Excedido Teste');
+    INSERT INTO fantasy_participant_patrimony(user_id,division,current_cents,formula_version) VALUES
+      ('budget-valid','ascension',11851,'v2-dynamic-assets'),
+      ('budget-invalid','ascension',11851,'v2-dynamic-assets');
+    INSERT INTO fantasy_teams(id,user_id,division,name) VALUES
+      ('budget-team-valid','budget-valid','ascension','Time válido'),
+      ('budget-team-invalid','budget-invalid','ascension','Time excedido');
+    INSERT INTO fantasy_lineups(id,fantasy_team_id,round_id,captain_asset_id,total_cost) VALUES
+      ('budget-lineup-valid','budget-team-valid','ascension-r4-budget','valid-top',107.20),
+      ('budget-lineup-invalid','budget-team-invalid','ascension-r4-budget','invalid-top',108.00);
+    INSERT INTO fantasy_lineup_picks(lineup_id,role,asset_id,price_paid,team_slot) VALUES
+      ('budget-lineup-valid','TOP','valid-top',20,'A1'),
+      ('budget-lineup-valid','JG','valid-jg',18,'A2'),
+      ('budget-lineup-valid','MID','valid-mid',18,'A3'),
+      ('budget-lineup-valid','ADC','valid-adc',18,'A4'),
+      ('budget-lineup-valid','SUP','valid-sup',16.20,'A5'),
+      ('budget-lineup-valid','TEAM','valid-team',17,'A6'),
+      ('budget-lineup-invalid','TOP','invalid-top',20,'B1'),
+      ('budget-lineup-invalid','JG','invalid-jg',18,'B2'),
+      ('budget-lineup-invalid','MID','invalid-mid',18,'B3'),
+      ('budget-lineup-invalid','ADC','invalid-adc',18,'B4'),
+      ('budget-lineup-invalid','SUP','invalid-sup',17,'B5'),
+      ('budget-lineup-invalid','TEAM','invalid-team',17,'B6');
+    INSERT INTO fantasy_lineup_reserves(lineup_id,role,asset_id,price_paid,team_slot) VALUES
+      ('budget-lineup-valid','TOP','valid-reserve',10,'A7'),
+      ('budget-lineup-invalid','TOP','invalid-reserve',12,'B7');
+  `);
+
+  const result = await call(env, "/lineups?division=ascension&round=4", { cookie });
+  assert.equal(result.response.status, 200);
+  const valid = result.payload.data.lineups.find((row) => row.id === "budget-lineup-valid");
+  const invalid = result.payload.data.lineups.find((row) => row.id === "budget-lineup-invalid");
+  assert.equal(valid.budget, 118.51);
+  assert.equal(valid.totalUsed, 117.20);
+  assert.deepEqual(valid.validationIssues, []);
+  assert.equal(invalid.totalUsed, 120);
+  assert.deepEqual(invalid.validationIssues, ["orçamento excedido"]);
+});
+
 async function call(env, pathName, { method = "GET", body, cookie, csrf } = {}) {
   const headers = new Headers({ Origin: BASE_URL });
   if (body !== undefined) headers.set("Content-Type", "application/json");

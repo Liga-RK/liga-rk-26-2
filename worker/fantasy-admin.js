@@ -4452,11 +4452,21 @@ async function adminListLineups(request, env) {
            t.name AS fantasyTeamName, u.id AS userId, u.username,
            r.id AS roundId, r.round_number AS roundNumber, r.name AS roundName,
            l.captain_asset_id AS captainAssetId, l.total_cost AS totalCost,
+           COALESCE((
+             SELECT h.previous_cents
+             FROM fantasy_patrimony_history h
+             WHERE h.user_id = u.id AND h.division = t.division AND h.round_id = r.id
+               AND h.status IN ('PUBLISHED', 'INCONSISTENT', 'NO_VALID_LINEUP')
+             ORDER BY h.processed_at DESC
+             LIMIT 1
+           ), pp.current_cents, 10000) AS budgetCents,
            l.submitted_at AS submittedAt, l.updated_at AS updatedAt
     FROM fantasy_lineups l
     JOIN fantasy_teams t ON t.id = l.fantasy_team_id
     JOIN fantasy_users u ON u.id = t.user_id
     JOIN fantasy_rounds r ON r.id = l.round_id
+    LEFT JOIN fantasy_participant_patrimony pp
+      ON pp.user_id = u.id AND pp.division = t.division
     ${clauses.length ? `WHERE ${clauses.join(" AND ")}` : ""}
     ORDER BY r.round_number DESC, t.division, u.username
     LIMIT ?
@@ -4478,16 +4488,20 @@ async function adminListLineups(request, env) {
     WHERE lineup_id IN (${placeholders})
   `, ids);
   return success({
-    lineups: lineups.map((lineup) => ({
-      ...lineup,
-      picks: picks.filter((pick) => pick.lineupId === lineup.id),
-      reserve: reserves.find((reserve) => reserve.lineupId === lineup.id) || null,
-      validationIssues: lineupValidationIssues(
-        lineup,
-        picks.filter((pick) => pick.lineupId === lineup.id),
-        reserves.find((reserve) => reserve.lineupId === lineup.id) || null
-      )
-    }))
+    lineups: lineups.map((lineup) => {
+      const lineupPicks = picks.filter((pick) => pick.lineupId === lineup.id);
+      const reserve = reserves.find((item) => item.lineupId === lineup.id) || null;
+      const budget = Number(lineup.budgetCents) / 100;
+      const totalUsed = roundMoney(Number(lineup.totalCost) + Number(reserve?.pricePaid || 0));
+      return {
+        ...lineup,
+        budget,
+        totalUsed,
+        picks: lineupPicks,
+        reserve,
+        validationIssues: lineupValidationIssues(lineup, lineupPicks, reserve, budget)
+      };
+    })
   });
 }
 
@@ -4645,7 +4659,7 @@ async function adminUpdateLineup(request, env, requestId, auth) {
   return success({ lineup: after, backupId, lineupsScored });
 }
 
-function lineupValidationIssues(lineup, picks, reserve) {
+function lineupValidationIssues(lineup, picks, reserve, budget = BUDGET_LIMIT) {
   const issues = [];
   const roles = picks.map((pick) => clean(pick.role).toUpperCase());
   if (picks.length !== ALL_ROLES.length || ALL_ROLES.some((role) => !roles.includes(role))) {
@@ -4657,7 +4671,23 @@ function lineupValidationIssues(lineup, picks, reserve) {
   if (!picks.some((pick) => pick.assetId === lineup.captainAssetId && PLAYER_ROLES.includes(pick.role))) {
     issues.push("capitão inválido");
   }
-  if (Number(lineup.totalCost) > BUDGET_LIMIT + 0.001) issues.push("orçamento excedido");
+  const starterCost = Number(lineup.totalCost) || 0;
+  const normalizedBudget = Number.isFinite(Number(budget)) ? Number(budget) : BUDGET_LIMIT;
+  if (starterCost > normalizedBudget + 0.001) {
+    issues.push("orçamento excedido");
+  } else if (reserve) {
+    const remaining = Math.max(0, normalizedBudget - starterCost);
+    const playerPrices = picks
+      .filter((pick) => PLAYER_ROLES.includes(clean(pick.role).toUpperCase()))
+      .map((pick) => Number(pick.pricePaid))
+      .filter(Number.isFinite);
+    const legacyReserveCredit = Number(lineup.roundNumber) <= 2 && playerPrices.length
+      ? Math.min(...playerPrices)
+      : 0;
+    if (Number(reserve.pricePaid) > remaining + legacyReserveCredit + 0.001) {
+      issues.push("orçamento excedido");
+    }
+  }
   const teamCounts = new Map();
   for (const pick of picks.filter((item) => PLAYER_ROLES.includes(item.role))) {
     teamCounts.set(pick.teamSlot, (teamCounts.get(pick.teamSlot) || 0) + 1);
