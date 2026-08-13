@@ -691,11 +691,11 @@
           "logo": "assets/uploads/equipes_elite/fvl.png",
           "players": [
             {
-              "id": "e9f77ada-22dd-4407-8030-c7abf4ebeb23",
-              "name": "TUBLAS",
+              "id": "ee09cf39-13a1-4268-a363-dbd28955437b",
+              "name": "NIHIL",
               "role": "TOP",
-              "riotId": "mentally dream#tubla",
-              "opgg": "https://op.gg/pt/lol/summoners/br/mentally%20dream-tubla",
+              "riotId": "N I H I L メ#CDRP",
+              "opgg": "https://op.gg/pt/lol/summoners/br/N%20I%20H%20I%20L%20%E3%83%A1-CDRP",
               "captain": false
             },
             {
@@ -731,9 +731,10 @@
               "captain": false
             },
             {
-              "id": "ee09cf39-13a1-4268-a363-dbd28955437b",
+              "id": "d9d9c418-c16a-4a24-b475-40de2f2873fe",
               "name": "TUTU",
               "role": "SUB",
+              "mainRole": "TOP",
               "riotId": "gol bolinha 2002#2004",
               "opgg": "https://op.gg/pt/lol/summoners/br/gol%20bolinha%202002-2004",
               "captain": false
@@ -807,6 +808,7 @@
               "id": "5ef6dac6-8daf-42e6-b3af-c8896a8554e1",
               "name": "BLEYDAS",
               "role": "SUB",
+              "mainRole": "MID",
               "riotId": "",
               "opgg": "Bleyblade#Bleyd",
               "captain": false
@@ -815,6 +817,7 @@
               "id": "ae76fd2f-1c07-44e1-a35e-5f0512f28ebd",
               "name": "BIEL",
               "role": "SUB",
+              "mainRole": "JG",
               "riotId": "",
               "opgg": "부스트 이걸#Karma",
               "captain": false
@@ -10930,6 +10933,7 @@
               "id": "8b0bb211-5bfd-46c2-819f-161c22c494d6",
               "name": "PITISA",
               "role": "SUB",
+              "mainRole": "MID",
               "riotId": "Blue PitisaMemes#001",
               "opgg": "https://op.gg/pt/lol/summoners/br/Blue%20PitisaMemes-001",
               "captain": false
@@ -10938,6 +10942,7 @@
               "id": "dce34e4e-90b8-4cf4-a792-432678ad9e16",
               "name": "SAVE",
               "role": "SUB",
+              "mainRole": "ADC",
               "riotId": "bad decisions#void",
               "opgg": "https://op.gg/pt/lol/summoners/br/bad%20decisions-void",
               "captain": false
@@ -11060,6 +11065,7 @@
               "id": "12501bac-9d0e-455a-a6a3-2072a9363055",
               "name": "NATAN",
               "role": "SUB",
+              "mainRole": "SUP",
               "riotId": "ktatau#0107",
               "opgg": "https://op.gg/pt/lol/summoners/br/ktatau-0107",
               "captain": false
@@ -11076,6 +11082,7 @@
               "id": "31703eb4-e78b-43b7-a79f-5d9345aa291c",
               "name": "BATMAN",
               "role": "SUB",
+              "mainRole": "JG",
               "riotId": "Batmam#7368",
               "opgg": "https://op.gg/pt/lol/summoners/br/Batmam-7368",
               "captain": false
@@ -11304,6 +11311,7 @@
               "id": "c2e3a850-d035-470b-8d42-288132b0019e",
               "name": "RAFA",
               "role": "SUB",
+              "mainRole": "MID",
               "riotId": "Timor Leste#SFC",
               "opgg": "https://op.gg/pt/lol/summoners/br/Timor%20Leste-SFC",
               "captain": false
@@ -11426,6 +11434,7 @@
               "id": "cd3f5859-81b0-4ac7-a0a9-e8d7fe459ce6",
               "name": "LUCA",
               "role": "SUB",
+              "mainRole": "MID",
               "riotId": "PΟRRA GAMES#LUCAO",
               "opgg": "https://op.gg/pt/lol/summoners/br/P%CE%9FRRA%20GAMES-LUCAO",
               "captain": false
@@ -11499,6 +11508,7 @@
               "id": "97404de5-5a36-4b7b-aba1-e92dbb09ce5c",
               "name": "PROVÉRBIOS",
               "role": "SUB",
+              "mainRole": "SUP",
               "riotId": "Provérbios#TOPO",
               "opgg": "https://op.gg/lol/summoners/br/Prov%C3%A9rbios-TOPO",
               "captain": false

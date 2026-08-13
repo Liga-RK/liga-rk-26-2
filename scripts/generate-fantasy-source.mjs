@@ -12,6 +12,12 @@ const data = loadWindowValue("assets/data.js", "LIGA_RK_DATA");
 const stats = loadWindowValue("assets/stats-content.js", "LIGA_RK_STATS");
 const generatedYear = new Date(stats.generatedAt || Date.now()).getUTCFullYear();
 
+const FANTASY_STARTER_OVERRIDES = Object.freeze({
+  elite: Object.freeze({
+    D1: Object.freeze({ TOP: "ee09cf39-13a1-4268-a363-dbd28955437b" })
+  })
+});
+
 const output = {
   version: 2,
   schema: "fantasy-rk-official-source-v2",
@@ -31,16 +37,7 @@ for (const division of ["elite", "ascension"]) {
     name: team.name,
     tag: team.tag || team.name.slice(0, 5).toUpperCase(),
     logo: normalizePath(team.logo),
-    players: (team.players || [])
-      .filter((player) => player.playerId || String(player.player || "").trim())
-      .map((player) => ({
-        id: player.playerId,
-        name: player.player,
-        role: player.lane,
-        riotId: player.riotId || "",
-        opgg: player.opgg || "",
-        captain: Boolean(player.captain)
-      }))
+    players: buildFantasyRoster({ division, slot, team, statsDivision })
   }));
   const teamBySlot = new Map(teams.map((team) => [team.slot, team]));
 
@@ -183,6 +180,49 @@ function loadWindowValue(relativePath, globalName) {
 
 function normalizePath(value) {
   return String(value || "").replaceAll("\\", "/").replace(/^\/+/, "");
+}
+
+function buildFantasyRoster({ division, slot, team, statsDivision }) {
+  const players = (team.players || [])
+    .filter((player) => player.playerId || String(player.player || "").trim())
+    .map((player) => {
+      const statsPlayer = (statsDivision.players || []).find((item) =>
+        String(item.playerId || item.id) === String(player.playerId || "")
+      );
+      const mainRole = String(statsPlayer?.mainPosition || "").toUpperCase();
+      return {
+        id: player.playerId,
+        name: player.player,
+        role: player.lane,
+        ...(player.lane === "SUB" && ["TOP", "JG", "MID", "ADC", "SUP"].includes(mainRole)
+          ? { mainRole }
+          : {}),
+        riotId: player.riotId || "",
+        opgg: player.opgg || "",
+        captain: Boolean(player.captain)
+      };
+    });
+  const overrides = FANTASY_STARTER_OVERRIDES[division]?.[slot] || {};
+  for (const [role, playerId] of Object.entries(overrides)) {
+    const statsPlayer = (statsDivision.players || []).find((player) =>
+      String(player.playerId || player.id) === playerId
+    );
+    if (!statsPlayer) {
+      throw new Error(`Titular do Fantasy não encontrado nas estatísticas: ${division}/${slot}/${role}/${playerId}`);
+    }
+    const replacement = {
+      id: playerId,
+      name: statsPlayer.displayName,
+      role,
+      riotId: statsPlayer.riotId || "",
+      opgg: statsPlayer.opgg || "",
+      captain: false
+    };
+    const starterIndex = players.findIndex((player) => player.role === role);
+    if (starterIndex >= 0) players.splice(starterIndex, 1, replacement);
+    else players.unshift(replacement);
+  }
+  return players;
 }
 
 function brazilDateToIso(date, time, year) {
