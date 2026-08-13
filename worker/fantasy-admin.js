@@ -145,6 +145,7 @@ export async function handleAdminRequest(request, env, requestId) {
     ["GET", "/api/fantasy/admin/overview", adminOverview],
     ["GET", "/api/fantasy/admin/market/status", adminMarketStatus],
     ["POST", "/api/fantasy/admin/market/open", adminOpenMarket],
+    ["POST", "/api/fantasy/admin/market/schedule", adminScheduleMarket],
     ["POST", "/api/fantasy/admin/market/close", adminCloseMarket],
     ["GET", "/api/fantasy/admin/market/history", adminMarketHistory],
     ["POST", "/api/fantasy/admin/sync/preview", adminSyncPreview],
@@ -281,6 +282,49 @@ export function publicMarketState(row) {
 export async function ensureAutomaticMarketClose(env, now = new Date(), source = "request") {
   const state = await getGlobalMarketState(env);
   if (!state || state.status !== "open") return state;
+
+  if (String(state.lock_match_id || "").startsWith("manual-schedule:")) {
+    const rounds = await dbAll(env, `
+      SELECT id, division, round_number, locks_at, status
+      FROM fantasy_rounds
+      WHERE round_number = ? AND division IN ('elite', 'ascension')
+      ORDER BY division
+    `, [state.lock_round_number]);
+    const nowMs = now.getTime();
+    const expired = rounds.filter((round) =>
+      round.status === "open" && Number.isFinite(Date.parse(round.locks_at)) && nowMs >= Date.parse(round.locks_at)
+    );
+    if (expired.length) {
+      await env.DB.batch(expired.map((round) => env.DB.prepare(`
+        UPDATE fantasy_rounds SET status = 'locked'
+        WHERE id = ? AND status = 'open'
+      `).bind(round.id)));
+      for (const round of expired) {
+        await audit(env, {
+          actor: "system",
+          action: "market.close.division",
+          targetType: "global_market",
+          targetId: GLOBAL_MARKET_ID,
+          after: { division: round.division, roundNumber: round.round_number, closesAt: round.locks_at, source }
+        });
+      }
+    }
+    const remaining = rounds.filter((round) =>
+      round.status === "open" && !expired.some((expiredRound) => expiredRound.id === round.id) &&
+      Number.isFinite(Date.parse(round.locks_at)) && nowMs < Date.parse(round.locks_at)
+    );
+    if (!remaining.length) {
+      await closeMarketWithVersion(
+        env,
+        state.version,
+        "system",
+        "Fechamento automático: os prazos das duas divisões foram encerrados.",
+        source,
+        { preserveRoundLocks: true }
+      );
+    }
+    return getGlobalMarketState(env);
+  }
 
   const window = await resolveMarketWindow(env, state.lock_round_number);
   const nowMs = now.getTime();
@@ -603,7 +647,7 @@ async function ensureDraftSnapshotsForRound(env, roundNumber) {
   };
 }
 
-async function closeMarketWithVersion(env, version, actor, reason, source) {
+async function closeMarketWithVersion(env, version, actor, reason, source, options = {}) {
   const now = new Date().toISOString();
   const result = await env.DB.prepare(`
     UPDATE fantasy_market_state
@@ -613,9 +657,11 @@ async function closeMarketWithVersion(env, version, actor, reason, source) {
   `).bind(now, actor, reason, GLOBAL_MARKET_ID, version).run();
   if (Number(result?.meta?.changes || 0) > 0) {
     await env.DB.prepare(`
-      UPDATE fantasy_rounds SET status = 'locked', locks_at = ?
+      UPDATE fantasy_rounds
+      SET status = 'locked', locks_at = CASE WHEN ? = 1 THEN locks_at ELSE ? END
       WHERE round_number = ? AND division IN ('elite', 'ascension')
     `).bind(
+      options.preserveRoundLocks ? 1 : 0,
       now,
       (await getGlobalMarketState(env))?.lock_round_number
     ).run();
@@ -715,12 +761,78 @@ async function adminCloseMarket(request, env, requestId, auth) {
   return success({ market: publicMarketState(after) });
 }
 
+async function adminScheduleMarket(request, env, requestId, auth) {
+  const body = await readJson(request);
+  const state = await getGlobalMarketState(env);
+  const roundNumber = Math.trunc(Number(body.roundNumber || state?.lock_round_number));
+  const requested = body.divisionClosesAt && typeof body.divisionClosesAt === "object"
+    ? body.divisionClosesAt
+    : {};
+  if (!state || state.status !== "open") {
+    return failure("MARKET_NOT_OPEN", "Abra o mercado antes de definir os horários por divisão.", 409);
+  }
+  if (!Number.isInteger(roundNumber) || roundNumber < 1 || roundNumber !== Number(state.lock_round_number)) {
+    return failure("ROUND_MISMATCH", "A rodada informada não corresponde à rodada aberta.", 409);
+  }
+  const schedules = {};
+  for (const division of DIVISIONS) {
+    const timestamp = Date.parse(requested[division]);
+    if (!requested[division] || !Number.isFinite(timestamp)) {
+      return failure("INVALID_DIVISION_SCHEDULE", `Informe um horário válido para ${division}.`, 400);
+    }
+    schedules[division] = new Date(timestamp).toISOString();
+  }
+  const rounds = await dbAll(env, `
+    SELECT id, division FROM fantasy_rounds
+    WHERE round_number = ? AND division IN ('elite', 'ascension')
+  `, [roundNumber]);
+  if (rounds.length !== DIVISIONS.length) {
+    return failure("ROUND_INCOMPLETE", "A rodada precisa existir nas duas divisões.", 409);
+  }
+  const now = new Date();
+  const nowIso = now.toISOString();
+  const latestClose = new Date(Math.max(...DIVISIONS.map((division) => Date.parse(schedules[division])))).toISOString();
+  await env.DB.batch([
+    ...DIVISIONS.map((division) => env.DB.prepare(`
+      UPDATE fantasy_rounds
+      SET locks_at = ?, status = CASE WHEN ? <= ? THEN 'locked' ELSE 'open' END
+      WHERE division = ? AND round_number = ?
+    `).bind(schedules[division], schedules[division], nowIso, division, roundNumber)),
+    env.DB.prepare(`
+      UPDATE fantasy_market_state
+      SET closes_at = ?, lock_match_id = ?, lock_division = NULL,
+          version = version + 1, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ? AND status = 'open'
+    `).bind(latestClose, `manual-schedule:r${roundNumber}`, GLOBAL_MARKET_ID)
+  ]);
+  const after = await getGlobalMarketState(env);
+  await audit(env, {
+    actor: auth.username,
+    action: "market.schedule.divisions",
+    targetType: "global_market",
+    targetId: GLOBAL_MARKET_ID,
+    before: state,
+    after,
+    metadata: { roundNumber, divisionClosesAt: schedules },
+    requestId
+  });
+  await ensureAutomaticMarketClose(env, now, "admin-schedule");
+  return success({
+    market: publicMarketState(await getGlobalMarketState(env)),
+    divisionClosesAt: schedules
+  });
+}
+
 export async function openMarketFromDiscordAdmin(request, env, requestId, username) {
   return adminOpenMarket(request, env, requestId, { username });
 }
 
 export async function closeMarketFromDiscordAdmin(request, env, requestId, username) {
   return adminCloseMarket(request, env, requestId, { username });
+}
+
+export async function scheduleMarketFromDiscordAdmin(request, env, requestId, username) {
+  return adminScheduleMarket(request, env, requestId, { username });
 }
 
 export async function setMarketAccessFromDiscordAdmin(request, env, requestId, username) {
@@ -753,7 +865,13 @@ async function adminMarketStatus(_request, env) {
   await ensureAutomaticMarketClose(env);
   const state = await getGlobalMarketState(env);
   const schedule = await resolveMarketWindow(env, state?.lock_round_number);
-  return success({ market: publicMarketState(state), schedule });
+  const divisionSchedules = await dbAll(env, `
+    SELECT division, locks_at AS closesAt, status
+    FROM fantasy_rounds
+    WHERE round_number = ? AND division IN ('elite', 'ascension')
+    ORDER BY division
+  `, [state?.lock_round_number]);
+  return success({ market: publicMarketState(state), schedule, divisionSchedules });
 }
 
 async function adminMarketHistory(request, env) {

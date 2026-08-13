@@ -245,6 +245,63 @@ sqliteTest("performance recente acompanha a rodada mais recente já pontuada", a
   assert.deepEqual(result.payload.market[0].recentPoints, [31]);
 });
 
+sqliteTest("fechamento por divisão bloqueia Ascensão sem interromper a Elite", async () => {
+  const database = createDatabase();
+  const controllerToken = "controller-division-schedule";
+  await seed(database, controllerToken, "other-admin-division-schedule");
+  const env = {
+    DB: d1(database),
+    SITE_URL: `${SITE_ORIGIN}/liga-rk-26-2/fantasy/`,
+    ALLOWED_ORIGINS: SITE_ORIGIN,
+    ADMIN_DISCORD_IDS: CONTROLLER_ID,
+    MARKET_CONTROL_DISCORD_IDS: CONTROLLER_ID
+  };
+
+  const opened = await call(env, "/api/fantasy/market/control/open", {
+    method: "POST",
+    token: controllerToken,
+    body: { roundNumber: 2 }
+  });
+  assert.equal(opened.response.status, 200);
+
+  const scheduled = await call(env, "/api/fantasy/market/control/schedule", {
+    method: "POST",
+    token: controllerToken,
+    body: {
+      roundNumber: 2,
+      divisionClosesAt: {
+        ascension: "2000-08-13T22:00:00.000Z",
+        elite: "2099-08-15T21:00:00.000Z"
+      }
+    }
+  });
+  assert.equal(scheduled.response.status, 200);
+  assert.equal(scheduled.payload.data.market.status, "open");
+  assert.equal(scheduled.payload.data.divisionClosesAt.ascension, "2000-08-13T22:00:00.000Z");
+  assert.equal(scheduled.payload.data.divisionClosesAt.elite, "2099-08-15T21:00:00.000Z");
+  assert.equal(database.prepare("SELECT status FROM fantasy_rounds WHERE division='ascension' AND round_number=2").get().status, "locked");
+  assert.equal(database.prepare("SELECT status FROM fantasy_rounds WHERE division='elite' AND round_number=2").get().status, "open");
+
+  const ascensionConfig = await call(env, "/api/fantasy/config?division=ascension", { token: controllerToken });
+  const eliteConfig = await call(env, "/api/fantasy/config?division=elite", { token: controllerToken });
+  assert.equal(ascensionConfig.payload.market.status, "closed");
+  assert.equal(ascensionConfig.payload.market.closesAt, "2000-08-13T22:00:00.000Z");
+  assert.equal(eliteConfig.payload.market.status, "open");
+  assert.equal(eliteConfig.payload.market.closesAt, "2099-08-15T21:00:00.000Z");
+
+  const blockedWrite = await call(env, "/api/fantasy/lineups/current", {
+    method: "PUT",
+    token: controllerToken,
+    body: { division: "ascension" }
+  });
+  assert.equal(blockedWrite.response.status, 409);
+  assert.match(blockedWrite.payload.error.message, /Ascensão.*fechado/);
+
+  database.prepare("UPDATE fantasy_rounds SET locks_at='2000-08-15T21:00:00.000Z' WHERE division='elite' AND round_number=2").run();
+  await call(env, "/api/fantasy/config?division=elite", { token: controllerToken });
+  assert.equal(marketState(database).status, "closed");
+});
+
 sqliteTest("rodada 4 exibe todos os ativos mas aceita somente participantes das oitavas", async () => {
   const database = createDatabase();
   const token = "round-four-manager-token";

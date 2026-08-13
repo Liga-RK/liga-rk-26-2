@@ -7,6 +7,7 @@ import {
   openMarketFromDiscordAdmin,
   publicMarketState,
   recordError,
+  scheduleMarketFromDiscordAdmin,
   setMarketAccessFromDiscordAdmin,
   serveAdminAsset
 } from "./fantasy-admin.js";
@@ -91,6 +92,9 @@ async function route(request, env, requestId) {
   }
   if (url.pathname === "/api/fantasy/market/control/access" && request.method === "POST") {
     return controlMarketFromDiscord(request, env, requestId, "access");
+  }
+  if (url.pathname === "/api/fantasy/market/control/schedule" && request.method === "POST") {
+    return controlMarketFromDiscord(request, env, requestId, "schedule");
   }
   if (url.pathname === "/api/fantasy/notices/round-2-postponement" && request.method === "GET") {
     return getRoundTwoPostponementNotice(request, env);
@@ -292,7 +296,9 @@ async function controlMarketFromDiscord(request, env, requestId, action) {
     ? await openMarketFromDiscordAdmin(request, env, requestId, actor)
     : action === "close"
       ? await closeMarketFromDiscordAdmin(request, env, requestId, actor)
-      : await setMarketAccessFromDiscordAdmin(request, env, requestId, actor);
+      : action === "schedule"
+        ? await scheduleMarketFromDiscordAdmin(request, env, requestId, actor)
+        : await setMarketAccessFromDiscordAdmin(request, env, requestId, actor);
   return cors(response, request, env);
 }
 __name(controlMarketFromDiscord, "controlMarketFromDiscord");
@@ -339,13 +345,13 @@ async function getConfig(request, env) {
   await ensureAutomaticMarketClose(env, new Date(), "request");
   const marketState = await getGlobalMarketState(env);
   const user = await optionalUser(request, env);
-  const visibleMarketState = marketStateForUser(marketState, user, env);
   const round = await currentRound(env, division, marketState?.lock_round_number);
+  const visibleMarketState = marketStateForUser(marketState, user, env, round);
   const compatibleRound = round ? {
     ...round,
     status: visibleMarketState.status === "open" ? "open" : "locked",
     opens_at: marketState?.opened_at || round.opens_at,
-    locks_at: marketState?.closes_at || round.locks_at
+    locks_at: round.locks_at || marketState?.closes_at
   } : null;
   const patrimony = user ? await participantPatrimonyProfile(env, user.id, division) : null;
   const budget = patrimony ? Number(patrimony.currentCents) / 100 : INITIAL_PATRIMONY;
@@ -494,7 +500,7 @@ async function getMarket(request, env) {
     division,
     performanceRoundNumber,
     market,
-    marketState: marketStateForUser(marketState, user, env)
+    marketState: marketStateForUser(marketState, user, env, round)
   }, 200, request, env);
 }
 __name(getMarket, "getMarket");
@@ -644,12 +650,14 @@ async function saveCurrentLineup(request, env) {
   const division = validDivision(body.division);
   await ensureAutomaticMarketClose(env, new Date(), "lineup-write");
   const marketState = await getGlobalMarketState(env);
-  if (!isGlobalMarketOpen(marketState)) return json({ error: "O mercado global está fechado para as duas divisões." }, 409, request, env);
-  if (!isMarketOpenForUser(marketState, user, env)) {
+  const round = await currentRound(env, division, marketState?.lock_round_number);
+  if (!round) return json({ error: "Nenhuma rodada disponível." }, 409, request, env);
+  if (!isDivisionMarketOpen(marketState, round)) {
+    return json({ error: `O mercado da Divisão ${division === "elite" ? "Elite" : "Ascensão"} está fechado.` }, 409, request, env);
+  }
+  if (!isMarketOpenForUser(marketState, user, env, round)) {
     return json({ error: "O mercado está temporariamente aberto apenas para a administração." }, 403, request, env);
   }
-  const round = await currentRound(env, division, marketState.lock_round_number);
-  if (!round) return json({ error: "Nenhuma rodada dispon\xEDvel." }, 409, request, env);
   const teamName = cleanText(body.teamName).slice(0, 32);
   const picks = Array.isArray(body.picks) ? body.picks : [];
   const reservePick = body.reserve && cleanText(body.reserve.id) ? body.reserve : null;
@@ -1086,7 +1094,7 @@ async function currentRound(env, division, roundNumber = null) {
 __name(currentRound, "currentRound");
 function isRoundOpen(round) {
   const now = Date.now();
-  return round && round.status === "open" && now >= Date.parse(round.opens_at) && now < Date.parse(round.locks_at);
+  return round && round.status === "open" && now < Date.parse(round.locks_at);
 }
 __name(isRoundOpen, "isRoundOpen");
 function isGlobalMarketOpen(marketState) {
@@ -1099,15 +1107,29 @@ function isGlobalMarketOpen(marketState) {
   );
 }
 __name(isGlobalMarketOpen, "isGlobalMarketOpen");
-function isMarketOpenForUser(marketState, user, env) {
-  if (!isGlobalMarketOpen(marketState)) return false;
+function isDivisionMarketOpen(marketState, round) {
+  return isGlobalMarketOpen(marketState) && isRoundOpen(round);
+}
+__name(isDivisionMarketOpen, "isDivisionMarketOpen");
+function isMarketOpenForUser(marketState, user, env, round = null) {
+  if (round ? !isDivisionMarketOpen(marketState, round) : !isGlobalMarketOpen(marketState)) return false;
   if (String(marketState?.access_mode || "public") !== "admin") return true;
   return Boolean(user && marketControlIds(env).has(String(user.discordId)));
 }
 __name(isMarketOpenForUser, "isMarketOpenForUser");
-function marketStateForUser(marketState, user, env) {
-  const visible = publicMarketState(marketState);
-  if (visible.accessMode !== "admin" || isMarketOpenForUser(marketState, user, env)) return visible;
+function marketStateForUser(marketState, user, env, round = null) {
+  const base = publicMarketState(marketState);
+  const divisionOpen = round ? isDivisionMarketOpen(marketState, round) : isGlobalMarketOpen(marketState);
+  const visible = round ? {
+    ...base,
+    status: divisionOpen ? "open" : "closed",
+    closesAt: round.locks_at || base.closesAt,
+    lockDivision: round.division || base.lockDivision,
+    closeReason: divisionOpen
+      ? base.closeReason
+      : `Mercado da Divisão ${round.division === "elite" ? "Elite" : "Ascensão"} fechado para esta rodada.`
+  } : base;
+  if (visible.accessMode !== "admin" || isMarketOpenForUser(marketState, user, env, round)) return visible;
   return {
     ...visible,
     status: "closed",

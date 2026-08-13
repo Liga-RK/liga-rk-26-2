@@ -20,7 +20,7 @@
   <title>Fantasy RK | Liga RK 26.2</title>
   <link rel="icon" type="image/png" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
   <link rel="apple-touch-icon" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
-  <link rel="stylesheet" href="assets/fantasy.css?v=20260813-draft-panel-scroll-v3" />
+  <link rel="stylesheet" href="assets/fantasy.css?v=20260813-division-deadlines-v4" />
 </head>
 <body>
   <header class="site-header">
@@ -82,21 +82,16 @@
         <button class="division-tab" type="button" data-division="ascension">Divisão Ascensão</button>
       </section>
 
-      <section id="round-two-notice" class="round-two-notice" aria-labelledby="round-two-notice-title" hidden>
-        <div class="round-two-notice-icon" aria-hidden="true">!</div>
+      <section id="round-four-market-schedule-notice" class="market-notice" aria-labelledby="round-four-market-schedule-title">
+        <div class="market-notice-icon" aria-hidden="true">!</div>
         <div>
           <span class="eyebrow">Comunicado oficial</span>
-          <h2 id="round-two-notice-title">Aviso sobre a Rodada 2</h2>
-          <p id="round-two-notice-message"></p>
-        </div>
-      </section>
-
-      <section id="round-three-nkz-notice" class="round-two-notice" aria-labelledby="round-three-nkz-notice-title">
-        <div class="round-two-notice-icon" aria-hidden="true">!</div>
-        <div>
-          <span class="eyebrow">Comunicado oficial</span>
-          <h2 id="round-three-nkz-notice-title">Aviso sobre a Rodada 3</h2>
-          <p>Devido à eliminação da NO KINGS ZONE (NKZ) da Divisão Elite, o confronto entre CASHOUT &amp; TRIMILIQUE LTDA (CASH) e NKZ, válido pela Rodada 3, não será contabilizado no Fantasy RK. Por isso, os atletas e os ativos de equipe das duas organizações não receberão pontuação por essa partida. Os demais confrontos da rodada seguem normalmente.</p>
+          <h2 id="round-four-market-schedule-title">Fechamento do mercado da Rodada 4</h2>
+          <p>Na Rodada 4, cada divisão terá seu próprio horário de fechamento. Depois do prazo da divisão escolhida, não será mais possível criar ou alterar a respectiva escalação.</p>
+          <ul class="market-deadline-list">
+            <li><strong>Divisão Ascensão</strong><time datetime="2026-08-13T19:00:00-03:00">13/08/2026 às 19h</time></li>
+            <li><strong>Divisão Elite</strong><time datetime="2026-08-15T18:00:00-03:00">15/08/2026 às 18h</time></li>
+          </ul>
         </div>
       </section>
 
@@ -403,17 +398,6 @@
     <span>Topo</span>
   </button>
 
-  <dialog id="round-two-notice-dialog" aria-labelledby="round-two-notice-dialog-title" aria-describedby="round-two-notice-dialog-message">
-    <div class="dialog-card round-two-notice-dialog-card" role="document">
-      <div class="round-two-notice-dialog-icon" aria-hidden="true">!</div>
-      <span class="eyebrow">Comunicado oficial</span>
-      <h2 id="round-two-notice-dialog-title">Aviso sobre a Rodada 2</h2>
-      <p id="round-two-notice-dialog-message"></p>
-      <button id="acknowledge-round-two-notice" class="primary-button" type="button">Entendido</button>
-      <p id="round-two-notice-feedback" class="status-message" aria-live="polite"></p>
-    </div>
-  </dialog>
-
   <dialog id="account-dialog">
     <form method="dialog" class="dialog-card">
       <button class="dialog-close" value="cancel" aria-label="Fechar">×</button>
@@ -526,8 +510,8 @@
   </dialog>
 
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/champion-list.js?v=20260813-draft-panel-scroll-v3"></script>
-  <script src="assets/fantasy.js?v=20260813-draft-panel-scroll-v3"></script>
-  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260813-draft-panel-scroll-v3");</script>
+  <script src="assets/champion-list.js?v=20260813-division-deadlines-v4"></script>
+  <script src="assets/fantasy.js?v=20260813-division-deadlines-v4"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260813-division-deadlines-v4");</script>
 </body>
 </html>

@@ -64,8 +64,6 @@
     userName: "",
     canControlMarket: false,
     marketControlBusy: false,
-    roundTwoNotice: null,
-    roundTwoNoticeBusy: false,
     patrimony: { elite: null, ascension: null },
     draftData: { elite: null, ascension: null },
     draftDialog: { item: null, mode: "NONE", championId: "", mapNumber: null, editing: false },
@@ -143,14 +141,6 @@
     closedActions: document.querySelectorAll("[data-closed-action]"),
     roleShortcuts: document.querySelectorAll("[data-role-shortcut]"),
     backToTop: document.getElementById("back-to-top"),
-    roundTwoNotice: document.getElementById("round-two-notice"),
-    roundTwoNoticeTitle: document.getElementById("round-two-notice-title"),
-    roundTwoNoticeMessage: document.getElementById("round-two-notice-message"),
-    roundTwoNoticeDialog: document.getElementById("round-two-notice-dialog"),
-    roundTwoNoticeDialogTitle: document.getElementById("round-two-notice-dialog-title"),
-    roundTwoNoticeDialogMessage: document.getElementById("round-two-notice-dialog-message"),
-    acknowledgeRoundTwoNotice: document.getElementById("acknowledge-round-two-notice"),
-    roundTwoNoticeFeedback: document.getElementById("round-two-notice-feedback"),
     patrimonyProfile: document.getElementById("patrimony-profile"),
     patrimonySummaryBody: document.getElementById("patrimony-summary-body")
     ,draftPredictionDialog: document.getElementById("draft-prediction-dialog")
@@ -182,7 +172,6 @@
     marketStatusTimer = window.setInterval(renderMarketShell, 30000);
     if (config.backendMode === "cloud") {
       await loadCloudAccount();
-      await loadRoundTwoNotice();
     }
     renderAccount();
     renderLineup();
@@ -261,12 +250,6 @@
     el.renameTeam.addEventListener("click", renameTeam);
     el.accountButton.addEventListener("click", handleAccountAction);
     el.homeLoginButton.addEventListener("click", startDiscordLogin);
-    if (el.acknowledgeRoundTwoNotice) el.acknowledgeRoundTwoNotice.addEventListener("click", acknowledgeRoundTwoNotice);
-    if (el.roundTwoNoticeDialog) {
-      el.roundTwoNoticeDialog.addEventListener("cancel", (event) => {
-        event.preventDefault();
-      });
-    }
     if (el.marketAdminToggle) el.marketAdminToggle.addEventListener("click", toggleMarketFromFantasy);
     el.confirmDemoUser.addEventListener("click", confirmDemoUser);
     if (el.backToTop) {
@@ -1713,7 +1696,6 @@
     state.userName = "";
     state.canControlMarket = false;
     state.marketControlBusy = false;
-    clearRoundTwoNotice();
     state.teamName = "Meu Time RK";
     state.lineups = { elite: emptyLineup(), ascension: emptyLineup() };
     state.patrimony = { elite: null, ascension: null };
@@ -1747,11 +1729,15 @@
     el.marketAdminControl.hidden = !state.canControlMarket;
     if (!state.canControlMarket) return;
     const open = isMarketOpen();
-    el.marketAdminToggle.disabled = state.marketControlBusy;
+    const anotherDivisionOpen = Object.entries(state.marketOpen).some(([division, value]) => division !== state.division && value);
+    const divisionDeadlineReached = !open && anotherDivisionOpen;
+    el.marketAdminToggle.disabled = state.marketControlBusy || divisionDeadlineReached;
     el.marketAdminToggle.classList.toggle("open-action", !open);
     el.marketAdminToggle.textContent = state.marketControlBusy
       ? (open ? "Fechando..." : "Abrindo...")
-      : (open ? "Fechar mercado" : "Abrir mercado");
+      : divisionDeadlineReached
+        ? `${divisionLabel(state.division)} encerrada`
+        : (open ? "Fechar mercado" : "Abrir mercado");
   }
 
   async function toggleMarketFromFantasy() {
@@ -1876,86 +1862,6 @@
       state.canControlMarket = false;
       console.warn("Não foi possível consultar a sessão do Fantasy RK.", error);
     }
-  }
-
-  async function loadRoundTwoNotice() {
-    if (!state.userName || config.backendMode !== "cloud") {
-      clearRoundTwoNotice();
-      return;
-    }
-    try {
-      const response = await apiFetch("/api/fantasy/notices/round-2-postponement", { cache: "no-store" });
-      const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(apiErrorMessage(payload, "Aviso da Rodada 2 indisponível."));
-      const eligible = Boolean(payload.eligible ?? payload.data?.eligible);
-      const notice = payload.notice || payload.data?.notice || null;
-      if (!eligible || !notice) {
-        clearRoundTwoNotice();
-        return;
-      }
-      state.roundTwoNotice = {
-        ...notice,
-        acknowledged: Boolean(payload.acknowledged ?? payload.data?.acknowledged)
-      };
-      renderRoundTwoNotice();
-      const showPopup = Boolean(payload.showPopup ?? payload.data?.showPopup);
-      if (showPopup && el.roundTwoNoticeDialog && !el.roundTwoNoticeDialog.open) {
-        el.roundTwoNoticeDialog.showModal();
-      }
-    } catch (error) {
-      clearRoundTwoNotice();
-      console.warn("Não foi possível carregar o aviso da Rodada 2.", error);
-    }
-  }
-
-  function renderRoundTwoNotice() {
-    const notice = state.roundTwoNotice;
-    if (el.roundTwoNotice) el.roundTwoNotice.hidden = !notice || !state.userName;
-    if (!notice || !state.userName) return;
-    if (el.roundTwoNoticeTitle) el.roundTwoNoticeTitle.textContent = notice.title;
-    if (el.roundTwoNoticeMessage) el.roundTwoNoticeMessage.textContent = notice.message;
-    if (el.roundTwoNoticeDialogTitle) el.roundTwoNoticeDialogTitle.textContent = notice.title;
-    if (el.roundTwoNoticeDialogMessage) el.roundTwoNoticeDialogMessage.textContent = notice.message;
-  }
-
-  async function acknowledgeRoundTwoNotice() {
-    if (!state.userName || !state.roundTwoNotice || state.roundTwoNoticeBusy) return;
-    state.roundTwoNoticeBusy = true;
-    if (el.acknowledgeRoundTwoNotice) {
-      el.acknowledgeRoundTwoNotice.disabled = true;
-      el.acknowledgeRoundTwoNotice.textContent = "Salvando...";
-    }
-    if (el.roundTwoNoticeFeedback) el.roundTwoNoticeFeedback.textContent = "";
-    try {
-      const response = await apiFetch("/api/fantasy/notices/round-2-postponement/ack", {
-        method: "POST",
-        cache: "no-store"
-      });
-      const payload = await response.json().catch(() => ({}));
-      if (!response.ok || !(payload.acknowledged ?? payload.data?.acknowledged)) {
-        throw new Error(apiErrorMessage(payload, "Não foi possível confirmar o aviso."));
-      }
-      state.roundTwoNotice.acknowledged = true;
-      if (el.roundTwoNoticeDialog?.open) el.roundTwoNoticeDialog.close();
-    } catch (error) {
-      if (el.roundTwoNoticeFeedback) {
-        el.roundTwoNoticeFeedback.textContent = error.message || "Não foi possível confirmar agora. Tente novamente.";
-      }
-    } finally {
-      state.roundTwoNoticeBusy = false;
-      if (el.acknowledgeRoundTwoNotice) {
-        el.acknowledgeRoundTwoNotice.disabled = false;
-        el.acknowledgeRoundTwoNotice.textContent = "Entendido";
-      }
-    }
-  }
-
-  function clearRoundTwoNotice() {
-    state.roundTwoNotice = null;
-    state.roundTwoNoticeBusy = false;
-    if (el.roundTwoNotice) el.roundTwoNotice.hidden = true;
-    if (el.roundTwoNoticeFeedback) el.roundTwoNoticeFeedback.textContent = "";
-    if (el.roundTwoNoticeDialog?.open) el.roundTwoNoticeDialog.close();
   }
 
   async function loadCloudPatrimonyHistory() {
@@ -2432,6 +2338,10 @@
   }
 
   function closedMarketDetail(round) {
+    const locksAt = Date.parse(round?.locks_at);
+    if (Number.isFinite(locksAt) && locksAt <= Date.now()) {
+      return `O prazo da ${divisionLabel(state.division)} terminou em ${new Date(locksAt).toLocaleString("pt-BR")}.`;
+    }
     if (state.marketAccessMode[state.division] === "admin") {
       return "Mercado temporariamente disponível apenas para a administração.";
     }
