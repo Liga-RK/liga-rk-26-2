@@ -37,7 +37,7 @@ env = {
   DB,
   FANTASY_SOURCE_URL: SOURCE_URL,
   CONTENT_API_URL,
-  __maintenanceBackup: mode === "process"
+  __maintenanceBackup: mode === "process" || mode === "prepare-round"
     ? async () => backupReference
     : mode === "apply"
       ? async () => previewId
@@ -144,6 +144,26 @@ if (mode === "preview") {
     });
   }
   console.log(JSON.stringify({ mode, roundNumber, latest }, null, 2));
+} else if (mode === "prepare-round") {
+  if (!previewId) throw new Error("Informe o ID da prévia de sincronização.");
+  if (!backupReference.startsWith("d1-time-travel:")) {
+    throw new Error("Informe também o bookmark externo criado antes da preparação da rodada.");
+  }
+  await assertMarketClosed();
+  const sync = await invoke(__test.adminSyncApply, { previewId });
+  const prepared = await prepareMarketRound(roundNumber);
+  console.log(JSON.stringify({
+    mode,
+    roundNumber,
+    sync: {
+      syncRunId: sync.syncRunId,
+      backupId: sync.backupId,
+      applied: sync.applied,
+      pricesPreserved: sync.pricesPreserved,
+      warnings: sync.warnings
+    },
+    prepared
+  }, null, 2));
 } else if (mode === "process") {
   if (!previewId) throw new Error("Informe o ID da prévia de sincronização.");
   if (!backupReference.startsWith("d1-time-travel:")) {
@@ -447,6 +467,80 @@ async function scoringAudit() {
       ...affected
     },
     lineups: substitutions
+  };
+}
+
+async function prepareMarketRound(targetRoundNumber) {
+  const rounds = await DB.prepare(`
+    SELECT id, division, round_number AS roundNumber, name, status,
+           eligibility_json AS eligibilityJson
+    FROM fantasy_rounds WHERE round_number = ?
+    ORDER BY division
+  `).bind(targetRoundNumber).all();
+  if ((rounds.results || []).length !== 2) {
+    throw new Error(`A rodada ${targetRoundNumber} precisa existir nas duas divisões.`);
+  }
+  const matches = await DB.prepare(`
+    SELECT id, division, source_id AS sourceId, home_team_slot AS homeTeamSlot,
+           away_team_slot AS awayTeamSlot, home_team_name AS homeTeamName,
+           away_team_name AS awayTeamName, starts_at AS startsAt, status
+    FROM fantasy_matches
+    WHERE round_number = ? AND status NOT IN ('cancelled', 'postponed')
+    ORDER BY starts_at, division, order_index
+  `).bind(targetRoundNumber).all();
+  for (const division of ["ascension", "elite"]) {
+    const divisionMatches = (matches.results || []).filter((match) => match.division === division);
+    if (divisionMatches.length !== 4) throw new Error(`${division} precisa ter quatro confrontos na rodada ${targetRoundNumber}.`);
+    const round = (rounds.results || []).find((item) => item.division === division);
+    const statuses = JSON.parse(round.eligibilityJson || "{}").teamStatuses || {};
+    const counts = Object.values(statuses).reduce((summary, status) => {
+      summary[status] = (summary[status] || 0) + 1;
+      return summary;
+    }, {});
+    if (counts.playing !== 8 || counts["qualified-next-round"] !== 4 || counts.eliminated !== 4) {
+      throw new Error(`A elegibilidade dos playoffs não confere em ${division}.`);
+    }
+  }
+  const firstMatch = (matches.results || [])[0];
+  if (!firstMatch || !Number.isFinite(Date.parse(firstMatch.startsAt))) {
+    throw new Error("A primeira partida da rodada não possui horário válido.");
+  }
+  const closesAt = new Date(Date.parse(firstMatch.startsAt) - 25 * 60 * 1000).toISOString();
+  const lineupCount = await DB.prepare(`
+    SELECT COUNT(*) AS count
+    FROM fantasy_lineups l
+    JOIN fantasy_rounds r ON r.id = l.round_id
+    WHERE r.round_number = ?
+  `).bind(targetRoundNumber).first();
+  if (Number(lineupCount?.count || 0) !== 0) {
+    throw new Error(`A rodada ${targetRoundNumber} já possui escalações e não pode ser preparada automaticamente.`);
+  }
+  await DB.prepare(`
+    UPDATE fantasy_market_state
+    SET status = 'closed', access_mode = 'public', closes_at = ?,
+        close_reason = ?, lock_match_id = ?, lock_division = ?,
+        lock_round_number = ?, version = version + 1,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id = 'global' AND status = 'closed'
+  `).bind(
+    closesAt,
+    `Rodada ${targetRoundNumber} preparada; aguardando abertura manual.`,
+    firstMatch.id,
+    firstMatch.division,
+    targetRoundNumber
+  ).run();
+  return {
+    marketStatus: "closed",
+    roundNumber: targetRoundNumber,
+    closesAt,
+    firstMatch,
+    rounds: (rounds.results || []).map((round) => ({
+      division: round.division,
+      name: round.name,
+      status: round.status,
+      eligibility: JSON.parse(round.eligibilityJson || "{}")
+    })),
+    matches: matches.results || []
   };
 }
 

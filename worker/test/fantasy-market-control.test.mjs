@@ -245,6 +245,92 @@ sqliteTest("performance recente acompanha a rodada mais recente já pontuada", a
   assert.deepEqual(result.payload.market[0].recentPoints, [31]);
 });
 
+sqliteTest("rodada 4 exibe todos os ativos mas aceita somente participantes das oitavas", async () => {
+  const database = createDatabase();
+  const token = "round-four-manager-token";
+  database.exec(`
+    INSERT INTO fantasy_users(id, discord_id, username)
+    VALUES ('round-four-manager', 'round-four-discord', 'Manager R4');
+
+    INSERT INTO fantasy_rounds(
+      id, division, round_number, name, opens_at, locks_at, status, eligibility_json
+    ) VALUES (
+      'elite-r4', 'elite', 4, 'Rodada 4 · Oitavas',
+      '2099-08-10T00:00:00.000Z', '2099-08-16T18:35:00.000Z', 'open',
+      '{"teamStatuses":{"A1":"qualified-next-round","A2":"playing","A3":"playing","A4":"eliminated"}}'
+    ), (
+      'ascension-r4', 'ascension', 4, 'Rodada 4 · Oitavas',
+      '2099-08-10T00:00:00.000Z', '2099-08-16T18:35:00.000Z', 'open', '{}'
+    );
+
+    INSERT INTO fantasy_matches(
+      id, source_id, division, round_id, round_number, stage, order_index,
+      home_team_slot, away_team_slot, home_team_name, away_team_name,
+      starts_at, status, source_hash
+    ) VALUES (
+      'elite-r4-m1', 'p1m1', 'elite', 'elite-r4', 4, 'playoffs-round-of-16', 0,
+      'A2', 'A3', 'Time A2', 'Time A3', '2099-08-16T19:00:00.000Z', 'scheduled', 'fixture'
+    ), (
+      'ascension-r4-m1', 'p1m1', 'ascension', 'ascension-r4', 4, 'playoffs-round-of-16', 0,
+      'A2', 'A3', 'Time A2', 'Time A3', '2099-08-16T20:00:00.000Z', 'scheduled', 'fixture'
+    );
+
+    INSERT INTO fantasy_market(
+      division, asset_id, asset_type, role, display_name, team_slot,
+      team_name, team_tag, price, previous_price
+    ) VALUES
+      ('elite', 'p-top-out', 'player', 'TOP', 'Top eliminado', 'A4', 'Time A4', 'A4', 10, 10),
+      ('elite', 'p-jg', 'player', 'JG', 'Jungle apto', 'A2', 'Time A2', 'A2', 10, 10),
+      ('elite', 'p-mid', 'player', 'MID', 'Mid apto', 'A3', 'Time A3', 'A3', 10, 10),
+      ('elite', 'p-adc', 'player', 'ADC', 'ADC apto', 'A2', 'Time A2', 'A2', 10, 10),
+      ('elite', 'p-sup', 'player', 'SUP', 'Suporte apto', 'A3', 'Time A3', 'A3', 10, 10),
+      ('elite', 'team-a2', 'team', 'TEAM', 'Time A2', 'A2', 'Time A2', 'A2', 10, 10),
+      ('elite', 'p-top-qualified', 'player', 'TOP', 'Top classificado', 'A1', 'Time A1', 'A1', 10, 10);
+
+    UPDATE fantasy_market_state
+    SET status='open', access_mode='public', lock_round_number=4,
+        closes_at='2099-08-16T18:35:00.000Z', version=1
+    WHERE id='global';
+  `);
+  database.prepare(
+    "INSERT INTO fantasy_sessions(token_hash,user_id,expires_at) VALUES(?,?,?)"
+  ).run(await hash(token), "round-four-manager", "2099-12-31T23:59:59.000Z");
+  const env = {
+    DB: d1(database),
+    SITE_URL: `${SITE_ORIGIN}/liga-rk-26-2/fantasy/`,
+    ALLOWED_ORIGINS: SITE_ORIGIN
+  };
+
+  const marketResult = await call(env, "/api/fantasy/market?division=elite");
+  const assets = new Map(marketResult.payload.market.map((item) => [item.id, item]));
+  assert.equal(assets.get("p-jg").selectable, true);
+  assert.equal(assets.get("p-jg").matchup, "vs A3");
+  assert.equal(assets.get("p-top-qualified").selectable, false);
+  assert.equal(assets.get("p-top-qualified").availabilityStatus, "qualified-next-round");
+  assert.equal(assets.get("p-top-out").selectable, false);
+  assert.equal(assets.get("p-top-out").availabilityStatus, "eliminated");
+
+  const saveResult = await call(env, "/api/fantasy/lineups/current", {
+    method: "PUT",
+    token,
+    body: {
+      division: "elite",
+      teamName: "Teste playoffs",
+      captainPlayerId: "p-jg",
+      picks: [
+        { id: "p-top-out", role: "TOP" },
+        { id: "p-jg", role: "JG" },
+        { id: "p-mid", role: "MID" },
+        { id: "p-adc", role: "ADC" },
+        { id: "p-sup", role: "SUP" },
+        { id: "team-a2", role: "TEAM" }
+      ]
+    }
+  });
+  assert.equal(saveResult.response.status, 400);
+  assert.match(saveResult.payload.error.message, /eliminado dos playoffs/i);
+});
+
 sqliteTest("callback do Discord retorna diretamente para a tela do mercado", async () => {
   const database = createDatabase();
   const env = {
@@ -395,7 +481,8 @@ function createDatabase() {
     "0010_fantasy_shared_round_patrimony.sql",
     "0011_fantasy_division_patrimony.sql",
     "0012_fantasy_market_access_mode.sql",
-    "0013_fantasy_round3_reserve_budget.sql"
+    "0013_fantasy_round3_reserve_budget.sql",
+    "0014_fantasy_round_eligibility.sql"
   ]) {
     database.exec(fs.readFileSync(path.join(WORKER_ROOT, "migrations", file), "utf8"));
     database.prepare("INSERT INTO d1_migrations(name) VALUES(?)").run(file);

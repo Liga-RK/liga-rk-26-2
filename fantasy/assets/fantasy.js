@@ -315,7 +315,10 @@
         ? roundMoney(item.maintenanceScore)
         : null,
       scoreDetails: objectValue(item.scoreDetails),
-      valuationDetails: objectValue(item.valuationDetails)
+      valuationDetails: objectValue(item.valuationDetails),
+      selectable: item.selectable !== false,
+      availabilityStatus: cleanText(item.availabilityStatus),
+      availabilityLabel: cleanText(item.availabilityLabel)
     }));
     return cloudMarket;
   }
@@ -631,7 +634,10 @@
     icon.alt = "";
     const label = document.createTextNode(title);
     const count = document.createElement("span");
-    count.textContent = `${items.length} ${items.length === 1 ? "opção" : "opções"}`;
+    const availableCount = items.filter((item) => item.selectable !== false).length;
+    count.textContent = availableCount === items.length
+      ? `${items.length} ${items.length === 1 ? "opção" : "opções"}`
+      : `${availableCount} disponíveis de ${items.length}`;
     heading.append(icon, label, count);
     const cards = document.createElement("div");
     cards.className = "market-cards";
@@ -639,7 +645,7 @@
       const selected = selectedIds.has(item.id);
       const reserveSelected = reserveId === item.id;
       const reserveError = !selected && !reserveSelected ? reserveValidationMessage(item, lineup) : "";
-      const reserveEligible = item.type === "player" && !selected && !reserveSelected && !reserveError;
+      const reserveEligible = item.selectable !== false && item.type === "player" && !selected && !reserveSelected && !reserveError;
       const roleComplete = el.roleFilter.value === "ALL" && Boolean(lineup.slots[item.role]) && !selected && !reserveEligible;
       return marketCard(item, selected, roleComplete, reserveSelected, reserveError, reserveEligible);
     }));
@@ -649,7 +655,8 @@
 
   function marketCard(item, selected, roleComplete, reserveSelected, reserveError = "", reserveEligible = false) {
     const card = document.createElement("article");
-    card.className = `player-card${selected ? " selected" : ""}${roleComplete ? " role-complete" : ""}${reserveSelected ? " reserve-selected" : ""}${reserveEligible ? " reserve-eligible" : ""}`;
+    const unavailable = item.selectable === false;
+    card.className = `player-card${selected ? " selected" : ""}${roleComplete ? " role-complete" : ""}${reserveSelected ? " reserve-selected" : ""}${reserveEligible ? " reserve-eligible" : ""}${unavailable ? " unavailable" : ""}`;
 
     const logo = createLogo(item);
     const meta = document.createElement("div");
@@ -660,7 +667,8 @@
     team.textContent = `${ROLE_LABELS[item.role]} · ${item.teamName || item.teamTag}`;
     const matchup = document.createElement("small");
     matchup.className = "matchup";
-    matchup.textContent = matchupLabel(item);
+    matchup.textContent = unavailable ? item.availabilityLabel : matchupLabel(item);
+    if (unavailable) matchup.classList.add("availability-status", item.availabilityStatus || "unavailable");
     const stats = document.createElement("div");
     stats.className = "player-stats";
     const recent = item.recentPoints && item.recentPoints.length
@@ -680,7 +688,9 @@
     const button = document.createElement("button");
     button.type = "button";
     button.className = "buy-button";
-    button.textContent = selected ? "Remover" : "Escalar";
+    button.textContent = selected ? "Remover" : (unavailable ? "Indisponível nesta rodada" : "Escalar");
+    button.disabled = unavailable && !selected;
+    button.title = unavailable ? item.availabilityLabel : "Escalar";
     button.addEventListener("click", () => selected ? removeItem(item.role) : addItem(item));
 
     const actions = document.createElement("div");
@@ -691,7 +701,7 @@
       reserveButton.type = "button";
       reserveButton.className = "reserve-button";
       reserveButton.textContent = reserveSelected ? "Remover reserva" : "Reserva";
-      reserveButton.disabled = (selected && !reserveSelected) || Boolean(reserveError);
+      reserveButton.disabled = unavailable || (selected && !reserveSelected) || Boolean(reserveError);
       reserveButton.title = selected && !reserveSelected ? "Remova dos titulares antes de usar como reserva." : (reserveError || "Escolher como reserva");
       reserveButton.addEventListener("click", () => reserveSelected ? removeReserve() : setReserve(item));
       actions.appendChild(reserveButton);
@@ -954,6 +964,10 @@
   }
 
   function addItem(item) {
+    if (item.selectable === false) {
+      setMessage(item.availabilityLabel || "Este ativo não pode ser escalado nesta rodada.", true);
+      return;
+    }
     const lineup = currentLineup();
     const replacing = lineup.slots[item.role];
     const nextCost = lineupStarterPurchaseCost(lineup) - (replacing ? itemPurchasePrice(replacing) : 0) + Number(item.price || 0);
@@ -994,6 +1008,10 @@
   }
 
   function setReserve(item) {
+    if (item.selectable === false) {
+      setMessage(item.availabilityLabel || "Este jogador não pode ser reserva nesta rodada.", true);
+      return;
+    }
     const lineup = currentLineup();
     const selected = Object.values(lineup.slots).filter(Boolean).length;
     if (selected !== 6) {
@@ -2438,10 +2456,11 @@
   }
 
   function sortMarket(sort) {
-    if (sort === "price-asc") return (a, b) => a.price - b.price || a.name.localeCompare(b.name, "pt-BR");
-    if (sort === "name") return (a, b) => a.name.localeCompare(b.name, "pt-BR");
-    if (sort === "avg-desc") return (a, b) => b.average - a.average || b.price - a.price;
-    return (a, b) => b.price - a.price || a.name.localeCompare(b.name, "pt-BR");
+    const availability = (a, b) => Number(a.selectable === false) - Number(b.selectable === false);
+    if (sort === "price-asc") return (a, b) => availability(a, b) || a.price - b.price || a.name.localeCompare(b.name, "pt-BR");
+    if (sort === "name") return (a, b) => availability(a, b) || a.name.localeCompare(b.name, "pt-BR");
+    if (sort === "avg-desc") return (a, b) => availability(a, b) || b.average - a.average || b.price - a.price;
+    return (a, b) => availability(a, b) || b.price - a.price || a.name.localeCompare(b.name, "pt-BR");
   }
 
   function normalizeRole(value) {

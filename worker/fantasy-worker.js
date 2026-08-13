@@ -371,6 +371,14 @@ async function getMarket(request, env) {
     FROM fantasy_rounds
     WHERE division = ? AND status = 'scored'
   `).bind(division).first();
+  const roundMatchesResult = round ? await env.DB.prepare(`
+    SELECT home_team_slot AS homeTeamSlot, away_team_slot AS awayTeamSlot,
+           home_team_name AS homeTeamName, away_team_name AS awayTeamName
+    FROM fantasy_matches
+    WHERE division = ? AND round_number = ?
+      AND status NOT IN ('cancelled', 'postponed')
+    ORDER BY order_index, starts_at
+  `).bind(division, round.round_number).all() : { results: [] };
   const performanceRoundNumber = Math.max(
     0,
     Math.trunc(Number(
@@ -391,11 +399,16 @@ async function getMarket(request, env) {
     if (!recent.has(id)) recent.set(id, [roundMoney(row.points)]);
   }
   const marketRows = result.results || [];
-  const matchups = buildRoundMatchups(marketRows, round);
+  const roundMatches = roundMatchesResult.results || [];
+  const matchups = buildRoundMatchups(marketRows, roundMatches);
   const market = marketRows.map((row) => {
     const opponent = matchups.get(String(row.teamSlot));
+    const availability = marketAssetAvailability(round, row.teamSlot, roundMatches);
     return {
       ...row,
+      selectable: availability.selectable,
+      availabilityStatus: availability.status,
+      availabilityLabel: availability.label,
       previousPrice: Number(row.previousPrice) || Number(row.price) || 0,
       priceDelta: roundMoney((Number(row.price) || 0) - (Number(row.previousPrice) || Number(row.price) || 0)),
       opponentName: opponent?.teamName || "",
@@ -420,28 +433,41 @@ async function getMarket(request, env) {
   }, 200, request, env);
 }
 __name(getMarket, "getMarket");
-function buildRoundMatchups(marketRows, round) {
+function buildRoundMatchups(marketRows, roundMatches = []) {
   const bySlot = /* @__PURE__ */ new Map();
   for (const row of marketRows) {
     if (!row.teamSlot || bySlot.has(String(row.teamSlot))) continue;
     bySlot.set(String(row.teamSlot), { teamSlot: String(row.teamSlot), teamName: row.teamName, teamTag: row.teamTag });
   }
-  const roundNumber = Math.max(1, Math.trunc(Number(round?.round_number || round?.roundNumber || 1)));
-  const groupPairs = roundNumber % 3 === 2 ? [["1", "3"], ["2", "4"]] : roundNumber % 3 === 0 ? [["2", "3"], ["4", "1"]] : [["1", "2"], ["3", "4"]];
   const matchups = /* @__PURE__ */ new Map();
-  for (const group of ["A", "B", "C", "D"]) {
-    for (const [left, right] of groupPairs) {
-      const home = `${group}${left}`;
-      const away = `${group}${right}`;
-      if (bySlot.has(home) && bySlot.has(away)) {
-        matchups.set(home, bySlot.get(away));
-        matchups.set(away, bySlot.get(home));
-      }
+  for (const match of roundMatches) {
+    const home = String(match.homeTeamSlot || "");
+    const away = String(match.awayTeamSlot || "");
+    if (bySlot.has(home) && bySlot.has(away)) {
+      matchups.set(home, bySlot.get(away));
+      matchups.set(away, bySlot.get(home));
     }
   }
   return matchups;
 }
 __name(buildRoundMatchups, "buildRoundMatchups");
+function marketAssetAvailability(round, teamSlot, roundMatches = []) {
+  const roundNumber = Math.trunc(Number(round?.round_number || round?.roundNumber || 0));
+  if (roundNumber < 4) return { selectable: true, status: "playing", label: "" };
+  const slot = String(teamSlot || "");
+  const statuses = parseJsonObject(round?.eligibility_json).teamStatuses || {};
+  const scheduled = roundMatches.some((match) =>
+    String(match.homeTeamSlot || "") === slot || String(match.awayTeamSlot || "") === slot
+  );
+  const status = scheduled ? "playing" : String(statuses[slot] || "unavailable");
+  if (status === "playing") return { selectable: true, status, label: "Joga a rodada 4" };
+  if (status === "qualified-next-round") {
+    return { selectable: false, status, label: "Classificado para a rodada 5" };
+  }
+  if (status === "eliminated") return { selectable: false, status, label: "Eliminado dos playoffs" };
+  return { selectable: false, status: "unavailable", label: "Não disputa a rodada 4" };
+}
+__name(marketAssetAvailability, "marketAssetAvailability");
 async function getPopularPicks(request, env) {
   const division = validDivision(new URL(request.url).searchParams.get("division") || "elite");
   const marketState = await getGlobalMarketState(env);
@@ -556,6 +582,8 @@ async function saveCurrentLineup(request, env) {
   for (const pick of picks) {
     const row = await env.DB.prepare("SELECT * FROM fantasy_market WHERE division = ? AND asset_id = ? AND active = 1").bind(division, cleanText(pick.id)).first();
     if (!row || row.role !== cleanText(pick.role).toUpperCase()) return json({ error: "Uma escolha n\xE3o est\xE1 dispon\xEDvel no mercado." }, 400, request, env);
+    const availability = marketAssetAvailability(round, row.team_slot);
+    if (!availability.selectable) return json({ error: `${row.display_name} não pode ser escalado: ${availability.label.toLowerCase()}.` }, 400, request, env);
     marketRows.push(row);
   }
   const playerTeamCounts = /* @__PURE__ */ new Map();
@@ -572,6 +600,8 @@ async function saveCurrentLineup(request, env) {
   if (reservePick) {
     reserveRow = await env.DB.prepare("SELECT * FROM fantasy_market WHERE division = ? AND asset_id = ? AND active = 1").bind(division, cleanText(reservePick.id)).first();
     if (!reserveRow || reserveRow.asset_type !== "player") return json({ error: "O reserva precisa ser um jogador dispon\xEDvel no mercado." }, 400, request, env);
+    const reserveAvailability = marketAssetAvailability(round, reserveRow.team_slot);
+    if (!reserveAvailability.selectable) return json({ error: `${reserveRow.display_name} não pode ser reserva: ${reserveAvailability.label.toLowerCase()}.` }, 400, request, env);
     if (marketRows.some((row) => row.asset_id === reserveRow.asset_id)) return json({ error: "O reserva n\xE3o pode ser um dos titulares." }, 400, request, env);
     const reserveBudget = reserveBudgetForPatrimony(marketRows, budget);
     if (Number(reserveRow.price) > reserveBudget + 1e-3) return json({ error: `Seu limite para reserva \xE9 RK$ ${formatMoney(reserveBudget)}.` }, 400, request, env);

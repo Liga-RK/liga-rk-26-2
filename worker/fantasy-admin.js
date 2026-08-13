@@ -878,10 +878,11 @@ async function adminSyncApply(request, env, requestId, auth) {
     const locksAt = new Date(Date.parse(firstStarts) - LOCK_MINUTES * 60000).toISOString();
     statements.push(env.DB.prepare(`
       INSERT INTO fantasy_rounds
-        (id, division, round_number, name, opens_at, locks_at, status, source_hash)
-      VALUES (?, ?, ?, ?, ?, ?, 'scheduled', ?)
+        (id, division, round_number, name, opens_at, locks_at, status, source_hash, eligibility_json)
+      VALUES (?, ?, ?, ?, ?, ?, 'scheduled', ?, ?)
       ON CONFLICT(division, round_number) DO UPDATE SET
-        name = excluded.name, source_hash = excluded.source_hash
+        name = excluded.name, source_hash = excluded.source_hash,
+        eligibility_json = excluded.eligibility_json
     `).bind(
       roundDbId,
       round.division,
@@ -889,7 +890,8 @@ async function adminSyncApply(request, env, requestId, auth) {
       round.name,
       opensAt,
       locksAt,
-      round.sourceHash
+      round.sourceHash,
+      JSON.stringify(round.eligibility)
     ));
     for (const match of round.matches) {
       statements.push(env.DB.prepare(`
@@ -1106,29 +1108,47 @@ function mergeLiveOfficialContent(source, liveContent, updatedAt = null) {
       .map((match) => clean(match.seriesId))
       .filter(Boolean));
     const liveResults = liveDivision.results || {};
-    const rounds = arrayValues(sourceDivision.rounds).map((round) => ({
+    const livePlayoffResults = liveDivision.playoffResults || {};
+    const playoffStandings = officialGroupStandings(sourceDivision, effectiveTeams, liveResults);
+    const rounds = arrayValues(sourceDivision.rounds).map((round) => {
+      const roundNumber = Math.trunc(Number(round.roundNumber || round.number));
+      const playoffRound = roundNumber === 4;
+      const eligibility = playoffRound
+        ? playoffEligibility(playoffStandings)
+        : (round.eligibility || {});
+      return {
       ...round,
+      eligibility,
       matches: arrayValues(round.matches).map((match) => {
-        const roundNumber = Math.trunc(Number(round.roundNumber || round.number));
         const sourceId = clean(match.sourceId || match.id);
         const stage = clean(match.stage) || "groups";
         const statsSeriesId = clean(match.statsSeriesId) || `${stage}-${sourceId}`;
-        const liveResult = liveResults[sourceId];
-        const homeScore = nullableInteger(liveResult?.homeScore);
-        const awayScore = nullableInteger(liveResult?.awayScore);
+        const liveResult = playoffRound ? livePlayoffResults[sourceId] : liveResults[sourceId];
+        const homeSlot = playoffRound
+          ? resolvePlayoffSeed(playoffStandings, match.homeTeamSeed) || clean(match.homeTeamSlot || match.homeSlot).toUpperCase()
+          : clean(match.homeTeamSlot || match.homeSlot).toUpperCase();
+        const awaySlot = playoffRound
+          ? resolvePlayoffSeed(playoffStandings, match.awayTeamSeed) || clean(match.awayTeamSlot || match.awaySlot).toUpperCase()
+          : clean(match.awayTeamSlot || match.awaySlot).toUpperCase();
+        const homeScore = nullableInteger(liveResult?.homeScore ?? liveResult?.teamAScore);
+        const awayScore = nullableInteger(liveResult?.awayScore ?? liveResult?.teamBScore);
         const hasFinalScore = homeScore !== null && awayScore !== null && homeScore !== awayScore;
         const manualResult = Boolean(liveResult?.manualOverride);
         const hasDetailedStats = statSeriesIds.has(statsSeriesId);
         const override = OFFICIAL_MATCH_OVERRIDES[`${division}:${roundNumber}:${sourceId}`] || null;
         const status = override?.status || (hasFinalScore ? "completed" : validMatchStatus(match.status));
         const isWalkover = !override && hasFinalScore && manualResult && !hasDetailedStats;
-        const homeSlot = clean(match.homeTeamSlot || match.homeSlot).toUpperCase();
-        const awaySlot = clean(match.awayTeamSlot || match.awaySlot).toUpperCase();
         const winnerSlot = hasFinalScore ? (homeScore > awayScore ? homeSlot : awaySlot) : "";
+        const startsAt = playoffRound
+          ? brazilPlayoffDateToIso(liveResult?.date, liveResult?.time, match.startsAt)
+          : match.startsAt;
         return {
           ...match,
+          homeTeamSlot: homeSlot,
+          awayTeamSlot: awaySlot,
           homeTeamName: namesBySlot.get(homeSlot) || clean(match.homeTeamName),
           awayTeamName: namesBySlot.get(awaySlot) || clean(match.awayTeamName),
+          startsAt,
           status,
           homeScore: hasFinalScore ? homeScore : nullableInteger(match.homeScore),
           awayScore: hasFinalScore ? awayScore : nullableInteger(match.awayScore),
@@ -1147,7 +1167,8 @@ function mergeLiveOfficialContent(source, liveContent, updatedAt = null) {
           } : null
         };
       })
-    }));
+    };
+    });
     merged.divisions[division] = {
       ...sourceDivision,
       teams: effectiveTeams,
@@ -1155,6 +1176,92 @@ function mergeLiveOfficialContent(source, liveContent, updatedAt = null) {
     };
   }
   return merged;
+}
+
+function officialGroupStandings(sourceDivision, teams, liveResults) {
+  const teamBySlot = new Map(arrayValues(teams).map((team) => [clean(team.slot).toUpperCase(), team]));
+  const statsBySlot = new Map(arrayValues(sourceDivision.stats?.teams)
+    .map((team) => [clean(team.slot).toUpperCase(), team]));
+  const standings = {};
+  for (const group of ["A", "B", "C", "D"]) {
+    standings[group] = [1, 2, 3, 4].map((seed) => {
+      const slot = `${group}${seed}`;
+      return {
+        slot,
+        seed,
+        wins: 0,
+        losses: 0,
+        gameDiff: 0,
+        avgWinTime: clean(statsBySlot.get(slot)?.avgWinTime || teamBySlot.get(slot)?.avgWinTime) || "00:00"
+      };
+    });
+  }
+  const bySlot = new Map(Object.values(standings).flat().map((entry) => [entry.slot, entry]));
+  for (const round of arrayValues(sourceDivision.rounds)) {
+    const roundNumber = Math.trunc(Number(round.roundNumber || round.number));
+    if (roundNumber > 3) continue;
+    for (const match of arrayValues(round.matches)) {
+      const sourceId = clean(match.sourceId || match.id);
+      const result = liveResults[sourceId] || match;
+      const homeScore = nullableInteger(result?.homeScore);
+      const awayScore = nullableInteger(result?.awayScore);
+      const home = bySlot.get(clean(match.homeTeamSlot || match.homeSlot).toUpperCase());
+      const away = bySlot.get(clean(match.awayTeamSlot || match.awaySlot).toUpperCase());
+      if (!home || !away || homeScore === null || awayScore === null) continue;
+      home.gameDiff += homeScore - awayScore;
+      away.gameDiff += awayScore - homeScore;
+      if (homeScore === awayScore || Math.max(homeScore, awayScore) < 2) continue;
+      if (homeScore > awayScore) {
+        home.wins += 1;
+        away.losses += 1;
+      } else {
+        away.wins += 1;
+        home.losses += 1;
+      }
+    }
+  }
+  for (const entries of Object.values(standings)) {
+    entries.sort((left, right) => (
+      right.wins - left.wins ||
+      left.losses - right.losses ||
+      right.gameDiff - left.gameDiff ||
+      tiebreakSeconds(left.avgWinTime) - tiebreakSeconds(right.avgWinTime) ||
+      left.seed - right.seed
+    ));
+  }
+  return standings;
+}
+
+function playoffEligibility(standings) {
+  const teamStatuses = {};
+  for (const group of ["A", "B", "C", "D"]) {
+    const entries = standings[group] || [];
+    if (entries[0]?.slot) teamStatuses[entries[0].slot] = "qualified-next-round";
+    if (entries[1]?.slot) teamStatuses[entries[1].slot] = "playing";
+    if (entries[2]?.slot) teamStatuses[entries[2].slot] = "playing";
+    if (entries[3]?.slot) teamStatuses[entries[3].slot] = "eliminated";
+  }
+  return { teamStatuses };
+}
+
+function resolvePlayoffSeed(standings, rawSeed) {
+  const match = /^([ABCD])([1-4])$/.exec(clean(rawSeed).toUpperCase());
+  return match ? standings[match[1]]?.[Number(match[2]) - 1]?.slot || "" : "";
+}
+
+function brazilPlayoffDateToIso(rawDate, rawTime, fallback) {
+  const dateMatch = /^(\d{1,2})\/(\d{1,2})$/.exec(clean(rawDate));
+  const timeMatch = /^(\d{1,2}):(\d{2})$/.exec(clean(rawTime));
+  if (!dateMatch || !timeMatch) return fallback;
+  const year = new Date(isoDate(fallback) || Date.now()).getUTCFullYear();
+  return new Date(`${year}-${dateMatch[2].padStart(2, "0")}-${dateMatch[1].padStart(2, "0")}T${timeMatch[1].padStart(2, "0")}:${timeMatch[2]}:00-03:00`).toISOString();
+}
+
+function tiebreakSeconds(value) {
+  const match = /^(\d{1,3}):([0-5]\d)$/.exec(clean(value));
+  if (!match) return Number.MAX_SAFE_INTEGER;
+  const seconds = Number(match[1]) * 60 + Number(match[2]);
+  return seconds > 0 ? seconds : Number.MAX_SAFE_INTEGER;
 }
 
 async function normalizeOfficialSource(source) {
@@ -1254,6 +1361,7 @@ async function normalizeOfficialSource(source) {
         division,
         roundNumber,
         name: clean(rawRound.name) || `Rodada ${roundNumber}`,
+        eligibility: normalizeRoundEligibility(rawRound.eligibility),
         matches: []
       };
       for (const [index, rawMatch] of arrayValues(rawRound.matches).entries()) {
@@ -4970,6 +5078,17 @@ function nullableInteger(value) {
   if (value === "" || value === null || value === undefined) return null;
   const number = Number(value);
   return Number.isInteger(number) ? number : null;
+}
+
+function normalizeRoundEligibility(value) {
+  const allowed = new Set(["playing", "qualified-next-round", "eliminated"]);
+  const teamStatuses = {};
+  for (const [rawSlot, rawStatus] of Object.entries(value?.teamStatuses || {})) {
+    const slot = clean(rawSlot).toUpperCase();
+    const status = clean(rawStatus).toLowerCase();
+    if (/^[ABCD][1-4]$/.test(slot) && allowed.has(status)) teamStatuses[slot] = status;
+  }
+  return { teamStatuses };
 }
 
 function optionalDivision(value) {

@@ -339,6 +339,11 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .player-card.role-complete:not(.selected) { opacity: .27; filter: saturate(.45); }
 .player-card.role-complete:not(.selected):hover { opacity: .82; filter: none; }
 .player-card.role-complete.reserve-selected { opacity: 1; filter: none; }
+.player-card.unavailable { opacity: .48; filter: grayscale(.45) saturate(.45); background: rgba(255, 255, 255, .018); }
+.player-card.unavailable:hover { transform: none; border-color: var(--line); opacity: .62; }
+.player-card.unavailable .buy-button { cursor: not-allowed; color: #b5aeb2; border-color: var(--line); background: rgba(255, 255, 255, .045); box-shadow: none; }
+.player-card.unavailable .availability-status { color: #c6bec2; border-color: rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .045); }
+.player-card.unavailable .availability-status.qualified-next-round { color: #ffe0a3; border-color: rgba(255, 194, 75, .32); background: rgba(255, 194, 75, .08); }
 .player-logo { width: 68px; height: 68px; object-fit: contain; border-radius: .65rem; background: rgba(4, 4, 6, .8); padding: .2rem; }
 .player-logo.fallback { display: grid; place-items: center; color: var(--accent-bright); font-weight: 900; }
 .player-meta { min-width: 0; }
@@ -366,6 +371,7 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .player-card.reserve-eligible:not(.reserve-selected) .buy-button { opacity: .55; }
 .reserve-button:hover:not(:disabled), .player-card.reserve-selected .reserve-button { color: #17100a; border-color: #ffc24b; background: #ffc24b; }
 .reserve-button:disabled { cursor: not-allowed; opacity: .45; }
+.player-card.unavailable .reserve-button { cursor: not-allowed; color: #b5aeb2; border-color: var(--line); background: rgba(255, 255, 255, .035); box-shadow: none; opacity: .45; }
 .player-card.reserve-selected { border-color: rgba(255, 194, 75, .72); box-shadow: 0 0 24px rgba(255, 194, 75, .12); }
 .team-market-section .market-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .fantasy-breakdown {

@@ -199,3 +199,13 @@ test("Admin-only mode keeps the market closed for other players", () => {
   assert.match(workerScript, /temporariamente aberto apenas para a administração/);
   assert.match(workerScript, /marketStateForUser\(marketState, user, env\)/);
 });
+
+test("Playoffs mantêm equipes não escaláveis visíveis no fim do mercado", () => {
+  assert.match(script, /selectable: item\.selectable !== false/);
+  assert.match(script, /Classificado para a rodada 5|availabilityLabel/);
+  assert.match(script, /Indisponível nesta rodada/);
+  assert.match(script, /Number\(a\.selectable === false\) - Number\(b\.selectable === false\)/);
+  assert.match(styles, /\.player-card\.unavailable/);
+  assert.match(workerScript, /function marketAssetAvailability\(round, teamSlot, roundMatches = \[\]\)/);
+  assert.match(workerScript, /não pode ser escalado/);
+});
