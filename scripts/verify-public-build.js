@@ -24,7 +24,7 @@ const forbiddenPublicFiles = [
 const leakedAdminFiles = forbiddenPublicFiles.filter((file) => fs.existsSync(path.join(dist, file)));
 if (leakedAdminFiles.length) throw new Error(`Ferramentas administrativas encontradas no dist: ${leakedAdminFiles.join(", ")}`);
 
-const requiredPublicRuntimeFiles = ["sobre/index.html", "sitemap.xml", "bolao.html", "assets/player-identity.js", "assets/bolao.js", "assets/champion-list.js", "fantasy/index.html", "fantasy/assets/fantasy.js", "fantasy/assets/fantasy-config.js", "fantasy/assets/champion-list.js", "fantasy/assets/champions/Ahri.png"];
+const requiredPublicRuntimeFiles = ["sobre/index.html", "sitemap.xml", "bolao.html", "assets/player-identity.js", "assets/bolao.js", "assets/champion-list.js", "fantasy/index.html", "fantasy/assets/auto-lineup.js", "fantasy/assets/fantasy.js", "fantasy/assets/fantasy-config.js", "fantasy/assets/champion-list.js", "fantasy/assets/champions/Ahri.png"];
 const missingRuntimeFiles = requiredPublicRuntimeFiles.filter((file) => !fs.existsSync(path.join(dist, file)));
 if (missingRuntimeFiles.length) throw new Error(`Dependencias publicas ausentes no dist: ${missingRuntimeFiles.join(", ")}`);
 

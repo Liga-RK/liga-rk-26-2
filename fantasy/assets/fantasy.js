@@ -67,6 +67,8 @@
     patrimony: { elite: null, ascension: null },
     draftData: { elite: null, ascension: null },
     draftDialog: { item: null, mode: "NONE", championId: "", mapNumber: null, editing: false },
+    autoLineup: { strategy: "balanced", preview: null },
+    autoDraftReview: { active: false, roles: [], completed: 0, total: 0 },
     loaded: false
   };
 
@@ -87,6 +89,17 @@
     search: document.getElementById("search-player"),
     roleFilter: document.getElementById("role-filter"),
     sortFilter: document.getElementById("sort-filter"),
+    autoLineup: document.getElementById("auto-lineup"),
+    autoLineupDialog: document.getElementById("auto-lineup-dialog"),
+    autoLineupForm: document.getElementById("auto-lineup-form"),
+    closeAutoLineupDialog: document.getElementById("close-auto-lineup-dialog"),
+    autoStrategyOptions: document.querySelectorAll("[data-auto-strategy]"),
+    autoIncludeReserve: document.getElementById("auto-include-reserve"),
+    autoLineupPreview: document.getElementById("auto-lineup-preview"),
+    autoPreviewStrategy: document.getElementById("auto-preview-strategy"),
+    autoLineupFeedback: document.getElementById("auto-lineup-feedback"),
+    applyAutoLineup: document.getElementById("apply-auto-lineup"),
+    applyAutoLineupWithDraft: document.getElementById("apply-auto-lineup-with-draft"),
     clearLineup: document.getElementById("clear-lineup"),
     shareLineup: document.getElementById("share-lineup"),
     shareDialog: document.getElementById("share-dialog"),
@@ -205,6 +218,27 @@
     el.roleFilter.addEventListener("input", () => setRoleFilter(el.roleFilter.value, { scroll: false }));
     el.roleShortcuts.forEach((button) => button.addEventListener("click", () => setRoleFilter(button.dataset.roleShortcut)));
     el.closedActions.forEach((button) => button.addEventListener("click", () => handleClosedAction(button.dataset.closedAction)));
+    if (el.autoLineup) el.autoLineup.addEventListener("click", openAutoLineupDialog);
+    if (el.closeAutoLineupDialog) el.closeAutoLineupDialog.addEventListener("click", closeAutoLineupDialog);
+    if (el.autoLineupDialog) el.autoLineupDialog.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      closeAutoLineupDialog();
+    });
+    el.autoStrategyOptions.forEach((button, index) => {
+      button.addEventListener("click", () => selectAutoLineupStrategy(button.dataset.autoStrategy));
+      button.addEventListener("keydown", (event) => {
+        if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
+        event.preventDefault();
+        const direction = ['ArrowRight', 'ArrowDown'].includes(event.key) ? 1 : -1;
+        const buttons = Array.from(el.autoStrategyOptions);
+        const target = buttons[(index + direction + buttons.length) % buttons.length];
+        target.focus();
+        selectAutoLineupStrategy(target.dataset.autoStrategy);
+      });
+    });
+    if (el.autoIncludeReserve) el.autoIncludeReserve.addEventListener("change", calculateAutoLineupPreview);
+    if (el.applyAutoLineup) el.applyAutoLineup.addEventListener("click", () => applyAutomaticLineup(false));
+    if (el.applyAutoLineupWithDraft) el.applyAutoLineupWithDraft.addEventListener("click", () => applyAutomaticLineup(true));
     el.clearLineup.addEventListener("click", clearLineup);
     el.shareLineup.addEventListener("click", shareLineupImage);
     el.closeShareDialog.addEventListener("click", closeShareDialog);
@@ -900,6 +934,7 @@
     });
     el.saveLineup.disabled = closed || selected !== 6 || !lineup.captainId || overBudget || Boolean(reserveError) || missingDraftPrediction;
     el.saveLineup.textContent = closed ? "Mercado fechado" : (lineup.saved ? "Atualizar escalação" : "Salvar escalação");
+    if (el.autoLineup) el.autoLineup.disabled = closed || !state.loaded;
     el.shareLineup.disabled = selected === 0;
     el.captainReminder.hidden = selected !== 6 || Boolean(lineup.captainId);
     if (!closed && selected === 6 && overBudget) {
@@ -1109,7 +1144,10 @@
     el.draftChampionSearch.value = "";
     el.draftChampionSort.value = "name";
     el.draftPredictionFeedback.textContent = "";
-    el.draftPredictionPlayer.textContent = `${item.name} · ${ROLE_LABELS[item.role]} · ${item.teamName || item.teamTag}`;
+    const reviewStep = state.autoDraftReview.active
+      ? `Palpite ${state.autoDraftReview.completed + 1} de ${state.autoDraftReview.total} · `
+      : "";
+    el.draftPredictionPlayer.textContent = `${reviewStep}${item.name} · ${ROLE_LABELS[item.role]} · ${item.teamName || item.teamTag}`;
     renderDraftDialog();
     if (!el.draftPredictionDialog.open) {
       el.draftPredictionDialog.showModal();
@@ -1119,9 +1157,13 @@
     }
   }
 
-  function closeDraftPredictionDialog() {
+  function closeDraftPredictionDialog(options = {}) {
     if (el.draftPredictionDialog?.open) el.draftPredictionDialog.close();
     state.draftDialog = { item: null, mode: "NONE", championId: "", mapNumber: null, editing: false };
+    if (state.autoDraftReview.active && options.cancelReview !== false) {
+      state.autoDraftReview = { active: false, roles: [], completed: 0, total: 0 };
+      setMessage("Revisão guiada encerrada. Os palpites não revisados continuam em “Não dar palpite”, sem risco de penalidade.", false, true);
+    }
   }
 
   function setDraftMode(mode) {
@@ -1293,11 +1335,7 @@
 
   function draftPredictionFromDialog() {
     const { item, mode, championId, mapNumber } = state.draftDialog;
-    if (mode === "NONE") return {
-      playerAssetId: item.id, role: item.role, mode: "NONE", championId: null, mapNumber: null,
-      pickRatePosition: item.role, pickRateAtLock: null, multiplierAtLock: null,
-      baseReward: 0, possibleReward: 0, missPenalty: 0, status: "NONE", resultScore: 0
-    };
+    if (mode === "NONE") return noDraftPrediction(item);
     const champion = currentDraftChampions().find((entry) => entry.id === championId);
     if (!champion) return null;
     const reward = draftReward(mode, draftSeriesFormat(item), champion.multiplier);
@@ -1347,7 +1385,12 @@
       hint = `Acerto: +${formatMoney(prediction.possibleReward)} pts · Erro: −${formatMoney(Math.abs(prediction.missPenalty))} pts`;
     }
     el.confirmDraftPrediction.disabled = !valid;
-    el.confirmDraftPrediction.textContent = editing ? "Salvar alteração" : "Confirmar e escalar";
+    el.confirmDraftPrediction.textContent = state.autoDraftReview.active
+      ? (state.autoDraftReview.roles.length ? "Confirmar e ir ao próximo" : "Concluir revisão")
+      : (editing ? "Salvar alteração" : "Confirmar e escalar");
+    if (state.autoDraftReview.active) {
+      hint = `Palpite ${state.autoDraftReview.completed + 1} de ${state.autoDraftReview.total} · ${hint}`;
+    }
     el.draftFooterHint.textContent = hint;
   }
 
@@ -1364,12 +1407,18 @@
     }
     const { item, editing } = state.draftDialog;
     if (editing) {
+      const guidedReview = state.autoDraftReview.active;
       currentLineup().draftPredictions[item.role] = prediction;
       currentLineup().saved = false;
       persistLocalState();
-      closeDraftPredictionDialog();
-      setMessage(`Palpite de Draft de ${item.name} atualizado.`, false, true);
+      closeDraftPredictionDialog({ cancelReview: !guidedReview });
       renderLineup();
+      if (guidedReview) {
+        state.autoDraftReview.completed += 1;
+        window.setTimeout(openNextAutomaticDraftReview, 0);
+        return;
+      }
+      setMessage(`Palpite de Draft de ${item.name} atualizado.`, false, true);
       return;
     }
     closeDraftPredictionDialog();
@@ -1458,6 +1507,188 @@
     setMessage("Escalação limpa.", false);
     renderLineup();
     renderMarket();
+  }
+
+  function autoStrategyLabel(strategy) {
+    return ({
+      balanced: "Time equilibrado",
+      average: "Maior média",
+      recent: "Melhor fase recente",
+      appreciation: "Maior valorização",
+      value: "Apostas de valor",
+      economic: "Orçamento econômico",
+      random: "Time surpresa"
+    })[strategy] || "Time equilibrado";
+  }
+
+  function openAutoLineupDialog() {
+    if (!isMarketOpen()) {
+      setMessage("A montagem automática só fica disponível enquanto o mercado estiver aberto.", true);
+      return;
+    }
+    if (!state.loaded || !state.market[state.division]?.length) {
+      setMessage("Aguarde o mercado terminar de carregar.", true);
+      return;
+    }
+    if (!window.FANTASY_AUTO_LINEUP?.buildAutomaticLineup) {
+      setMessage("O assistente de escalação não carregou. Atualize a página e tente novamente.", true);
+      return;
+    }
+    state.autoLineup = { strategy: "balanced", preview: null };
+    if (el.autoIncludeReserve) el.autoIncludeReserve.checked = true;
+    selectAutoLineupStrategy("balanced");
+    const hasDraft = draftPredictionEnabled();
+    el.applyAutoLineup.textContent = hasDraft ? "Aplicar sem palpites" : "Aplicar time";
+    el.applyAutoLineupWithDraft.hidden = !hasDraft;
+    if (!el.autoLineupDialog.open) {
+      el.autoLineupDialog.showModal();
+      window.requestAnimationFrame(() => el.autoStrategyOptions[0]?.focus());
+    }
+  }
+
+  function closeAutoLineupDialog() {
+    if (el.autoLineupDialog?.open) el.autoLineupDialog.close();
+    state.autoLineup.preview = null;
+  }
+
+  function selectAutoLineupStrategy(strategy) {
+    state.autoLineup.strategy = strategy || "balanced";
+    el.autoStrategyOptions.forEach((button) => {
+      const active = button.dataset.autoStrategy === state.autoLineup.strategy;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-checked", String(active));
+    });
+    calculateAutoLineupPreview();
+  }
+
+  function calculateAutoLineupPreview() {
+    const builder = window.FANTASY_AUTO_LINEUP?.buildAutomaticLineup;
+    if (!builder) return;
+    const result = builder({
+      market: state.market[state.division],
+      budget: config.budget,
+      maxPlayersPerTeam: config.maxPlayersPerRealTeam,
+      strategy: state.autoLineup.strategy,
+      includeReserve: Boolean(el.autoIncludeReserve?.checked)
+    });
+    state.autoLineup.preview = result.ok ? result : null;
+    renderAutoLineupPreview(result);
+  }
+
+  function renderAutoLineupPreview(result) {
+    const valid = Boolean(result?.ok);
+    el.applyAutoLineup.disabled = !valid;
+    el.applyAutoLineupWithDraft.disabled = !valid;
+    el.autoPreviewStrategy.textContent = autoStrategyLabel(state.autoLineup.strategy);
+    el.autoLineupFeedback.classList.toggle("error", !valid);
+    if (!valid) {
+      el.autoLineupPreview.innerHTML = `<p class="auto-preview-empty">${escapeHtml(result?.error || "Não foi possível gerar uma sugestão agora.")}</p>`;
+      el.autoLineupFeedback.textContent = "Revise o patrimônio ou tente outra estratégia.";
+      return;
+    }
+
+    const entries = ROLE_ORDER.map((role) => ({ role, item: result.slots[role], reserve: false }));
+    if (result.reserve) entries.push({ role: result.reserve.role, item: result.reserve, reserve: true });
+    el.autoLineupPreview.innerHTML = `
+      ${entries.map(({ role, item, reserve }) => {
+        const captain = !reserve && String(item.id) === String(result.captainId);
+        const source = item.type === "team" ? (itemArtworkPath(item) || item.logo) : item.logo;
+        return `<article class="auto-preview-player${captain ? " captain" : ""}${reserve ? " reserve" : ""}">
+          <div class="auto-preview-logo"><img src="${escapeHtml(source || ROLE_ASSETS[role])}" alt="" /></div>
+          <div class="auto-preview-info">
+            <strong>${escapeHtml(item.name)}${captain ? '<span class="auto-preview-tag">Capitão</span>' : ""}${reserve ? '<span class="auto-preview-tag">Reserva</span>' : ""}</strong>
+            <span>${reserve ? "RES · " : ""}${escapeHtml(ROLE_LABELS[role] || role)} · ${escapeHtml(item.teamTag || item.teamName)}</span>
+          </div>
+          <span class="auto-preview-price">RK$ ${formatMoney(item.price)}</span>
+        </article>`;
+      }).join("")}
+      ${result.reserve ? "" : `<p class="auto-preview-empty">${el.autoIncludeReserve?.checked ? "Nenhum reserva cabe no saldo desta sugestão." : "Reserva automática desativada nesta sugestão."}</p>`}
+      <div class="auto-preview-summary">
+        <div><span>Patrimônio</span><strong>RK$ ${formatMoney(config.budget)}</strong></div>
+        <div><span>Utilizado</span><strong>RK$ ${formatMoney(result.totalCost)}</strong></div>
+        <div><span>Disponível</span><strong>RK$ ${formatMoney(result.remaining)}</strong></div>
+      </div>`;
+    el.autoLineupFeedback.textContent = draftPredictionEnabled()
+      ? "Os cinco titulares começarão com “Não dar palpite” (0 ponto e sem penalidade). Você pode revisar cada um agora ou depois."
+      : "Nada será alterado até você aplicar esta sugestão.";
+  }
+
+  function noDraftPrediction(item) {
+    return {
+      playerAssetId: item.id,
+      role: item.role,
+      mode: "NONE",
+      championId: null,
+      mapNumber: null,
+      pickRatePosition: item.role,
+      pickRateAtLock: null,
+      multiplierAtLock: null,
+      baseReward: 0,
+      possibleReward: 0,
+      missPenalty: 0,
+      status: "NONE",
+      resultScore: 0
+    };
+  }
+
+  function applyAutomaticLineup(reviewDraft) {
+    const suggestion = state.autoLineup.preview;
+    if (!suggestion?.ok) return;
+    if (!isMarketOpen()) {
+      closeAutoLineupDialog();
+      setMessage("O mercado fechou antes da aplicação. Nenhuma alteração foi feita.", true);
+      renderMarketShell();
+      return;
+    }
+    const lineup = emptyLineup();
+    for (const role of ROLE_ORDER) {
+      const item = suggestion.slots[role];
+      lineup.slots[role] = { ...item, purchasePrice: roundMoney(item.price) };
+    }
+    lineup.reserve = suggestion.reserve ? { ...suggestion.reserve, purchasePrice: roundMoney(suggestion.reserve.price) } : null;
+    lineup.captainId = suggestion.captainId;
+    lineup.saved = false;
+    if (draftPredictionEnabled()) {
+      for (const role of PLAYER_ROLES) lineup.draftPredictions[role] = noDraftPrediction(lineup.slots[role]);
+    }
+    state.lineups[state.division] = lineup;
+    persistLocalState();
+    closeAutoLineupDialog();
+    setRoleFilter("ALL", { scroll: false });
+    renderLineup();
+    renderMarket();
+    if (reviewDraft && draftPredictionEnabled()) {
+      startAutomaticDraftReview();
+      return;
+    }
+    setMessage("Time automático aplicado. Confira as escolhas e clique em Salvar escalação para confirmar.", false, true);
+  }
+
+  function startAutomaticDraftReview() {
+    const data = state.draftData[state.division];
+    if (!data?.snapshot?.positionPickRates) {
+      setMessage("Time aplicado com todos os Palpites de Draft em “Não dar palpite”. A revisão guiada está indisponível agora.", false, true);
+      return;
+    }
+    state.autoDraftReview = { active: true, roles: [...PLAYER_ROLES], completed: 0, total: PLAYER_ROLES.length };
+    openNextAutomaticDraftReview();
+  }
+
+  function openNextAutomaticDraftReview() {
+    if (!state.autoDraftReview.active) return;
+    const role = state.autoDraftReview.roles.shift();
+    if (!role) {
+      state.autoDraftReview = { active: false, roles: [], completed: 0, total: 0 };
+      setMessage("Revisão dos cinco Palpites de Draft concluída. Confira o time e clique em Salvar escalação.", false, true);
+      renderLineup();
+      return;
+    }
+    const item = currentLineup().slots[role];
+    if (!item) {
+      openNextAutomaticDraftReview();
+      return;
+    }
+    openDraftPredictionDialog(item, true);
   }
 
   function openTeamLimitDialog(item, sameTeamPlayers) {

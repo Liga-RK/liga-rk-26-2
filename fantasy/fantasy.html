@@ -197,6 +197,7 @@
             </div>
 
             <div class="lineup-actions">
+              <button id="auto-lineup" class="auto-lineup-button" type="button"><span aria-hidden="true">✦</span> Montar automaticamente</button>
               <button id="clear-lineup" class="ghost-button" type="button">Limpar</button>
               <button id="share-lineup" class="share-button" type="button">Compartilhar</button>
               <button id="save-lineup" class="primary-button" type="button">Salvar escalação</button>
@@ -454,6 +455,71 @@
     </div>
   </dialog>
 
+  <dialog id="auto-lineup-dialog" aria-labelledby="auto-lineup-title" aria-describedby="auto-lineup-description">
+    <form id="auto-lineup-form" class="dialog-card auto-lineup-dialog-card" method="dialog">
+      <header class="auto-lineup-header">
+        <div>
+          <span class="eyebrow">Assistente de escalação</span>
+          <h2 id="auto-lineup-title">Montar time automaticamente</h2>
+          <p id="auto-lineup-description">Escolha uma estratégia. O assistente respeita patrimônio, posições, limite por equipe e disponibilidade da rodada.</p>
+        </div>
+        <button id="close-auto-lineup-dialog" class="dialog-close" type="button" aria-label="Fechar montagem automática">×</button>
+      </header>
+
+      <div class="auto-lineup-content">
+        <section class="auto-strategy-section">
+          <div class="auto-section-heading">
+            <strong>Como você quer montar?</strong>
+            <small>Você poderá conferir tudo antes de aplicar.</small>
+          </div>
+          <div id="auto-strategy-options" class="auto-strategy-options" role="radiogroup" aria-label="Estratégia da escalação automática">
+            <button type="button" role="radio" aria-checked="true" data-auto-strategy="balanced" class="auto-strategy-card active">
+              <span class="auto-strategy-badge">Recomendado</span><strong>Time equilibrado</strong><small>Combina média, fase, custo-benefício e valorização.</small>
+            </button>
+            <button type="button" role="radio" aria-checked="false" data-auto-strategy="average" class="auto-strategy-card">
+              <strong>Maior média</strong><small>Prioriza quem tem a maior pontuação média no campeonato.</small>
+            </button>
+            <button type="button" role="radio" aria-checked="false" data-auto-strategy="recent" class="auto-strategy-card">
+              <strong>Melhor fase recente</strong><small>Dá preferência a quem foi melhor na rodada mais recente.</small>
+            </button>
+            <button type="button" role="radio" aria-checked="false" data-auto-strategy="appreciation" class="auto-strategy-card">
+              <strong>Maior valorização</strong><small>Busca atletas e equipe que mais subiram de preço.</small>
+            </button>
+            <button type="button" role="radio" aria-checked="false" data-auto-strategy="value" class="auto-strategy-card">
+              <strong>Apostas de valor</strong><small>Procura desempenho forte por um preço mais baixo.</small>
+            </button>
+            <button type="button" role="radio" aria-checked="false" data-auto-strategy="economic" class="auto-strategy-card">
+              <strong>Orçamento econômico</strong><small>Monta o time mais barato possível e preserva patrimônio.</small>
+            </button>
+            <button type="button" role="radio" aria-checked="false" data-auto-strategy="random" class="auto-strategy-card">
+              <strong>Time surpresa</strong><small>Cria uma combinação aleatória, sempre dentro das regras.</small>
+            </button>
+          </div>
+          <label class="auto-reserve-option">
+            <input id="auto-include-reserve" type="checkbox" checked />
+            <span><strong>Incluir reserva se couber</strong><small>O reserva usa somente o saldo que restar após os seis titulares.</small></span>
+          </label>
+        </section>
+
+        <section class="auto-preview-section" aria-labelledby="auto-preview-title">
+          <div class="auto-section-heading">
+            <strong id="auto-preview-title">Prévia da escalação</strong>
+            <small id="auto-preview-strategy"></small>
+          </div>
+          <div id="auto-lineup-preview" class="auto-lineup-preview" aria-live="polite"></div>
+        </section>
+      </div>
+
+      <footer class="auto-lineup-footer">
+        <p id="auto-lineup-feedback" aria-live="polite">Nada será alterado até você aplicar esta sugestão.</p>
+        <div class="auto-lineup-footer-actions">
+          <button id="apply-auto-lineup" class="share-button" type="button">Aplicar sem palpites</button>
+          <button id="apply-auto-lineup-with-draft" class="primary-button" type="button">Aplicar e revisar Draft</button>
+        </div>
+      </footer>
+    </form>
+  </dialog>
+
   <dialog id="draft-prediction-dialog" aria-labelledby="draft-prediction-title" aria-describedby="draft-prediction-description">
     <form id="draft-prediction-form" class="dialog-card draft-prediction-dialog-card" method="dialog">
       <header class="draft-dialog-header">
@@ -510,8 +576,9 @@
   </dialog>
 
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/champion-list.js?v=20260813-division-deadlines-v4"></script>
-  <script src="assets/fantasy.js?v=20260813-division-deadlines-v4"></script>
-  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260813-division-deadlines-v4");</script>
+  <script src="assets/champion-list.js?v=20260813-auto-lineup-v5"></script>
+  <script src="assets/auto-lineup.js?v=20260813-auto-lineup-v5"></script>
+  <script src="assets/fantasy.js?v=20260813-auto-lineup-v5"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260813-auto-lineup-v5");</script>
 </body>
 </html>
