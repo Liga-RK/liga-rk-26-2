@@ -42,6 +42,12 @@ test("modal responsivo usa uma área ampla no desktop e tela inteira no celular"
   assert.match(css, /grid-template-columns: repeat\(auto-fill, minmax\(148px, 1fr\)\)/);
 });
 
+test("resumo do palpite pode rolar no desktop sem criar rolagem aninhada no celular", () => {
+  assert.match(css, /\.draft-selection-panel \{[\s\S]*?min-height: 0;[\s\S]*?overflow-y: auto;[\s\S]*?scrollbar-gutter: stable;/);
+  assert.match(css, /@media \(max-width: 900px\)[\s\S]*?\.draft-workspace \{[^}]*display: flex;[^}]*overflow-y: auto;/);
+  assert.match(css, /@media \(max-width: 900px\)[\s\S]*?\.draft-selection-panel \{[^}]*min-height: max-content;[^}]*overflow: visible;[^}]*scrollbar-gutter: auto;/);
+});
+
 test("UX mantém ação visível, informa o próximo passo e evita confirmação incompleta", () => {
   assert.match(html, /class="draft-dialog-footer"/);
   assert.match(html, /id="draft-footer-hint"/);

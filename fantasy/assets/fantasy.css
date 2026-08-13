@@ -172,11 +172,21 @@
 
 .draft-selection-panel {
   min-width: 0;
+  min-height: 0;
   padding: 14px;
+  overflow-y: auto;
   border: 1px solid rgba(255,255,255,.11);
   border-radius: 14px;
   background: linear-gradient(155deg, rgba(48, 8, 14, .36), rgba(12, 10, 13, .95) 48%);
+  overscroll-behavior: contain;
+  scrollbar-color: rgba(255,255,255,.32) transparent;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
 }
+.draft-selection-panel::-webkit-scrollbar { width: 8px; }
+.draft-selection-panel::-webkit-scrollbar-track { background: transparent; }
+.draft-selection-panel::-webkit-scrollbar-thumb { border-radius: 999px; background: rgba(255,255,255,.28); }
+.draft-selection-panel::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.42); }
 .draft-map-section { margin: 0 0 14px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,.09); }
 .draft-map-section > strong { display: block; color: #fff; font-size: .86rem; text-transform: uppercase; letter-spacing: .05em; }
 .draft-map-section > small { display: block; margin-top: 4px; color: #aaa2a6; font-size: .7rem; line-height: 1.35; }
@@ -224,9 +234,9 @@
   #draft-prediction-dialog .draft-prediction-dialog-card { width: min(760px, calc(100vw - 20px)); height: calc(100dvh - 20px); }
   .draft-dialog-header { padding: 18px 58px 12px 18px; }
   .draft-mode-options { padding: 12px 18px; }
-  .draft-workspace { grid-template-columns: 1fr; gap: 12px; padding: 14px 18px; overflow-y: auto; }
-  .draft-selection-panel { order: -1; }
-  .draft-champion-section { display: block; }
+  .draft-workspace { display: flex; flex-direction: column; gap: 12px; padding: 14px 18px; overflow-y: auto; }
+  .draft-selection-panel { order: -1; flex: none; min-height: max-content; align-self: stretch; overflow: visible; overscroll-behavior: auto; scrollbar-gutter: auto; }
+  .draft-champion-section { display: block; flex: none; }
   .draft-champion-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); max-height: none; overflow: visible; padding-right: 2px; }
   .draft-tools { position: sticky; top: -14px; z-index: 2; padding: 10px 0; background: rgba(9,7,10,.98); }
   .draft-section-heading { margin-top: 4px; }
