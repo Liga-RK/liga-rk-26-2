@@ -12,6 +12,8 @@ import {
 } from "./fantasy-admin.js";
 import valuationV3 from "../src/fantasy/valuation-v3.cjs";
 import patrimonyV2 from "../src/fantasy/patrimony-v2.cjs";
+import draftPrediction from "../src/fantasy/draft-prediction.cjs";
+import championCatalog from "../src/fantasy/champion-catalog.cjs";
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 var COOKIE_NAME = "fantasy_session";
@@ -33,6 +35,9 @@ var PATRIMONY_FORMULA_ID = patrimonyV2.PATRIMONY_FORMULA_ID;
 var summarizeParticipantPatrimony = patrimonyV2.summarizeParticipantPatrimony;
 var BUDGET_LIMIT = INITIAL_PATRIMONY;
 var MAX_PLAYERS_PER_REAL_TEAM = 2;
+var DRAFT_PREDICTION_CONFIG = draftPrediction.DRAFT_PREDICTION_CONFIG;
+var lockDraftPrediction = draftPrediction.lockDraftPrediction;
+var CHAMPION_CATALOG = championCatalog.CHAMPION_CATALOG;
 var ROUND_TWO_NOTICE = Object.freeze({
   key: "round2-elite-fvl-sdk-postponed-v1",
   title: "Aviso sobre a Rodada 2",
@@ -77,6 +82,7 @@ async function route(request, env, requestId) {
   if (url.pathname === "/api/fantasy/me" && request.method === "GET") return getMe(request, env);
   if (url.pathname === "/api/fantasy/config" && request.method === "GET") return getConfig(request, env);
   if (url.pathname === "/api/fantasy/market" && request.method === "GET") return getMarket(request, env);
+  if (url.pathname === "/api/fantasy/draft" && request.method === "GET") return getDraftPredictionData(request, env);
   if (url.pathname === "/api/fantasy/market/control/open" && request.method === "POST") {
     return controlMarketFromDiscord(request, env, requestId, "open");
   }
@@ -352,6 +358,65 @@ async function getConfig(request, env) {
   }, 200, request, env);
 }
 __name(getConfig, "getConfig");
+async function getDraftPredictionData(request, env) {
+  const division = validDivision(new URL(request.url).searchParams.get("division") || "elite");
+  const marketState = await getGlobalMarketState(env);
+  const round = await currentRound(env, division, marketState?.lock_round_number);
+  const roundNumber = Math.trunc(Number(round?.round_number || 0));
+  if (!round || roundNumber < DRAFT_PREDICTION_CONFIG.enabledFromRound) {
+    return json({
+      division,
+      enabled: false,
+      enabledFromRound: DRAFT_PREDICTION_CONFIG.enabledFromRound,
+      roundNumber,
+      champions: []
+    }, 200, request, env);
+  }
+  const snapshotRow = await env.DB.prepare(`
+    SELECT round_id AS roundId, generated_from_rounds_json AS generatedFromRoundsJson,
+           generated_at AS generatedAt, source_hash AS sourceHash, totals_json AS totalsJson,
+           position_pick_rates_json AS positionPickRatesJson
+    FROM fantasy_draft_pick_rate_snapshots
+    WHERE round_id = ? AND division = ?
+  `).bind(round.id, division).first();
+  if (!snapshotRow) {
+    return json({ error: "O snapshot congelado do Pick Rate ainda não foi gerado para esta rodada." }, 503, request, env);
+  }
+  const matches = await env.DB.prepare(`
+    SELECT home_team_slot AS homeTeamSlot, away_team_slot AS awayTeamSlot,
+           source_payload_json AS sourcePayloadJson
+    FROM fantasy_matches
+    WHERE division = ? AND round_number = ?
+      AND status NOT IN ('cancelled', 'postponed')
+  `).bind(division, roundNumber).all();
+  const teamSeriesFormats = {};
+  for (const match of matches.results || []) {
+    const payload = parseJsonObject(match.sourcePayloadJson);
+    const format = String(payload.format || (/semi|final/i.test(String(payload.stage || "")) ? "MD5" : "MD3")).toUpperCase() === "MD5"
+      ? "MD5"
+      : "MD3";
+    if (match.homeTeamSlot) teamSeriesFormats[match.homeTeamSlot] = format;
+    if (match.awayTeamSlot) teamSeriesFormats[match.awayTeamSlot] = format;
+  }
+  return json({
+    division,
+    enabled: true,
+    enabledFromRound: DRAFT_PREDICTION_CONFIG.enabledFromRound,
+    roundNumber,
+    config: DRAFT_PREDICTION_CONFIG,
+    snapshot: {
+      roundId: snapshotRow.roundId,
+      generatedFromRounds: JSON.parse(snapshotRow.generatedFromRoundsJson || "[]"),
+      generatedAt: snapshotRow.generatedAt,
+      sourceHash: snapshotRow.sourceHash,
+      totals: JSON.parse(snapshotRow.totalsJson || "{}"),
+      positionPickRates: JSON.parse(snapshotRow.positionPickRatesJson || "{}")
+    },
+    champions: CHAMPION_CATALOG,
+    teamSeriesFormats
+  }, 200, request, env);
+}
+__name(getDraftPredictionData, "getDraftPredictionData");
 async function getMarket(request, env) {
   const division = validDivision(new URL(request.url).searchParams.get("division") || "elite");
   await ensureAutomaticMarketClose(env, new Date(), "request");
@@ -553,7 +618,22 @@ async function getCurrentLineup(request, env) {
   if (!lineup) return json({ division, round, patrimony, team, lineup: null }, 200, request, env);
   const picks = await env.DB.prepare("SELECT role, asset_id AS id, price_paid AS price, team_slot AS teamSlot FROM fantasy_lineup_picks WHERE lineup_id = ?").bind(lineup.id).all();
   const reserve = await env.DB.prepare("SELECT role, asset_id AS id, price_paid AS price, team_slot AS teamSlot FROM fantasy_lineup_reserves WHERE lineup_id = ?").bind(lineup.id).first();
-  return json({ division, round, patrimony, team, lineup: { ...lineup, picks: picks.results || [], reserve: reserve || null } }, 200, request, env);
+  const predictions = await env.DB.prepare(`
+    SELECT role, player_asset_id AS playerAssetId, mode, champion_id AS championId,
+           map_number AS mapNumber, pick_rate_position AS pickRatePosition,
+           pick_rate_at_lock AS pickRateAtLock, multiplier_at_lock AS multiplierAtLock,
+           base_reward AS baseReward, possible_reward AS possibleReward,
+           miss_penalty AS missPenalty, status, result_score AS resultScore
+    FROM fantasy_lineup_draft_predictions
+    WHERE lineup_id = ? ORDER BY role
+  `).bind(lineup.id).all();
+  return json({
+    division,
+    round,
+    patrimony,
+    team,
+    lineup: { ...lineup, picks: picks.results || [], reserve: reserve || null, draftPredictions: predictions.results || [] }
+  }, 200, request, env);
 }
 __name(getCurrentLineup, "getCurrentLineup");
 async function saveCurrentLineup(request, env) {
@@ -573,6 +653,7 @@ async function saveCurrentLineup(request, env) {
   const teamName = cleanText(body.teamName).slice(0, 32);
   const picks = Array.isArray(body.picks) ? body.picks : [];
   const reservePick = body.reserve && cleanText(body.reserve.id) ? body.reserve : null;
+  const draftInputs = Array.isArray(body.draftPredictions) ? body.draftPredictions : [];
   const captainId = cleanText(body.captainPlayerId);
   if (!teamName) return json({ error: "Informe o nome do seu time." }, 400, request, env);
   if (picks.length !== 6) return json({ error: "A escala\xE7\xE3o deve possuir exatamente seis escolhas." }, 400, request, env);
@@ -607,6 +688,49 @@ async function saveCurrentLineup(request, env) {
     if (Number(reserveRow.price) > reserveBudget + 1e-3) return json({ error: `Seu limite para reserva \xE9 RK$ ${formatMoney(reserveBudget)}.` }, 400, request, env);
     if ((playerTeamCounts.get(reserveRow.team_slot) || 0) >= MAX_PLAYERS_PER_REAL_TEAM) return json({ error: "Escolha um reserva de uma equipe com no m\xE1ximo um jogador titular no seu time." }, 400, request, env);
   }
+  const lockedDraftPredictions = [];
+  if (Number(round.round_number) >= DRAFT_PREDICTION_CONFIG.enabledFromRound) {
+    const snapshotRow = await env.DB.prepare(`
+      SELECT position_pick_rates_json AS positionPickRatesJson
+      FROM fantasy_draft_pick_rate_snapshots
+      WHERE round_id = ? AND division = ?
+    `).bind(round.id, division).first();
+    if (!snapshotRow) return json({ error: "O snapshot do Palpite de Draft não está disponível para esta rodada." }, 409, request, env);
+    const snapshot = { positionPickRates: JSON.parse(snapshotRow.positionPickRatesJson || "{}") };
+    const matchRows = await env.DB.prepare(`
+      SELECT home_team_slot AS homeTeamSlot, away_team_slot AS awayTeamSlot,
+             source_payload_json AS sourcePayloadJson
+      FROM fantasy_matches
+      WHERE division = ? AND round_number = ?
+        AND status NOT IN ('cancelled', 'postponed')
+    `).bind(division, round.round_number).all();
+    const teamFormats = new Map();
+    for (const match of matchRows.results || []) {
+      const sourcePayload = parseJsonObject(match.sourcePayloadJson);
+      const format = String(sourcePayload.format || (/semi|final/i.test(String(sourcePayload.stage || "")) ? "MD5" : "MD3")).toUpperCase();
+      teamFormats.set(String(match.homeTeamSlot), format);
+      teamFormats.set(String(match.awayTeamSlot), format);
+    }
+    for (const row of marketRows.filter((item) => item.asset_type === "player")) {
+      const input = draftInputs.find((item) => cleanText(item.role).toUpperCase() === row.role && cleanText(item.playerAssetId || item.id) === row.asset_id);
+      if (!input) return json({ error: `Escolha o Palpite de Draft de ${row.display_name}.` }, 400, request, env);
+      try {
+        lockedDraftPredictions.push({
+          role: row.role,
+          playerAssetId: row.asset_id,
+          ...lockDraftPrediction({
+            input,
+            role: row.role,
+            seriesFormat: teamFormats.get(String(row.team_slot)) || "MD3",
+            snapshot,
+            catalog: CHAMPION_CATALOG
+          })
+        });
+      } catch (error) {
+        return json({ error: `${row.display_name}: ${error.message}` }, 400, request, env);
+      }
+    }
+  }
   const fantasyTeamId = await ensureFantasyTeam(env, user.id, division, teamName);
   const existing = await env.DB.prepare("SELECT id FROM fantasy_lineups WHERE fantasy_team_id = ? AND round_id = ?").bind(fantasyTeamId, round.id).first();
   const lineupId = existing?.id || crypto.randomUUID();
@@ -617,13 +741,38 @@ async function saveCurrentLineup(request, env) {
       ON CONFLICT(fantasy_team_id, round_id) DO UPDATE SET captain_asset_id=excluded.captain_asset_id, total_cost=excluded.total_cost, updated_at=CURRENT_TIMESTAMP
     `).bind(lineupId, fantasyTeamId, round.id, captainId, totalCost),
     env.DB.prepare("DELETE FROM fantasy_lineup_picks WHERE lineup_id = ?").bind(lineupId),
-    env.DB.prepare("DELETE FROM fantasy_lineup_reserves WHERE lineup_id = ?").bind(lineupId)
+    env.DB.prepare("DELETE FROM fantasy_lineup_reserves WHERE lineup_id = ?").bind(lineupId),
+    env.DB.prepare("DELETE FROM fantasy_lineup_draft_predictions WHERE lineup_id = ?").bind(lineupId)
   ];
   for (const row of marketRows) {
     statements.push(env.DB.prepare("INSERT INTO fantasy_lineup_picks (lineup_id, role, asset_id, price_paid, team_slot) VALUES (?, ?, ?, ?, ?)").bind(lineupId, row.role, row.asset_id, row.price, row.team_slot));
   }
   if (reserveRow) {
     statements.push(env.DB.prepare("INSERT INTO fantasy_lineup_reserves (lineup_id, role, asset_id, price_paid, team_slot) VALUES (?, ?, ?, ?, ?)").bind(lineupId, reserveRow.role, reserveRow.asset_id, reserveRow.price, reserveRow.team_slot));
+  }
+  for (const prediction of lockedDraftPredictions) {
+    statements.push(env.DB.prepare(`
+      INSERT INTO fantasy_lineup_draft_predictions
+        (lineup_id, role, player_asset_id, mode, champion_id, map_number,
+         pick_rate_position, pick_rate_at_lock, multiplier_at_lock, base_reward,
+         possible_reward, miss_penalty, status, result_score, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+    `).bind(
+      lineupId,
+      prediction.role,
+      prediction.playerAssetId,
+      prediction.mode,
+      prediction.championId,
+      prediction.mapNumber,
+      prediction.pickRatePosition,
+      prediction.pickRateAtLock,
+      prediction.multiplierAtLock,
+      prediction.baseReward,
+      prediction.possibleReward,
+      prediction.missPenalty,
+      prediction.status,
+      prediction.resultScore
+    ));
   }
   await env.DB.batch(statements);
   return json({ ok: true, lineupId, roundId: round.id, patrimonyCents: Number(patrimony.current_cents), totalCost, reserveBudget: reserveBudgetForPatrimony(marketRows, budget), reserveCost: reserveRow ? Number(reserveRow.price) : 0 }, 200, request, env);

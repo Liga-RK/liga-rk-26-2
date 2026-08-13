@@ -1,6 +1,8 @@
 import formulaV2 from "../src/fantasy/formula-v2.cjs";
 import valuationV3 from "../src/fantasy/valuation-v3.cjs";
 import patrimonyV2 from "../src/fantasy/patrimony-v2.cjs";
+import draftPrediction from "../src/fantasy/draft-prediction.cjs";
+import championCatalog from "../src/fantasy/champion-catalog.cjs";
 
 const ADMIN_COOKIE = "fantasy_admin_session";
 const ADMIN_SESSION_HOURS = 8;
@@ -39,6 +41,13 @@ const {
   PATRIMONY_FORMULA_ID,
   calculateParticipantPatrimony
 } = patrimonyV2;
+const {
+  DRAFT_PREDICTION_CONFIG,
+  buildDraftPickRateSnapshot,
+  calculateDraftPredictionResult,
+  calculateFinalPlayerFantasyScore
+} = draftPrediction;
+const { CHAMPION_CATALOG } = championCatalog;
 const BACKUP_TABLES = Object.freeze([
   "d1_migrations",
   "fantasy_users",
@@ -56,6 +65,8 @@ const BACKUP_TABLES = Object.freeze([
   "fantasy_lineups",
   "fantasy_lineup_picks",
   "fantasy_lineup_reserves",
+  "fantasy_draft_pick_rate_snapshots",
+  "fantasy_lineup_draft_predictions",
   "fantasy_asset_round_scores",
   "fantasy_team_round_scores",
   "fantasy_round_matches",
@@ -91,6 +102,8 @@ const RESTORE_TABLES = Object.freeze([
   "fantasy_lineups",
   "fantasy_lineup_picks",
   "fantasy_lineup_reserves",
+  "fantasy_draft_pick_rate_snapshots",
+  "fantasy_lineup_draft_predictions",
   "fantasy_asset_round_scores",
   "fantasy_team_round_scores",
   "fantasy_round_matches",
@@ -496,6 +509,100 @@ async function resolveMarketWindow(env, roundNumber) {
   };
 }
 
+async function ensureDraftSnapshotsForRound(env, roundNumber) {
+  const targetRound = Math.trunc(Number(roundNumber));
+  if (targetRound < DRAFT_PREDICTION_CONFIG.enabledFromRound) {
+    return { enabled: false, roundNumber: targetRound, snapshots: [] };
+  }
+  const rounds = await dbAll(env, `
+    SELECT id, division FROM fantasy_rounds
+    WHERE round_number = ? AND division IN ('elite', 'ascension')
+    ORDER BY division
+  `, [targetRound]);
+  if (rounds.length !== DIVISIONS.length) {
+    throw new HttpError(409, `A Rodada ${targetRound} precisa existir nas duas divisões antes de gerar o Pick Rate.`);
+  }
+  const existing = await dbAll(env, `
+    SELECT round_id AS roundId, division, generated_from_rounds_json AS generatedFromRoundsJson,
+           generated_at AS generatedAt, source_hash AS sourceHash, totals_json AS totalsJson,
+           unknown_champions_json AS unknownChampionsJson
+    FROM fantasy_draft_pick_rate_snapshots
+    WHERE round_id IN (${rounds.map(() => "?").join(",")})
+    ORDER BY division
+  `, rounds.map((round) => round.id));
+  if (existing.length === rounds.length) {
+    return {
+      enabled: true,
+      roundNumber: targetRound,
+      frozen: true,
+      snapshots: existing.map(decodeJsonFields)
+    };
+  }
+
+  const source = await loadOfficialSource(env);
+  const statements = [];
+  const created = [];
+  for (const round of rounds) {
+    if (existing.some((row) => row.roundId === round.id)) continue;
+    const snapshot = buildDraftPickRateSnapshot({
+      source,
+      division: round.division,
+      roundNumber: targetRound,
+      catalog: CHAMPION_CATALOG
+    });
+    const expectedRounds = Array.from({ length: targetRound - 1 }, (_, index) => index + 1);
+    if (expectedRounds.some((number) => !snapshot.generatedFromRounds.includes(number))) {
+      throw new HttpError(409, `A base oficial de ${round.division} não contém picks de todas as rodadas anteriores.`);
+    }
+    if (PLAYER_ROLES.some((role) => Number(snapshot.totals[role]) <= 0)) {
+      throw new HttpError(409, `A base oficial de ${round.division} não contém picks suficientes por posição.`);
+    }
+    const sourceHash = await hashObject({
+      division: round.division,
+      roundNumber: targetRound,
+      generatedFromRounds: snapshot.generatedFromRounds,
+      totals: snapshot.totals,
+      counts: snapshot.counts
+    });
+    statements.push(env.DB.prepare(`
+      INSERT INTO fantasy_draft_pick_rate_snapshots
+        (round_id, division, generated_from_rounds_json, generated_at, source_hash,
+         totals_json, counts_json, position_pick_rates_json, unknown_champions_json)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(round_id) DO NOTHING
+    `).bind(
+      round.id,
+      round.division,
+      JSON.stringify(snapshot.generatedFromRounds),
+      snapshot.generatedAt,
+      sourceHash,
+      JSON.stringify(snapshot.totals),
+      JSON.stringify(snapshot.counts),
+      JSON.stringify(snapshot.positionPickRates),
+      JSON.stringify(snapshot.unknownChampions)
+    ));
+    created.push({
+      roundId: round.id,
+      division: round.division,
+      generatedFromRounds: snapshot.generatedFromRounds,
+      generatedAt: snapshot.generatedAt,
+      sourceHash,
+      totals: snapshot.totals,
+      unknownChampions: snapshot.unknownChampions
+    });
+  }
+  if (statements.length) await env.DB.batch(statements);
+  return {
+    enabled: true,
+    roundNumber: targetRound,
+    frozen: true,
+    snapshots: [
+      ...existing.map(decodeJsonFields),
+      ...created
+    ].sort((left, right) => left.division.localeCompare(right.division))
+  };
+}
+
 async function closeMarketWithVersion(env, version, actor, reason, source) {
   const now = new Date().toISOString();
   const result = await env.DB.prepare(`
@@ -525,6 +632,7 @@ async function closeMarketWithVersion(env, version, actor, reason, source) {
 async function adminOpenMarket(request, env, requestId, auth) {
   const body = await readJson(request);
   const roundNumber = Math.trunc(Number(body.roundNumber));
+  const accessMode = clean(body.accessMode) === "admin" ? "admin" : "public";
   const before = await getGlobalMarketState(env);
   if (before?.status === "open") {
     return failure(
@@ -548,15 +656,17 @@ async function adminOpenMarket(request, env, requestId, auth) {
       { closesAt: window.closesAt, match: window.match }
     );
   }
+  const draft = await ensureDraftSnapshotsForRound(env, roundNumber);
   await env.DB.batch([
     env.DB.prepare(`
       UPDATE fantasy_market_state
-      SET status = 'open', access_mode = 'public', opened_at = ?, closes_at = ?, closed_at = NULL,
+      SET status = 'open', access_mode = ?, opened_at = ?, closes_at = ?, closed_at = NULL,
           opened_by = ?, closed_by = NULL, close_reason = NULL,
           lock_match_id = ?, lock_division = ?, lock_round_number = ?,
           version = version + 1, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `).bind(
+      accessMode,
       new Date().toISOString(),
       window.closesAt,
       auth.username,
@@ -581,7 +691,7 @@ async function adminOpenMarket(request, env, requestId, auth) {
     after,
     requestId
   });
-  return success({ market: publicMarketState(after), schedule: window });
+  return success({ market: publicMarketState(after), schedule: window, draft });
 }
 
 async function adminCloseMarket(request, env, requestId, auth) {
@@ -1795,6 +1905,7 @@ async function normalizeFormulaV2Round(source, roundNumber, division) {
         atletaId: resolveId(participant.playerId),
         teamSlot: clean(participant.teamSlot).toUpperCase(),
         position: clean(participant.position).toUpperCase(),
+        championId: clean(participant.champion),
         score: participant.score,
         won: Boolean(participant.won),
         deaths: participant.deaths
@@ -2232,6 +2343,7 @@ async function adminRoundProcessV2(request, env, requestId, auth) {
       JSON.stringify({ processedBy: auth.username, backupId })
     ));
     if (scoreStatements.length) await env.DB.batch(scoreStatements);
+    await resolveDraftPredictionsForRound(env, round, normalized.division, normalized.series);
     await recalculateLineupsV2(env, round, normalized.division);
 
     await updateMarketAverages(env, normalized.division);
@@ -2265,16 +2377,71 @@ async function adminRoundProcessV2(request, env, requestId, auth) {
   });
 }
 
+async function resolveDraftPredictionsForRound(env, round, division, series) {
+  if (Number(round.roundNumber || round.round_number) < DRAFT_PREDICTION_CONFIG.enabledFromRound) return 0;
+  const rows = await dbAll(env, `
+    SELECT dp.lineup_id AS lineupId, dp.role, dp.player_asset_id AS playerAssetId,
+           dp.mode, dp.champion_id AS championId, dp.map_number AS mapNumber,
+           dp.pick_rate_position AS pickRatePosition, dp.pick_rate_at_lock AS pickRateAtLock,
+           dp.multiplier_at_lock AS multiplierAtLock, dp.base_reward AS baseReward,
+           dp.possible_reward AS possibleReward, dp.miss_penalty AS missPenalty,
+           dp.status, dp.result_score AS resultScore
+    FROM fantasy_lineup_draft_predictions dp
+    JOIN fantasy_lineups l ON l.id = dp.lineup_id
+    JOIN fantasy_teams t ON t.id = l.fantasy_team_id
+    WHERE l.round_id = ? AND t.division = ?
+    ORDER BY dp.lineup_id, dp.role
+  `, [round.id, division]);
+  const statements = [];
+  for (const prediction of rows) {
+    const playerSeries = (series || []).find((item) =>
+      (item.mapas || []).some((game) => (game.participantes || []).some((participant) =>
+        String(participant.atletaId) === String(prediction.playerAssetId)
+      ))
+    );
+    const playerSeriesGames = playerSeries
+      ? playerSeries.mapas.flatMap((game) => (game.participantes || [])
+        .filter((participant) => String(participant.atletaId) === String(prediction.playerAssetId))
+        .map((participant) => ({
+          championId: participant.championId,
+          mapNumber: game.gameNumber,
+          played: true
+        })))
+      : [];
+    const result = calculateDraftPredictionResult({
+      prediction,
+      playerSeriesGames,
+      seriesFormat: playerSeries?.formato || "MD3"
+    });
+    statements.push(env.DB.prepare(`
+      UPDATE fantasy_lineup_draft_predictions
+      SET status = ?, result_score = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE lineup_id = ? AND role = ?
+    `).bind(result.status, result.resultScore, prediction.lineupId, prediction.role));
+  }
+  if (statements.length) await env.DB.batch(statements);
+  return statements.length;
+}
+
 async function recalculateLineupsV2(env, round, division) {
   const rows = await dbAll(env, `
     SELECT l.id AS lineupId, l.fantasy_team_id AS fantasyTeamId,
            l.captain_asset_id AS captainAssetId,
            p.asset_id AS assetId, p.role,
-           lr.asset_id AS reserveAssetId, lr.role AS reserveRole
+           lr.asset_id AS reserveAssetId, lr.role AS reserveRole,
+           dp.mode AS draftMode, dp.champion_id AS draftChampionId,
+           dp.map_number AS draftMapNumber, dp.pick_rate_position AS draftPickRatePosition,
+           dp.pick_rate_at_lock AS draftPickRateAtLock,
+           dp.multiplier_at_lock AS draftMultiplierAtLock,
+           dp.base_reward AS draftBaseReward, dp.possible_reward AS draftPossibleReward,
+           dp.miss_penalty AS draftMissPenalty, dp.status AS draftStatus,
+           dp.result_score AS draftResultScore
     FROM fantasy_lineups l
     JOIN fantasy_teams t ON t.id = l.fantasy_team_id
     JOIN fantasy_lineup_picks p ON p.lineup_id = l.id
     LEFT JOIN fantasy_lineup_reserves lr ON lr.lineup_id = l.id
+    LEFT JOIN fantasy_lineup_draft_predictions dp
+      ON dp.lineup_id = l.id AND dp.role = p.role AND dp.player_asset_id = p.asset_id
     WHERE l.round_id = ? AND t.division = ?
     ORDER BY l.id, p.role
   `, [round.id, division]);
@@ -2290,11 +2457,27 @@ async function recalculateLineupsV2(env, round, division) {
       fantasyTeamId: row.fantasyTeamId,
       capitaoId: row.captainAssetId,
       titulares: [],
+      predictions: new Map(),
       reserva: row.reserveAssetId
         ? { assetId: row.reserveAssetId, role: row.reserveRole }
         : null
     };
     item.titulares.push({ assetId: row.assetId, role: row.role });
+    if (row.draftMode && PLAYER_ROLES.includes(row.role)) {
+      item.predictions.set(row.role, {
+        mode: row.draftMode,
+        championId: row.draftChampionId,
+        mapNumber: row.draftMapNumber,
+        pickRatePosition: row.draftPickRatePosition,
+        pickRateAtLock: row.draftPickRateAtLock,
+        multiplierAtLock: row.draftMultiplierAtLock,
+        baseReward: row.draftBaseReward,
+        possibleReward: row.draftPossibleReward,
+        missPenalty: row.draftMissPenalty,
+        status: row.draftStatus,
+        resultScore: Number(row.draftResultScore) || 0
+      });
+    }
     grouped.set(row.lineupId, item);
   }
   const statements = [];
@@ -2305,6 +2488,25 @@ async function recalculateLineupsV2(env, round, division) {
       reserva: lineup.reserva,
       pontuacoes: scoreMap
     });
+    let draftPredictionTotal = 0;
+    const details = score.detalhes.map((detail) => {
+      const starter = lineup.titulares.find((item) => String(item.assetId) === String(detail.atletaId));
+      const prediction = starter ? lineup.predictions.get(starter.role) : null;
+      const draftPredictionScore = prediction ? roundMoney(prediction.resultScore) : 0;
+      draftPredictionTotal += draftPredictionScore;
+      const combined = calculateFinalPlayerFantasyScore({
+        playerPerformanceScore: detail.pontuacaoBase || 0,
+        isCaptain: String(detail.atletaId) === String(lineup.capitaoId),
+        draftPredictionScore
+      });
+      return {
+        ...detail,
+        role: starter?.role || "",
+        ...combined,
+        draftPrediction: prediction,
+      };
+    });
+    const finalScore = roundMoney(score.pontuacaoTotal + draftPredictionTotal);
     statements.push(env.DB.prepare(`
       INSERT INTO fantasy_team_round_scores
         (fantasy_team_id, round_id, points, breakdown_json)
@@ -2316,8 +2518,15 @@ async function recalculateLineupsV2(env, round, division) {
     `).bind(
       lineup.fantasyTeamId,
       round.id,
-      score.pontuacaoTotal,
-      JSON.stringify({ formulaVersion: 2, ...score })
+      finalScore,
+      JSON.stringify({
+        formulaVersion: 2,
+        ...score,
+        pontuacaoDesempenhoComCapitao: score.pontuacaoTotal,
+        pontuacaoPalpiteDraft: roundMoney(draftPredictionTotal),
+        pontuacaoTotal: finalScore,
+        detalhes: details
+      })
     ));
   }
   if (statements.length) await env.DB.batch(statements);
@@ -4285,11 +4494,20 @@ async function recalculateRoundLineups(env, roundId) {
     SELECT l.id AS lineupId, l.fantasy_team_id AS fantasyTeamId,
            l.captain_asset_id AS captainAssetId, t.division,
            p.asset_id AS assetId, p.role,
-           lr.asset_id AS reserveAssetId, lr.role AS reserveRole
+           lr.asset_id AS reserveAssetId, lr.role AS reserveRole,
+           dp.mode AS draftMode, dp.champion_id AS draftChampionId,
+           dp.map_number AS draftMapNumber, dp.pick_rate_position AS draftPickRatePosition,
+           dp.pick_rate_at_lock AS draftPickRateAtLock,
+           dp.multiplier_at_lock AS draftMultiplierAtLock,
+           dp.base_reward AS draftBaseReward, dp.possible_reward AS draftPossibleReward,
+           dp.miss_penalty AS draftMissPenalty, dp.status AS draftStatus,
+           dp.result_score AS draftResultScore
     FROM fantasy_lineups l
     JOIN fantasy_teams t ON t.id = l.fantasy_team_id
     JOIN fantasy_lineup_picks p ON p.lineup_id = l.id
     LEFT JOIN fantasy_lineup_reserves lr ON lr.lineup_id = l.id
+    LEFT JOIN fantasy_lineup_draft_predictions dp
+      ON dp.lineup_id = l.id AND dp.role = p.role AND dp.player_asset_id = p.asset_id
     WHERE l.round_id = ?
     ORDER BY l.id, p.role
   `, [roundId]);
@@ -4306,12 +4524,28 @@ async function recalculateRoundLineups(env, roundId) {
       captainAssetId: row.captainAssetId,
       division: row.division,
       picks: [],
+      predictions: new Map(),
       reserve: row.reserveAssetId ? {
         assetId: row.reserveAssetId,
         role: row.reserveRole
       } : null
     };
     lineup.picks.push({ assetId: row.assetId, role: row.role });
+    if (row.draftMode && PLAYER_ROLES.includes(row.role)) {
+      lineup.predictions.set(row.role, {
+        mode: row.draftMode,
+        championId: row.draftChampionId,
+        mapNumber: row.draftMapNumber,
+        pickRatePosition: row.draftPickRatePosition,
+        pickRateAtLock: row.draftPickRateAtLock,
+        multiplierAtLock: row.draftMultiplierAtLock,
+        baseReward: row.draftBaseReward,
+        possibleReward: row.draftPossibleReward,
+        missPenalty: row.draftMissPenalty,
+        status: row.draftStatus,
+        resultScore: Number(row.draftResultScore) || 0
+      });
+    }
     grouped.set(row.lineupId, lineup);
   }
   const statements = [];
@@ -4346,12 +4580,21 @@ async function recalculateRoundLineups(env, roundId) {
       const base = Number(score?.games || 0) > 0 ? Number(score.points) || 0 : 0;
       const multiplier = pick.assetId === lineup.captainAssetId ? 1.5 : 1;
       const points = roundMoney(base * multiplier);
-      total += points;
+      const prediction = lineup.predictions.get(pick.role);
+      const draftPredictionScore = prediction ? roundMoney(prediction.resultScore) : 0;
+      const combined = calculateFinalPlayerFantasyScore({
+        playerPerformanceScore: base,
+        isCaptain: pick.assetId === lineup.captainAssetId,
+        draftPredictionScore
+      });
+      total += combined.finalPlayerFantasyScore;
       breakdown.push({
         ...pick,
         base,
         multiplier,
-        points,
+        points: combined.finalPlayerFantasyScore,
+        ...combined,
+        draftPrediction: prediction || null,
         didNotPlay: PLAYER_ROLES.includes(pick.role) && Number(score?.games || 0) <= 0
       });
     }
@@ -5205,6 +5448,7 @@ export const __test = {
   TIMEZONE,
   adminRoundPreviewV2,
   adminRoundProcessV2,
+  adminOpenMarket,
   adminSyncApply,
   adminSyncPreview,
   adminValuationApply,
@@ -5217,6 +5461,7 @@ export const __test = {
   decodeBase64,
   hashObject,
   initialPrice,
+  ensureDraftSnapshotsForRound,
   mergeLiveOfficialContent,
   normalizeFormulaV2Round,
   normalizeOfficialSource,

@@ -67,6 +67,8 @@
     roundTwoNotice: null,
     roundTwoNoticeBusy: false,
     patrimony: { elite: null, ascension: null },
+    draftData: { elite: null, ascension: null },
+    draftDialog: { item: null, mode: "NONE", championId: "", mapNumber: null, editing: false },
     loaded: false
   };
 
@@ -151,6 +153,19 @@
     roundTwoNoticeFeedback: document.getElementById("round-two-notice-feedback"),
     patrimonyProfile: document.getElementById("patrimony-profile"),
     patrimonySummaryBody: document.getElementById("patrimony-summary-body")
+    ,draftPredictionDialog: document.getElementById("draft-prediction-dialog")
+    ,draftPredictionForm: document.getElementById("draft-prediction-form")
+    ,closeDraftPredictionDialog: document.getElementById("close-draft-prediction-dialog")
+    ,draftPredictionPlayer: document.getElementById("draft-prediction-player")
+    ,draftModeOptions: document.querySelectorAll("[data-draft-mode]")
+    ,draftChampionSection: document.getElementById("draft-champion-section")
+    ,draftChampionSearch: document.getElementById("draft-champion-search")
+    ,draftChampionSort: document.getElementById("draft-champion-sort")
+    ,draftChampionGrid: document.getElementById("draft-champion-grid")
+    ,draftMapSection: document.getElementById("draft-map-section")
+    ,draftMapOptions: document.getElementById("draft-map-options")
+    ,draftPredictionPreview: document.getElementById("draft-prediction-preview")
+    ,draftPredictionFeedback: document.getElementById("draft-prediction-feedback")
   };
 
   init();
@@ -173,6 +188,7 @@
     await loadMarket();
     if (config.backendMode === "cloud") {
       await Promise.all([loadCloudConfig("elite"), loadCloudConfig("ascension")]);
+      await Promise.all([loadCloudDraftData("elite"), loadCloudDraftData("ascension")]);
       syncAllLineupsWithMarket();
       await Promise.all([loadCloudLineup("elite"), loadCloudLineup("ascension")]);
       syncAllLineupsWithMarket();
@@ -218,6 +234,15 @@
       event.preventDefault();
       closeCalculationDialog();
     });
+    if (el.closeDraftPredictionDialog) el.closeDraftPredictionDialog.addEventListener("click", closeDraftPredictionDialog);
+    if (el.draftPredictionDialog) el.draftPredictionDialog.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      closeDraftPredictionDialog();
+    });
+    if (el.draftPredictionForm) el.draftPredictionForm.addEventListener("submit", confirmDraftPrediction);
+    el.draftModeOptions.forEach((button) => button.addEventListener("click", () => setDraftMode(button.dataset.draftMode)));
+    if (el.draftChampionSearch) el.draftChampionSearch.addEventListener("input", renderDraftChampionGrid);
+    if (el.draftChampionSort) el.draftChampionSort.addEventListener("input", renderDraftChampionGrid);
     el.saveLineup.addEventListener("click", saveLineup);
     el.renameTeam.addEventListener("click", renameTeam);
     el.accountButton.addEventListener("click", handleAccountAction);
@@ -321,6 +346,27 @@
       availabilityLabel: cleanText(item.availabilityLabel)
     }));
     return cloudMarket;
+  }
+
+  async function loadCloudDraftData(division) {
+    try {
+      const response = await apiFetch(`/api/fantasy/draft?division=${encodeURIComponent(division)}`, { cache: "no-store" });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(apiErrorMessage(payload, "Palpite de Draft indisponível."));
+      state.draftData[division] = {
+        enabled: payload.enabled === true,
+        roundNumber: Math.trunc(Number(payload.roundNumber) || 0),
+        config: objectValue(payload.config),
+        snapshot: objectValue(payload.snapshot),
+        champions: Array.isArray(payload.champions) && payload.champions.length
+          ? payload.champions
+          : Array.from(window.FANTASY_RK_CHAMPIONS || []),
+        teamSeriesFormats: objectValue(payload.teamSeriesFormats)
+      };
+    } catch (error) {
+      console.warn(`Palpite de Draft ${division} indisponível.`, error);
+      state.draftData[division] = { enabled: false, champions: [], snapshot: {}, teamSeriesFormats: {} };
+    }
   }
 
   function buildMarket(division, divisionKey) {
@@ -603,7 +649,10 @@
         const player = document.createElement("strong");
         player.textContent = `${item.name}${item.id === lineup.captainId ? " ★" : ""}`;
         const team = document.createElement("small");
-        team.textContent = `${item.teamTag} · RK$ ${formatMoney(item.price)}`;
+        const draft = role !== "TEAM" && draftPredictionEnabled(division)
+          ? ` · ${draftPredictionSummaryForDivision(lineup.draftPredictions[role], division)}`
+          : "";
+        team.textContent = `${item.teamTag} · RK$ ${formatMoney(item.price)}${draft}`;
         row.append(roleLabel, player, team);
         list.appendChild(row);
       }
@@ -847,7 +896,12 @@
     const reserveError = lineup.reserve && selected === 6 ? reserveValidationMessage(lineup.reserve, lineup) : "";
     const closed = !isMarketOpen();
     const overBudget = lineupStarterPurchaseCost(lineup) > config.budget + 0.001;
-    el.saveLineup.disabled = closed || selected !== 6 || !lineup.captainId || overBudget || Boolean(reserveError);
+    const missingDraftPrediction = draftPredictionEnabled() && PLAYER_ROLES.some((role) => {
+      const item = lineup.slots[role];
+      const prediction = lineup.draftPredictions[role];
+      return Boolean(item) && (!prediction || prediction.playerAssetId !== item.id);
+    });
+    el.saveLineup.disabled = closed || selected !== 6 || !lineup.captainId || overBudget || Boolean(reserveError) || missingDraftPrediction;
     el.saveLineup.textContent = closed ? "Mercado fechado" : (lineup.saved ? "Atualizar escalação" : "Salvar escalação");
     el.shareLineup.disabled = selected === 0;
     el.captainReminder.hidden = selected !== 6 || Boolean(lineup.captainId);
@@ -889,11 +943,27 @@
     const detail = document.createElement("span");
     detail.textContent = item ? `${item.teamTag} · RK$ ${formatMoney(item.price)}` : "Vaga disponível";
     info.append(strong, detail);
+    if (item && role !== "TEAM" && draftPredictionEnabled()) {
+      const prediction = currentLineup().draftPredictions[role];
+      const summary = document.createElement("span");
+      summary.className = "lineup-draft-summary";
+      summary.textContent = draftPredictionSummary(prediction);
+      info.appendChild(summary);
+    }
     selector.append(badge, info);
 
     const actions = document.createElement("div");
     actions.className = "slot-actions";
     if (item && role !== "TEAM") {
+      if (draftPredictionEnabled() && isMarketOpen()) {
+        const editDraft = document.createElement("button");
+        editDraft.type = "button";
+        editDraft.className = "draft-edit-button";
+        editDraft.title = "Editar Palpite de Draft";
+        editDraft.textContent = "🎯";
+        editDraft.addEventListener("click", () => openDraftPredictionDialog(item, true));
+        actions.appendChild(editDraft);
+      }
       const captain = document.createElement("button");
       captain.type = "button";
       captain.className = `captain-button${currentLineup().captainId === item.id ? " active" : ""}`;
@@ -913,6 +983,18 @@
 
     slot.append(selector, actions);
     return slot;
+  }
+
+  function draftPredictionSummary(prediction) {
+    return draftPredictionSummaryForDivision(prediction, state.division);
+  }
+
+  function draftPredictionSummaryForDivision(prediction, division) {
+    if (!prediction || prediction.mode === "NONE") return "🎯 Sem Palpite de Draft";
+    const champion = (state.draftData[division]?.champions || []).find((item) => item.id === prediction.championId);
+    const name = champion?.name || prediction.championId || "Campeão";
+    const map = prediction.mode === "PRECISE" && prediction.mapNumber ? ` · Mapa ${prediction.mapNumber}` : "";
+    return `🎯 ${name}${map} · ${prediction.mode === "PRECISE" ? "Preciso" : "Simples"}`;
   }
 
   function reserveSlot(item) {
@@ -983,7 +1065,21 @@
         return;
       }
     }
+    if (item.type === "player" && draftPredictionEnabled()) {
+      openDraftPredictionDialog(item);
+      return;
+    }
+    commitStarterItem(item, null);
+  }
+
+  function commitStarterItem(item, prediction) {
+    const lineup = currentLineup();
+    const replacing = lineup.slots[item.role];
     lineup.slots[item.role] = item;
+    if (item.type === "player") {
+      if (prediction) lineup.draftPredictions[item.role] = prediction;
+      else delete lineup.draftPredictions[item.role];
+    }
     if (lineup.reserve && lineup.reserve.id === item.id) lineup.reserve = null;
     if (replacing && lineup.captainId === replacing.id) lineup.captainId = "";
     const removedReserve = clearInvalidReserveIfComplete(lineup);
@@ -994,11 +1090,234 @@
     setRoleFilter(nextRole || "ALL", { scroll: false });
   }
 
+  function draftPredictionEnabled(division = state.division) {
+    const data = state.draftData[division];
+    return Boolean(data?.enabled && Number(data.roundNumber) >= 4);
+  }
+
+  function openDraftPredictionDialog(item, editing = false) {
+    const data = state.draftData[state.division];
+    if (!data?.snapshot?.positionPickRates) {
+      setMessage("O snapshot do Pick Rate ainda não está disponível. Atualize a página e tente novamente.", true);
+      return;
+    }
+    const saved = currentLineup().draftPredictions[item.role];
+    state.draftDialog = {
+      item,
+      mode: editing && saved?.mode ? saved.mode : "NONE",
+      championId: editing ? cleanText(saved?.championId) : "",
+      mapNumber: editing && saved?.mapNumber ? Number(saved.mapNumber) : null,
+      editing
+    };
+    el.draftChampionSearch.value = "";
+    el.draftChampionSort.value = "name";
+    el.draftPredictionFeedback.textContent = "";
+    el.draftPredictionPlayer.textContent = `${item.name} · ${ROLE_LABELS[item.role]} · ${item.teamName || item.teamTag}`;
+    renderDraftDialog();
+    if (!el.draftPredictionDialog.open) el.draftPredictionDialog.showModal();
+  }
+
+  function closeDraftPredictionDialog() {
+    if (el.draftPredictionDialog?.open) el.draftPredictionDialog.close();
+    state.draftDialog = { item: null, mode: "NONE", championId: "", mapNumber: null, editing: false };
+  }
+
+  function setDraftMode(mode) {
+    const normalized = ["NONE", "SIMPLE", "PRECISE"].includes(mode) ? mode : "NONE";
+    state.draftDialog.mode = normalized;
+    if (normalized === "NONE") {
+      state.draftDialog.championId = "";
+      state.draftDialog.mapNumber = null;
+    } else if (normalized === "SIMPLE") {
+      state.draftDialog.mapNumber = null;
+    }
+    renderDraftDialog();
+  }
+
+  function renderDraftDialog() {
+    const mode = state.draftDialog.mode;
+    el.draftModeOptions.forEach((button) => button.classList.toggle("active", button.dataset.draftMode === mode));
+    el.draftChampionSection.hidden = mode === "NONE";
+    el.draftMapSection.hidden = mode !== "PRECISE";
+    if (mode !== "NONE") renderDraftChampionGrid();
+    renderDraftMapOptions();
+    renderDraftPredictionPreview();
+  }
+
+  function currentDraftChampions() {
+    const data = state.draftData[state.division] || {};
+    const item = state.draftDialog.item;
+    const role = item?.role;
+    return (data.champions || Array.from(window.FANTASY_RK_CHAMPIONS || [])).map((champion) => {
+      const pickRate = Math.max(0, Number(data.snapshot?.positionPickRates?.[role]?.[champion.id]) || 0);
+      const band = draftPickBand(pickRate);
+      const reward = draftReward(state.draftDialog.mode, draftSeriesFormat(item), band.multiplier);
+      return { ...champion, pickRate, multiplier: band.multiplier, rarity: band.label, possibleReward: reward.possibleReward };
+    });
+  }
+
+  function draftPickBand(pickRate) {
+    const bands = state.draftData[state.division]?.config?.pickRateMultipliers || [
+      { min: .25, multiplier: .7, label: "Meta absoluto" }, { min: .18, multiplier: .8, label: "Muito popular" },
+      { min: .12, multiplier: .9, label: "Popular" }, { min: .08, multiplier: 1, label: "Normal" },
+      { min: .05, multiplier: 1.15, label: "Diferencial" }, { min: .02, multiplier: 1.35, label: "Raro" },
+      { min: 0, multiplier: 1.5, label: "Muito raro" }
+    ];
+    return bands.find((band) => Number(pickRate) >= Number(band.min)) || bands[bands.length - 1];
+  }
+
+  function draftSeriesFormat(item) {
+    return state.draftData[state.division]?.teamSeriesFormats?.[item?.teamSlot] === "MD5" ? "MD5" : "MD3";
+  }
+
+  function draftReward(mode, format, multiplier) {
+    if (mode === "NONE") return { baseReward: 0, possibleReward: 0, missPenalty: 0 };
+    if (mode === "PRECISE") return { baseReward: 5, possibleReward: roundMoney(5 * multiplier), missPenalty: -2 };
+    const baseReward = format === "MD5" ? 1.5 : 2;
+    return { baseReward, possibleReward: roundMoney(baseReward * multiplier), missPenalty: -1 };
+  }
+
+  function renderDraftChampionGrid() {
+    if (!el.draftChampionGrid || state.draftDialog.mode === "NONE") return;
+    const query = cleanText(el.draftChampionSearch.value).toLocaleLowerCase("pt-BR");
+    const sort = el.draftChampionSort.value;
+    const champions = currentDraftChampions()
+      .filter((champion) => !query || champion.name.toLocaleLowerCase("pt-BR").includes(query))
+      .sort((left, right) => {
+        if (sort === "pick-desc") return right.pickRate - left.pickRate || left.name.localeCompare(right.name, "pt-BR");
+        if (sort === "pick-asc") return left.pickRate - right.pickRate || left.name.localeCompare(right.name, "pt-BR");
+        if (sort === "reward-desc") return right.possibleReward - left.possibleReward || left.name.localeCompare(right.name, "pt-BR");
+        return left.name.localeCompare(right.name, "pt-BR");
+      });
+    el.draftChampionGrid.replaceChildren(...champions.map((champion) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `draft-champion-card${state.draftDialog.championId === champion.id ? " active" : ""}`;
+      button.setAttribute("role", "option");
+      button.setAttribute("aria-selected", String(state.draftDialog.championId === champion.id));
+      const image = document.createElement("img");
+      image.src = champion.image;
+      image.alt = "";
+      image.loading = "lazy";
+      const name = document.createElement("strong");
+      name.textContent = champion.name;
+      const rarity = document.createElement("span");
+      rarity.textContent = champion.rarity;
+      const rate = document.createElement("small");
+      rate.textContent = `Pick Rate ${state.draftDialog.item.role}: ${formatPercent(champion.pickRate)} · ${formatMultiplier(champion.multiplier)}`;
+      const reward = document.createElement("b");
+      reward.textContent = `Acerto: +${formatMoney(champion.possibleReward)}`;
+      button.append(image, name, rarity, rate, reward);
+      button.addEventListener("click", () => {
+        state.draftDialog.championId = champion.id;
+        renderDraftChampionGrid();
+        renderDraftPredictionPreview();
+      });
+      return button;
+    }));
+  }
+
+  function renderDraftMapOptions() {
+    if (!el.draftMapOptions) return;
+    const format = draftSeriesFormat(state.draftDialog.item);
+    el.draftMapOptions.replaceChildren(...[1, 2, 3, 4, 5].map((mapNumber) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `draft-map-button${state.draftDialog.mapNumber === mapNumber ? " active" : ""}`;
+      button.disabled = format === "MD3" && mapNumber > 3;
+      button.textContent = `Mapa ${mapNumber}`;
+      if (button.disabled) {
+        const note = document.createElement("small");
+        note.textContent = "Indisponível em MD3";
+        button.appendChild(note);
+      }
+      button.addEventListener("click", () => {
+        state.draftDialog.mapNumber = mapNumber;
+        renderDraftMapOptions();
+        renderDraftPredictionPreview();
+      });
+      return button;
+    }));
+  }
+
+  function draftPredictionFromDialog() {
+    const { item, mode, championId, mapNumber } = state.draftDialog;
+    if (mode === "NONE") return {
+      playerAssetId: item.id, role: item.role, mode: "NONE", championId: null, mapNumber: null,
+      pickRatePosition: item.role, pickRateAtLock: null, multiplierAtLock: null,
+      baseReward: 0, possibleReward: 0, missPenalty: 0, status: "NONE", resultScore: 0
+    };
+    const champion = currentDraftChampions().find((entry) => entry.id === championId);
+    if (!champion) return null;
+    const reward = draftReward(mode, draftSeriesFormat(item), champion.multiplier);
+    return {
+      playerAssetId: item.id, role: item.role, mode, championId,
+      mapNumber: mode === "PRECISE" ? Number(mapNumber) || null : null,
+      pickRatePosition: item.role, pickRateAtLock: champion.pickRate,
+      multiplierAtLock: champion.multiplier, ...reward, status: "PENDING", resultScore: null
+    };
+  }
+
+  function renderDraftPredictionPreview() {
+    const prediction = draftPredictionFromDialog();
+    const item = state.draftDialog.item;
+    if (!prediction || !item) {
+      el.draftPredictionPreview.innerHTML = `<h3>Seu palpite</h3><p>Escolha um campeão para visualizar a recompensa.</p>`;
+      return;
+    }
+    const champion = currentDraftChampions().find((entry) => entry.id === prediction.championId);
+    const modeLabel = prediction.mode === "NONE" ? "Não dar palpite" : prediction.mode === "SIMPLE" ? "Palpite Simples" : "Palpite Preciso";
+    el.draftPredictionPreview.innerHTML = `
+      <h3>Seu palpite</h3>
+      <div class="draft-preview-grid">
+        <div><span>Jogador</span><strong>${escapeHtml(item.name)}</strong></div>
+        <div><span>Posição</span><strong>${escapeHtml(ROLE_LABELS[item.role])}</strong></div>
+        <div><span>Modo</span><strong>${modeLabel}</strong></div>
+        <div><span>Campeão</span><strong>${escapeHtml(champion?.name || "—")}</strong></div>
+        ${prediction.mode === "PRECISE" ? `<div><span>Mapa</span><strong>${prediction.mapNumber || "—"}</strong></div>` : ""}
+        ${prediction.mode !== "NONE" ? `<div><span>Pick Rate ${item.role}</span><strong>${formatPercent(prediction.pickRateAtLock)}</strong></div><div><span>Categoria</span><strong>${escapeHtml(champion?.rarity || "")}</strong></div><div><span>Multiplicador</span><strong>${formatMultiplier(prediction.multiplierAtLock)}</strong></div><div><span>Se acertar</span><strong>+${formatMoney(prediction.possibleReward)} pts</strong></div><div><span>Se errar</span><strong>−${formatMoney(Math.abs(prediction.missPenalty))} pts</strong></div>` : `<div><span>Resultado</span><strong>0 ponto</strong></div>`}
+      </div>`;
+  }
+
+  function confirmDraftPrediction(event) {
+    event.preventDefault();
+    const prediction = draftPredictionFromDialog();
+    if (!prediction) {
+      el.draftPredictionFeedback.textContent = "Escolha um campeão para continuar.";
+      return;
+    }
+    if (prediction.mode === "PRECISE" && !prediction.mapNumber) {
+      el.draftPredictionFeedback.textContent = "Escolha o mapa exato para continuar.";
+      return;
+    }
+    const { item, editing } = state.draftDialog;
+    if (editing) {
+      currentLineup().draftPredictions[item.role] = prediction;
+      currentLineup().saved = false;
+      persistLocalState();
+      closeDraftPredictionDialog();
+      setMessage(`Palpite de Draft de ${item.name} atualizado.`, false, true);
+      renderLineup();
+      return;
+    }
+    closeDraftPredictionDialog();
+    commitStarterItem(item, prediction);
+  }
+
+  function formatPercent(value) {
+    return `${(Math.max(0, Number(value) || 0) * 100).toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}%`;
+  }
+
+  function formatMultiplier(value) {
+    return `${Number(value || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}x`;
+  }
+
   function removeItem(role) {
     const lineup = currentLineup();
     const removed = lineup.slots[role];
     if (!removed) return;
     lineup.slots[role] = null;
+    delete lineup.draftPredictions[role];
     if (lineup.captainId === removed.id) lineup.captainId = "";
     lineup.saved = false;
     persistLocalState();
@@ -1114,13 +1433,22 @@
       setMessage(reserveError, true);
       return;
     }
+    if (draftPredictionEnabled() && PLAYER_ROLES.some((role) => {
+      const item = lineup.slots[role];
+      const prediction = lineup.draftPredictions[role];
+      return !item || !prediction || prediction.playerAssetId !== item.id;
+    })) {
+      setMessage("Confirme o Palpite de Draft de cada um dos cinco titulares, inclusive se escolher não dar palpite.", true);
+      return;
+    }
 
     const payload = {
       division: state.division,
       teamName: state.teamName,
       captainPlayerId: lineup.captainId,
       picks: items.map((item) => ({ id: item.id, role: item.role, price: item.price, teamSlot: item.teamSlot })),
-      reserve: lineup.reserve ? { id: lineup.reserve.id, role: lineup.reserve.role, price: 0, teamSlot: lineup.reserve.teamSlot } : null
+      reserve: lineup.reserve ? { id: lineup.reserve.id, role: lineup.reserve.role, price: 0, teamSlot: lineup.reserve.teamSlot } : null,
+      draftPredictions: PLAYER_ROLES.map((role) => lineup.draftPredictions[role]).filter(Boolean)
     };
 
     el.saveLineup.disabled = true;
@@ -1367,6 +1695,7 @@
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(apiErrorMessage(payload, "Não foi possível alterar o mercado."));
       await Promise.all([loadCloudConfig("elite"), loadCloudConfig("ascension")]);
+      if (!open) await Promise.all([loadCloudDraftData("elite"), loadCloudDraftData("ascension")]);
       await Promise.all([loadCloudPopular("elite"), loadCloudPopular("ascension")]);
       renderLineup();
       renderMarketShell();
@@ -1618,6 +1947,26 @@
       if (payload.lineup.reserve && payload.lineup.reserve.id) {
         const reserveItem = state.market[division].find((item) => item.id === String(payload.lineup.reserve.id));
         if (reserveItem && reserveItem.type === "player") lineup.reserve = savedMarketItem(reserveItem, payload.lineup.reserve, division);
+      }
+      for (const prediction of payload.lineup.draftPredictions || []) {
+        const role = normalizeRole(prediction.role);
+        const player = lineup.slots[role];
+        if (!player || player.id !== String(prediction.playerAssetId)) continue;
+        lineup.draftPredictions[role] = {
+          playerAssetId: String(prediction.playerAssetId),
+          role,
+          mode: cleanText(prediction.mode).toUpperCase() || "NONE",
+          championId: prediction.championId || null,
+          mapNumber: prediction.mapNumber == null ? null : Number(prediction.mapNumber),
+          pickRatePosition: prediction.pickRatePosition || role,
+          pickRateAtLock: prediction.pickRateAtLock == null ? null : Number(prediction.pickRateAtLock),
+          multiplierAtLock: prediction.multiplierAtLock == null ? null : Number(prediction.multiplierAtLock),
+          baseReward: Number(prediction.baseReward) || 0,
+          possibleReward: Number(prediction.possibleReward) || 0,
+          missPenalty: Number(prediction.missPenalty) || 0,
+          status: prediction.status || "NONE",
+          resultScore: prediction.resultScore == null ? null : Number(prediction.resultScore)
+        };
       }
       lineup.captainId = cleanText(payload.lineup.captain_asset_id || payload.lineup.captainId);
       lineup.saved = true;
@@ -1923,6 +2272,10 @@
     }
     const reserve = value && value.reserve;
     if (reserve && reserve.id && reserve.type === "player") lineup.reserve = reserve;
+    for (const role of PLAYER_ROLES) {
+      const prediction = value?.draftPredictions?.[role];
+      if (prediction && prediction.playerAssetId) lineup.draftPredictions[role] = prediction;
+    }
     lineup.captainId = cleanText(value && value.captainId);
     lineup.saved = Boolean(value && value.saved);
     return lineup;
@@ -1942,7 +2295,7 @@
   }
 
   function emptyLineup() {
-    return { slots: Object.fromEntries(ROLE_ORDER.map((role) => [role, null])), reserve: null, captainId: "", saved: false };
+    return { slots: Object.fromEntries(ROLE_ORDER.map((role) => [role, null])), reserve: null, draftPredictions: {}, captainId: "", saved: false };
   }
 
   function currentLineup() {

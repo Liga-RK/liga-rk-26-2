@@ -157,6 +157,7 @@ for (const division of ["elite", "ascension"]) {
           riotId: participant.riotId || "",
           teamSlot: participant.teamSlot,
           position: participant.position,
+          champion: participant.champion,
           score: participant.score,
           won: Boolean(participant.won),
           deaths: participant.deaths

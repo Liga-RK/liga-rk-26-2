@@ -46,7 +46,20 @@ env = {
       : null
 };
 
-if (mode === "preview") {
+if (mode === "open-admin") {
+  await assertMarketClosed();
+  const opened = await invoke(__test.adminOpenMarket, { roundNumber, accessMode: "admin" });
+  console.log(JSON.stringify({
+    mode,
+    roundNumber,
+    market: opened.market,
+    draft: opened.draft,
+    schedule: {
+      closesAt: opened.schedule?.closesAt,
+      firstMatch: opened.schedule?.match
+    }
+  }, null, 2));
+} else if (mode === "preview") {
   const sync = await invoke(__test.adminSyncPreview, {});
   const round = await invoke(__test.adminRoundPreviewV2, { roundNumber });
   console.log(JSON.stringify({
