@@ -9,19 +9,16 @@
 </head>
 <body>
   <main id="login-view" class="login-shell">
-    <form id="login-form" class="login-card">
-      <span class="eyebrow">Área restrita</span>
-      <h1>Fantasy Liga RK</h1>
-      <p>Entre com as credenciais administrativas configuradas no Worker.</p>
-      <label>Usuário
-        <input id="login-username" name="username" autocomplete="username" required maxlength="120">
-      </label>
-      <label>Senha
-        <input id="login-password" name="password" type="password" autocomplete="current-password" required maxlength="512">
-      </label>
-      <button class="primary" type="submit">Entrar com segurança</button>
+    <section class="login-card" aria-labelledby="login-title">
+      <span class="eyebrow">Área administrativa exclusiva</span>
+      <h1 id="login-title">Painel Fantasy RK</h1>
+      <p>O acesso é liberado somente para a conta Discord administrativa autorizada.</p>
+      <div class="login-actions">
+        <a id="discord-login-button" class="primary" href="/api/fantasy/auth/login?returnTo=admin">Entrar com Discord</a>
+        <a class="ghost" href="https://liga-rk.github.io/liga-rk-26-2/fantasy/">Voltar ao Fantasy</a>
+      </div>
       <p id="login-message" class="message" role="alert"></p>
-    </form>
+    </section>
   </main>
 
   <div id="admin-view" class="admin-shell" hidden>

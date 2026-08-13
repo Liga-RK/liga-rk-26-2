@@ -27,6 +27,8 @@
     lineups: [],
     edit: null
   };
+  const initialAuthError = new URLSearchParams(location.search).get("authError") || "";
+  if (initialAuthError) history.replaceState(null, "", location.pathname);
 
   const el = Object.fromEntries(
     [...document.querySelectorAll("[id]")].map((node) => [toCamel(node.id), node])
@@ -36,7 +38,6 @@
   restoreSession();
 
   function bindEvents() {
-    el.loginForm.addEventListener("submit", login);
     el.logoutButton.addEventListener("click", logout);
     el.refreshButton.addEventListener("click", () => loadPanel(state.activePanel));
     document.querySelectorAll(".nav").forEach((button) =>
@@ -82,30 +83,8 @@
       state.username = data.username;
       showAdmin();
       await loadPanel("overview");
-    } catch {
-      showLogin();
-    }
-  }
-
-  async function login(event) {
-    event.preventDefault();
-    setMessage(el.loginMessage, "Validando…");
-    try {
-      const data = await api("/auth/login", {
-        method: "POST",
-        body: {
-          username: el.loginUsername.value,
-          password: el.loginPassword.value
-        },
-        skipCsrf: true
-      });
-      state.csrf = data.csrfToken;
-      state.username = data.username;
-      el.loginPassword.value = "";
-      showAdmin();
-      await loadPanel("overview");
     } catch (error) {
-      setMessage(el.loginMessage, error.message, true);
+      showLogin(initialAuthError || error.message);
     }
   }
 
@@ -115,9 +94,19 @@
     } catch {
       // A sessão local deve ser encerrada mesmo se já expirou no servidor.
     }
+    try {
+      await fetch("/api/fantasy/auth/logout", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { Accept: "application/json" },
+        cache: "no-store"
+      });
+    } catch {
+      // A interface ainda volta ao login caso a sessão pública já tenha expirado.
+    }
     state.csrf = "";
     state.username = "";
-    showLogin();
+    showLogin("Sessão encerrada com segurança.", false, true);
   }
 
   function showAdmin() {
@@ -126,10 +115,10 @@
     el.sessionUser.textContent = state.username;
   }
 
-  function showLogin() {
+  function showLogin(message = "", error = true, success = false) {
     el.adminView.hidden = true;
     el.loginView.hidden = false;
-    setMessage(el.loginMessage, "");
+    setMessage(el.loginMessage, message, Boolean(message && error), Boolean(message && success));
   }
 
   async function selectPanel(panel) {
@@ -1011,7 +1000,7 @@
     });
     const payload = await response.json().catch(() => ({}));
     if (!response.ok || payload.ok === false) {
-      if (response.status === 401 && path !== "/auth/login") showLogin();
+      if (response.status === 401 && path !== "/auth/session") showLogin();
       const error = new Error(payload.error?.message || `Erro HTTP ${response.status}`);
       error.details = payload.error?.details;
       throw error;

@@ -368,6 +368,7 @@ h1, h2, h3, .market-section-title {
 .nav-button:hover { color: var(--text); background: rgba(255, 255, 255, .055); }
 .nav-button.active { color: #fff; background: linear-gradient(120deg, var(--accent-dark), var(--accent)); box-shadow: 0 5px 18px rgba(229, 38, 50, .24); }
 .account-box { justify-self: end; display: flex; align-items: center; gap: .8rem; color: var(--muted); font-size: .88rem; }
+.admin-panel-link { display: inline-flex; align-items: center; color: var(--text); text-decoration: none; }
 .ghost-button, .primary-button, .share-button {
   min-height: 44px;
   border-radius: .65rem;
@@ -862,7 +863,7 @@ dialog::backdrop { background: rgba(0, 0, 0, .78); backdrop-filter: blur(8px); }
   .league-home-link { width: 36px; height: 36px; }
   .league-home-link img { width: 27px; height: 27px; }
   .account-box span { display: none; }
-  .account-box { gap: 0; }
+  .account-box { gap: .35rem; }
   .top-nav { width: 100%; }
   .nav-button { flex: 1; padding: .58rem .5rem; }
   main { padding-inline: .75rem; }

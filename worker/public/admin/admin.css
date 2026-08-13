@@ -23,11 +23,12 @@ button { cursor: pointer; }
 .login-card { display: grid; width: min(430px, 100%); gap: 1rem; padding: clamp(1.4rem, 4vw, 2.5rem); border: 1px solid var(--line); border-top: 4px solid var(--red); border-radius: 1rem; background: rgba(16, 13, 17, .94); box-shadow: var(--shadow); }
 .login-card h1 { margin: 0; font-size: clamp(2rem, 8vw, 3.5rem); line-height: .95; text-transform: uppercase; }
 .login-card p { margin: 0; color: var(--muted); line-height: 1.55; }
+.login-actions { display: grid; grid-template-columns: 1fr; gap: .65rem; }
 label { display: grid; gap: .38rem; color: #d7ced2; font-size: .78rem; font-weight: 750; }
 input, select, textarea { width: 100%; min-height: 42px; padding: .68rem .72rem; border: 1px solid var(--line); border-radius: .55rem; color: var(--text); background: #09070a; }
 input:focus, select:focus, textarea:focus { outline: 2px solid rgba(229, 38, 50, .6); outline-offset: 1px; }
 .eyebrow { color: #ff5964; font-size: .68rem; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
-.primary, .danger, .ghost { min-height: 40px; padding: .65rem .9rem; border: 1px solid var(--line); border-radius: .55rem; color: white; font-size: .75rem; font-weight: 850; text-transform: uppercase; }
+.primary, .danger, .ghost { display: inline-flex; min-height: 40px; align-items: center; justify-content: center; padding: .65rem .9rem; border: 1px solid var(--line); border-radius: .55rem; color: white; font-size: .75rem; font-weight: 850; text-align: center; text-decoration: none; text-transform: uppercase; }
 .primary { border-color: rgba(255, 255, 255, .15); background: linear-gradient(120deg, var(--red-dark), var(--red)); }
 .danger { border-color: rgba(255, 113, 128, .55); color: #fff; background: rgba(182, 27, 43, .3); }
 .ghost { background: rgba(255, 255, 255, .045); }

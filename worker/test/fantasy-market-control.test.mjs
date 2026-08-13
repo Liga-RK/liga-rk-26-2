@@ -245,6 +245,50 @@ sqliteTest("performance recente acompanha a rodada mais recente já pontuada", a
   assert.deepEqual(result.payload.market[0].recentPoints, [31]);
 });
 
+sqliteTest("painel administrativo cria sessão somente para o Discord exclusivo de Cress Albane", async () => {
+  const database = createDatabase();
+  const controllerToken = "panel-controller-session";
+  const otherAdminToken = "panel-other-session";
+  await seed(database, controllerToken, otherAdminToken);
+  const env = {
+    DB: d1(database),
+    SITE_URL: `${SITE_ORIGIN}/liga-rk-26-2/fantasy/`,
+    ALLOWED_ORIGINS: SITE_ORIGIN,
+    ADMIN_DISCORD_IDS: `${CONTROLLER_ID},${OTHER_ADMIN_ID}`,
+    MARKET_CONTROL_DISCORD_IDS: CONTROLLER_ID,
+    ADMIN_PANEL_DISCORD_IDS: CONTROLLER_ID
+  };
+
+  const anonymous = await call(env, "/api/fantasy/admin/auth/session");
+  assert.equal(anonymous.response.status, 401);
+
+  const forbidden = await call(env, "/api/fantasy/admin/auth/session", { token: otherAdminToken });
+  assert.equal(forbidden.response.status, 403);
+  assert.equal(forbidden.payload.error.code, "DISCORD_ADMIN_FORBIDDEN");
+
+  const session = await call(env, "/api/fantasy/admin/auth/session", { token: controllerToken });
+  assert.equal(session.response.status, 200);
+  assert.equal(session.payload.data.authenticated, true);
+  assert.equal(session.payload.data.authMethod, "discord");
+  assert.equal(session.payload.data.username, "Cress Albane");
+  const adminCookie = session.response.headers.get("set-cookie").split(";")[0];
+  assert.match(adminCookie, /^fantasy_admin_session=/);
+
+  const overview = await call(env, "/api/fantasy/admin/overview", {
+    token: controllerToken,
+    cookie: adminCookie
+  });
+  assert.equal(overview.response.status, 200);
+
+  const passwordLogin = await call(env, "/api/fantasy/admin/auth/login", {
+    method: "POST",
+    origin: "https://fantasy-rk.example",
+    body: { username: "Cress Albane", password: "não utilizada" }
+  });
+  assert.equal(passwordLogin.response.status, 403);
+  assert.equal(passwordLogin.payload.error.code, "DISCORD_LOGIN_REQUIRED");
+});
+
 sqliteTest("fechamento por divisão bloqueia Ascensão sem interromper a Elite", async () => {
   const database = createDatabase();
   const controllerToken = "controller-division-schedule";
@@ -428,6 +472,46 @@ sqliteTest("callback do Discord retorna diretamente para a tela do mercado", asy
   }
 });
 
+sqliteTest("login Discord solicitado pelo painel retorna diretamente para a área administrativa", async () => {
+  const database = createDatabase();
+  const env = {
+    DB: d1(database),
+    SITE_URL: `${SITE_ORIGIN}/liga-rk-26-2/fantasy/`,
+    ALLOWED_ORIGINS: SITE_ORIGIN,
+    ADMIN_PANEL_DISCORD_IDS: CONTROLLER_ID,
+    DISCORD_CLIENT_ID: "fantasy-client",
+    DISCORD_CLIENT_SECRET: "fantasy-secret",
+    DISCORD_REDIRECT_URI: "https://fantasy-rk.example/api/fantasy/auth/callback"
+  };
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (input) => {
+    const url = String(input);
+    if (url === "https://discord.com/api/oauth2/token") {
+      return Response.json({ access_token: "discord-access-token" });
+    }
+    if (url === "https://discord.com/api/users/@me") {
+      return Response.json({ id: CONTROLLER_ID, username: "Cress Albane", avatar: null });
+    }
+    throw new Error(`Requisição externa inesperada: ${url}`);
+  };
+
+  try {
+    const response = await fantasyWorker.fetch(new Request(
+      "https://fantasy-rk.example/api/fantasy/auth/callback?code=discord-code&state=oauth-state",
+      { headers: { Cookie: "fantasy_oauth_state=oauth-state; fantasy_oauth_return=admin" } }
+    ), env);
+    const target = new URL(response.headers.get("location"));
+
+    assert.equal(response.status, 302);
+    assert.equal(target.origin, "https://fantasy-rk.example");
+    assert.equal(target.pathname, "/admin");
+    assert.equal(database.prepare("SELECT COUNT(*) AS count FROM fantasy_login_codes").get().count, 0);
+    assert.match(response.headers.get("set-cookie"), /fantasy_session=/);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 sqliteTest("aviso da rodada 2 aparece uma vez somente para participante autenticado", async () => {
   const database = createDatabase();
   const controllerToken = "notice-controller-session";
@@ -500,10 +584,14 @@ async function call(env, pathname, {
   method = "GET",
   token = "",
   origin = SITE_ORIGIN,
+  cookie = "",
+  csrf = "",
   body
 } = {}) {
   const headers = new Headers({ Origin: origin });
   if (token) headers.set("Authorization", `Bearer ${token}`);
+  if (cookie) headers.set("Cookie", cookie);
+  if (csrf) headers.set("X-CSRF-Token", csrf);
   if (body !== undefined) headers.set("Content-Type", "application/json");
   const response = await fantasyWorker.fetch(new Request(`https://fantasy-rk.example${pathname}`, {
     method,

@@ -124,7 +124,7 @@ const RESTORE_TABLES = Object.freeze([
   "fantasy_error_log"
 ]);
 
-export async function handleAdminRequest(request, env, requestId) {
+export async function handleAdminRequest(request, env, requestId, discordAuth = {}) {
   const url = new URL(request.url);
   const path = url.pathname;
 
@@ -132,12 +132,15 @@ export async function handleAdminRequest(request, env, requestId) {
     return adminLogin(request, env, requestId);
   }
   if (path === "/api/fantasy/admin/auth/session" && request.method === "GET") {
-    return adminSession(request, env);
+    return adminSession(request, env, discordAuth, requestId);
   }
   if (path === "/api/fantasy/admin/auth/logout" && request.method === "POST") {
     return adminLogout(request, env, requestId);
   }
 
+  if (!passwordLoginEnabled(env) && !discordAuth.authorized) {
+    return discordAdminFailure(discordAuth.user);
+  }
   const auth = await requireAdmin(request, env, request.method !== "GET");
   if (auth.response) return auth.response;
 
@@ -360,6 +363,13 @@ export async function ensureAutomaticMarketClose(env, now = new Date(), source =
 
 async function adminLogin(request, env, requestId) {
   requireSameOrigin(request);
+  if (!passwordLoginEnabled(env)) {
+    return failure(
+      "DISCORD_LOGIN_REQUIRED",
+      "O painel administrativo aceita somente a conta Discord autorizada.",
+      403
+    );
+  }
   requireEnv(env, ["ADMIN_USERNAME", "ADMIN_PASSWORD_HASH"]);
   const body = await readJson(request);
   const username = clean(body.username);
@@ -423,30 +433,58 @@ async function adminLogin(request, env, requestId) {
   }
 
   await env.DB.prepare("DELETE FROM fantasy_admin_login_attempts WHERE ip_hash = ?").bind(ipHash).run();
-  await env.DB.prepare("DELETE FROM fantasy_admin_sessions WHERE expires_at <= ?").bind(nowIso).run();
-  const token = randomToken(48);
-  const csrf = randomToken(32);
-  const expiresAt = new Date(now.getTime() + ADMIN_SESSION_HOURS * 60 * 60 * 1000).toISOString();
-  await env.DB.prepare(`
-    INSERT INTO fantasy_admin_sessions
-      (token_hash, username, csrf_token_hash, expires_at)
-    VALUES (?, ?, ?, ?)
-  `).bind(await sha256(token), username, await sha256(csrf), expiresAt).run();
+  const session = await createAdminSession(env, username, now);
   await audit(env, {
     actor: username,
     action: "admin.login.success",
     targetType: "admin_session",
-    targetId: await sha256(token),
+    targetId: session.tokenHash,
+    metadata: { authMethod: "password" },
     requestId
   });
-  const response = success({ authenticated: true, username, csrfToken: csrf, expiresAt });
-  response.headers.append("Set-Cookie", adminCookie(token, ADMIN_SESSION_HOURS * 3600));
+  const response = success({
+    authenticated: true,
+    username,
+    csrfToken: session.csrf,
+    expiresAt: session.expiresAt,
+    authMethod: "password"
+  });
+  response.headers.append("Set-Cookie", adminCookie(session.token, ADMIN_SESSION_HOURS * 3600));
   return response;
 }
 
-async function adminSession(request, env) {
+async function adminSession(request, env, discordAuth = {}, requestId = null) {
   const auth = await requireAdmin(request, env, false);
-  if (auth.response) return auth.response;
+  if (auth.response) {
+    if (!discordAuth.authorized) {
+      return passwordLoginEnabled(env) ? auth.response : discordAdminFailure(discordAuth.user);
+    }
+    const username = clean(discordAuth.user?.username) || `Discord ${clean(discordAuth.user?.discordId)}`;
+    const session = await createAdminSession(env, username);
+    await audit(env, {
+      actor: username,
+      action: "admin.login.success",
+      targetType: "admin_session",
+      targetId: session.tokenHash,
+      metadata: {
+        authMethod: "discord",
+        discordId: clean(discordAuth.user?.discordId)
+      },
+      requestId
+    });
+    const response = success({
+      authenticated: true,
+      username,
+      csrfToken: session.csrf,
+      expiresAt: session.expiresAt,
+      authMethod: "discord"
+    });
+    response.headers.append("Set-Cookie", adminCookie(session.token, ADMIN_SESSION_HOURS * 3600));
+    return response;
+  }
+  if (!passwordLoginEnabled(env) && !discordAuth.authorized) {
+    return discordAdminFailure(discordAuth.user);
+  }
   const csrf = randomToken(32);
   await env.DB.prepare(`
     UPDATE fantasy_admin_sessions
@@ -457,8 +495,34 @@ async function adminSession(request, env) {
     authenticated: true,
     username: auth.username,
     csrfToken: csrf,
-    expiresAt: auth.expiresAt
+    expiresAt: auth.expiresAt,
+    authMethod: discordAuth.authorized ? "discord" : "password"
   });
+}
+
+async function createAdminSession(env, username, now = new Date()) {
+  const nowIso = now.toISOString();
+  await env.DB.prepare("DELETE FROM fantasy_admin_sessions WHERE expires_at <= ?").bind(nowIso).run();
+  const token = randomToken(48);
+  const csrf = randomToken(32);
+  const tokenHash = await sha256(token);
+  const expiresAt = new Date(now.getTime() + ADMIN_SESSION_HOURS * 60 * 60 * 1000).toISOString();
+  await env.DB.prepare(`
+    INSERT INTO fantasy_admin_sessions
+      (token_hash, username, csrf_token_hash, expires_at)
+    VALUES (?, ?, ?, ?)
+  `).bind(tokenHash, clean(username), await sha256(csrf), expiresAt).run();
+  return { token, tokenHash, csrf, expiresAt };
+}
+
+function passwordLoginEnabled(env) {
+  return /^(1|true|yes|on)$/i.test(clean(env.ADMIN_PASSWORD_LOGIN_ENABLED));
+}
+
+function discordAdminFailure(user) {
+  return user
+    ? failure("DISCORD_ADMIN_FORBIDDEN", "Esta conta Discord não está autorizada a acessar o painel.", 403)
+    : failure("DISCORD_LOGIN_REQUIRED", "Entre com a conta Discord administrativa para acessar o painel.", 401);
 }
 
 async function adminLogout(request, env, requestId) {

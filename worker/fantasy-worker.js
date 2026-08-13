@@ -19,6 +19,7 @@ var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 var COOKIE_NAME = "fantasy_session";
 var OAUTH_STATE_COOKIE = "fantasy_oauth_state";
+var OAUTH_RETURN_COOKIE = "fantasy_oauth_return";
 var ADMIN_COOKIE_NAME = "fantasy_admin_session";
 var SESSION_DAYS = 30;
 var ADMIN_SESSION_HOURS = 8;
@@ -110,7 +111,11 @@ async function route(request, env, requestId) {
   if (url.pathname === "/api/fantasy/scores/me" && request.method === "GET") return getMyScores(request, env);
   if (url.pathname === "/api/fantasy/history/me" && request.method === "GET") return getMyHistory(request, env);
   if (url.pathname.startsWith("/api/fantasy/admin/")) {
-    return handleAdminRequest(request, env, requestId);
+    const user = await optionalUser(request, env);
+    return handleAdminRequest(request, env, requestId, {
+      user,
+      authorized: Boolean(user && panelAdminIds(env).has(String(user.discordId)))
+    });
   }
   if (env.ASSETS && request.method === "GET" && !url.pathname.startsWith("/api/")) return env.ASSETS.fetch(request);
   return json({ error: "Rota n\xE3o encontrada." }, 404, request, env);
@@ -118,6 +123,7 @@ async function route(request, env, requestId) {
 __name(route, "route");
 async function authLogin(request, env) {
   requireEnv(env, ["DISCORD_CLIENT_ID", "DISCORD_REDIRECT_URI"]);
+  const returnTo = new URL(request.url).searchParams.get("returnTo") === "admin" ? "admin" : "market";
   const state = randomToken(24);
   const discord = new URL("https://discord.com/oauth2/authorize");
   discord.searchParams.set("client_id", env.DISCORD_CLIENT_ID);
@@ -127,6 +133,7 @@ async function authLogin(request, env) {
   discord.searchParams.set("state", state);
   const headers = new Headers({ Location: discord.toString() });
   headers.append("Set-Cookie", cookie(OAUTH_STATE_COOKIE, state, { maxAge: 600, httpOnly: true }));
+  headers.append("Set-Cookie", cookie(OAUTH_RETURN_COOKIE, returnTo, { maxAge: 600, httpOnly: true }));
   return new Response(null, { status: 302, headers });
 }
 __name(authLogin, "authLogin");
@@ -136,8 +143,9 @@ async function authCallback(request, env) {
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const cookies = parseCookies(request.headers.get("Cookie"));
+  const returnTo = cookies[OAUTH_RETURN_COOKIE] === "admin" ? "admin" : "market";
   if (!code || !state || !timingSafeEqual(state, cookies[OAUTH_STATE_COOKIE] || "")) {
-    return redirectWithError(env, "Falha ao validar o login do Discord.");
+    return redirectWithError(request, env, "Falha ao validar o login do Discord.", returnTo);
   }
   const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
     method: "POST",
@@ -151,12 +159,12 @@ async function authCallback(request, env) {
     })
   });
   const tokenData = await tokenResponse.json().catch(() => ({}));
-  if (!tokenResponse.ok || !tokenData.access_token) return redirectWithError(env, "O Discord recusou o login.");
+  if (!tokenResponse.ok || !tokenData.access_token) return redirectWithError(request, env, "O Discord recusou o login.", returnTo);
   const userResponse = await fetch("https://discord.com/api/users/@me", {
     headers: { Authorization: `Bearer ${tokenData.access_token}` }
   });
   const discordUser = await userResponse.json().catch(() => ({}));
-  if (!userResponse.ok || !discordUser.id) return redirectWithError(env, "N\xE3o foi poss\xEDvel consultar seu perfil do Discord.");
+  if (!userResponse.ok || !discordUser.id) return redirectWithError(request, env, "N\xE3o foi poss\xEDvel consultar seu perfil do Discord.", returnTo);
   const userId = `discord:${discordUser.id}`;
   const avatarUrl = discordUser.avatar ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png?size=128` : "";
   await env.DB.prepare(`
@@ -169,12 +177,20 @@ async function authCallback(request, env) {
     SELECT blocked, blocked_reason AS blockedReason FROM fantasy_users WHERE id = ?
   `).bind(userId).first();
   if (Number(account?.blocked) === 1) {
-    return redirectWithError(env, account.blockedReason || "Sua conta está bloqueada no Fantasy.");
+    return redirectWithError(request, env, account.blockedReason || "Sua conta está bloqueada no Fantasy.", returnTo);
   }
   const sessionToken2 = randomToken(40);
   const tokenHash = await sha256(sessionToken2);
   const expiresAt = new Date(Date.now() + SESSION_DAYS * 864e5).toISOString();
   await env.DB.prepare("INSERT INTO fantasy_sessions (token_hash, user_id, expires_at) VALUES (?, ?, ?)").bind(tokenHash, userId, expiresAt).run();
+  if (returnTo === "admin") {
+    const target = new URL("/admin", request.url);
+    const headers = new Headers({ Location: target.toString() });
+    headers.append("Set-Cookie", cookie(OAUTH_STATE_COOKIE, "", { maxAge: 0, httpOnly: true }));
+    headers.append("Set-Cookie", cookie(OAUTH_RETURN_COOKIE, "", { maxAge: 0, httpOnly: true }));
+    headers.append("Set-Cookie", cookie(COOKIE_NAME, sessionToken2, { maxAge: SESSION_DAYS * 86400, httpOnly: true, sameSite: "Lax" }));
+    return new Response(null, { status: 302, headers });
+  }
   const loginCode = randomToken(32);
   const loginCodeHash = await sha256(loginCode);
   const loginCodeExpiresAt = new Date(Date.now() + 2 * 6e4).toISOString();
@@ -185,6 +201,7 @@ async function authCallback(request, env) {
   target.hash = new URLSearchParams({ loginCode }).toString();
   const headers = new Headers({ Location: target.toString() });
   headers.append("Set-Cookie", cookie(OAUTH_STATE_COOKIE, "", { maxAge: 0, httpOnly: true }));
+  headers.append("Set-Cookie", cookie(OAUTH_RETURN_COOKIE, "", { maxAge: 0, httpOnly: true }));
   headers.append("Set-Cookie", cookie(COOKIE_NAME, sessionToken2, { maxAge: SESSION_DAYS * 86400, httpOnly: true, sameSite: "Lax" }));
   return new Response(null, { status: 302, headers });
 }
@@ -217,6 +234,7 @@ async function getMe(request, env) {
     user,
     patrimony,
     isAdmin: user ? adminIds(env).has(String(user.discordId)) : false,
+    canAccessAdminPanel: user ? panelAdminIds(env).has(String(user.discordId)) : false,
     canControlMarket: user ? marketControlIds(env).has(String(user.discordId)) : false
   }, 200, request, env);
 }
@@ -1234,6 +1252,13 @@ function adminIds(env) {
   return new Set(String(env.ADMIN_DISCORD_IDS || "").split(",").map((value) => value.trim()).filter(Boolean));
 }
 __name(adminIds, "adminIds");
+function panelAdminIds(env) {
+  const configured = String(env.ADMIN_PANEL_DISCORD_IDS || "").trim();
+  if (configured) return new Set(configured.split(",").map((value) => value.trim()).filter(Boolean));
+  const marketControllers = marketControlIds(env);
+  return marketControllers.size ? marketControllers : adminIds(env);
+}
+__name(panelAdminIds, "panelAdminIds");
 function marketControlIds(env) {
   return new Set(String(env.MARKET_CONTROL_DISCORD_IDS || "").split(",").map((value) => value.trim()).filter(Boolean));
 }
@@ -1348,10 +1373,14 @@ function initialPrice(id, role) {
   return roundMoney(base + Math.abs(hash >>> 0) % 800 / 100);
 }
 __name(initialPrice, "initialPrice");
-function redirectWithError(env, message) {
-  const target = siteEntryUrl(env);
-  target.hash = new URLSearchParams({ loginError: message }).toString();
-  return new Response(null, { status: 302, headers: { Location: target.toString(), "Set-Cookie": cookie(OAUTH_STATE_COOKIE, "", { maxAge: 0, httpOnly: true }) } });
+function redirectWithError(request, env, message, returnTo = "market") {
+  const target = returnTo === "admin" ? new URL("/admin", request.url) : siteEntryUrl(env);
+  if (returnTo === "admin") target.searchParams.set("authError", message);
+  else target.hash = new URLSearchParams({ loginError: message }).toString();
+  const headers = new Headers({ Location: target.toString() });
+  headers.append("Set-Cookie", cookie(OAUTH_STATE_COOKIE, "", { maxAge: 0, httpOnly: true }));
+  headers.append("Set-Cookie", cookie(OAUTH_RETURN_COOKIE, "", { maxAge: 0, httpOnly: true }));
+  return new Response(null, { status: 302, headers });
 }
 __name(redirectWithError, "redirectWithError");
 function siteEntryUrl(env) {

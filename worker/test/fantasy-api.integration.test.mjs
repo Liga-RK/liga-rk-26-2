@@ -22,6 +22,7 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
   const password = "Senha administrativa!";
   const env = {
     DB: d1(database),
+    ADMIN_PASSWORD_LOGIN_ENABLED: "true",
     ADMIN_USERNAME: "admin-rk",
     ADMIN_PASSWORD_HASH: await passwordHash(password),
     ADMIN_RATE_LIMIT_SALT: "test-only",
@@ -412,6 +413,7 @@ sqliteTest("API administrativa rejeita CSRF inválido e limita senha errada", as
   const database = createDatabase();
   const env = {
     DB: d1(database),
+    ADMIN_PASSWORD_LOGIN_ENABLED: "true",
     ADMIN_USERNAME: "admin-rk",
     ADMIN_PASSWORD_HASH: await passwordHash("correta"),
     ADMIN_RATE_LIMIT_SALT: "test-only"

@@ -44,14 +44,12 @@ npx wrangler deploy
 Defina os secrets sem registrá-los no histórico:
 
 ```powershell
-npx wrangler secret put ADMIN_PASSWORD_HASH
-npx wrangler secret put ADMIN_RATE_LIMIT_SALT
 npx wrangler secret put DISCORD_CLIENT_SECRET
 ```
 
-Defina `ADMIN_USERNAME` como variável ou secret no dashboard. A configuração de
-assets executa primeiro o Worker para `/api/*`, `/admin`, `/admin/*` e
-`/health`.
+Defina `ADMIN_PANEL_DISCORD_IDS` somente com os IDs autorizados. A configuração
+de assets executa primeiro o Worker para `/api/*`, `/admin`, `/admin/*` e
+`/health`. Não habilite `ADMIN_PASSWORD_LOGIN_ENABLED` em produção.
 
 ## Cloudflare Access
 
@@ -78,11 +76,13 @@ as autorizações continuam sendo realizadas pelo Worker.
 
 | Nome | Tipo | Finalidade |
 |---|---|---|
-| `ADMIN_USERNAME` | secret/var | usuário administrativo |
-| `ADMIN_PASSWORD_HASH` | secret | PBKDF2-SHA256 |
-| `ADMIN_RATE_LIMIT_SALT` | secret | anonimização do limitador |
+| `ADMIN_PANEL_DISCORD_IDS` | var | Discord autorizado no painel |
 | `DISCORD_CLIENT_ID` | var | OAuth público |
 | `DISCORD_CLIENT_SECRET` | secret | OAuth público |
 | `SITE_URL` | var | retorno para o Fantasy |
 | `ALLOWED_ORIGINS` | var | origem GitHub Pages permitida |
 | `FANTASY_SOURCE_URL` | var | fonte oficial consolidada |
+
+As variáveis antigas `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH` e
+`ADMIN_RATE_LIMIT_SALT` só são usadas se o login legado for habilitado
+explicitamente com `ADMIN_PASSWORD_LOGIN_ENABLED=true`.

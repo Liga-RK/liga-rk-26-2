@@ -8,6 +8,8 @@ const pages = ["fantasy/index.html", "fantasy/fantasy.html"];
 const script = fs.readFileSync(path.join(root, "fantasy/assets/fantasy.js"), "utf8");
 const styles = fs.readFileSync(path.join(root, "fantasy/assets/fantasy.css"), "utf8");
 const workerScript = fs.readFileSync(path.join(root, "worker/fantasy-worker.js"), "utf8");
+const adminHtml = fs.readFileSync(path.join(root, "worker/public/admin/index.html"), "utf8");
+const adminScript = fs.readFileSync(path.join(root, "worker/public/admin/admin.js"), "utf8");
 
 test("Fantasy opens on a separate, minimal Início view", () => {
   for (const relativePath of pages) {
@@ -153,6 +155,19 @@ test("Controle do mercado fica oculto e depende da permissão Discord", () => {
   assert.match(script, /\/api\/fantasy\/market\/control\/\$\{action\}/);
   assert.match(workerScript, /MARKET_CONTROL_DISCORD_IDS/);
   assert.match(workerScript, /Somente o administrador autorizado pode controlar o mercado/);
+});
+
+test("Painel administrativo usa a conta Discord exclusiva e aparece somente para o administrador", () => {
+  for (const relativePath of pages) {
+    const html = fs.readFileSync(path.join(root, relativePath), "utf8");
+    assert.match(html, /id="admin-panel-link"[^>]*hidden/);
+  }
+  assert.match(script, /state\.isAdmin = Boolean\(response\.ok && payload\.authenticated && payload\.canAccessAdminPanel\)/);
+  assert.match(script, /adminPanelLink\.hidden = !state\.isAdmin/);
+  assert.match(workerScript, /ADMIN_PANEL_DISCORD_IDS/);
+  assert.match(adminHtml, /href="\/api\/fantasy\/auth\/login\?returnTo=admin"/);
+  assert.doesNotMatch(adminHtml, /type="password"|login-username/);
+  assert.match(adminScript, /\/api\/fantasy\/auth\/logout/);
 });
 
 test("Rodada 4 mostra somente o aviso com os fechamentos separados", () => {

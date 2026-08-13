@@ -62,6 +62,7 @@
     lineups: { elite: emptyLineup(), ascension: emptyLineup() },
     teamName: "Meu Time RK",
     userName: "",
+    isAdmin: false,
     canControlMarket: false,
     marketControlBusy: false,
     patrimony: { elite: null, ascension: null },
@@ -126,6 +127,7 @@
     fantasyTeamName: document.getElementById("fantasy-team-name"),
     accountButton: document.getElementById("account-button"),
     accountLabel: document.getElementById("account-label"),
+    adminPanelLink: document.getElementById("admin-panel-link"),
     homeLoginButton: document.getElementById("home-login-button"),
     accountDialog: document.getElementById("account-dialog"),
     demoUserName: document.getElementById("demo-user-name"),
@@ -1925,6 +1927,7 @@
   function resetAuthenticatedState() {
     clearAuthToken();
     state.userName = "";
+    state.isAdmin = false;
     state.canControlMarket = false;
     state.marketControlBusy = false;
     state.teamName = "Meu Time RK";
@@ -1952,6 +1955,7 @@
   function renderAccount() {
     el.accountLabel.textContent = state.userName || (config.backendMode === "cloud" ? "Não conectado" : "Modo demonstração");
     el.accountButton.textContent = state.userName ? "Sair" : "Entrar";
+    if (el.adminPanelLink) el.adminPanelLink.hidden = !state.isAdmin;
     renderMarketAdminControl();
   }
 
@@ -2087,9 +2091,11 @@
       state.patrimony.elite = profiles.elite || null;
       state.patrimony.ascension = profiles.ascension || null;
       activatePatrimonyForDivision(state.division);
+      state.isAdmin = Boolean(response.ok && payload.authenticated && payload.canAccessAdminPanel);
       state.canControlMarket = Boolean(response.ok && payload.authenticated && payload.canControlMarket);
       if (!state.userName && authToken) clearAuthToken();
     } catch (error) {
+      state.isAdmin = false;
       state.canControlMarket = false;
       console.warn("Não foi possível consultar a sessão do Fantasy RK.", error);
     }
