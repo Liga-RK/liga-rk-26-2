@@ -97,4 +97,7 @@ test("modal automático mantém ações visíveis e vira tela inteira no celular
   assert.match(css, /\.auto-lineup-content \{[\s\S]*?overflow-y: auto;/);
   assert.match(css, /@media \(max-width: 620px\)[\s\S]*?\.auto-lineup-dialog-card \{[^}]*width: 100vw;[^}]*height: 100dvh;/);
   assert.match(css, /\.auto-lineup-footer \{[\s\S]*?border-top:/);
+  assert.match(css, /\.dialog-card \.auto-reserve-option > span \{[^}]*display: grid;[^}]*gap: 5px;/);
+  assert.match(css, /\.auto-reserve-option strong \{[^}]*display: block;/);
+  assert.match(css, /\.auto-reserve-option small \{[^}]*display: block;/);
 });
