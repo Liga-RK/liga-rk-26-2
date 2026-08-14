@@ -48,19 +48,19 @@ enquanto o mercado está aberto. Depois de fechado, nenhuma rotina o reabre.
 
 ## Segurança administrativa
 
-- usuário em `ADMIN_USERNAME`;
-- senha somente como PBKDF2-SHA256 em `ADMIN_PASSWORD_HASH`;
-- sal de proteção do limitador em `ADMIN_RATE_LIMIT_SALT`;
+- conta Discord permitida explicitamente em `ADMIN_PANEL_DISCORD_IDS`;
+- painel vinculado à sessão pública autenticada do mesmo usuário;
+- login legado por senha desativado por padrão;
 - sessão aleatória armazenada apenas como hash no D1;
 - cookie `HttpOnly`, `Secure`, `SameSite=Strict`;
 - CSRF por sessão e validação de origem em toda mutação;
 - expiração de oito horas e logout que apaga a sessão;
-- cinco falhas em 15 minutos bloqueiam o identificador de rede por 30 minutos;
 - cabeçalhos CSP, `nosniff`, `DENY` e `no-referrer`;
 - todas as rotas administrativas passam por um único guard.
 
-Credenciais administrativas não fazem parte do site, do Worker nem do banco
-exportado.
+A conta autorizada precisa manter simultaneamente a sessão Discord e a sessão
+administrativa curta. Os segredos do Discord não fazem parte do site nem do
+banco exportado.
 
 ## Sincronização
 

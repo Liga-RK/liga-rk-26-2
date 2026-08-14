@@ -1225,7 +1225,7 @@ window.LIGA_RK_CONTENT = {
               "gameName": "gol bolinha 2002",
               "tagLine": "2004",
               "riotIdAliases": [],
-              "playerId": "ee09cf39-13a1-4268-a363-dbd28955437b"
+              "playerId": "d9d9c418-c16a-4a24-b475-40de2f2873fe"
             },
             {
               "lane": "SUB",

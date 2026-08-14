@@ -9,19 +9,16 @@
 </head>
 <body>
   <main id="login-view" class="login-shell">
-    <form id="login-form" class="login-card">
-      <span class="eyebrow">Área restrita</span>
-      <h1>Fantasy Liga RK</h1>
-      <p>Entre com as credenciais administrativas configuradas no Worker.</p>
-      <label>Usuário
-        <input id="login-username" name="username" autocomplete="username" required maxlength="120">
-      </label>
-      <label>Senha
-        <input id="login-password" name="password" type="password" autocomplete="current-password" required maxlength="512">
-      </label>
-      <button class="primary" type="submit">Entrar com segurança</button>
+    <section class="login-card" aria-labelledby="login-title">
+      <span class="eyebrow">Área administrativa exclusiva</span>
+      <h1 id="login-title">Painel Fantasy RK</h1>
+      <p>O acesso é liberado somente para a conta Discord administrativa autorizada.</p>
+      <div class="login-actions">
+        <a id="discord-login-button" class="primary" href="/api/fantasy/auth/login?returnTo=admin">Entrar com Discord</a>
+        <a class="ghost" href="https://liga-rk.github.io/liga-rk-26-2/fantasy/">Voltar ao Fantasy</a>
+      </div>
       <p id="login-message" class="message" role="alert"></p>
-    </form>
+    </section>
   </main>
 
   <div id="admin-view" class="admin-shell" hidden>
@@ -40,6 +37,7 @@
         <button class="nav" data-panel="players">Jogadores</button>
         <button class="nav" data-panel="teams">Equipes</button>
         <button class="nav" data-panel="users">Usuários</button>
+        <button class="nav" data-panel="feedback"><span>Mensagens</span><span id="feedback-nav-count" class="nav-count" hidden>0</span></button>
         <button class="nav" data-panel="lineups">Escalações</button>
         <button class="nav" data-panel="operations">Auditoria e backups</button>
       </nav>
@@ -211,6 +209,32 @@
 
       <section id="panel-users" class="panel">
         <article class="card"><div class="card-heading"><h2>Usuários</h2></div><div class="filters"><input id="user-search" type="search" placeholder="Usuário, Discord ou ID"></div><div id="users-table" class="table-wrap"></div></article>
+      </section>
+
+      <section id="panel-feedback" class="panel">
+        <article class="card">
+          <div class="card-heading">
+            <div><span class="eyebrow">Contato dos jogadores</span><h2>Caixa de entrada</h2></div>
+            <small>Sugestões, dúvidas, reclamações e relatos de bugs enviados pelo Fantasy.</small>
+          </div>
+          <div class="filters">
+            <select id="feedback-status" aria-label="Filtrar por status">
+              <option value="">Todos os status</option>
+              <option value="new">Novas</option>
+              <option value="reviewing">Em análise</option>
+              <option value="resolved">Resolvidas</option>
+            </select>
+            <select id="feedback-category" aria-label="Filtrar por tipo">
+              <option value="">Todos os tipos</option>
+              <option value="suggestion">Sugestões</option>
+              <option value="question">Dúvidas</option>
+              <option value="complaint">Reclamações</option>
+              <option value="bug">Bugs</option>
+            </select>
+            <input id="feedback-search" type="search" placeholder="Assunto, mensagem, usuário ou Discord">
+          </div>
+          <div id="feedback-table" class="table-wrap"></div>
+        </article>
       </section>
 
       <section id="panel-lineups" class="panel">

@@ -209,6 +209,274 @@ sqliteTest("performance recente mostra somente quem jogou na rodada anterior", a
   assert.deepEqual(assets.get("team:elite:A2").recentPoints, []);
 });
 
+sqliteTest("performance recente acompanha a rodada mais recente já pontuada", async () => {
+  const database = createDatabase();
+  database.exec(`
+    INSERT INTO fantasy_rounds(id, division, round_number, name, opens_at, locks_at, status)
+    VALUES
+      ('elite-r2', 'elite', 2, 'Rodada 2', '2026-07-27T00:00:00.000Z', '2026-08-01T00:00:00.000Z', 'scored'),
+      ('elite-r3', 'elite', 3, 'Rodada 3', '2026-08-05T00:00:00.000Z', '2026-08-08T18:35:00.000Z', 'scored');
+
+    INSERT INTO fantasy_market(
+      division, asset_id, asset_type, role, display_name, team_slot,
+      team_name, team_tag, price, previous_price
+    ) VALUES
+      ('elite', 'player:played', 'player', 'TOP', 'Jogou R3', 'A1', 'Time A', 'TMA', 12, 12);
+
+    INSERT INTO fantasy_asset_round_scores(round_id, division, asset_id, role, games, points)
+    VALUES
+      ('elite-r2', 'elite', 'player:played', 'TOP', 2, 21),
+      ('elite-r3', 'elite', 'player:played', 'TOP', 2, 31);
+
+    UPDATE fantasy_market_state
+    SET status='closed', lock_round_number=3, version=1
+    WHERE id='global';
+  `);
+  const env = {
+    DB: d1(database),
+    SITE_URL: `${SITE_ORIGIN}/liga-rk-26-2/fantasy/`,
+    ALLOWED_ORIGINS: SITE_ORIGIN
+  };
+
+  const result = await call(env, "/api/fantasy/market?division=elite");
+
+  assert.equal(result.response.status, 200);
+  assert.equal(result.payload.performanceRoundNumber, 3);
+  assert.deepEqual(result.payload.market[0].recentPoints, [31]);
+});
+
+sqliteTest("painel administrativo cria sessão somente para o Discord exclusivo de Cress Albane", async () => {
+  const database = createDatabase();
+  const controllerToken = "panel-controller-session";
+  const otherAdminToken = "panel-other-session";
+  await seed(database, controllerToken, otherAdminToken);
+  const env = {
+    DB: d1(database),
+    SITE_URL: `${SITE_ORIGIN}/liga-rk-26-2/fantasy/`,
+    ALLOWED_ORIGINS: SITE_ORIGIN,
+    ADMIN_DISCORD_IDS: `${CONTROLLER_ID},${OTHER_ADMIN_ID}`,
+    MARKET_CONTROL_DISCORD_IDS: CONTROLLER_ID,
+    ADMIN_PANEL_DISCORD_IDS: CONTROLLER_ID
+  };
+
+  const anonymous = await call(env, "/api/fantasy/admin/auth/session");
+  assert.equal(anonymous.response.status, 401);
+
+  const forbidden = await call(env, "/api/fantasy/admin/auth/session", { token: otherAdminToken });
+  assert.equal(forbidden.response.status, 403);
+  assert.equal(forbidden.payload.error.code, "DISCORD_ADMIN_FORBIDDEN");
+
+  const session = await call(env, "/api/fantasy/admin/auth/session", { token: controllerToken });
+  assert.equal(session.response.status, 200);
+  assert.equal(session.payload.data.authenticated, true);
+  assert.equal(session.payload.data.authMethod, "discord");
+  assert.equal(session.payload.data.username, "Cress Albane");
+  const adminCookie = session.response.headers.get("set-cookie").split(";")[0];
+  const csrf = session.payload.data.csrfToken;
+  assert.match(adminCookie, /^fantasy_admin_session=/);
+
+  const overview = await call(env, "/api/fantasy/admin/overview", {
+    token: controllerToken,
+    cookie: adminCookie
+  });
+  assert.equal(overview.response.status, 200);
+
+  const anonymousFeedback = await call(env, "/api/fantasy/feedback", {
+    method: "POST",
+    body: { category: "question", subject: "Dúvida de teste", message: "Esta mensagem não deve ser aceita." }
+  });
+  assert.equal(anonymousFeedback.response.status, 401);
+
+  const submittedFeedback = await call(env, "/api/fantasy/feedback", {
+    method: "POST",
+    token: otherAdminToken,
+    body: {
+      category: "bug",
+      subject: "Preço não atualizou",
+      message: "O valor exibido no card continua diferente depois de recarregar a página.",
+      division: "elite",
+      roundNumber: 4,
+      pageView: "market"
+    }
+  });
+  assert.equal(submittedFeedback.response.status, 201);
+  assert.match(submittedFeedback.payload.feedback.protocol, /^RK-[A-F0-9]{8}$/);
+
+  const feedbackList = await call(env, "/api/fantasy/admin/feedback?status=new", {
+    token: controllerToken,
+    cookie: adminCookie
+  });
+  assert.equal(feedbackList.response.status, 200);
+  assert.equal(feedbackList.payload.data.newCount, 1);
+  assert.equal(feedbackList.payload.data.feedback[0].username, "Marí");
+  assert.equal(feedbackList.payload.data.feedback[0].category, "bug");
+
+  const updatedFeedback = await call(env, `/api/fantasy/admin/feedback/${submittedFeedback.payload.feedback.id}`, {
+    method: "PUT",
+    token: controllerToken,
+    cookie: adminCookie,
+    csrf,
+    origin: "https://fantasy-rk.example",
+    body: { status: "resolved", adminNote: "Conferido pela administração." }
+  });
+  assert.equal(updatedFeedback.response.status, 200);
+  assert.equal(updatedFeedback.payload.data.feedback.status, "resolved");
+  assert.ok(updatedFeedback.payload.data.feedback.resolvedAt);
+  assert.equal(database.prepare("SELECT COUNT(*) AS count FROM fantasy_feedback WHERE status='resolved'").get().count, 1);
+  assert.equal(database.prepare("SELECT COUNT(*) AS count FROM fantasy_audit_log WHERE action='feedback.update'").get().count, 1);
+
+  const passwordLogin = await call(env, "/api/fantasy/admin/auth/login", {
+    method: "POST",
+    origin: "https://fantasy-rk.example",
+    body: { username: "Cress Albane", password: "não utilizada" }
+  });
+  assert.equal(passwordLogin.response.status, 403);
+  assert.equal(passwordLogin.payload.error.code, "DISCORD_LOGIN_REQUIRED");
+});
+
+sqliteTest("fechamento por divisão bloqueia Ascensão sem interromper a Elite", async () => {
+  const database = createDatabase();
+  const controllerToken = "controller-division-schedule";
+  await seed(database, controllerToken, "other-admin-division-schedule");
+  const env = {
+    DB: d1(database),
+    SITE_URL: `${SITE_ORIGIN}/liga-rk-26-2/fantasy/`,
+    ALLOWED_ORIGINS: SITE_ORIGIN,
+    ADMIN_DISCORD_IDS: CONTROLLER_ID,
+    MARKET_CONTROL_DISCORD_IDS: CONTROLLER_ID
+  };
+
+  const opened = await call(env, "/api/fantasy/market/control/open", {
+    method: "POST",
+    token: controllerToken,
+    body: { roundNumber: 2 }
+  });
+  assert.equal(opened.response.status, 200);
+
+  const scheduled = await call(env, "/api/fantasy/market/control/schedule", {
+    method: "POST",
+    token: controllerToken,
+    body: {
+      roundNumber: 2,
+      divisionClosesAt: {
+        ascension: "2000-08-13T22:00:00.000Z",
+        elite: "2099-08-15T21:00:00.000Z"
+      }
+    }
+  });
+  assert.equal(scheduled.response.status, 200);
+  assert.equal(scheduled.payload.data.market.status, "open");
+  assert.equal(scheduled.payload.data.divisionClosesAt.ascension, "2000-08-13T22:00:00.000Z");
+  assert.equal(scheduled.payload.data.divisionClosesAt.elite, "2099-08-15T21:00:00.000Z");
+  assert.equal(database.prepare("SELECT status FROM fantasy_rounds WHERE division='ascension' AND round_number=2").get().status, "locked");
+  assert.equal(database.prepare("SELECT status FROM fantasy_rounds WHERE division='elite' AND round_number=2").get().status, "open");
+
+  const ascensionConfig = await call(env, "/api/fantasy/config?division=ascension", { token: controllerToken });
+  const eliteConfig = await call(env, "/api/fantasy/config?division=elite", { token: controllerToken });
+  assert.equal(ascensionConfig.payload.market.status, "closed");
+  assert.equal(ascensionConfig.payload.market.closesAt, "2000-08-13T22:00:00.000Z");
+  assert.equal(eliteConfig.payload.market.status, "open");
+  assert.equal(eliteConfig.payload.market.closesAt, "2099-08-15T21:00:00.000Z");
+
+  const blockedWrite = await call(env, "/api/fantasy/lineups/current", {
+    method: "PUT",
+    token: controllerToken,
+    body: { division: "ascension" }
+  });
+  assert.equal(blockedWrite.response.status, 409);
+  assert.match(blockedWrite.payload.error.message, /Ascensão.*fechado/);
+
+  database.prepare("UPDATE fantasy_rounds SET locks_at='2000-08-15T21:00:00.000Z' WHERE division='elite' AND round_number=2").run();
+  await call(env, "/api/fantasy/config?division=elite", { token: controllerToken });
+  assert.equal(marketState(database).status, "closed");
+});
+
+sqliteTest("rodada 4 exibe todos os ativos mas aceita somente participantes das oitavas", async () => {
+  const database = createDatabase();
+  const token = "round-four-manager-token";
+  database.exec(`
+    INSERT INTO fantasy_users(id, discord_id, username)
+    VALUES ('round-four-manager', 'round-four-discord', 'Manager R4');
+
+    INSERT INTO fantasy_rounds(
+      id, division, round_number, name, opens_at, locks_at, status, eligibility_json
+    ) VALUES (
+      'elite-r4', 'elite', 4, 'Rodada 4 · Oitavas',
+      '2099-08-10T00:00:00.000Z', '2099-08-16T18:35:00.000Z', 'open',
+      '{"teamStatuses":{"A1":"qualified-next-round","A2":"playing","A3":"playing","A4":"eliminated"}}'
+    ), (
+      'ascension-r4', 'ascension', 4, 'Rodada 4 · Oitavas',
+      '2099-08-10T00:00:00.000Z', '2099-08-16T18:35:00.000Z', 'open', '{}'
+    );
+
+    INSERT INTO fantasy_matches(
+      id, source_id, division, round_id, round_number, stage, order_index,
+      home_team_slot, away_team_slot, home_team_name, away_team_name,
+      starts_at, status, source_hash
+    ) VALUES (
+      'elite-r4-m1', 'p1m1', 'elite', 'elite-r4', 4, 'playoffs-round-of-16', 0,
+      'A2', 'A3', 'Time A2', 'Time A3', '2099-08-16T19:00:00.000Z', 'scheduled', 'fixture'
+    ), (
+      'ascension-r4-m1', 'p1m1', 'ascension', 'ascension-r4', 4, 'playoffs-round-of-16', 0,
+      'A2', 'A3', 'Time A2', 'Time A3', '2099-08-16T20:00:00.000Z', 'scheduled', 'fixture'
+    );
+
+    INSERT INTO fantasy_market(
+      division, asset_id, asset_type, role, display_name, team_slot,
+      team_name, team_tag, price, previous_price
+    ) VALUES
+      ('elite', 'p-top-out', 'player', 'TOP', 'Top eliminado', 'A4', 'Time A4', 'A4', 10, 10),
+      ('elite', 'p-jg', 'player', 'JG', 'Jungle apto', 'A2', 'Time A2', 'A2', 10, 10),
+      ('elite', 'p-mid', 'player', 'MID', 'Mid apto', 'A3', 'Time A3', 'A3', 10, 10),
+      ('elite', 'p-adc', 'player', 'ADC', 'ADC apto', 'A2', 'Time A2', 'A2', 10, 10),
+      ('elite', 'p-sup', 'player', 'SUP', 'Suporte apto', 'A3', 'Time A3', 'A3', 10, 10),
+      ('elite', 'team-a2', 'team', 'TEAM', 'Time A2', 'A2', 'Time A2', 'A2', 10, 10),
+      ('elite', 'p-top-qualified', 'player', 'TOP', 'Top classificado', 'A1', 'Time A1', 'A1', 10, 10);
+
+    UPDATE fantasy_market_state
+    SET status='open', access_mode='public', lock_round_number=4,
+        closes_at='2099-08-16T18:35:00.000Z', version=1
+    WHERE id='global';
+  `);
+  database.prepare(
+    "INSERT INTO fantasy_sessions(token_hash,user_id,expires_at) VALUES(?,?,?)"
+  ).run(await hash(token), "round-four-manager", "2099-12-31T23:59:59.000Z");
+  const env = {
+    DB: d1(database),
+    SITE_URL: `${SITE_ORIGIN}/liga-rk-26-2/fantasy/`,
+    ALLOWED_ORIGINS: SITE_ORIGIN
+  };
+
+  const marketResult = await call(env, "/api/fantasy/market?division=elite");
+  const assets = new Map(marketResult.payload.market.map((item) => [item.id, item]));
+  assert.equal(assets.get("p-jg").selectable, true);
+  assert.equal(assets.get("p-jg").matchup, "vs A3");
+  assert.equal(assets.get("p-top-qualified").selectable, false);
+  assert.equal(assets.get("p-top-qualified").availabilityStatus, "qualified-next-round");
+  assert.equal(assets.get("p-top-out").selectable, false);
+  assert.equal(assets.get("p-top-out").availabilityStatus, "eliminated");
+
+  const saveResult = await call(env, "/api/fantasy/lineups/current", {
+    method: "PUT",
+    token,
+    body: {
+      division: "elite",
+      teamName: "Teste playoffs",
+      captainPlayerId: "p-jg",
+      picks: [
+        { id: "p-top-out", role: "TOP" },
+        { id: "p-jg", role: "JG" },
+        { id: "p-mid", role: "MID" },
+        { id: "p-adc", role: "ADC" },
+        { id: "p-sup", role: "SUP" },
+        { id: "team-a2", role: "TEAM" }
+      ]
+    }
+  });
+  assert.equal(saveResult.response.status, 400);
+  assert.match(saveResult.payload.error.message, /eliminado dos playoffs/i);
+});
+
 sqliteTest("callback do Discord retorna diretamente para a tela do mercado", async () => {
   const database = createDatabase();
   const env = {
@@ -244,6 +512,46 @@ sqliteTest("callback do Discord retorna diretamente para a tela do mercado", asy
     assert.equal(target.searchParams.get("view"), "market");
     assert.ok(new URLSearchParams(target.hash.slice(1)).get("loginCode"));
     assert.equal(database.prepare("SELECT COUNT(*) AS count FROM fantasy_login_codes").get().count, 1);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+sqliteTest("login Discord solicitado pelo painel retorna diretamente para a área administrativa", async () => {
+  const database = createDatabase();
+  const env = {
+    DB: d1(database),
+    SITE_URL: `${SITE_ORIGIN}/liga-rk-26-2/fantasy/`,
+    ALLOWED_ORIGINS: SITE_ORIGIN,
+    ADMIN_PANEL_DISCORD_IDS: CONTROLLER_ID,
+    DISCORD_CLIENT_ID: "fantasy-client",
+    DISCORD_CLIENT_SECRET: "fantasy-secret",
+    DISCORD_REDIRECT_URI: "https://fantasy-rk.example/api/fantasy/auth/callback"
+  };
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (input) => {
+    const url = String(input);
+    if (url === "https://discord.com/api/oauth2/token") {
+      return Response.json({ access_token: "discord-access-token" });
+    }
+    if (url === "https://discord.com/api/users/@me") {
+      return Response.json({ id: CONTROLLER_ID, username: "Cress Albane", avatar: null });
+    }
+    throw new Error(`Requisição externa inesperada: ${url}`);
+  };
+
+  try {
+    const response = await fantasyWorker.fetch(new Request(
+      "https://fantasy-rk.example/api/fantasy/auth/callback?code=discord-code&state=oauth-state",
+      { headers: { Cookie: "fantasy_oauth_state=oauth-state; fantasy_oauth_return=admin" } }
+    ), env);
+    const target = new URL(response.headers.get("location"));
+
+    assert.equal(response.status, 302);
+    assert.equal(target.origin, "https://fantasy-rk.example");
+    assert.equal(target.pathname, "/admin");
+    assert.equal(database.prepare("SELECT COUNT(*) AS count FROM fantasy_login_codes").get().count, 0);
+    assert.match(response.headers.get("set-cookie"), /fantasy_session=/);
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -321,10 +629,14 @@ async function call(env, pathname, {
   method = "GET",
   token = "",
   origin = SITE_ORIGIN,
+  cookie = "",
+  csrf = "",
   body
 } = {}) {
   const headers = new Headers({ Origin: origin });
   if (token) headers.set("Authorization", `Bearer ${token}`);
+  if (cookie) headers.set("Cookie", cookie);
+  if (csrf) headers.set("X-CSRF-Token", csrf);
   if (body !== undefined) headers.set("Content-Type", "application/json");
   const response = await fantasyWorker.fetch(new Request(`https://fantasy-rk.example${pathname}`, {
     method,
@@ -359,7 +671,10 @@ function createDatabase() {
     "0010_fantasy_shared_round_patrimony.sql",
     "0011_fantasy_division_patrimony.sql",
     "0012_fantasy_market_access_mode.sql",
-    "0013_fantasy_round3_reserve_budget.sql"
+    "0013_fantasy_round3_reserve_budget.sql",
+    "0014_fantasy_round_eligibility.sql",
+    "0015_fantasy_draft_predictions.sql",
+    "0016_fantasy_feedback.sql"
   ]) {
     database.exec(fs.readFileSync(path.join(WORKER_ROOT, "migrations", file), "utf8"));
     database.prepare("INSERT INTO d1_migrations(name) VALUES(?)").run(file);

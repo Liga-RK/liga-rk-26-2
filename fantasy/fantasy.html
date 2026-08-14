@@ -20,7 +20,7 @@
   <title>Fantasy RK | Liga RK 26.2</title>
   <link rel="icon" type="image/png" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
   <link rel="apple-touch-icon" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
-  <link rel="stylesheet" href="assets/fantasy.css?v=20260806-round3-nkz-notice-v1" />
+  <link rel="stylesheet" href="assets/fantasy.css?v=20260814-feedback-v1" />
 </head>
 <body>
   <header class="site-header">
@@ -40,6 +40,8 @@
     </nav>
     <div class="account-box">
       <span id="account-label">Não conectado</span>
+      <button id="feedback-header-button" class="ghost-button compact feedback-header-button" type="button" title="Fale com a organização" hidden>Contato</button>
+      <a id="admin-panel-link" class="ghost-button compact admin-panel-link" href="https://fantasy-rk.vitorskd2.workers.dev/admin" hidden>Painel</a>
       <button id="account-button" class="ghost-button compact" type="button">Entrar</button>
     </div>
   </header>
@@ -75,6 +77,7 @@
             <button id="market-admin-toggle" class="market-admin-toggle" type="button">Fechar mercado</button>
             <small id="market-admin-feedback" class="market-admin-feedback" aria-live="polite"></small>
           </div>
+          <button id="market-feedback-button" class="market-feedback-button" type="button" hidden>Fale com a organização</button>
         </div>
       </section>
       <section class="division-tabs" aria-label="Escolha de divisão">
@@ -82,21 +85,16 @@
         <button class="division-tab" type="button" data-division="ascension">Divisão Ascensão</button>
       </section>
 
-      <section id="round-two-notice" class="round-two-notice" aria-labelledby="round-two-notice-title" hidden>
-        <div class="round-two-notice-icon" aria-hidden="true">!</div>
+      <section id="round-four-market-schedule-notice" class="market-notice" aria-labelledby="round-four-market-schedule-title">
+        <div class="market-notice-icon" aria-hidden="true">!</div>
         <div>
           <span class="eyebrow">Comunicado oficial</span>
-          <h2 id="round-two-notice-title">Aviso sobre a Rodada 2</h2>
-          <p id="round-two-notice-message"></p>
-        </div>
-      </section>
-
-      <section id="round-three-nkz-notice" class="round-two-notice" aria-labelledby="round-three-nkz-notice-title">
-        <div class="round-two-notice-icon" aria-hidden="true">!</div>
-        <div>
-          <span class="eyebrow">Comunicado oficial</span>
-          <h2 id="round-three-nkz-notice-title">Aviso sobre a Rodada 3</h2>
-          <p>Devido à eliminação da NO KINGS ZONE (NKZ) da Divisão Elite, o confronto entre CASHOUT &amp; TRIMILIQUE LTDA (CASH) e NKZ, válido pela Rodada 3, não será contabilizado no Fantasy RK. Por isso, os atletas e os ativos de equipe das duas organizações não receberão pontuação por essa partida. Os demais confrontos da rodada seguem normalmente.</p>
+          <h2 id="round-four-market-schedule-title">Fechamento do mercado da Rodada 4</h2>
+          <p>Na Rodada 4, cada divisão terá seu próprio horário de fechamento. Depois do prazo da divisão escolhida, não será mais possível criar ou alterar a respectiva escalação.</p>
+          <ul class="market-deadline-list">
+            <li><strong>Divisão Ascensão</strong><time datetime="2026-08-13T19:00:00-03:00">13/08/2026 às 19h</time></li>
+            <li><strong>Divisão Elite</strong><time datetime="2026-08-15T18:00:00-03:00">15/08/2026 às 18h</time></li>
+          </ul>
         </div>
       </section>
 
@@ -202,6 +200,7 @@
             </div>
 
             <div class="lineup-actions">
+              <button id="auto-lineup" class="auto-lineup-button" type="button"><span aria-hidden="true">✦</span> Montar automaticamente</button>
               <button id="clear-lineup" class="ghost-button" type="button">Limpar</button>
               <button id="share-lineup" class="share-button" type="button">Compartilhar</button>
               <button id="save-lineup" class="primary-button" type="button">Salvar escalação</button>
@@ -366,6 +365,12 @@
           </ul>
         </div>
         <div class="formula-box">
+          <h3>Palpite de Draft — a partir da Rodada 4</h3>
+          <p>Ao escalar cada um dos cinco titulares, você pode não dar palpite, fazer um <strong>Palpite Simples</strong> sobre um campeão usado em qualquer mapa ou um <strong>Palpite Preciso</strong> indicando também o mapa exato. Reserva e equipe não participam desta mecânica.</p>
+          <p>O acerto simples vale +2,00 em MD3 ou +1,50 em MD5; o erro vale −1,00. O acerto preciso vale +5,00 e o erro vale −2,00. Nos acertos, a recompensa é multiplicada pela raridade do campeão naquela posição, calculada apenas com as rodadas anteriores e congelada quando o mercado abre.</p>
+          <p>Se o titular não atuar em nenhum mapa, o palpite é anulado e vale 0. Campeão banido não conta como escolhido. O bônus do capitão multiplica somente a pontuação de desempenho do atleta; os pontos do palpite são somados depois e não alteram preço nem patrimônio.</p>
+        </div>
+        <div class="formula-box">
           <h3>Valorização de mercado</h3>
           <p>A pontuação esperada é <strong>1,6 × preço atual − 8</strong>. O desempenho ajustado combina a rodada atual com o histórico real do atleta: sem histórico vale a rodada atual; com uma rodada anterior usa 75% atual e 25% anterior; a partir de duas, usa 65% atual, 25% da média recente e 10% da média da temporada. O histórico recente ajuda a evitar que uma única atuação isolada distorça excessivamente o mercado.</p>
           <p>A diferença passa por uma curva dinâmica: <strong>sinal × (|diferença| ÷ 10)<sup>0,90</sup></strong>. Atletas baratos têm maior potencial de alta, atletas caros sofrem mais nas quedas e a participação parcial reduz a variação. Não há teto fixo de variação nem preço máximo; existe apenas o preço mínimo de RK$ 4,00.</p>
@@ -396,17 +401,6 @@
     <span class="back-to-top-arrow" aria-hidden="true">↑</span>
     <span>Topo</span>
   </button>
-
-  <dialog id="round-two-notice-dialog" aria-labelledby="round-two-notice-dialog-title" aria-describedby="round-two-notice-dialog-message">
-    <div class="dialog-card round-two-notice-dialog-card" role="document">
-      <div class="round-two-notice-dialog-icon" aria-hidden="true">!</div>
-      <span class="eyebrow">Comunicado oficial</span>
-      <h2 id="round-two-notice-dialog-title">Aviso sobre a Rodada 2</h2>
-      <p id="round-two-notice-dialog-message"></p>
-      <button id="acknowledge-round-two-notice" class="primary-button" type="button">Entendido</button>
-      <p id="round-two-notice-feedback" class="status-message" aria-live="polite"></p>
-    </div>
-  </dialog>
 
   <dialog id="account-dialog">
     <form method="dialog" class="dialog-card">
@@ -464,8 +458,154 @@
     </div>
   </dialog>
 
+  <dialog id="feedback-dialog" aria-labelledby="feedback-dialog-title" aria-describedby="feedback-dialog-description">
+    <form id="feedback-form" class="dialog-card feedback-dialog-card">
+      <button id="close-feedback-dialog" class="dialog-close" type="button" aria-label="Fechar">×</button>
+      <span class="eyebrow">Canal direto com a Staff RK</span>
+      <h2 id="feedback-dialog-title">Fale com a organização</h2>
+      <p id="feedback-dialog-description">Envie uma sugestão, tire uma dúvida, faça uma reclamação ou informe um problema. A mensagem será identificada pela sua conta Discord e ficará visível somente para a administração.</p>
+      <div class="feedback-form-grid">
+        <label><span>Tipo da mensagem</span>
+          <select id="feedback-category" name="category" required>
+            <option value="suggestion">Sugestão</option>
+            <option value="question">Dúvida</option>
+            <option value="complaint">Reclamação</option>
+            <option value="bug">Reportar um bug</option>
+          </select>
+        </label>
+        <label><span>Assunto</span><input id="feedback-subject" name="subject" minlength="5" maxlength="120" placeholder="Resuma o que deseja comunicar" required /></label>
+        <label><span>Mensagem</span><textarea id="feedback-message" name="message" minlength="10" maxlength="2000" rows="4" placeholder="Explique os detalhes. Se for um bug, conte o que aconteceu, o que esperava e como reproduzir o problema." required></textarea></label>
+      </div>
+      <p id="feedback-context" class="feedback-context-note"></p>
+      <p id="feedback-form-status" class="status-message" aria-live="polite"></p>
+      <button id="submit-feedback" class="primary-button" type="submit">Enviar mensagem</button>
+    </form>
+  </dialog>
+
+  <dialog id="auto-lineup-dialog" aria-labelledby="auto-lineup-title" aria-describedby="auto-lineup-description">
+    <form id="auto-lineup-form" class="dialog-card auto-lineup-dialog-card" method="dialog">
+      <header class="auto-lineup-header">
+        <div>
+          <span class="eyebrow">Assistente de escalação</span>
+          <h2 id="auto-lineup-title">Montar time automaticamente</h2>
+          <p id="auto-lineup-description">Escolha uma estratégia. O assistente respeita patrimônio, posições, limite por equipe e disponibilidade da rodada.</p>
+        </div>
+        <button id="close-auto-lineup-dialog" class="dialog-close" type="button" aria-label="Fechar montagem automática">×</button>
+      </header>
+
+      <div class="auto-lineup-content">
+        <section class="auto-strategy-section">
+          <div class="auto-section-heading">
+            <strong>Como você quer montar?</strong>
+            <small>Você poderá conferir tudo antes de aplicar.</small>
+          </div>
+          <div id="auto-strategy-options" class="auto-strategy-options" role="radiogroup" aria-label="Estratégia da escalação automática">
+            <button type="button" role="radio" aria-checked="true" data-auto-strategy="balanced" class="auto-strategy-card active">
+              <span class="auto-strategy-badge">Recomendado</span><strong>Time equilibrado</strong><small>Combina média, fase, custo-benefício e valorização.</small>
+            </button>
+            <button type="button" role="radio" aria-checked="false" data-auto-strategy="average" class="auto-strategy-card">
+              <strong>Maior média</strong><small>Prioriza quem tem a maior pontuação média no campeonato.</small>
+            </button>
+            <button type="button" role="radio" aria-checked="false" data-auto-strategy="recent" class="auto-strategy-card">
+              <strong>Melhor fase recente</strong><small>Dá preferência a quem foi melhor na rodada mais recente.</small>
+            </button>
+            <button type="button" role="radio" aria-checked="false" data-auto-strategy="appreciation" class="auto-strategy-card">
+              <strong>Maior valorização</strong><small>Busca atletas e equipe que mais subiram de preço.</small>
+            </button>
+            <button type="button" role="radio" aria-checked="false" data-auto-strategy="value" class="auto-strategy-card">
+              <strong>Apostas de valor</strong><small>Procura desempenho forte por um preço mais baixo.</small>
+            </button>
+            <button type="button" role="radio" aria-checked="false" data-auto-strategy="economic" class="auto-strategy-card">
+              <strong>Orçamento econômico</strong><small>Monta o time mais barato possível e preserva patrimônio.</small>
+            </button>
+            <button type="button" role="radio" aria-checked="false" data-auto-strategy="random" class="auto-strategy-card">
+              <strong>Time surpresa</strong><small>Cria uma combinação aleatória, sempre dentro das regras.</small>
+            </button>
+          </div>
+          <label class="auto-reserve-option">
+            <input id="auto-include-reserve" type="checkbox" checked />
+            <span><strong>Incluir reserva se couber</strong><small>O reserva usa somente o saldo que restar após os seis titulares.</small></span>
+          </label>
+        </section>
+
+        <section class="auto-preview-section" aria-labelledby="auto-preview-title">
+          <div class="auto-section-heading">
+            <strong id="auto-preview-title">Prévia da escalação</strong>
+            <small id="auto-preview-strategy"></small>
+          </div>
+          <div id="auto-lineup-preview" class="auto-lineup-preview" aria-live="polite"></div>
+        </section>
+      </div>
+
+      <footer class="auto-lineup-footer">
+        <p id="auto-lineup-feedback" aria-live="polite">Nada será alterado até você aplicar esta sugestão.</p>
+        <div class="auto-lineup-footer-actions">
+          <button id="apply-auto-lineup" class="share-button" type="button">Aplicar sem palpites</button>
+          <button id="apply-auto-lineup-with-draft" class="primary-button" type="button">Aplicar e revisar Draft</button>
+        </div>
+      </footer>
+    </form>
+  </dialog>
+
+  <dialog id="draft-prediction-dialog" aria-labelledby="draft-prediction-title" aria-describedby="draft-prediction-description">
+    <form id="draft-prediction-form" class="dialog-card draft-prediction-dialog-card" method="dialog">
+      <header class="draft-dialog-header">
+        <div>
+          <span class="eyebrow">Nova mecânica dos playoffs</span>
+          <h2 id="draft-prediction-title">Palpite de Draft</h2>
+          <p id="draft-prediction-player" class="draft-player-name"></p>
+          <p id="draft-prediction-description">Preveja o campeão deste jogador. Escolhas menos populares podem render mais pontos.</p>
+        </div>
+        <button id="close-draft-prediction-dialog" class="dialog-close" type="button" aria-label="Cancelar Palpite de Draft">×</button>
+      </header>
+
+      <div id="draft-mode-options" class="draft-mode-options" role="radiogroup" aria-label="Modo do Palpite de Draft">
+        <button type="button" role="radio" aria-checked="true" data-draft-mode="NONE" class="draft-mode-card active">
+          <strong>Não dar palpite</strong><span>Sem ganho ou perda de pontos.</span><b>0 ponto</b>
+        </button>
+        <button type="button" role="radio" aria-checked="false" data-draft-mode="SIMPLE" class="draft-mode-card">
+          <strong>Palpite Simples</strong><span>O campeão pode aparecer em qualquer mapa.</span><b>Erro: −1,00</b>
+        </button>
+        <button type="button" role="radio" aria-checked="false" data-draft-mode="PRECISE" class="draft-mode-card">
+          <strong>Palpite Preciso</strong><span>Acerte o campeão e o mapa exato.</span><b>Erro: −2,00</b>
+        </button>
+      </div>
+
+      <div class="draft-workspace">
+        <section id="draft-champion-section" class="draft-champion-section" hidden>
+          <div class="draft-section-heading">
+            <div><strong>Escolha o campeão</strong><span id="draft-champion-count" aria-live="polite"></span></div>
+            <small>Pick Rate calculado para a posição do jogador</small>
+          </div>
+          <div class="draft-tools">
+            <label><span>Buscar campeão</span><input id="draft-champion-search" type="search" placeholder="Digite o nome..." autocomplete="off" /></label>
+            <label><span>Ordenar</span><select id="draft-champion-sort"><option value="name">Nome</option><option value="pick-desc">Maior Pick Rate</option><option value="pick-asc">Menor Pick Rate</option><option value="reward-desc">Maior recompensa</option></select></label>
+          </div>
+          <div id="draft-champion-grid" class="draft-champion-grid" role="listbox" aria-label="Campeões"></div>
+        </section>
+
+        <aside class="draft-selection-panel" aria-label="Resumo do palpite">
+          <section id="draft-map-section" class="draft-map-section" hidden>
+            <strong>Em qual mapa?</strong>
+            <small>O campeão precisa aparecer exatamente neste mapa.</small>
+            <div id="draft-map-options" class="draft-map-options" role="radiogroup" aria-label="Mapa do palpite"></div>
+          </section>
+          <section id="draft-prediction-preview" class="draft-prediction-preview" aria-live="polite"></section>
+          <p id="draft-prediction-feedback" class="status-message" aria-live="polite"></p>
+        </aside>
+      </div>
+
+      <footer class="draft-dialog-footer">
+        <p id="draft-footer-hint" aria-live="polite"></p>
+        <button id="confirm-draft-prediction" class="primary-button" type="submit">Confirmar palpite e escalar</button>
+      </footer>
+    </form>
+  </dialog>
+
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/fantasy.js?v=20260806-round3-nkz-notice-v1"></script>
-  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260806-round3-nkz-notice-v1");</script>
+  <script src="assets/champion-list.js?v=20260814-feedback-v1"></script>
+  <script src="assets/auto-lineup.js?v=20260814-feedback-v1"></script>
+  <script src="assets/fantasy.js?v=20260814-feedback-v1"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260814-feedback-v1");</script>
 </body>
 </html>

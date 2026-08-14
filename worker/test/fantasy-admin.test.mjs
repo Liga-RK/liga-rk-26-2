@@ -133,12 +133,12 @@ test("16 mercado nunca reabre automaticamente", () => {
 });
 
 test("17 nova escalação é recusada após fechamento", () => {
-  assert.match(workerSource, /if \(!isGlobalMarketOpen\(marketState\)\) return json\(\{ error:/);
+  assert.match(workerSource, /if \(!isDivisionMarketOpen\(marketState, round\)\)/);
 });
 
 test("18 alteração de escalação usa o mesmo bloqueio de backend", () => {
   const saveBody = functionBody(workerSource, "saveCurrentLineup");
-  assert.ok(saveBody.indexOf("isGlobalMarketOpen") < saveBody.indexOf("env.DB.batch"));
+  assert.ok(saveBody.indexOf("isDivisionMarketOpen") < saveBody.indexOf("env.DB.batch"));
 });
 
 test("19 manipulação direta exige ativo existente e papel correto", () => {

@@ -62,11 +62,15 @@
     lineups: { elite: emptyLineup(), ascension: emptyLineup() },
     teamName: "Meu Time RK",
     userName: "",
+    isAdmin: false,
     canControlMarket: false,
     marketControlBusy: false,
-    roundTwoNotice: null,
-    roundTwoNoticeBusy: false,
     patrimony: { elite: null, ascension: null },
+    draftData: { elite: null, ascension: null },
+    draftDialog: { item: null, mode: "NONE", championId: "", mapNumber: null, editing: false },
+    autoLineup: { strategy: "balanced", preview: null },
+    autoDraftReview: { active: false, roles: [], completed: 0, total: 0 },
+    feedbackBusy: false,
     loaded: false
   };
 
@@ -87,6 +91,17 @@
     search: document.getElementById("search-player"),
     roleFilter: document.getElementById("role-filter"),
     sortFilter: document.getElementById("sort-filter"),
+    autoLineup: document.getElementById("auto-lineup"),
+    autoLineupDialog: document.getElementById("auto-lineup-dialog"),
+    autoLineupForm: document.getElementById("auto-lineup-form"),
+    closeAutoLineupDialog: document.getElementById("close-auto-lineup-dialog"),
+    autoStrategyOptions: document.querySelectorAll("[data-auto-strategy]"),
+    autoIncludeReserve: document.getElementById("auto-include-reserve"),
+    autoLineupPreview: document.getElementById("auto-lineup-preview"),
+    autoPreviewStrategy: document.getElementById("auto-preview-strategy"),
+    autoLineupFeedback: document.getElementById("auto-lineup-feedback"),
+    applyAutoLineup: document.getElementById("apply-auto-lineup"),
+    applyAutoLineupWithDraft: document.getElementById("apply-auto-lineup-with-draft"),
     clearLineup: document.getElementById("clear-lineup"),
     shareLineup: document.getElementById("share-lineup"),
     shareDialog: document.getElementById("share-dialog"),
@@ -113,6 +128,8 @@
     fantasyTeamName: document.getElementById("fantasy-team-name"),
     accountButton: document.getElementById("account-button"),
     accountLabel: document.getElementById("account-label"),
+    feedbackHeaderButton: document.getElementById("feedback-header-button"),
+    adminPanelLink: document.getElementById("admin-panel-link"),
     homeLoginButton: document.getElementById("home-login-button"),
     accountDialog: document.getElementById("account-dialog"),
     demoUserName: document.getElementById("demo-user-name"),
@@ -127,6 +144,16 @@
     marketAdminControl: document.getElementById("market-admin-control"),
     marketAdminToggle: document.getElementById("market-admin-toggle"),
     marketAdminFeedback: document.getElementById("market-admin-feedback"),
+    marketFeedbackButton: document.getElementById("market-feedback-button"),
+    feedbackDialog: document.getElementById("feedback-dialog"),
+    feedbackForm: document.getElementById("feedback-form"),
+    closeFeedbackDialog: document.getElementById("close-feedback-dialog"),
+    feedbackCategory: document.getElementById("feedback-category"),
+    feedbackSubject: document.getElementById("feedback-subject"),
+    feedbackMessage: document.getElementById("feedback-message"),
+    feedbackContext: document.getElementById("feedback-context"),
+    feedbackFormStatus: document.getElementById("feedback-form-status"),
+    submitFeedback: document.getElementById("submit-feedback"),
     marketDashboard: document.getElementById("market-dashboard"),
     marketClosed: document.getElementById("market-closed"),
     closedMarketMessage: document.getElementById("closed-market-message"),
@@ -141,16 +168,24 @@
     closedActions: document.querySelectorAll("[data-closed-action]"),
     roleShortcuts: document.querySelectorAll("[data-role-shortcut]"),
     backToTop: document.getElementById("back-to-top"),
-    roundTwoNotice: document.getElementById("round-two-notice"),
-    roundTwoNoticeTitle: document.getElementById("round-two-notice-title"),
-    roundTwoNoticeMessage: document.getElementById("round-two-notice-message"),
-    roundTwoNoticeDialog: document.getElementById("round-two-notice-dialog"),
-    roundTwoNoticeDialogTitle: document.getElementById("round-two-notice-dialog-title"),
-    roundTwoNoticeDialogMessage: document.getElementById("round-two-notice-dialog-message"),
-    acknowledgeRoundTwoNotice: document.getElementById("acknowledge-round-two-notice"),
-    roundTwoNoticeFeedback: document.getElementById("round-two-notice-feedback"),
     patrimonyProfile: document.getElementById("patrimony-profile"),
     patrimonySummaryBody: document.getElementById("patrimony-summary-body")
+    ,draftPredictionDialog: document.getElementById("draft-prediction-dialog")
+    ,draftPredictionForm: document.getElementById("draft-prediction-form")
+    ,closeDraftPredictionDialog: document.getElementById("close-draft-prediction-dialog")
+    ,draftPredictionPlayer: document.getElementById("draft-prediction-player")
+    ,draftModeOptions: document.querySelectorAll("[data-draft-mode]")
+    ,draftChampionSection: document.getElementById("draft-champion-section")
+    ,draftChampionSearch: document.getElementById("draft-champion-search")
+    ,draftChampionSort: document.getElementById("draft-champion-sort")
+    ,draftChampionCount: document.getElementById("draft-champion-count")
+    ,draftChampionGrid: document.getElementById("draft-champion-grid")
+    ,draftMapSection: document.getElementById("draft-map-section")
+    ,draftMapOptions: document.getElementById("draft-map-options")
+    ,draftPredictionPreview: document.getElementById("draft-prediction-preview")
+    ,draftPredictionFeedback: document.getElementById("draft-prediction-feedback")
+    ,draftFooterHint: document.getElementById("draft-footer-hint")
+    ,confirmDraftPrediction: document.getElementById("confirm-draft-prediction")
   };
 
   init();
@@ -164,7 +199,6 @@
     marketStatusTimer = window.setInterval(renderMarketShell, 30000);
     if (config.backendMode === "cloud") {
       await loadCloudAccount();
-      await loadRoundTwoNotice();
     }
     renderAccount();
     renderLineup();
@@ -173,6 +207,7 @@
     await loadMarket();
     if (config.backendMode === "cloud") {
       await Promise.all([loadCloudConfig("elite"), loadCloudConfig("ascension")]);
+      await Promise.all([loadCloudDraftData("elite"), loadCloudDraftData("ascension")]);
       syncAllLineupsWithMarket();
       await Promise.all([loadCloudLineup("elite"), loadCloudLineup("ascension")]);
       syncAllLineupsWithMarket();
@@ -197,6 +232,27 @@
     el.roleFilter.addEventListener("input", () => setRoleFilter(el.roleFilter.value, { scroll: false }));
     el.roleShortcuts.forEach((button) => button.addEventListener("click", () => setRoleFilter(button.dataset.roleShortcut)));
     el.closedActions.forEach((button) => button.addEventListener("click", () => handleClosedAction(button.dataset.closedAction)));
+    if (el.autoLineup) el.autoLineup.addEventListener("click", openAutoLineupDialog);
+    if (el.closeAutoLineupDialog) el.closeAutoLineupDialog.addEventListener("click", closeAutoLineupDialog);
+    if (el.autoLineupDialog) el.autoLineupDialog.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      closeAutoLineupDialog();
+    });
+    el.autoStrategyOptions.forEach((button, index) => {
+      button.addEventListener("click", () => selectAutoLineupStrategy(button.dataset.autoStrategy));
+      button.addEventListener("keydown", (event) => {
+        if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
+        event.preventDefault();
+        const direction = ['ArrowRight', 'ArrowDown'].includes(event.key) ? 1 : -1;
+        const buttons = Array.from(el.autoStrategyOptions);
+        const target = buttons[(index + direction + buttons.length) % buttons.length];
+        target.focus();
+        selectAutoLineupStrategy(target.dataset.autoStrategy);
+      });
+    });
+    if (el.autoIncludeReserve) el.autoIncludeReserve.addEventListener("change", calculateAutoLineupPreview);
+    if (el.applyAutoLineup) el.applyAutoLineup.addEventListener("click", () => applyAutomaticLineup(false));
+    if (el.applyAutoLineupWithDraft) el.applyAutoLineupWithDraft.addEventListener("click", () => applyAutomaticLineup(true));
     el.clearLineup.addEventListener("click", clearLineup);
     el.shareLineup.addEventListener("click", shareLineupImage);
     el.closeShareDialog.addEventListener("click", closeShareDialog);
@@ -218,17 +274,38 @@
       event.preventDefault();
       closeCalculationDialog();
     });
+    if (el.closeDraftPredictionDialog) el.closeDraftPredictionDialog.addEventListener("click", closeDraftPredictionDialog);
+    if (el.draftPredictionDialog) el.draftPredictionDialog.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      closeDraftPredictionDialog();
+    });
+    if (el.draftPredictionForm) el.draftPredictionForm.addEventListener("submit", confirmDraftPrediction);
+    el.draftModeOptions.forEach((button, index) => {
+      button.addEventListener("click", () => setDraftMode(button.dataset.draftMode));
+      button.addEventListener("keydown", (event) => {
+        if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
+        event.preventDefault();
+        const direction = ["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : -1;
+        const buttons = Array.from(el.draftModeOptions);
+        const target = buttons[(index + direction + buttons.length) % buttons.length];
+        target.focus();
+        setDraftMode(target.dataset.draftMode);
+      });
+    });
+    if (el.draftChampionSearch) el.draftChampionSearch.addEventListener("input", renderDraftChampionGrid);
+    if (el.draftChampionSort) el.draftChampionSort.addEventListener("input", renderDraftChampionGrid);
     el.saveLineup.addEventListener("click", saveLineup);
     el.renameTeam.addEventListener("click", renameTeam);
     el.accountButton.addEventListener("click", handleAccountAction);
     el.homeLoginButton.addEventListener("click", startDiscordLogin);
-    if (el.acknowledgeRoundTwoNotice) el.acknowledgeRoundTwoNotice.addEventListener("click", acknowledgeRoundTwoNotice);
-    if (el.roundTwoNoticeDialog) {
-      el.roundTwoNoticeDialog.addEventListener("cancel", (event) => {
-        event.preventDefault();
-      });
-    }
     if (el.marketAdminToggle) el.marketAdminToggle.addEventListener("click", toggleMarketFromFantasy);
+    [el.marketFeedbackButton, el.feedbackHeaderButton].filter(Boolean).forEach((button) => button.addEventListener("click", openFeedbackDialog));
+    if (el.closeFeedbackDialog) el.closeFeedbackDialog.addEventListener("click", closeFeedbackDialog);
+    if (el.feedbackDialog) el.feedbackDialog.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      closeFeedbackDialog();
+    });
+    if (el.feedbackForm) el.feedbackForm.addEventListener("submit", sendFeedback);
     el.confirmDemoUser.addEventListener("click", confirmDemoUser);
     if (el.backToTop) {
       el.backToTop.addEventListener("click", scrollBackToTop);
@@ -315,9 +392,33 @@
         ? roundMoney(item.maintenanceScore)
         : null,
       scoreDetails: objectValue(item.scoreDetails),
-      valuationDetails: objectValue(item.valuationDetails)
+      valuationDetails: objectValue(item.valuationDetails),
+      selectable: item.selectable !== false,
+      availabilityStatus: cleanText(item.availabilityStatus),
+      availabilityLabel: cleanText(item.availabilityLabel)
     }));
     return cloudMarket;
+  }
+
+  async function loadCloudDraftData(division) {
+    try {
+      const response = await apiFetch(`/api/fantasy/draft?division=${encodeURIComponent(division)}`, { cache: "no-store" });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(apiErrorMessage(payload, "Palpite de Draft indisponível."));
+      state.draftData[division] = {
+        enabled: payload.enabled === true,
+        roundNumber: Math.trunc(Number(payload.roundNumber) || 0),
+        config: objectValue(payload.config),
+        snapshot: objectValue(payload.snapshot),
+        champions: Array.isArray(payload.champions) && payload.champions.length
+          ? payload.champions
+          : Array.from(window.FANTASY_RK_CHAMPIONS || []),
+        teamSeriesFormats: objectValue(payload.teamSeriesFormats)
+      };
+    } catch (error) {
+      console.warn(`Palpite de Draft ${division} indisponível.`, error);
+      state.draftData[division] = { enabled: false, champions: [], snapshot: {}, teamSeriesFormats: {} };
+    }
   }
 
   function buildMarket(division, divisionKey) {
@@ -467,6 +568,7 @@
   function renderMarketShell() {
     updateMarketStatus();
     renderMarketAdminControl();
+    renderFeedbackAccess();
     const open = isMarketOpen();
     if (el.popularStrip) {
       el.popularStrip.hidden = !open;
@@ -600,7 +702,10 @@
         const player = document.createElement("strong");
         player.textContent = `${item.name}${item.id === lineup.captainId ? " ★" : ""}`;
         const team = document.createElement("small");
-        team.textContent = `${item.teamTag} · RK$ ${formatMoney(item.price)}`;
+        const draft = role !== "TEAM" && draftPredictionEnabled(division)
+          ? ` · ${draftPredictionSummaryForDivision(lineup.draftPredictions[role], division)}`
+          : "";
+        team.textContent = `${item.teamTag} · RK$ ${formatMoney(item.price)}${draft}`;
         row.append(roleLabel, player, team);
         list.appendChild(row);
       }
@@ -631,7 +736,10 @@
     icon.alt = "";
     const label = document.createTextNode(title);
     const count = document.createElement("span");
-    count.textContent = `${items.length} ${items.length === 1 ? "opção" : "opções"}`;
+    const availableCount = items.filter((item) => item.selectable !== false).length;
+    count.textContent = availableCount === items.length
+      ? `${items.length} ${items.length === 1 ? "opção" : "opções"}`
+      : `${availableCount} disponíveis de ${items.length}`;
     heading.append(icon, label, count);
     const cards = document.createElement("div");
     cards.className = "market-cards";
@@ -639,7 +747,7 @@
       const selected = selectedIds.has(item.id);
       const reserveSelected = reserveId === item.id;
       const reserveError = !selected && !reserveSelected ? reserveValidationMessage(item, lineup) : "";
-      const reserveEligible = item.type === "player" && !selected && !reserveSelected && !reserveError;
+      const reserveEligible = item.selectable !== false && item.type === "player" && !selected && !reserveSelected && !reserveError;
       const roleComplete = el.roleFilter.value === "ALL" && Boolean(lineup.slots[item.role]) && !selected && !reserveEligible;
       return marketCard(item, selected, roleComplete, reserveSelected, reserveError, reserveEligible);
     }));
@@ -649,7 +757,8 @@
 
   function marketCard(item, selected, roleComplete, reserveSelected, reserveError = "", reserveEligible = false) {
     const card = document.createElement("article");
-    card.className = `player-card${selected ? " selected" : ""}${roleComplete ? " role-complete" : ""}${reserveSelected ? " reserve-selected" : ""}${reserveEligible ? " reserve-eligible" : ""}`;
+    const unavailable = item.selectable === false;
+    card.className = `player-card${selected ? " selected" : ""}${roleComplete ? " role-complete" : ""}${reserveSelected ? " reserve-selected" : ""}${reserveEligible ? " reserve-eligible" : ""}${unavailable ? " unavailable" : ""}`;
 
     const logo = createLogo(item);
     const meta = document.createElement("div");
@@ -660,7 +769,8 @@
     team.textContent = `${ROLE_LABELS[item.role]} · ${item.teamName || item.teamTag}`;
     const matchup = document.createElement("small");
     matchup.className = "matchup";
-    matchup.textContent = matchupLabel(item);
+    matchup.textContent = unavailable ? item.availabilityLabel : matchupLabel(item);
+    if (unavailable) matchup.classList.add("availability-status", item.availabilityStatus || "unavailable");
     const stats = document.createElement("div");
     stats.className = "player-stats";
     const recent = item.recentPoints && item.recentPoints.length
@@ -680,7 +790,9 @@
     const button = document.createElement("button");
     button.type = "button";
     button.className = "buy-button";
-    button.textContent = selected ? "Remover" : "Escalar";
+    button.textContent = selected ? "Remover" : (unavailable ? "Indisponível nesta rodada" : "Escalar");
+    button.disabled = unavailable && !selected;
+    button.title = unavailable ? item.availabilityLabel : "Escalar";
     button.addEventListener("click", () => selected ? removeItem(item.role) : addItem(item));
 
     const actions = document.createElement("div");
@@ -691,7 +803,7 @@
       reserveButton.type = "button";
       reserveButton.className = "reserve-button";
       reserveButton.textContent = reserveSelected ? "Remover reserva" : "Reserva";
-      reserveButton.disabled = (selected && !reserveSelected) || Boolean(reserveError);
+      reserveButton.disabled = unavailable || (selected && !reserveSelected) || Boolean(reserveError);
       reserveButton.title = selected && !reserveSelected ? "Remova dos titulares antes de usar como reserva." : (reserveError || "Escolher como reserva");
       reserveButton.addEventListener("click", () => reserveSelected ? removeReserve() : setReserve(item));
       actions.appendChild(reserveButton);
@@ -837,8 +949,14 @@
     const reserveError = lineup.reserve && selected === 6 ? reserveValidationMessage(lineup.reserve, lineup) : "";
     const closed = !isMarketOpen();
     const overBudget = lineupStarterPurchaseCost(lineup) > config.budget + 0.001;
-    el.saveLineup.disabled = closed || selected !== 6 || !lineup.captainId || overBudget || Boolean(reserveError);
+    const missingDraftPrediction = draftPredictionEnabled() && PLAYER_ROLES.some((role) => {
+      const item = lineup.slots[role];
+      const prediction = lineup.draftPredictions[role];
+      return Boolean(item) && (!prediction || prediction.playerAssetId !== item.id);
+    });
+    el.saveLineup.disabled = closed || selected !== 6 || !lineup.captainId || overBudget || Boolean(reserveError) || missingDraftPrediction;
     el.saveLineup.textContent = closed ? "Mercado fechado" : (lineup.saved ? "Atualizar escalação" : "Salvar escalação");
+    if (el.autoLineup) el.autoLineup.disabled = closed || !state.loaded;
     el.shareLineup.disabled = selected === 0;
     el.captainReminder.hidden = selected !== 6 || Boolean(lineup.captainId);
     if (!closed && selected === 6 && overBudget) {
@@ -879,11 +997,27 @@
     const detail = document.createElement("span");
     detail.textContent = item ? `${item.teamTag} · RK$ ${formatMoney(item.price)}` : "Vaga disponível";
     info.append(strong, detail);
+    if (item && role !== "TEAM" && draftPredictionEnabled()) {
+      const prediction = currentLineup().draftPredictions[role];
+      const summary = document.createElement("span");
+      summary.className = "lineup-draft-summary";
+      summary.textContent = draftPredictionSummary(prediction);
+      info.appendChild(summary);
+    }
     selector.append(badge, info);
 
     const actions = document.createElement("div");
     actions.className = "slot-actions";
     if (item && role !== "TEAM") {
+      if (draftPredictionEnabled() && isMarketOpen()) {
+        const editDraft = document.createElement("button");
+        editDraft.type = "button";
+        editDraft.className = "draft-edit-button";
+        editDraft.title = "Editar Palpite de Draft";
+        editDraft.textContent = "🎯";
+        editDraft.addEventListener("click", () => openDraftPredictionDialog(item, true));
+        actions.appendChild(editDraft);
+      }
       const captain = document.createElement("button");
       captain.type = "button";
       captain.className = `captain-button${currentLineup().captainId === item.id ? " active" : ""}`;
@@ -903,6 +1037,18 @@
 
     slot.append(selector, actions);
     return slot;
+  }
+
+  function draftPredictionSummary(prediction) {
+    return draftPredictionSummaryForDivision(prediction, state.division);
+  }
+
+  function draftPredictionSummaryForDivision(prediction, division) {
+    if (!prediction || prediction.mode === "NONE") return "🎯 Sem Palpite de Draft";
+    const champion = (state.draftData[division]?.champions || []).find((item) => item.id === prediction.championId);
+    const name = champion?.name || prediction.championId || "Campeão";
+    const map = prediction.mode === "PRECISE" && prediction.mapNumber ? ` · Mapa ${prediction.mapNumber}` : "";
+    return `🎯 ${name}${map} · ${prediction.mode === "PRECISE" ? "Preciso" : "Simples"}`;
   }
 
   function reserveSlot(item) {
@@ -954,6 +1100,10 @@
   }
 
   function addItem(item) {
+    if (item.selectable === false) {
+      setMessage(item.availabilityLabel || "Este ativo não pode ser escalado nesta rodada.", true);
+      return;
+    }
     const lineup = currentLineup();
     const replacing = lineup.slots[item.role];
     const nextCost = lineupStarterPurchaseCost(lineup) - (replacing ? itemPurchasePrice(replacing) : 0) + Number(item.price || 0);
@@ -969,7 +1119,21 @@
         return;
       }
     }
+    if (item.type === "player" && draftPredictionEnabled()) {
+      openDraftPredictionDialog(item);
+      return;
+    }
+    commitStarterItem(item, null);
+  }
+
+  function commitStarterItem(item, prediction) {
+    const lineup = currentLineup();
+    const replacing = lineup.slots[item.role];
     lineup.slots[item.role] = item;
+    if (item.type === "player") {
+      if (prediction) lineup.draftPredictions[item.role] = prediction;
+      else delete lineup.draftPredictions[item.role];
+    }
     if (lineup.reserve && lineup.reserve.id === item.id) lineup.reserve = null;
     if (replacing && lineup.captainId === replacing.id) lineup.captainId = "";
     const removedReserve = clearInvalidReserveIfComplete(lineup);
@@ -980,11 +1144,323 @@
     setRoleFilter(nextRole || "ALL", { scroll: false });
   }
 
+  function draftPredictionEnabled(division = state.division) {
+    const data = state.draftData[division];
+    return Boolean(data?.enabled && Number(data.roundNumber) >= 4);
+  }
+
+  function openDraftPredictionDialog(item, editing = false) {
+    const data = state.draftData[state.division];
+    if (!data?.snapshot?.positionPickRates) {
+      setMessage("O snapshot do Pick Rate ainda não está disponível. Atualize a página e tente novamente.", true);
+      return;
+    }
+    const saved = currentLineup().draftPredictions[item.role];
+    state.draftDialog = {
+      item,
+      mode: editing && saved?.mode ? saved.mode : "NONE",
+      championId: editing ? cleanText(saved?.championId) : "",
+      mapNumber: editing && saved?.mapNumber ? Number(saved.mapNumber) : null,
+      editing
+    };
+    el.draftChampionSearch.value = "";
+    el.draftChampionSort.value = "name";
+    el.draftPredictionFeedback.textContent = "";
+    const reviewStep = state.autoDraftReview.active
+      ? `Palpite ${state.autoDraftReview.completed + 1} de ${state.autoDraftReview.total} · `
+      : "";
+    el.draftPredictionPlayer.textContent = `${reviewStep}${item.name} · ${ROLE_LABELS[item.role]} · ${item.teamName || item.teamTag}`;
+    renderDraftDialog();
+    if (!el.draftPredictionDialog.open) {
+      el.draftPredictionDialog.showModal();
+      window.requestAnimationFrame(() => {
+        Array.from(el.draftModeOptions).find((button) => button.classList.contains("active"))?.focus();
+      });
+    }
+  }
+
+  function closeDraftPredictionDialog(options = {}) {
+    if (el.draftPredictionDialog?.open) el.draftPredictionDialog.close();
+    state.draftDialog = { item: null, mode: "NONE", championId: "", mapNumber: null, editing: false };
+    if (state.autoDraftReview.active && options.cancelReview !== false) {
+      state.autoDraftReview = { active: false, roles: [], completed: 0, total: 0 };
+      setMessage("Revisão guiada encerrada. Os palpites não revisados continuam em “Não dar palpite”, sem risco de penalidade.", false, true);
+    }
+  }
+
+  function setDraftMode(mode) {
+    const normalized = ["NONE", "SIMPLE", "PRECISE"].includes(mode) ? mode : "NONE";
+    state.draftDialog.mode = normalized;
+    el.draftPredictionFeedback.textContent = "";
+    if (normalized === "NONE") {
+      state.draftDialog.championId = "";
+      state.draftDialog.mapNumber = null;
+    } else if (normalized === "SIMPLE") {
+      state.draftDialog.mapNumber = null;
+    }
+    renderDraftDialog();
+  }
+
+  function renderDraftDialog() {
+    const mode = state.draftDialog.mode;
+    el.draftPredictionForm.dataset.mode = mode;
+    el.draftModeOptions.forEach((button) => {
+      const active = button.dataset.draftMode === mode;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-checked", String(active));
+    });
+    el.draftChampionSection.hidden = mode === "NONE";
+    el.draftMapSection.hidden = mode !== "PRECISE";
+    if (mode !== "NONE") renderDraftChampionGrid();
+    renderDraftMapOptions();
+    renderDraftPredictionPreview();
+    renderDraftFooterState();
+  }
+
+  function currentDraftChampions() {
+    const data = state.draftData[state.division] || {};
+    const item = state.draftDialog.item;
+    const role = item?.role;
+    return (data.champions || Array.from(window.FANTASY_RK_CHAMPIONS || [])).map((champion) => {
+      const pickRate = Math.max(0, Number(data.snapshot?.positionPickRates?.[role]?.[champion.id]) || 0);
+      const band = draftPickBand(pickRate);
+      const reward = draftReward(state.draftDialog.mode, draftSeriesFormat(item), band.multiplier);
+      return { ...champion, pickRate, multiplier: band.multiplier, rarity: band.label, possibleReward: reward.possibleReward };
+    });
+  }
+
+  function draftPickBand(pickRate) {
+    const bands = state.draftData[state.division]?.config?.pickRateMultipliers || [
+      { min: .25, multiplier: .7, label: "Meta absoluto" }, { min: .18, multiplier: .8, label: "Muito popular" },
+      { min: .12, multiplier: .9, label: "Popular" }, { min: .08, multiplier: 1, label: "Normal" },
+      { min: .05, multiplier: 1.15, label: "Diferencial" }, { min: .02, multiplier: 1.35, label: "Raro" },
+      { min: 0, multiplier: 1.5, label: "Muito raro" }
+    ];
+    return bands.find((band) => Number(pickRate) >= Number(band.min)) || bands[bands.length - 1];
+  }
+
+  function draftSeriesFormat(item) {
+    return state.draftData[state.division]?.teamSeriesFormats?.[item?.teamSlot] === "MD5" ? "MD5" : "MD3";
+  }
+
+  function draftReward(mode, format, multiplier) {
+    if (mode === "NONE") return { baseReward: 0, possibleReward: 0, missPenalty: 0 };
+    if (mode === "PRECISE") return { baseReward: 5, possibleReward: roundMoney(5 * multiplier), missPenalty: -2 };
+    const baseReward = format === "MD5" ? 1.5 : 2;
+    return { baseReward, possibleReward: roundMoney(baseReward * multiplier), missPenalty: -1 };
+  }
+
+  function renderDraftChampionGrid({ preserveScroll = false } = {}) {
+    if (!el.draftChampionGrid || state.draftDialog.mode === "NONE") return;
+    const previousScrollTop = preserveScroll ? el.draftChampionGrid.scrollTop : 0;
+    const restoreFocus = preserveScroll && el.draftChampionGrid.contains(document.activeElement);
+    const query = cleanText(el.draftChampionSearch.value).toLocaleLowerCase("pt-BR");
+    const sort = el.draftChampionSort.value;
+    const champions = currentDraftChampions()
+      .filter((champion) => !query || champion.name.toLocaleLowerCase("pt-BR").includes(query))
+      .sort((left, right) => {
+        if (sort === "pick-desc") return right.pickRate - left.pickRate || left.name.localeCompare(right.name, "pt-BR");
+        if (sort === "pick-asc") return left.pickRate - right.pickRate || left.name.localeCompare(right.name, "pt-BR");
+        if (sort === "reward-desc") return right.possibleReward - left.possibleReward || left.name.localeCompare(right.name, "pt-BR");
+        return left.name.localeCompare(right.name, "pt-BR");
+      });
+    if (el.draftChampionCount) el.draftChampionCount.textContent = `${champions.length} ${champions.length === 1 ? "campeão" : "campeões"}`;
+    if (!champions.length) {
+      const empty = document.createElement("p");
+      empty.className = "draft-champion-empty";
+      empty.textContent = "Nenhum campeão encontrado. Tente outro nome.";
+      el.draftChampionGrid.replaceChildren(empty);
+      return;
+    }
+    el.draftChampionGrid.replaceChildren(...champions.map((champion, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `draft-champion-card${state.draftDialog.championId === champion.id ? " active" : ""}`;
+      button.setAttribute("role", "option");
+      button.setAttribute("aria-selected", String(state.draftDialog.championId === champion.id));
+      button.setAttribute("aria-label", `${champion.name}, ${champion.rarity}, Pick Rate ${formatPercent(champion.pickRate)}, acerto vale ${formatMoney(champion.possibleReward)} pontos`);
+      button.tabIndex = state.draftDialog.championId === champion.id || (!state.draftDialog.championId && index === 0) ? 0 : -1;
+      button.title = champion.name;
+      const image = document.createElement("img");
+      image.src = champion.image;
+      image.alt = "";
+      image.loading = "lazy";
+      const name = document.createElement("strong");
+      name.textContent = champion.name;
+      const rarity = document.createElement("span");
+      rarity.textContent = champion.rarity;
+      const rate = document.createElement("small");
+      rate.textContent = `Pick Rate ${state.draftDialog.item.role}: ${formatPercent(champion.pickRate)} · ${formatMultiplier(champion.multiplier)}`;
+      const reward = document.createElement("b");
+      reward.textContent = `Acerto: +${formatMoney(champion.possibleReward)}`;
+      button.append(image, name, rarity, rate, reward);
+      button.addEventListener("click", () => {
+        state.draftDialog.championId = champion.id;
+        el.draftPredictionFeedback.textContent = "";
+        renderDraftChampionGrid({ preserveScroll: true });
+        renderDraftPredictionPreview();
+        renderDraftFooterState();
+      });
+      button.addEventListener("keydown", (event) => {
+        if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        const buttons = Array.from(el.draftChampionGrid.querySelectorAll(".draft-champion-card"));
+        const currentIndex = buttons.indexOf(event.currentTarget);
+        const columns = Math.max(1, getComputedStyle(el.draftChampionGrid).gridTemplateColumns.split(" ").length);
+        const offset = event.key === "ArrowLeft" ? -1 : event.key === "ArrowRight" ? 1 : event.key === "ArrowUp" ? -columns : event.key === "ArrowDown" ? columns : 0;
+        const nextIndex = event.key === "Home" ? 0 : event.key === "End" ? buttons.length - 1 : Math.min(buttons.length - 1, Math.max(0, currentIndex + offset));
+        buttons.forEach((entry, entryIndex) => { entry.tabIndex = entryIndex === nextIndex ? 0 : -1; });
+        buttons[nextIndex]?.focus();
+      });
+      return button;
+    }));
+    if (preserveScroll) {
+      el.draftChampionGrid.scrollTop = previousScrollTop;
+      if (restoreFocus) el.draftChampionGrid.querySelector('[aria-selected="true"]')?.focus({ preventScroll: true });
+    }
+  }
+
+  function renderDraftMapOptions() {
+    if (!el.draftMapOptions) return;
+    const format = draftSeriesFormat(state.draftDialog.item);
+    el.draftMapOptions.replaceChildren(...[1, 2, 3, 4, 5].map((mapNumber) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `draft-map-button${state.draftDialog.mapNumber === mapNumber ? " active" : ""}`;
+      button.disabled = format === "MD3" && mapNumber > 3;
+      button.setAttribute("role", "radio");
+      button.setAttribute("aria-checked", String(state.draftDialog.mapNumber === mapNumber));
+      button.textContent = `Mapa ${mapNumber}`;
+      if (button.disabled) {
+        const note = document.createElement("small");
+        note.textContent = "Indisponível em MD3";
+        button.appendChild(note);
+      }
+      button.addEventListener("click", () => {
+        state.draftDialog.mapNumber = mapNumber;
+        el.draftPredictionFeedback.textContent = "";
+        renderDraftMapOptions();
+        renderDraftPredictionPreview();
+        renderDraftFooterState();
+      });
+      button.addEventListener("keydown", (event) => {
+        if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
+        event.preventDefault();
+        const buttons = Array.from(el.draftMapOptions.querySelectorAll(".draft-map-button:not(:disabled)"));
+        const index = buttons.indexOf(event.currentTarget);
+        const direction = ["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : -1;
+        buttons[(index + direction + buttons.length) % buttons.length]?.focus();
+      });
+      return button;
+    }));
+  }
+
+  function draftPredictionFromDialog() {
+    const { item, mode, championId, mapNumber } = state.draftDialog;
+    if (mode === "NONE") return noDraftPrediction(item);
+    const champion = currentDraftChampions().find((entry) => entry.id === championId);
+    if (!champion) return null;
+    const reward = draftReward(mode, draftSeriesFormat(item), champion.multiplier);
+    return {
+      playerAssetId: item.id, role: item.role, mode, championId,
+      mapNumber: mode === "PRECISE" ? Number(mapNumber) || null : null,
+      pickRatePosition: item.role, pickRateAtLock: champion.pickRate,
+      multiplierAtLock: champion.multiplier, ...reward, status: "PENDING", resultScore: null
+    };
+  }
+
+  function renderDraftPredictionPreview() {
+    const prediction = draftPredictionFromDialog();
+    const item = state.draftDialog.item;
+    if (!prediction || !item) {
+      el.draftPredictionPreview.innerHTML = `<h3>Seu palpite</h3><p>Escolha um campeão para visualizar a recompensa.</p>`;
+      return;
+    }
+    const champion = currentDraftChampions().find((entry) => entry.id === prediction.championId);
+    const modeLabel = prediction.mode === "NONE" ? "Não dar palpite" : prediction.mode === "SIMPLE" ? "Palpite Simples" : "Palpite Preciso";
+    el.draftPredictionPreview.innerHTML = `
+      <h3>Seu palpite</h3>
+      <div class="draft-preview-grid">
+        <div><span>Jogador</span><strong>${escapeHtml(item.name)}</strong></div>
+        <div><span>Posição</span><strong>${escapeHtml(ROLE_LABELS[item.role])}</strong></div>
+        <div><span>Modo</span><strong>${modeLabel}</strong></div>
+        <div><span>Campeão</span><strong>${escapeHtml(champion?.name || "—")}</strong></div>
+        ${prediction.mode === "PRECISE" ? `<div><span>Mapa</span><strong>${prediction.mapNumber || "—"}</strong></div>` : ""}
+        ${prediction.mode !== "NONE" ? `<div><span>Pick Rate ${item.role}</span><strong>${formatPercent(prediction.pickRateAtLock)}</strong></div><div><span>Categoria</span><strong>${escapeHtml(champion?.rarity || "")}</strong></div><div><span>Multiplicador</span><strong>${formatMultiplier(prediction.multiplierAtLock)}</strong></div><div class="draft-preview-reward"><span>Se acertar</span><strong>+${formatMoney(prediction.possibleReward)} pts</strong></div><div><span>Se errar</span><strong>−${formatMoney(Math.abs(prediction.missPenalty))} pts</strong></div>` : `<div><span>Resultado</span><strong>0 ponto</strong></div>`}
+      </div>`;
+  }
+
+  function renderDraftFooterState() {
+    if (!el.confirmDraftPrediction || !el.draftFooterHint) return;
+    const prediction = draftPredictionFromDialog();
+    const editing = state.draftDialog.editing;
+    let valid = Boolean(prediction);
+    let hint = "Escolha como deseja participar do Palpite de Draft.";
+    if (state.draftDialog.mode === "NONE") {
+      hint = "Sem risco: esta escolha vale 0 ponto.";
+    } else if (!prediction) {
+      hint = state.draftDialog.mode === "PRECISE" ? "Escolha um campeão e depois o mapa exato." : "Escolha um campeão para continuar.";
+    } else if (prediction.mode === "PRECISE" && !prediction.mapNumber) {
+      valid = false;
+      hint = "Campeão escolhido. Agora selecione o mapa exato.";
+    } else {
+      hint = `Acerto: +${formatMoney(prediction.possibleReward)} pts · Erro: −${formatMoney(Math.abs(prediction.missPenalty))} pts`;
+    }
+    el.confirmDraftPrediction.disabled = !valid;
+    el.confirmDraftPrediction.textContent = state.autoDraftReview.active
+      ? (state.autoDraftReview.roles.length ? "Confirmar e ir ao próximo" : "Concluir revisão")
+      : (editing ? "Salvar alteração" : "Confirmar e escalar");
+    if (state.autoDraftReview.active) {
+      hint = `Palpite ${state.autoDraftReview.completed + 1} de ${state.autoDraftReview.total} · ${hint}`;
+    }
+    el.draftFooterHint.textContent = hint;
+  }
+
+  function confirmDraftPrediction(event) {
+    event.preventDefault();
+    const prediction = draftPredictionFromDialog();
+    if (!prediction) {
+      el.draftPredictionFeedback.textContent = "Escolha um campeão para continuar.";
+      return;
+    }
+    if (prediction.mode === "PRECISE" && !prediction.mapNumber) {
+      el.draftPredictionFeedback.textContent = "Escolha o mapa exato para continuar.";
+      return;
+    }
+    const { item, editing } = state.draftDialog;
+    if (editing) {
+      const guidedReview = state.autoDraftReview.active;
+      currentLineup().draftPredictions[item.role] = prediction;
+      currentLineup().saved = false;
+      persistLocalState();
+      closeDraftPredictionDialog({ cancelReview: !guidedReview });
+      renderLineup();
+      if (guidedReview) {
+        state.autoDraftReview.completed += 1;
+        window.setTimeout(openNextAutomaticDraftReview, 0);
+        return;
+      }
+      setMessage(`Palpite de Draft de ${item.name} atualizado.`, false, true);
+      return;
+    }
+    closeDraftPredictionDialog();
+    commitStarterItem(item, prediction);
+  }
+
+  function formatPercent(value) {
+    return `${(Math.max(0, Number(value) || 0) * 100).toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}%`;
+  }
+
+  function formatMultiplier(value) {
+    return `${Number(value || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}x`;
+  }
+
   function removeItem(role) {
     const lineup = currentLineup();
     const removed = lineup.slots[role];
     if (!removed) return;
     lineup.slots[role] = null;
+    delete lineup.draftPredictions[role];
     if (lineup.captainId === removed.id) lineup.captainId = "";
     lineup.saved = false;
     persistLocalState();
@@ -994,6 +1470,10 @@
   }
 
   function setReserve(item) {
+    if (item.selectable === false) {
+      setMessage(item.availabilityLabel || "Este jogador não pode ser reserva nesta rodada.", true);
+      return;
+    }
     const lineup = currentLineup();
     const selected = Object.values(lineup.slots).filter(Boolean).length;
     if (selected !== 6) {
@@ -1051,6 +1531,188 @@
     renderMarket();
   }
 
+  function autoStrategyLabel(strategy) {
+    return ({
+      balanced: "Time equilibrado",
+      average: "Maior média",
+      recent: "Melhor fase recente",
+      appreciation: "Maior valorização",
+      value: "Apostas de valor",
+      economic: "Orçamento econômico",
+      random: "Time surpresa"
+    })[strategy] || "Time equilibrado";
+  }
+
+  function openAutoLineupDialog() {
+    if (!isMarketOpen()) {
+      setMessage("A montagem automática só fica disponível enquanto o mercado estiver aberto.", true);
+      return;
+    }
+    if (!state.loaded || !state.market[state.division]?.length) {
+      setMessage("Aguarde o mercado terminar de carregar.", true);
+      return;
+    }
+    if (!window.FANTASY_AUTO_LINEUP?.buildAutomaticLineup) {
+      setMessage("O assistente de escalação não carregou. Atualize a página e tente novamente.", true);
+      return;
+    }
+    state.autoLineup = { strategy: "balanced", preview: null };
+    if (el.autoIncludeReserve) el.autoIncludeReserve.checked = true;
+    selectAutoLineupStrategy("balanced");
+    const hasDraft = draftPredictionEnabled();
+    el.applyAutoLineup.textContent = hasDraft ? "Aplicar sem palpites" : "Aplicar time";
+    el.applyAutoLineupWithDraft.hidden = !hasDraft;
+    if (!el.autoLineupDialog.open) {
+      el.autoLineupDialog.showModal();
+      window.requestAnimationFrame(() => el.autoStrategyOptions[0]?.focus());
+    }
+  }
+
+  function closeAutoLineupDialog() {
+    if (el.autoLineupDialog?.open) el.autoLineupDialog.close();
+    state.autoLineup.preview = null;
+  }
+
+  function selectAutoLineupStrategy(strategy) {
+    state.autoLineup.strategy = strategy || "balanced";
+    el.autoStrategyOptions.forEach((button) => {
+      const active = button.dataset.autoStrategy === state.autoLineup.strategy;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-checked", String(active));
+    });
+    calculateAutoLineupPreview();
+  }
+
+  function calculateAutoLineupPreview() {
+    const builder = window.FANTASY_AUTO_LINEUP?.buildAutomaticLineup;
+    if (!builder) return;
+    const result = builder({
+      market: state.market[state.division],
+      budget: config.budget,
+      maxPlayersPerTeam: config.maxPlayersPerRealTeam,
+      strategy: state.autoLineup.strategy,
+      includeReserve: Boolean(el.autoIncludeReserve?.checked)
+    });
+    state.autoLineup.preview = result.ok ? result : null;
+    renderAutoLineupPreview(result);
+  }
+
+  function renderAutoLineupPreview(result) {
+    const valid = Boolean(result?.ok);
+    el.applyAutoLineup.disabled = !valid;
+    el.applyAutoLineupWithDraft.disabled = !valid;
+    el.autoPreviewStrategy.textContent = autoStrategyLabel(state.autoLineup.strategy);
+    el.autoLineupFeedback.classList.toggle("error", !valid);
+    if (!valid) {
+      el.autoLineupPreview.innerHTML = `<p class="auto-preview-empty">${escapeHtml(result?.error || "Não foi possível gerar uma sugestão agora.")}</p>`;
+      el.autoLineupFeedback.textContent = "Revise o patrimônio ou tente outra estratégia.";
+      return;
+    }
+
+    const entries = ROLE_ORDER.map((role) => ({ role, item: result.slots[role], reserve: false }));
+    if (result.reserve) entries.push({ role: result.reserve.role, item: result.reserve, reserve: true });
+    el.autoLineupPreview.innerHTML = `
+      ${entries.map(({ role, item, reserve }) => {
+        const captain = !reserve && String(item.id) === String(result.captainId);
+        const source = item.type === "team" ? (itemArtworkPath(item) || item.logo) : item.logo;
+        return `<article class="auto-preview-player${captain ? " captain" : ""}${reserve ? " reserve" : ""}">
+          <div class="auto-preview-logo"><img src="${escapeHtml(source || ROLE_ASSETS[role])}" alt="" /></div>
+          <div class="auto-preview-info">
+            <strong>${escapeHtml(item.name)}${captain ? '<span class="auto-preview-tag">Capitão</span>' : ""}${reserve ? '<span class="auto-preview-tag">Reserva</span>' : ""}</strong>
+            <span>${reserve ? "RES · " : ""}${escapeHtml(ROLE_LABELS[role] || role)} · ${escapeHtml(item.teamTag || item.teamName)}</span>
+          </div>
+          <span class="auto-preview-price">RK$ ${formatMoney(item.price)}</span>
+        </article>`;
+      }).join("")}
+      ${result.reserve ? "" : `<p class="auto-preview-empty">${el.autoIncludeReserve?.checked ? "Nenhum reserva cabe no saldo desta sugestão." : "Reserva automática desativada nesta sugestão."}</p>`}
+      <div class="auto-preview-summary">
+        <div><span>Patrimônio</span><strong>RK$ ${formatMoney(config.budget)}</strong></div>
+        <div><span>Utilizado</span><strong>RK$ ${formatMoney(result.totalCost)}</strong></div>
+        <div><span>Disponível</span><strong>RK$ ${formatMoney(result.remaining)}</strong></div>
+      </div>`;
+    el.autoLineupFeedback.textContent = draftPredictionEnabled()
+      ? "Os cinco titulares começarão com “Não dar palpite” (0 ponto e sem penalidade). Você pode revisar cada um agora ou depois."
+      : "Nada será alterado até você aplicar esta sugestão.";
+  }
+
+  function noDraftPrediction(item) {
+    return {
+      playerAssetId: item.id,
+      role: item.role,
+      mode: "NONE",
+      championId: null,
+      mapNumber: null,
+      pickRatePosition: item.role,
+      pickRateAtLock: null,
+      multiplierAtLock: null,
+      baseReward: 0,
+      possibleReward: 0,
+      missPenalty: 0,
+      status: "NONE",
+      resultScore: 0
+    };
+  }
+
+  function applyAutomaticLineup(reviewDraft) {
+    const suggestion = state.autoLineup.preview;
+    if (!suggestion?.ok) return;
+    if (!isMarketOpen()) {
+      closeAutoLineupDialog();
+      setMessage("O mercado fechou antes da aplicação. Nenhuma alteração foi feita.", true);
+      renderMarketShell();
+      return;
+    }
+    const lineup = emptyLineup();
+    for (const role of ROLE_ORDER) {
+      const item = suggestion.slots[role];
+      lineup.slots[role] = { ...item, purchasePrice: roundMoney(item.price) };
+    }
+    lineup.reserve = suggestion.reserve ? { ...suggestion.reserve, purchasePrice: roundMoney(suggestion.reserve.price) } : null;
+    lineup.captainId = suggestion.captainId;
+    lineup.saved = false;
+    if (draftPredictionEnabled()) {
+      for (const role of PLAYER_ROLES) lineup.draftPredictions[role] = noDraftPrediction(lineup.slots[role]);
+    }
+    state.lineups[state.division] = lineup;
+    persistLocalState();
+    closeAutoLineupDialog();
+    setRoleFilter("ALL", { scroll: false });
+    renderLineup();
+    renderMarket();
+    if (reviewDraft && draftPredictionEnabled()) {
+      startAutomaticDraftReview();
+      return;
+    }
+    setMessage("Time automático aplicado. Confira as escolhas e clique em Salvar escalação para confirmar.", false, true);
+  }
+
+  function startAutomaticDraftReview() {
+    const data = state.draftData[state.division];
+    if (!data?.snapshot?.positionPickRates) {
+      setMessage("Time aplicado com todos os Palpites de Draft em “Não dar palpite”. A revisão guiada está indisponível agora.", false, true);
+      return;
+    }
+    state.autoDraftReview = { active: true, roles: [...PLAYER_ROLES], completed: 0, total: PLAYER_ROLES.length };
+    openNextAutomaticDraftReview();
+  }
+
+  function openNextAutomaticDraftReview() {
+    if (!state.autoDraftReview.active) return;
+    const role = state.autoDraftReview.roles.shift();
+    if (!role) {
+      state.autoDraftReview = { active: false, roles: [], completed: 0, total: 0 };
+      setMessage("Revisão dos cinco Palpites de Draft concluída. Confira o time e clique em Salvar escalação.", false, true);
+      renderLineup();
+      return;
+    }
+    const item = currentLineup().slots[role];
+    if (!item) {
+      openNextAutomaticDraftReview();
+      return;
+    }
+    openDraftPredictionDialog(item, true);
+  }
+
   function openTeamLimitDialog(item, sameTeamPlayers) {
     const teamName = cleanText(item.teamName) || cleanText(item.teamTag) || "essa equipe";
     el.teamLimitMessage.textContent = `Você não pode escalar ${item.name}, pois o limite de ${config.maxPlayersPerRealTeam} jogadores da equipe ${teamName} já foi atingido.`;
@@ -1096,13 +1758,22 @@
       setMessage(reserveError, true);
       return;
     }
+    if (draftPredictionEnabled() && PLAYER_ROLES.some((role) => {
+      const item = lineup.slots[role];
+      const prediction = lineup.draftPredictions[role];
+      return !item || !prediction || prediction.playerAssetId !== item.id;
+    })) {
+      setMessage("Confirme o Palpite de Draft de cada um dos cinco titulares, inclusive se escolher não dar palpite.", true);
+      return;
+    }
 
     const payload = {
       division: state.division,
       teamName: state.teamName,
       captainPlayerId: lineup.captainId,
       picks: items.map((item) => ({ id: item.id, role: item.role, price: item.price, teamSlot: item.teamSlot })),
-      reserve: lineup.reserve ? { id: lineup.reserve.id, role: lineup.reserve.role, price: 0, teamSlot: lineup.reserve.teamSlot } : null
+      reserve: lineup.reserve ? { id: lineup.reserve.id, role: lineup.reserve.role, price: 0, teamSlot: lineup.reserve.teamSlot } : null,
+      draftPredictions: PLAYER_ROLES.map((role) => lineup.draftPredictions[role]).filter(Boolean)
     };
 
     el.saveLineup.disabled = true;
@@ -1196,6 +1867,8 @@
     renderPatrimonyProfile();
     if (view === "market") {
       renderMarketShell();
+    } else {
+      renderFeedbackAccess();
     }
     if (view === "ranking") {
       updateRankingControls();
@@ -1276,9 +1949,10 @@
   function resetAuthenticatedState() {
     clearAuthToken();
     state.userName = "";
+    state.isAdmin = false;
     state.canControlMarket = false;
     state.marketControlBusy = false;
-    clearRoundTwoNotice();
+    state.feedbackBusy = false;
     state.teamName = "Meu Time RK";
     state.lineups = { elite: emptyLineup(), ascension: emptyLineup() };
     state.patrimony = { elite: null, ascension: null };
@@ -1304,7 +1978,78 @@
   function renderAccount() {
     el.accountLabel.textContent = state.userName || (config.backendMode === "cloud" ? "Não conectado" : "Modo demonstração");
     el.accountButton.textContent = state.userName ? "Sair" : "Entrar";
+    if (el.adminPanelLink) el.adminPanelLink.hidden = !state.isAdmin;
     renderMarketAdminControl();
+    renderFeedbackAccess();
+  }
+
+  function renderFeedbackAccess() {
+    const loggedInMarket = Boolean(state.userName && state.view === "market");
+    const marketKnown = config.backendMode !== "cloud" || Boolean(state.roundInfo[state.division]);
+    const open = marketKnown && isMarketOpen();
+    if (el.marketFeedbackButton) el.marketFeedbackButton.hidden = !loggedInMarket || !open;
+    if (el.feedbackHeaderButton) el.feedbackHeaderButton.hidden = !loggedInMarket || !marketKnown || open;
+  }
+
+  function openFeedbackDialog() {
+    if (!state.userName) return;
+    const round = state.roundInfo[state.division];
+    const roundNumber = Math.trunc(Number(round?.round_number || round?.roundNumber));
+    if (el.feedbackContext) {
+      el.feedbackContext.textContent = `${divisionLabel(state.division)}${roundNumber > 0 ? ` · Rodada ${roundNumber}` : ""} · enviado como ${state.userName}`;
+    }
+    setFeedbackStatus("");
+    el.feedbackDialog?.showModal();
+    window.setTimeout(() => el.feedbackCategory?.focus(), 0);
+  }
+
+  function closeFeedbackDialog() {
+    if (el.feedbackDialog?.open) el.feedbackDialog.close();
+  }
+
+  async function sendFeedback(event) {
+    event.preventDefault();
+    if (!state.userName || state.feedbackBusy || !el.feedbackForm?.reportValidity()) return;
+    const round = state.roundInfo[state.division];
+    const roundNumber = Math.trunc(Number(round?.round_number || round?.roundNumber));
+    const body = {
+      category: el.feedbackCategory.value,
+      subject: cleanText(el.feedbackSubject.value),
+      message: cleanText(el.feedbackMessage.value),
+      division: state.division,
+      roundNumber: roundNumber > 0 ? roundNumber : null,
+      pageView: "market"
+    };
+    state.feedbackBusy = true;
+    el.submitFeedback.disabled = true;
+    el.submitFeedback.textContent = "Enviando...";
+    setFeedbackStatus("Enviando sua mensagem...");
+    try {
+      const response = await apiFetch("/api/fantasy/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        cache: "no-store"
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(apiErrorMessage(payload, "Não foi possível enviar sua mensagem."));
+      const feedback = payload.feedback || payload.data?.feedback || {};
+      el.feedbackForm.reset();
+      setFeedbackStatus(`Mensagem enviada com sucesso. Protocolo ${feedback.protocol || "registrado"}. Ela já está disponível no painel da organização.`, false, true);
+    } catch (error) {
+      setFeedbackStatus(error.message || "Não foi possível enviar sua mensagem.", true);
+    } finally {
+      state.feedbackBusy = false;
+      el.submitFeedback.disabled = false;
+      el.submitFeedback.textContent = "Enviar mensagem";
+    }
+  }
+
+  function setFeedbackStatus(message, isError = false, isSuccess = false) {
+    if (!el.feedbackFormStatus) return;
+    el.feedbackFormStatus.textContent = message || "";
+    el.feedbackFormStatus.classList.toggle("error", Boolean(isError));
+    el.feedbackFormStatus.classList.toggle("success", Boolean(isSuccess));
   }
 
   function renderMarketAdminControl() {
@@ -1312,11 +2057,15 @@
     el.marketAdminControl.hidden = !state.canControlMarket;
     if (!state.canControlMarket) return;
     const open = isMarketOpen();
-    el.marketAdminToggle.disabled = state.marketControlBusy;
+    const anotherDivisionOpen = Object.entries(state.marketOpen).some(([division, value]) => division !== state.division && value);
+    const divisionDeadlineReached = !open && anotherDivisionOpen;
+    el.marketAdminToggle.disabled = state.marketControlBusy || divisionDeadlineReached;
     el.marketAdminToggle.classList.toggle("open-action", !open);
     el.marketAdminToggle.textContent = state.marketControlBusy
       ? (open ? "Fechando..." : "Abrindo...")
-      : (open ? "Fechar mercado" : "Abrir mercado");
+      : divisionDeadlineReached
+        ? `${divisionLabel(state.division)} encerrada`
+        : (open ? "Fechar mercado" : "Abrir mercado");
   }
 
   async function toggleMarketFromFantasy() {
@@ -1349,6 +2098,7 @@
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(apiErrorMessage(payload, "Não foi possível alterar o mercado."));
       await Promise.all([loadCloudConfig("elite"), loadCloudConfig("ascension")]);
+      if (!open) await Promise.all([loadCloudDraftData("elite"), loadCloudDraftData("ascension")]);
       await Promise.all([loadCloudPopular("elite"), loadCloudPopular("ascension")]);
       renderLineup();
       renderMarketShell();
@@ -1434,92 +2184,14 @@
       state.patrimony.elite = profiles.elite || null;
       state.patrimony.ascension = profiles.ascension || null;
       activatePatrimonyForDivision(state.division);
+      state.isAdmin = Boolean(response.ok && payload.authenticated && payload.canAccessAdminPanel);
       state.canControlMarket = Boolean(response.ok && payload.authenticated && payload.canControlMarket);
       if (!state.userName && authToken) clearAuthToken();
     } catch (error) {
+      state.isAdmin = false;
       state.canControlMarket = false;
       console.warn("Não foi possível consultar a sessão do Fantasy RK.", error);
     }
-  }
-
-  async function loadRoundTwoNotice() {
-    if (!state.userName || config.backendMode !== "cloud") {
-      clearRoundTwoNotice();
-      return;
-    }
-    try {
-      const response = await apiFetch("/api/fantasy/notices/round-2-postponement", { cache: "no-store" });
-      const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(apiErrorMessage(payload, "Aviso da Rodada 2 indisponível."));
-      const eligible = Boolean(payload.eligible ?? payload.data?.eligible);
-      const notice = payload.notice || payload.data?.notice || null;
-      if (!eligible || !notice) {
-        clearRoundTwoNotice();
-        return;
-      }
-      state.roundTwoNotice = {
-        ...notice,
-        acknowledged: Boolean(payload.acknowledged ?? payload.data?.acknowledged)
-      };
-      renderRoundTwoNotice();
-      const showPopup = Boolean(payload.showPopup ?? payload.data?.showPopup);
-      if (showPopup && el.roundTwoNoticeDialog && !el.roundTwoNoticeDialog.open) {
-        el.roundTwoNoticeDialog.showModal();
-      }
-    } catch (error) {
-      clearRoundTwoNotice();
-      console.warn("Não foi possível carregar o aviso da Rodada 2.", error);
-    }
-  }
-
-  function renderRoundTwoNotice() {
-    const notice = state.roundTwoNotice;
-    if (el.roundTwoNotice) el.roundTwoNotice.hidden = !notice || !state.userName;
-    if (!notice || !state.userName) return;
-    if (el.roundTwoNoticeTitle) el.roundTwoNoticeTitle.textContent = notice.title;
-    if (el.roundTwoNoticeMessage) el.roundTwoNoticeMessage.textContent = notice.message;
-    if (el.roundTwoNoticeDialogTitle) el.roundTwoNoticeDialogTitle.textContent = notice.title;
-    if (el.roundTwoNoticeDialogMessage) el.roundTwoNoticeDialogMessage.textContent = notice.message;
-  }
-
-  async function acknowledgeRoundTwoNotice() {
-    if (!state.userName || !state.roundTwoNotice || state.roundTwoNoticeBusy) return;
-    state.roundTwoNoticeBusy = true;
-    if (el.acknowledgeRoundTwoNotice) {
-      el.acknowledgeRoundTwoNotice.disabled = true;
-      el.acknowledgeRoundTwoNotice.textContent = "Salvando...";
-    }
-    if (el.roundTwoNoticeFeedback) el.roundTwoNoticeFeedback.textContent = "";
-    try {
-      const response = await apiFetch("/api/fantasy/notices/round-2-postponement/ack", {
-        method: "POST",
-        cache: "no-store"
-      });
-      const payload = await response.json().catch(() => ({}));
-      if (!response.ok || !(payload.acknowledged ?? payload.data?.acknowledged)) {
-        throw new Error(apiErrorMessage(payload, "Não foi possível confirmar o aviso."));
-      }
-      state.roundTwoNotice.acknowledged = true;
-      if (el.roundTwoNoticeDialog?.open) el.roundTwoNoticeDialog.close();
-    } catch (error) {
-      if (el.roundTwoNoticeFeedback) {
-        el.roundTwoNoticeFeedback.textContent = error.message || "Não foi possível confirmar agora. Tente novamente.";
-      }
-    } finally {
-      state.roundTwoNoticeBusy = false;
-      if (el.acknowledgeRoundTwoNotice) {
-        el.acknowledgeRoundTwoNotice.disabled = false;
-        el.acknowledgeRoundTwoNotice.textContent = "Entendido";
-      }
-    }
-  }
-
-  function clearRoundTwoNotice() {
-    state.roundTwoNotice = null;
-    state.roundTwoNoticeBusy = false;
-    if (el.roundTwoNotice) el.roundTwoNotice.hidden = true;
-    if (el.roundTwoNoticeFeedback) el.roundTwoNoticeFeedback.textContent = "";
-    if (el.roundTwoNoticeDialog?.open) el.roundTwoNoticeDialog.close();
   }
 
   async function loadCloudPatrimonyHistory() {
@@ -1600,6 +2272,26 @@
       if (payload.lineup.reserve && payload.lineup.reserve.id) {
         const reserveItem = state.market[division].find((item) => item.id === String(payload.lineup.reserve.id));
         if (reserveItem && reserveItem.type === "player") lineup.reserve = savedMarketItem(reserveItem, payload.lineup.reserve, division);
+      }
+      for (const prediction of payload.lineup.draftPredictions || []) {
+        const role = normalizeRole(prediction.role);
+        const player = lineup.slots[role];
+        if (!player || player.id !== String(prediction.playerAssetId)) continue;
+        lineup.draftPredictions[role] = {
+          playerAssetId: String(prediction.playerAssetId),
+          role,
+          mode: cleanText(prediction.mode).toUpperCase() || "NONE",
+          championId: prediction.championId || null,
+          mapNumber: prediction.mapNumber == null ? null : Number(prediction.mapNumber),
+          pickRatePosition: prediction.pickRatePosition || role,
+          pickRateAtLock: prediction.pickRateAtLock == null ? null : Number(prediction.pickRateAtLock),
+          multiplierAtLock: prediction.multiplierAtLock == null ? null : Number(prediction.multiplierAtLock),
+          baseReward: Number(prediction.baseReward) || 0,
+          possibleReward: Number(prediction.possibleReward) || 0,
+          missPenalty: Number(prediction.missPenalty) || 0,
+          status: prediction.status || "NONE",
+          resultScore: prediction.resultScore == null ? null : Number(prediction.resultScore)
+        };
       }
       lineup.captainId = cleanText(payload.lineup.captain_asset_id || payload.lineup.captainId);
       lineup.saved = true;
@@ -1905,6 +2597,10 @@
     }
     const reserve = value && value.reserve;
     if (reserve && reserve.id && reserve.type === "player") lineup.reserve = reserve;
+    for (const role of PLAYER_ROLES) {
+      const prediction = value?.draftPredictions?.[role];
+      if (prediction && prediction.playerAssetId) lineup.draftPredictions[role] = prediction;
+    }
     lineup.captainId = cleanText(value && value.captainId);
     lineup.saved = Boolean(value && value.saved);
     return lineup;
@@ -1924,7 +2620,7 @@
   }
 
   function emptyLineup() {
-    return { slots: Object.fromEntries(ROLE_ORDER.map((role) => [role, null])), reserve: null, captainId: "", saved: false };
+    return { slots: Object.fromEntries(ROLE_ORDER.map((role) => [role, null])), reserve: null, draftPredictions: {}, captainId: "", saved: false };
   }
 
   function currentLineup() {
@@ -1972,6 +2668,10 @@
   }
 
   function closedMarketDetail(round) {
+    const locksAt = Date.parse(round?.locks_at);
+    if (Number.isFinite(locksAt) && locksAt <= Date.now()) {
+      return `O prazo da ${divisionLabel(state.division)} terminou em ${new Date(locksAt).toLocaleString("pt-BR")}.`;
+    }
     if (state.marketAccessMode[state.division] === "admin") {
       return "Mercado temporariamente disponível apenas para a administração.";
     }
@@ -2438,10 +3138,11 @@
   }
 
   function sortMarket(sort) {
-    if (sort === "price-asc") return (a, b) => a.price - b.price || a.name.localeCompare(b.name, "pt-BR");
-    if (sort === "name") return (a, b) => a.name.localeCompare(b.name, "pt-BR");
-    if (sort === "avg-desc") return (a, b) => b.average - a.average || b.price - a.price;
-    return (a, b) => b.price - a.price || a.name.localeCompare(b.name, "pt-BR");
+    const availability = (a, b) => Number(a.selectable === false) - Number(b.selectable === false);
+    if (sort === "price-asc") return (a, b) => availability(a, b) || a.price - b.price || a.name.localeCompare(b.name, "pt-BR");
+    if (sort === "name") return (a, b) => availability(a, b) || a.name.localeCompare(b.name, "pt-BR");
+    if (sort === "avg-desc") return (a, b) => availability(a, b) || b.average - a.average || b.price - a.price;
+    return (a, b) => availability(a, b) || b.price - a.price || a.name.localeCompare(b.name, "pt-BR");
   }
 
   function normalizeRole(value) {

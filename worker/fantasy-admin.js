@@ -1,6 +1,8 @@
 import formulaV2 from "../src/fantasy/formula-v2.cjs";
 import valuationV3 from "../src/fantasy/valuation-v3.cjs";
 import patrimonyV2 from "../src/fantasy/patrimony-v2.cjs";
+import draftPrediction from "../src/fantasy/draft-prediction.cjs";
+import championCatalog from "../src/fantasy/champion-catalog.cjs";
 
 const ADMIN_COOKIE = "fantasy_admin_session";
 const ADMIN_SESSION_HOURS = 8;
@@ -39,12 +41,20 @@ const {
   PATRIMONY_FORMULA_ID,
   calculateParticipantPatrimony
 } = patrimonyV2;
+const {
+  DRAFT_PREDICTION_CONFIG,
+  buildDraftPickRateSnapshot,
+  calculateDraftPredictionResult,
+  calculateFinalPlayerFantasyScore
+} = draftPrediction;
+const { CHAMPION_CATALOG } = championCatalog;
 const BACKUP_TABLES = Object.freeze([
   "d1_migrations",
   "fantasy_users",
   "fantasy_sessions",
   "fantasy_login_codes",
   "fantasy_user_notices",
+  "fantasy_feedback",
   "fantasy_rounds",
   "fantasy_market",
   "fantasy_market_state",
@@ -56,6 +66,8 @@ const BACKUP_TABLES = Object.freeze([
   "fantasy_lineups",
   "fantasy_lineup_picks",
   "fantasy_lineup_reserves",
+  "fantasy_draft_pick_rate_snapshots",
+  "fantasy_lineup_draft_predictions",
   "fantasy_asset_round_scores",
   "fantasy_team_round_scores",
   "fantasy_round_matches",
@@ -88,9 +100,12 @@ const RESTORE_TABLES = Object.freeze([
   "fantasy_sessions",
   "fantasy_login_codes",
   "fantasy_user_notices",
+  "fantasy_feedback",
   "fantasy_lineups",
   "fantasy_lineup_picks",
   "fantasy_lineup_reserves",
+  "fantasy_draft_pick_rate_snapshots",
+  "fantasy_lineup_draft_predictions",
   "fantasy_asset_round_scores",
   "fantasy_team_round_scores",
   "fantasy_round_matches",
@@ -111,7 +126,7 @@ const RESTORE_TABLES = Object.freeze([
   "fantasy_error_log"
 ]);
 
-export async function handleAdminRequest(request, env, requestId) {
+export async function handleAdminRequest(request, env, requestId, discordAuth = {}) {
   const url = new URL(request.url);
   const path = url.pathname;
 
@@ -119,12 +134,15 @@ export async function handleAdminRequest(request, env, requestId) {
     return adminLogin(request, env, requestId);
   }
   if (path === "/api/fantasy/admin/auth/session" && request.method === "GET") {
-    return adminSession(request, env);
+    return adminSession(request, env, discordAuth, requestId);
   }
   if (path === "/api/fantasy/admin/auth/logout" && request.method === "POST") {
     return adminLogout(request, env, requestId);
   }
 
+  if (!passwordLoginEnabled(env) && !discordAuth.authorized) {
+    return discordAdminFailure(discordAuth.user);
+  }
   const auth = await requireAdmin(request, env, request.method !== "GET");
   if (auth.response) return auth.response;
 
@@ -132,6 +150,7 @@ export async function handleAdminRequest(request, env, requestId) {
     ["GET", "/api/fantasy/admin/overview", adminOverview],
     ["GET", "/api/fantasy/admin/market/status", adminMarketStatus],
     ["POST", "/api/fantasy/admin/market/open", adminOpenMarket],
+    ["POST", "/api/fantasy/admin/market/schedule", adminScheduleMarket],
     ["POST", "/api/fantasy/admin/market/close", adminCloseMarket],
     ["GET", "/api/fantasy/admin/market/history", adminMarketHistory],
     ["POST", "/api/fantasy/admin/sync/preview", adminSyncPreview],
@@ -154,6 +173,7 @@ export async function handleAdminRequest(request, env, requestId) {
     ["GET", "/api/fantasy/admin/players", adminListPlayers],
     ["GET", "/api/fantasy/admin/teams", adminListTeams],
     ["GET", "/api/fantasy/admin/users", adminListUsers],
+    ["GET", "/api/fantasy/admin/feedback", adminListFeedback],
     ["GET", "/api/fantasy/admin/lineups", adminListLineups],
     ["GET", "/api/fantasy/admin/matches/all", adminListMatches],
     ["GET", "/api/fantasy/admin/rounds", adminListRounds],
@@ -180,6 +200,9 @@ export async function handleAdminRequest(request, env, requestId) {
   }
   if (request.method === "PUT" && path.startsWith("/api/fantasy/admin/users/")) {
     return adminUpdateUser(request, env, requestId, auth);
+  }
+  if (request.method === "PUT" && path.startsWith("/api/fantasy/admin/feedback/")) {
+    return adminUpdateFeedback(request, env, requestId, auth);
   }
   if (request.method === "PUT" && path.startsWith("/api/fantasy/admin/matches/")) {
     return adminUpdateMatch(request, env, requestId, auth);
@@ -269,6 +292,49 @@ export async function ensureAutomaticMarketClose(env, now = new Date(), source =
   const state = await getGlobalMarketState(env);
   if (!state || state.status !== "open") return state;
 
+  if (String(state.lock_match_id || "").startsWith("manual-schedule:")) {
+    const rounds = await dbAll(env, `
+      SELECT id, division, round_number, locks_at, status
+      FROM fantasy_rounds
+      WHERE round_number = ? AND division IN ('elite', 'ascension')
+      ORDER BY division
+    `, [state.lock_round_number]);
+    const nowMs = now.getTime();
+    const expired = rounds.filter((round) =>
+      round.status === "open" && Number.isFinite(Date.parse(round.locks_at)) && nowMs >= Date.parse(round.locks_at)
+    );
+    if (expired.length) {
+      await env.DB.batch(expired.map((round) => env.DB.prepare(`
+        UPDATE fantasy_rounds SET status = 'locked'
+        WHERE id = ? AND status = 'open'
+      `).bind(round.id)));
+      for (const round of expired) {
+        await audit(env, {
+          actor: "system",
+          action: "market.close.division",
+          targetType: "global_market",
+          targetId: GLOBAL_MARKET_ID,
+          after: { division: round.division, roundNumber: round.round_number, closesAt: round.locks_at, source }
+        });
+      }
+    }
+    const remaining = rounds.filter((round) =>
+      round.status === "open" && !expired.some((expiredRound) => expiredRound.id === round.id) &&
+      Number.isFinite(Date.parse(round.locks_at)) && nowMs < Date.parse(round.locks_at)
+    );
+    if (!remaining.length) {
+      await closeMarketWithVersion(
+        env,
+        state.version,
+        "system",
+        "Fechamento automático: os prazos das duas divisões foram encerrados.",
+        source,
+        { preserveRoundLocks: true }
+      );
+    }
+    return getGlobalMarketState(env);
+  }
+
   const window = await resolveMarketWindow(env, state.lock_round_number);
   const nowMs = now.getTime();
   const mustClose = !window.canOpen || nowMs >= Date.parse(window.closesAt);
@@ -303,6 +369,13 @@ export async function ensureAutomaticMarketClose(env, now = new Date(), source =
 
 async function adminLogin(request, env, requestId) {
   requireSameOrigin(request);
+  if (!passwordLoginEnabled(env)) {
+    return failure(
+      "DISCORD_LOGIN_REQUIRED",
+      "O painel administrativo aceita somente a conta Discord autorizada.",
+      403
+    );
+  }
   requireEnv(env, ["ADMIN_USERNAME", "ADMIN_PASSWORD_HASH"]);
   const body = await readJson(request);
   const username = clean(body.username);
@@ -366,30 +439,58 @@ async function adminLogin(request, env, requestId) {
   }
 
   await env.DB.prepare("DELETE FROM fantasy_admin_login_attempts WHERE ip_hash = ?").bind(ipHash).run();
-  await env.DB.prepare("DELETE FROM fantasy_admin_sessions WHERE expires_at <= ?").bind(nowIso).run();
-  const token = randomToken(48);
-  const csrf = randomToken(32);
-  const expiresAt = new Date(now.getTime() + ADMIN_SESSION_HOURS * 60 * 60 * 1000).toISOString();
-  await env.DB.prepare(`
-    INSERT INTO fantasy_admin_sessions
-      (token_hash, username, csrf_token_hash, expires_at)
-    VALUES (?, ?, ?, ?)
-  `).bind(await sha256(token), username, await sha256(csrf), expiresAt).run();
+  const session = await createAdminSession(env, username, now);
   await audit(env, {
     actor: username,
     action: "admin.login.success",
     targetType: "admin_session",
-    targetId: await sha256(token),
+    targetId: session.tokenHash,
+    metadata: { authMethod: "password" },
     requestId
   });
-  const response = success({ authenticated: true, username, csrfToken: csrf, expiresAt });
-  response.headers.append("Set-Cookie", adminCookie(token, ADMIN_SESSION_HOURS * 3600));
+  const response = success({
+    authenticated: true,
+    username,
+    csrfToken: session.csrf,
+    expiresAt: session.expiresAt,
+    authMethod: "password"
+  });
+  response.headers.append("Set-Cookie", adminCookie(session.token, ADMIN_SESSION_HOURS * 3600));
   return response;
 }
 
-async function adminSession(request, env) {
+async function adminSession(request, env, discordAuth = {}, requestId = null) {
   const auth = await requireAdmin(request, env, false);
-  if (auth.response) return auth.response;
+  if (auth.response) {
+    if (!discordAuth.authorized) {
+      return passwordLoginEnabled(env) ? auth.response : discordAdminFailure(discordAuth.user);
+    }
+    const username = clean(discordAuth.user?.username) || `Discord ${clean(discordAuth.user?.discordId)}`;
+    const session = await createAdminSession(env, username);
+    await audit(env, {
+      actor: username,
+      action: "admin.login.success",
+      targetType: "admin_session",
+      targetId: session.tokenHash,
+      metadata: {
+        authMethod: "discord",
+        discordId: clean(discordAuth.user?.discordId)
+      },
+      requestId
+    });
+    const response = success({
+      authenticated: true,
+      username,
+      csrfToken: session.csrf,
+      expiresAt: session.expiresAt,
+      authMethod: "discord"
+    });
+    response.headers.append("Set-Cookie", adminCookie(session.token, ADMIN_SESSION_HOURS * 3600));
+    return response;
+  }
+  if (!passwordLoginEnabled(env) && !discordAuth.authorized) {
+    return discordAdminFailure(discordAuth.user);
+  }
   const csrf = randomToken(32);
   await env.DB.prepare(`
     UPDATE fantasy_admin_sessions
@@ -400,8 +501,34 @@ async function adminSession(request, env) {
     authenticated: true,
     username: auth.username,
     csrfToken: csrf,
-    expiresAt: auth.expiresAt
+    expiresAt: auth.expiresAt,
+    authMethod: discordAuth.authorized ? "discord" : "password"
   });
+}
+
+async function createAdminSession(env, username, now = new Date()) {
+  const nowIso = now.toISOString();
+  await env.DB.prepare("DELETE FROM fantasy_admin_sessions WHERE expires_at <= ?").bind(nowIso).run();
+  const token = randomToken(48);
+  const csrf = randomToken(32);
+  const tokenHash = await sha256(token);
+  const expiresAt = new Date(now.getTime() + ADMIN_SESSION_HOURS * 60 * 60 * 1000).toISOString();
+  await env.DB.prepare(`
+    INSERT INTO fantasy_admin_sessions
+      (token_hash, username, csrf_token_hash, expires_at)
+    VALUES (?, ?, ?, ?)
+  `).bind(tokenHash, clean(username), await sha256(csrf), expiresAt).run();
+  return { token, tokenHash, csrf, expiresAt };
+}
+
+function passwordLoginEnabled(env) {
+  return /^(1|true|yes|on)$/i.test(clean(env.ADMIN_PASSWORD_LOGIN_ENABLED));
+}
+
+function discordAdminFailure(user) {
+  return user
+    ? failure("DISCORD_ADMIN_FORBIDDEN", "Esta conta Discord não está autorizada a acessar o painel.", 403)
+    : failure("DISCORD_LOGIN_REQUIRED", "Entre com a conta Discord administrativa para acessar o painel.", 401);
 }
 
 async function adminLogout(request, env, requestId) {
@@ -496,7 +623,101 @@ async function resolveMarketWindow(env, roundNumber) {
   };
 }
 
-async function closeMarketWithVersion(env, version, actor, reason, source) {
+async function ensureDraftSnapshotsForRound(env, roundNumber) {
+  const targetRound = Math.trunc(Number(roundNumber));
+  if (targetRound < DRAFT_PREDICTION_CONFIG.enabledFromRound) {
+    return { enabled: false, roundNumber: targetRound, snapshots: [] };
+  }
+  const rounds = await dbAll(env, `
+    SELECT id, division FROM fantasy_rounds
+    WHERE round_number = ? AND division IN ('elite', 'ascension')
+    ORDER BY division
+  `, [targetRound]);
+  if (rounds.length !== DIVISIONS.length) {
+    throw new HttpError(409, `A Rodada ${targetRound} precisa existir nas duas divisões antes de gerar o Pick Rate.`);
+  }
+  const existing = await dbAll(env, `
+    SELECT round_id AS roundId, division, generated_from_rounds_json AS generatedFromRoundsJson,
+           generated_at AS generatedAt, source_hash AS sourceHash, totals_json AS totalsJson,
+           unknown_champions_json AS unknownChampionsJson
+    FROM fantasy_draft_pick_rate_snapshots
+    WHERE round_id IN (${rounds.map(() => "?").join(",")})
+    ORDER BY division
+  `, rounds.map((round) => round.id));
+  if (existing.length === rounds.length) {
+    return {
+      enabled: true,
+      roundNumber: targetRound,
+      frozen: true,
+      snapshots: existing.map(decodeJsonFields)
+    };
+  }
+
+  const source = await loadOfficialSource(env);
+  const statements = [];
+  const created = [];
+  for (const round of rounds) {
+    if (existing.some((row) => row.roundId === round.id)) continue;
+    const snapshot = buildDraftPickRateSnapshot({
+      source,
+      division: round.division,
+      roundNumber: targetRound,
+      catalog: CHAMPION_CATALOG
+    });
+    const expectedRounds = Array.from({ length: targetRound - 1 }, (_, index) => index + 1);
+    if (expectedRounds.some((number) => !snapshot.generatedFromRounds.includes(number))) {
+      throw new HttpError(409, `A base oficial de ${round.division} não contém picks de todas as rodadas anteriores.`);
+    }
+    if (PLAYER_ROLES.some((role) => Number(snapshot.totals[role]) <= 0)) {
+      throw new HttpError(409, `A base oficial de ${round.division} não contém picks suficientes por posição.`);
+    }
+    const sourceHash = await hashObject({
+      division: round.division,
+      roundNumber: targetRound,
+      generatedFromRounds: snapshot.generatedFromRounds,
+      totals: snapshot.totals,
+      counts: snapshot.counts
+    });
+    statements.push(env.DB.prepare(`
+      INSERT INTO fantasy_draft_pick_rate_snapshots
+        (round_id, division, generated_from_rounds_json, generated_at, source_hash,
+         totals_json, counts_json, position_pick_rates_json, unknown_champions_json)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(round_id) DO NOTHING
+    `).bind(
+      round.id,
+      round.division,
+      JSON.stringify(snapshot.generatedFromRounds),
+      snapshot.generatedAt,
+      sourceHash,
+      JSON.stringify(snapshot.totals),
+      JSON.stringify(snapshot.counts),
+      JSON.stringify(snapshot.positionPickRates),
+      JSON.stringify(snapshot.unknownChampions)
+    ));
+    created.push({
+      roundId: round.id,
+      division: round.division,
+      generatedFromRounds: snapshot.generatedFromRounds,
+      generatedAt: snapshot.generatedAt,
+      sourceHash,
+      totals: snapshot.totals,
+      unknownChampions: snapshot.unknownChampions
+    });
+  }
+  if (statements.length) await env.DB.batch(statements);
+  return {
+    enabled: true,
+    roundNumber: targetRound,
+    frozen: true,
+    snapshots: [
+      ...existing.map(decodeJsonFields),
+      ...created
+    ].sort((left, right) => left.division.localeCompare(right.division))
+  };
+}
+
+async function closeMarketWithVersion(env, version, actor, reason, source, options = {}) {
   const now = new Date().toISOString();
   const result = await env.DB.prepare(`
     UPDATE fantasy_market_state
@@ -506,9 +727,11 @@ async function closeMarketWithVersion(env, version, actor, reason, source) {
   `).bind(now, actor, reason, GLOBAL_MARKET_ID, version).run();
   if (Number(result?.meta?.changes || 0) > 0) {
     await env.DB.prepare(`
-      UPDATE fantasy_rounds SET status = 'locked', locks_at = ?
+      UPDATE fantasy_rounds
+      SET status = 'locked', locks_at = CASE WHEN ? = 1 THEN locks_at ELSE ? END
       WHERE round_number = ? AND division IN ('elite', 'ascension')
     `).bind(
+      options.preserveRoundLocks ? 1 : 0,
       now,
       (await getGlobalMarketState(env))?.lock_round_number
     ).run();
@@ -525,6 +748,7 @@ async function closeMarketWithVersion(env, version, actor, reason, source) {
 async function adminOpenMarket(request, env, requestId, auth) {
   const body = await readJson(request);
   const roundNumber = Math.trunc(Number(body.roundNumber));
+  const accessMode = clean(body.accessMode) === "admin" ? "admin" : "public";
   const before = await getGlobalMarketState(env);
   if (before?.status === "open") {
     return failure(
@@ -548,15 +772,17 @@ async function adminOpenMarket(request, env, requestId, auth) {
       { closesAt: window.closesAt, match: window.match }
     );
   }
+  const draft = await ensureDraftSnapshotsForRound(env, roundNumber);
   await env.DB.batch([
     env.DB.prepare(`
       UPDATE fantasy_market_state
-      SET status = 'open', access_mode = 'public', opened_at = ?, closes_at = ?, closed_at = NULL,
+      SET status = 'open', access_mode = ?, opened_at = ?, closes_at = ?, closed_at = NULL,
           opened_by = ?, closed_by = NULL, close_reason = NULL,
           lock_match_id = ?, lock_division = ?, lock_round_number = ?,
           version = version + 1, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `).bind(
+      accessMode,
       new Date().toISOString(),
       window.closesAt,
       auth.username,
@@ -581,7 +807,7 @@ async function adminOpenMarket(request, env, requestId, auth) {
     after,
     requestId
   });
-  return success({ market: publicMarketState(after), schedule: window });
+  return success({ market: publicMarketState(after), schedule: window, draft });
 }
 
 async function adminCloseMarket(request, env, requestId, auth) {
@@ -605,12 +831,78 @@ async function adminCloseMarket(request, env, requestId, auth) {
   return success({ market: publicMarketState(after) });
 }
 
+async function adminScheduleMarket(request, env, requestId, auth) {
+  const body = await readJson(request);
+  const state = await getGlobalMarketState(env);
+  const roundNumber = Math.trunc(Number(body.roundNumber || state?.lock_round_number));
+  const requested = body.divisionClosesAt && typeof body.divisionClosesAt === "object"
+    ? body.divisionClosesAt
+    : {};
+  if (!state || state.status !== "open") {
+    return failure("MARKET_NOT_OPEN", "Abra o mercado antes de definir os horários por divisão.", 409);
+  }
+  if (!Number.isInteger(roundNumber) || roundNumber < 1 || roundNumber !== Number(state.lock_round_number)) {
+    return failure("ROUND_MISMATCH", "A rodada informada não corresponde à rodada aberta.", 409);
+  }
+  const schedules = {};
+  for (const division of DIVISIONS) {
+    const timestamp = Date.parse(requested[division]);
+    if (!requested[division] || !Number.isFinite(timestamp)) {
+      return failure("INVALID_DIVISION_SCHEDULE", `Informe um horário válido para ${division}.`, 400);
+    }
+    schedules[division] = new Date(timestamp).toISOString();
+  }
+  const rounds = await dbAll(env, `
+    SELECT id, division FROM fantasy_rounds
+    WHERE round_number = ? AND division IN ('elite', 'ascension')
+  `, [roundNumber]);
+  if (rounds.length !== DIVISIONS.length) {
+    return failure("ROUND_INCOMPLETE", "A rodada precisa existir nas duas divisões.", 409);
+  }
+  const now = new Date();
+  const nowIso = now.toISOString();
+  const latestClose = new Date(Math.max(...DIVISIONS.map((division) => Date.parse(schedules[division])))).toISOString();
+  await env.DB.batch([
+    ...DIVISIONS.map((division) => env.DB.prepare(`
+      UPDATE fantasy_rounds
+      SET locks_at = ?, status = CASE WHEN ? <= ? THEN 'locked' ELSE 'open' END
+      WHERE division = ? AND round_number = ?
+    `).bind(schedules[division], schedules[division], nowIso, division, roundNumber)),
+    env.DB.prepare(`
+      UPDATE fantasy_market_state
+      SET closes_at = ?, lock_match_id = ?, lock_division = NULL,
+          version = version + 1, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ? AND status = 'open'
+    `).bind(latestClose, `manual-schedule:r${roundNumber}`, GLOBAL_MARKET_ID)
+  ]);
+  const after = await getGlobalMarketState(env);
+  await audit(env, {
+    actor: auth.username,
+    action: "market.schedule.divisions",
+    targetType: "global_market",
+    targetId: GLOBAL_MARKET_ID,
+    before: state,
+    after,
+    metadata: { roundNumber, divisionClosesAt: schedules },
+    requestId
+  });
+  await ensureAutomaticMarketClose(env, now, "admin-schedule");
+  return success({
+    market: publicMarketState(await getGlobalMarketState(env)),
+    divisionClosesAt: schedules
+  });
+}
+
 export async function openMarketFromDiscordAdmin(request, env, requestId, username) {
   return adminOpenMarket(request, env, requestId, { username });
 }
 
 export async function closeMarketFromDiscordAdmin(request, env, requestId, username) {
   return adminCloseMarket(request, env, requestId, { username });
+}
+
+export async function scheduleMarketFromDiscordAdmin(request, env, requestId, username) {
+  return adminScheduleMarket(request, env, requestId, { username });
 }
 
 export async function setMarketAccessFromDiscordAdmin(request, env, requestId, username) {
@@ -643,7 +935,13 @@ async function adminMarketStatus(_request, env) {
   await ensureAutomaticMarketClose(env);
   const state = await getGlobalMarketState(env);
   const schedule = await resolveMarketWindow(env, state?.lock_round_number);
-  return success({ market: publicMarketState(state), schedule });
+  const divisionSchedules = await dbAll(env, `
+    SELECT division, locks_at AS closesAt, status
+    FROM fantasy_rounds
+    WHERE round_number = ? AND division IN ('elite', 'ascension')
+    ORDER BY division
+  `, [state?.lock_round_number]);
+  return success({ market: publicMarketState(state), schedule, divisionSchedules });
 }
 
 async function adminMarketHistory(request, env) {
@@ -878,10 +1176,11 @@ async function adminSyncApply(request, env, requestId, auth) {
     const locksAt = new Date(Date.parse(firstStarts) - LOCK_MINUTES * 60000).toISOString();
     statements.push(env.DB.prepare(`
       INSERT INTO fantasy_rounds
-        (id, division, round_number, name, opens_at, locks_at, status, source_hash)
-      VALUES (?, ?, ?, ?, ?, ?, 'scheduled', ?)
+        (id, division, round_number, name, opens_at, locks_at, status, source_hash, eligibility_json)
+      VALUES (?, ?, ?, ?, ?, ?, 'scheduled', ?, ?)
       ON CONFLICT(division, round_number) DO UPDATE SET
-        name = excluded.name, source_hash = excluded.source_hash
+        name = excluded.name, source_hash = excluded.source_hash,
+        eligibility_json = excluded.eligibility_json
     `).bind(
       roundDbId,
       round.division,
@@ -889,7 +1188,8 @@ async function adminSyncApply(request, env, requestId, auth) {
       round.name,
       opensAt,
       locksAt,
-      round.sourceHash
+      round.sourceHash,
+      JSON.stringify(round.eligibility)
     ));
     for (const match of round.matches) {
       statements.push(env.DB.prepare(`
@@ -1106,29 +1406,47 @@ function mergeLiveOfficialContent(source, liveContent, updatedAt = null) {
       .map((match) => clean(match.seriesId))
       .filter(Boolean));
     const liveResults = liveDivision.results || {};
-    const rounds = arrayValues(sourceDivision.rounds).map((round) => ({
+    const livePlayoffResults = liveDivision.playoffResults || {};
+    const playoffStandings = officialGroupStandings(sourceDivision, effectiveTeams, liveResults);
+    const rounds = arrayValues(sourceDivision.rounds).map((round) => {
+      const roundNumber = Math.trunc(Number(round.roundNumber || round.number));
+      const playoffRound = roundNumber === 4;
+      const eligibility = playoffRound
+        ? playoffEligibility(playoffStandings)
+        : (round.eligibility || {});
+      return {
       ...round,
+      eligibility,
       matches: arrayValues(round.matches).map((match) => {
-        const roundNumber = Math.trunc(Number(round.roundNumber || round.number));
         const sourceId = clean(match.sourceId || match.id);
         const stage = clean(match.stage) || "groups";
         const statsSeriesId = clean(match.statsSeriesId) || `${stage}-${sourceId}`;
-        const liveResult = liveResults[sourceId];
-        const homeScore = nullableInteger(liveResult?.homeScore);
-        const awayScore = nullableInteger(liveResult?.awayScore);
+        const liveResult = playoffRound ? livePlayoffResults[sourceId] : liveResults[sourceId];
+        const homeSlot = playoffRound
+          ? resolvePlayoffSeed(playoffStandings, match.homeTeamSeed) || clean(match.homeTeamSlot || match.homeSlot).toUpperCase()
+          : clean(match.homeTeamSlot || match.homeSlot).toUpperCase();
+        const awaySlot = playoffRound
+          ? resolvePlayoffSeed(playoffStandings, match.awayTeamSeed) || clean(match.awayTeamSlot || match.awaySlot).toUpperCase()
+          : clean(match.awayTeamSlot || match.awaySlot).toUpperCase();
+        const homeScore = nullableInteger(liveResult?.homeScore ?? liveResult?.teamAScore);
+        const awayScore = nullableInteger(liveResult?.awayScore ?? liveResult?.teamBScore);
         const hasFinalScore = homeScore !== null && awayScore !== null && homeScore !== awayScore;
         const manualResult = Boolean(liveResult?.manualOverride);
         const hasDetailedStats = statSeriesIds.has(statsSeriesId);
         const override = OFFICIAL_MATCH_OVERRIDES[`${division}:${roundNumber}:${sourceId}`] || null;
         const status = override?.status || (hasFinalScore ? "completed" : validMatchStatus(match.status));
         const isWalkover = !override && hasFinalScore && manualResult && !hasDetailedStats;
-        const homeSlot = clean(match.homeTeamSlot || match.homeSlot).toUpperCase();
-        const awaySlot = clean(match.awayTeamSlot || match.awaySlot).toUpperCase();
         const winnerSlot = hasFinalScore ? (homeScore > awayScore ? homeSlot : awaySlot) : "";
+        const startsAt = playoffRound
+          ? brazilPlayoffDateToIso(liveResult?.date, liveResult?.time, match.startsAt)
+          : match.startsAt;
         return {
           ...match,
+          homeTeamSlot: homeSlot,
+          awayTeamSlot: awaySlot,
           homeTeamName: namesBySlot.get(homeSlot) || clean(match.homeTeamName),
           awayTeamName: namesBySlot.get(awaySlot) || clean(match.awayTeamName),
+          startsAt,
           status,
           homeScore: hasFinalScore ? homeScore : nullableInteger(match.homeScore),
           awayScore: hasFinalScore ? awayScore : nullableInteger(match.awayScore),
@@ -1147,7 +1465,8 @@ function mergeLiveOfficialContent(source, liveContent, updatedAt = null) {
           } : null
         };
       })
-    }));
+    };
+    });
     merged.divisions[division] = {
       ...sourceDivision,
       teams: effectiveTeams,
@@ -1155,6 +1474,92 @@ function mergeLiveOfficialContent(source, liveContent, updatedAt = null) {
     };
   }
   return merged;
+}
+
+function officialGroupStandings(sourceDivision, teams, liveResults) {
+  const teamBySlot = new Map(arrayValues(teams).map((team) => [clean(team.slot).toUpperCase(), team]));
+  const statsBySlot = new Map(arrayValues(sourceDivision.stats?.teams)
+    .map((team) => [clean(team.slot).toUpperCase(), team]));
+  const standings = {};
+  for (const group of ["A", "B", "C", "D"]) {
+    standings[group] = [1, 2, 3, 4].map((seed) => {
+      const slot = `${group}${seed}`;
+      return {
+        slot,
+        seed,
+        wins: 0,
+        losses: 0,
+        gameDiff: 0,
+        avgWinTime: clean(statsBySlot.get(slot)?.avgWinTime || teamBySlot.get(slot)?.avgWinTime) || "00:00"
+      };
+    });
+  }
+  const bySlot = new Map(Object.values(standings).flat().map((entry) => [entry.slot, entry]));
+  for (const round of arrayValues(sourceDivision.rounds)) {
+    const roundNumber = Math.trunc(Number(round.roundNumber || round.number));
+    if (roundNumber > 3) continue;
+    for (const match of arrayValues(round.matches)) {
+      const sourceId = clean(match.sourceId || match.id);
+      const result = liveResults[sourceId] || match;
+      const homeScore = nullableInteger(result?.homeScore);
+      const awayScore = nullableInteger(result?.awayScore);
+      const home = bySlot.get(clean(match.homeTeamSlot || match.homeSlot).toUpperCase());
+      const away = bySlot.get(clean(match.awayTeamSlot || match.awaySlot).toUpperCase());
+      if (!home || !away || homeScore === null || awayScore === null) continue;
+      home.gameDiff += homeScore - awayScore;
+      away.gameDiff += awayScore - homeScore;
+      if (homeScore === awayScore || Math.max(homeScore, awayScore) < 2) continue;
+      if (homeScore > awayScore) {
+        home.wins += 1;
+        away.losses += 1;
+      } else {
+        away.wins += 1;
+        home.losses += 1;
+      }
+    }
+  }
+  for (const entries of Object.values(standings)) {
+    entries.sort((left, right) => (
+      right.wins - left.wins ||
+      left.losses - right.losses ||
+      right.gameDiff - left.gameDiff ||
+      tiebreakSeconds(left.avgWinTime) - tiebreakSeconds(right.avgWinTime) ||
+      left.seed - right.seed
+    ));
+  }
+  return standings;
+}
+
+function playoffEligibility(standings) {
+  const teamStatuses = {};
+  for (const group of ["A", "B", "C", "D"]) {
+    const entries = standings[group] || [];
+    if (entries[0]?.slot) teamStatuses[entries[0].slot] = "qualified-next-round";
+    if (entries[1]?.slot) teamStatuses[entries[1].slot] = "playing";
+    if (entries[2]?.slot) teamStatuses[entries[2].slot] = "playing";
+    if (entries[3]?.slot) teamStatuses[entries[3].slot] = "eliminated";
+  }
+  return { teamStatuses };
+}
+
+function resolvePlayoffSeed(standings, rawSeed) {
+  const match = /^([ABCD])([1-4])$/.exec(clean(rawSeed).toUpperCase());
+  return match ? standings[match[1]]?.[Number(match[2]) - 1]?.slot || "" : "";
+}
+
+function brazilPlayoffDateToIso(rawDate, rawTime, fallback) {
+  const dateMatch = /^(\d{1,2})\/(\d{1,2})$/.exec(clean(rawDate));
+  const timeMatch = /^(\d{1,2}):(\d{2})$/.exec(clean(rawTime));
+  if (!dateMatch || !timeMatch) return fallback;
+  const year = new Date(isoDate(fallback) || Date.now()).getUTCFullYear();
+  return new Date(`${year}-${dateMatch[2].padStart(2, "0")}-${dateMatch[1].padStart(2, "0")}T${timeMatch[1].padStart(2, "0")}:${timeMatch[2]}:00-03:00`).toISOString();
+}
+
+function tiebreakSeconds(value) {
+  const match = /^(\d{1,3}):([0-5]\d)$/.exec(clean(value));
+  if (!match) return Number.MAX_SAFE_INTEGER;
+  const seconds = Number(match[1]) * 60 + Number(match[2]);
+  return seconds > 0 ? seconds : Number.MAX_SAFE_INTEGER;
 }
 
 async function normalizeOfficialSource(source) {
@@ -1254,6 +1659,7 @@ async function normalizeOfficialSource(source) {
         division,
         roundNumber,
         name: clean(rawRound.name) || `Rodada ${roundNumber}`,
+        eligibility: normalizeRoundEligibility(rawRound.eligibility),
         matches: []
       };
       for (const [index, rawMatch] of arrayValues(rawRound.matches).entries()) {
@@ -1687,6 +2093,7 @@ async function normalizeFormulaV2Round(source, roundNumber, division) {
         atletaId: resolveId(participant.playerId),
         teamSlot: clean(participant.teamSlot).toUpperCase(),
         position: clean(participant.position).toUpperCase(),
+        championId: clean(participant.champion),
         score: participant.score,
         won: Boolean(participant.won),
         deaths: participant.deaths
@@ -2124,6 +2531,7 @@ async function adminRoundProcessV2(request, env, requestId, auth) {
       JSON.stringify({ processedBy: auth.username, backupId })
     ));
     if (scoreStatements.length) await env.DB.batch(scoreStatements);
+    await resolveDraftPredictionsForRound(env, round, normalized.division, normalized.series);
     await recalculateLineupsV2(env, round, normalized.division);
 
     await updateMarketAverages(env, normalized.division);
@@ -2157,16 +2565,71 @@ async function adminRoundProcessV2(request, env, requestId, auth) {
   });
 }
 
+async function resolveDraftPredictionsForRound(env, round, division, series) {
+  if (Number(round.roundNumber || round.round_number) < DRAFT_PREDICTION_CONFIG.enabledFromRound) return 0;
+  const rows = await dbAll(env, `
+    SELECT dp.lineup_id AS lineupId, dp.role, dp.player_asset_id AS playerAssetId,
+           dp.mode, dp.champion_id AS championId, dp.map_number AS mapNumber,
+           dp.pick_rate_position AS pickRatePosition, dp.pick_rate_at_lock AS pickRateAtLock,
+           dp.multiplier_at_lock AS multiplierAtLock, dp.base_reward AS baseReward,
+           dp.possible_reward AS possibleReward, dp.miss_penalty AS missPenalty,
+           dp.status, dp.result_score AS resultScore
+    FROM fantasy_lineup_draft_predictions dp
+    JOIN fantasy_lineups l ON l.id = dp.lineup_id
+    JOIN fantasy_teams t ON t.id = l.fantasy_team_id
+    WHERE l.round_id = ? AND t.division = ?
+    ORDER BY dp.lineup_id, dp.role
+  `, [round.id, division]);
+  const statements = [];
+  for (const prediction of rows) {
+    const playerSeries = (series || []).find((item) =>
+      (item.mapas || []).some((game) => (game.participantes || []).some((participant) =>
+        String(participant.atletaId) === String(prediction.playerAssetId)
+      ))
+    );
+    const playerSeriesGames = playerSeries
+      ? playerSeries.mapas.flatMap((game) => (game.participantes || [])
+        .filter((participant) => String(participant.atletaId) === String(prediction.playerAssetId))
+        .map((participant) => ({
+          championId: participant.championId,
+          mapNumber: game.gameNumber,
+          played: true
+        })))
+      : [];
+    const result = calculateDraftPredictionResult({
+      prediction,
+      playerSeriesGames,
+      seriesFormat: playerSeries?.formato || "MD3"
+    });
+    statements.push(env.DB.prepare(`
+      UPDATE fantasy_lineup_draft_predictions
+      SET status = ?, result_score = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE lineup_id = ? AND role = ?
+    `).bind(result.status, result.resultScore, prediction.lineupId, prediction.role));
+  }
+  if (statements.length) await env.DB.batch(statements);
+  return statements.length;
+}
+
 async function recalculateLineupsV2(env, round, division) {
   const rows = await dbAll(env, `
     SELECT l.id AS lineupId, l.fantasy_team_id AS fantasyTeamId,
            l.captain_asset_id AS captainAssetId,
            p.asset_id AS assetId, p.role,
-           lr.asset_id AS reserveAssetId, lr.role AS reserveRole
+           lr.asset_id AS reserveAssetId, lr.role AS reserveRole,
+           dp.mode AS draftMode, dp.champion_id AS draftChampionId,
+           dp.map_number AS draftMapNumber, dp.pick_rate_position AS draftPickRatePosition,
+           dp.pick_rate_at_lock AS draftPickRateAtLock,
+           dp.multiplier_at_lock AS draftMultiplierAtLock,
+           dp.base_reward AS draftBaseReward, dp.possible_reward AS draftPossibleReward,
+           dp.miss_penalty AS draftMissPenalty, dp.status AS draftStatus,
+           dp.result_score AS draftResultScore
     FROM fantasy_lineups l
     JOIN fantasy_teams t ON t.id = l.fantasy_team_id
     JOIN fantasy_lineup_picks p ON p.lineup_id = l.id
     LEFT JOIN fantasy_lineup_reserves lr ON lr.lineup_id = l.id
+    LEFT JOIN fantasy_lineup_draft_predictions dp
+      ON dp.lineup_id = l.id AND dp.role = p.role AND dp.player_asset_id = p.asset_id
     WHERE l.round_id = ? AND t.division = ?
     ORDER BY l.id, p.role
   `, [round.id, division]);
@@ -2182,11 +2645,27 @@ async function recalculateLineupsV2(env, round, division) {
       fantasyTeamId: row.fantasyTeamId,
       capitaoId: row.captainAssetId,
       titulares: [],
+      predictions: new Map(),
       reserva: row.reserveAssetId
         ? { assetId: row.reserveAssetId, role: row.reserveRole }
         : null
     };
     item.titulares.push({ assetId: row.assetId, role: row.role });
+    if (row.draftMode && PLAYER_ROLES.includes(row.role)) {
+      item.predictions.set(row.role, {
+        mode: row.draftMode,
+        championId: row.draftChampionId,
+        mapNumber: row.draftMapNumber,
+        pickRatePosition: row.draftPickRatePosition,
+        pickRateAtLock: row.draftPickRateAtLock,
+        multiplierAtLock: row.draftMultiplierAtLock,
+        baseReward: row.draftBaseReward,
+        possibleReward: row.draftPossibleReward,
+        missPenalty: row.draftMissPenalty,
+        status: row.draftStatus,
+        resultScore: Number(row.draftResultScore) || 0
+      });
+    }
     grouped.set(row.lineupId, item);
   }
   const statements = [];
@@ -2197,6 +2676,25 @@ async function recalculateLineupsV2(env, round, division) {
       reserva: lineup.reserva,
       pontuacoes: scoreMap
     });
+    let draftPredictionTotal = 0;
+    const details = score.detalhes.map((detail) => {
+      const starter = lineup.titulares.find((item) => String(item.assetId) === String(detail.atletaId));
+      const prediction = starter ? lineup.predictions.get(starter.role) : null;
+      const draftPredictionScore = prediction ? roundMoney(prediction.resultScore) : 0;
+      draftPredictionTotal += draftPredictionScore;
+      const combined = calculateFinalPlayerFantasyScore({
+        playerPerformanceScore: detail.pontuacaoBase || 0,
+        isCaptain: String(detail.atletaId) === String(lineup.capitaoId),
+        draftPredictionScore
+      });
+      return {
+        ...detail,
+        role: starter?.role || "",
+        ...combined,
+        draftPrediction: prediction,
+      };
+    });
+    const finalScore = roundMoney(score.pontuacaoTotal + draftPredictionTotal);
     statements.push(env.DB.prepare(`
       INSERT INTO fantasy_team_round_scores
         (fantasy_team_id, round_id, points, breakdown_json)
@@ -2208,8 +2706,15 @@ async function recalculateLineupsV2(env, round, division) {
     `).bind(
       lineup.fantasyTeamId,
       round.id,
-      score.pontuacaoTotal,
-      JSON.stringify({ formulaVersion: 2, ...score })
+      finalScore,
+      JSON.stringify({
+        formulaVersion: 2,
+        ...score,
+        pontuacaoDesempenhoComCapitao: score.pontuacaoTotal,
+        pontuacaoPalpiteDraft: roundMoney(draftPredictionTotal),
+        pontuacaoTotal: finalScore,
+        detalhes: details
+      })
     ));
   }
   if (statements.length) await env.DB.batch(statements);
@@ -3547,12 +4052,16 @@ async function adminOverview(_request, env) {
     rounds: "fantasy_rounds",
     imports: "fantasy_imports",
     errors: "fantasy_error_log",
-    backups: "fantasy_backups"
+    backups: "fantasy_backups",
+    feedback: "fantasy_feedback"
   };
   const counts = {};
   for (const [key, table] of Object.entries(countTables)) {
     counts[key] = Number((await env.DB.prepare(`SELECT COUNT(*) AS count FROM ${table}`).first())?.count || 0);
   }
+  counts.newFeedback = Number((await env.DB.prepare(
+    "SELECT COUNT(*) AS count FROM fantasy_feedback WHERE status = 'new'"
+  ).first())?.count || 0);
   const latest = {
     sync: await env.DB.prepare(`
       SELECT id, status, created_at AS createdAt
@@ -3934,6 +4443,93 @@ async function adminUpdateUser(request, env, requestId, auth) {
   return success({ user: after });
 }
 
+async function adminListFeedback(request, env) {
+  const url = new URL(request.url);
+  const status = clean(url.searchParams.get("status")).toLowerCase();
+  const category = clean(url.searchParams.get("category")).toLowerCase();
+  const query = clean(url.searchParams.get("q"));
+  const statuses = new Set(["new", "reviewing", "resolved"]);
+  const categories = new Set(["suggestion", "question", "complaint", "bug"]);
+  if (status && !statuses.has(status)) return failure("FEEDBACK_STATUS_INVALID", "Status de mensagem inválido.", 400);
+  if (category && !categories.has(category)) return failure("FEEDBACK_CATEGORY_INVALID", "Tipo de mensagem inválido.", 400);
+  const clauses = [];
+  const bindings = [];
+  if (status) {
+    clauses.push("f.status = ?");
+    bindings.push(status);
+  }
+  if (category) {
+    clauses.push("f.category = ?");
+    bindings.push(category);
+  }
+  if (query) {
+    const like = `%${escapeLike(query)}%`;
+    clauses.push("(f.subject LIKE ? ESCAPE '\\' OR f.message LIKE ? ESCAPE '\\' OR u.username LIKE ? ESCAPE '\\' OR u.discord_id LIKE ? ESCAPE '\\')");
+    bindings.push(like, like, like, like);
+  }
+  const rows = await dbAll(env, `
+    SELECT f.id, f.category, f.subject, f.message, f.division,
+           f.round_number AS roundNumber, f.page_view AS pageView,
+           f.status, f.admin_note AS adminNote,
+           f.created_at AS createdAt, f.updated_at AS updatedAt,
+           f.resolved_at AS resolvedAt,
+           u.id AS userId, u.discord_id AS discordId, u.username,
+           u.avatar_url AS avatarUrl
+    FROM fantasy_feedback f
+    JOIN fantasy_users u ON u.id = f.user_id
+    ${clauses.length ? `WHERE ${clauses.join(" AND ")}` : ""}
+    ORDER BY CASE f.status WHEN 'new' THEN 0 WHEN 'reviewing' THEN 1 ELSE 2 END,
+             f.created_at DESC
+    LIMIT ?
+  `, [...bindings, queryLimit(request, 500)]);
+  const newCount = Number((await env.DB.prepare(
+    "SELECT COUNT(*) AS count FROM fantasy_feedback WHERE status = 'new'"
+  ).first())?.count || 0);
+  return success({
+    newCount,
+    feedback: rows.map((row) => ({
+      ...row,
+      protocol: `RK-${String(row.id || "").replace(/-/g, "").slice(0, 8).toUpperCase()}`
+    }))
+  });
+}
+
+async function adminUpdateFeedback(request, env, requestId, auth) {
+  const id = decodePathId(request, "/api/fantasy/admin/feedback/");
+  const before = await env.DB.prepare(`
+    SELECT id, status, admin_note AS adminNote, resolved_at AS resolvedAt
+    FROM fantasy_feedback WHERE id = ?
+  `).bind(id).first();
+  if (!before) return failure("FEEDBACK_NOT_FOUND", "Mensagem não encontrada.", 404);
+  const body = await readJson(request);
+  const status = clean(body.status || before.status).toLowerCase();
+  if (!["new", "reviewing", "resolved"].includes(status)) {
+    return failure("FEEDBACK_STATUS_INVALID", "Status de mensagem inválido.", 400);
+  }
+  const adminNote = clean(body.adminNote ?? before.adminNote).slice(0, 2e3);
+  await env.DB.prepare(`
+    UPDATE fantasy_feedback
+    SET status = ?, admin_note = ?, updated_at = CURRENT_TIMESTAMP,
+        resolved_at = CASE WHEN ? = 'resolved' THEN COALESCE(resolved_at, CURRENT_TIMESTAMP) ELSE NULL END
+    WHERE id = ?
+  `).bind(status, adminNote, status, id).run();
+  const after = await env.DB.prepare(`
+    SELECT id, status, admin_note AS adminNote, updated_at AS updatedAt,
+           resolved_at AS resolvedAt
+    FROM fantasy_feedback WHERE id = ?
+  `).bind(id).first();
+  await audit(env, {
+    actor: auth.username,
+    action: "feedback.update",
+    targetType: "feedback",
+    targetId: id,
+    before,
+    after,
+    requestId
+  });
+  return success({ feedback: after });
+}
+
 async function adminListLineups(request, env) {
   const url = new URL(request.url);
   const division = optionalDivision(url.searchParams.get("division"));
@@ -3953,11 +4549,21 @@ async function adminListLineups(request, env) {
            t.name AS fantasyTeamName, u.id AS userId, u.username,
            r.id AS roundId, r.round_number AS roundNumber, r.name AS roundName,
            l.captain_asset_id AS captainAssetId, l.total_cost AS totalCost,
+           COALESCE((
+             SELECT h.previous_cents
+             FROM fantasy_patrimony_history h
+             WHERE h.user_id = u.id AND h.division = t.division AND h.round_id = r.id
+               AND h.status IN ('PUBLISHED', 'INCONSISTENT', 'NO_VALID_LINEUP')
+             ORDER BY h.processed_at DESC
+             LIMIT 1
+           ), pp.current_cents, 10000) AS budgetCents,
            l.submitted_at AS submittedAt, l.updated_at AS updatedAt
     FROM fantasy_lineups l
     JOIN fantasy_teams t ON t.id = l.fantasy_team_id
     JOIN fantasy_users u ON u.id = t.user_id
     JOIN fantasy_rounds r ON r.id = l.round_id
+    LEFT JOIN fantasy_participant_patrimony pp
+      ON pp.user_id = u.id AND pp.division = t.division
     ${clauses.length ? `WHERE ${clauses.join(" AND ")}` : ""}
     ORDER BY r.round_number DESC, t.division, u.username
     LIMIT ?
@@ -3979,16 +4585,20 @@ async function adminListLineups(request, env) {
     WHERE lineup_id IN (${placeholders})
   `, ids);
   return success({
-    lineups: lineups.map((lineup) => ({
-      ...lineup,
-      picks: picks.filter((pick) => pick.lineupId === lineup.id),
-      reserve: reserves.find((reserve) => reserve.lineupId === lineup.id) || null,
-      validationIssues: lineupValidationIssues(
-        lineup,
-        picks.filter((pick) => pick.lineupId === lineup.id),
-        reserves.find((reserve) => reserve.lineupId === lineup.id) || null
-      )
-    }))
+    lineups: lineups.map((lineup) => {
+      const lineupPicks = picks.filter((pick) => pick.lineupId === lineup.id);
+      const reserve = reserves.find((item) => item.lineupId === lineup.id) || null;
+      const budget = Number(lineup.budgetCents) / 100;
+      const totalUsed = roundMoney(Number(lineup.totalCost) + Number(reserve?.pricePaid || 0));
+      return {
+        ...lineup,
+        budget,
+        totalUsed,
+        picks: lineupPicks,
+        reserve,
+        validationIssues: lineupValidationIssues(lineup, lineupPicks, reserve, budget)
+      };
+    })
   });
 }
 
@@ -4146,7 +4756,7 @@ async function adminUpdateLineup(request, env, requestId, auth) {
   return success({ lineup: after, backupId, lineupsScored });
 }
 
-function lineupValidationIssues(lineup, picks, reserve) {
+function lineupValidationIssues(lineup, picks, reserve, budget = BUDGET_LIMIT) {
   const issues = [];
   const roles = picks.map((pick) => clean(pick.role).toUpperCase());
   if (picks.length !== ALL_ROLES.length || ALL_ROLES.some((role) => !roles.includes(role))) {
@@ -4158,7 +4768,23 @@ function lineupValidationIssues(lineup, picks, reserve) {
   if (!picks.some((pick) => pick.assetId === lineup.captainAssetId && PLAYER_ROLES.includes(pick.role))) {
     issues.push("capitão inválido");
   }
-  if (Number(lineup.totalCost) > BUDGET_LIMIT + 0.001) issues.push("orçamento excedido");
+  const starterCost = Number(lineup.totalCost) || 0;
+  const normalizedBudget = Number.isFinite(Number(budget)) ? Number(budget) : BUDGET_LIMIT;
+  if (starterCost > normalizedBudget + 0.001) {
+    issues.push("orçamento excedido");
+  } else if (reserve) {
+    const remaining = Math.max(0, normalizedBudget - starterCost);
+    const playerPrices = picks
+      .filter((pick) => PLAYER_ROLES.includes(clean(pick.role).toUpperCase()))
+      .map((pick) => Number(pick.pricePaid))
+      .filter(Number.isFinite);
+    const legacyReserveCredit = Number(lineup.roundNumber) <= 2 && playerPrices.length
+      ? Math.min(...playerPrices)
+      : 0;
+    if (Number(reserve.pricePaid) > remaining + legacyReserveCredit + 0.001) {
+      issues.push("orçamento excedido");
+    }
+  }
   const teamCounts = new Map();
   for (const pick of picks.filter((item) => PLAYER_ROLES.includes(item.role))) {
     teamCounts.set(pick.teamSlot, (teamCounts.get(pick.teamSlot) || 0) + 1);
@@ -4177,11 +4803,20 @@ async function recalculateRoundLineups(env, roundId) {
     SELECT l.id AS lineupId, l.fantasy_team_id AS fantasyTeamId,
            l.captain_asset_id AS captainAssetId, t.division,
            p.asset_id AS assetId, p.role,
-           lr.asset_id AS reserveAssetId, lr.role AS reserveRole
+           lr.asset_id AS reserveAssetId, lr.role AS reserveRole,
+           dp.mode AS draftMode, dp.champion_id AS draftChampionId,
+           dp.map_number AS draftMapNumber, dp.pick_rate_position AS draftPickRatePosition,
+           dp.pick_rate_at_lock AS draftPickRateAtLock,
+           dp.multiplier_at_lock AS draftMultiplierAtLock,
+           dp.base_reward AS draftBaseReward, dp.possible_reward AS draftPossibleReward,
+           dp.miss_penalty AS draftMissPenalty, dp.status AS draftStatus,
+           dp.result_score AS draftResultScore
     FROM fantasy_lineups l
     JOIN fantasy_teams t ON t.id = l.fantasy_team_id
     JOIN fantasy_lineup_picks p ON p.lineup_id = l.id
     LEFT JOIN fantasy_lineup_reserves lr ON lr.lineup_id = l.id
+    LEFT JOIN fantasy_lineup_draft_predictions dp
+      ON dp.lineup_id = l.id AND dp.role = p.role AND dp.player_asset_id = p.asset_id
     WHERE l.round_id = ?
     ORDER BY l.id, p.role
   `, [roundId]);
@@ -4198,12 +4833,28 @@ async function recalculateRoundLineups(env, roundId) {
       captainAssetId: row.captainAssetId,
       division: row.division,
       picks: [],
+      predictions: new Map(),
       reserve: row.reserveAssetId ? {
         assetId: row.reserveAssetId,
         role: row.reserveRole
       } : null
     };
     lineup.picks.push({ assetId: row.assetId, role: row.role });
+    if (row.draftMode && PLAYER_ROLES.includes(row.role)) {
+      lineup.predictions.set(row.role, {
+        mode: row.draftMode,
+        championId: row.draftChampionId,
+        mapNumber: row.draftMapNumber,
+        pickRatePosition: row.draftPickRatePosition,
+        pickRateAtLock: row.draftPickRateAtLock,
+        multiplierAtLock: row.draftMultiplierAtLock,
+        baseReward: row.draftBaseReward,
+        possibleReward: row.draftPossibleReward,
+        missPenalty: row.draftMissPenalty,
+        status: row.draftStatus,
+        resultScore: Number(row.draftResultScore) || 0
+      });
+    }
     grouped.set(row.lineupId, lineup);
   }
   const statements = [];
@@ -4238,12 +4889,21 @@ async function recalculateRoundLineups(env, roundId) {
       const base = Number(score?.games || 0) > 0 ? Number(score.points) || 0 : 0;
       const multiplier = pick.assetId === lineup.captainAssetId ? 1.5 : 1;
       const points = roundMoney(base * multiplier);
-      total += points;
+      const prediction = lineup.predictions.get(pick.role);
+      const draftPredictionScore = prediction ? roundMoney(prediction.resultScore) : 0;
+      const combined = calculateFinalPlayerFantasyScore({
+        playerPerformanceScore: base,
+        isCaptain: pick.assetId === lineup.captainAssetId,
+        draftPredictionScore
+      });
+      total += combined.finalPlayerFantasyScore;
       breakdown.push({
         ...pick,
         base,
         multiplier,
-        points,
+        points: combined.finalPlayerFantasyScore,
+        ...combined,
+        draftPrediction: prediction || null,
         didNotPlay: PLAYER_ROLES.includes(pick.role) && Number(score?.games || 0) <= 0
       });
     }
@@ -4972,6 +5632,17 @@ function nullableInteger(value) {
   return Number.isInteger(number) ? number : null;
 }
 
+function normalizeRoundEligibility(value) {
+  const allowed = new Set(["playing", "qualified-next-round", "eliminated"]);
+  const teamStatuses = {};
+  for (const [rawSlot, rawStatus] of Object.entries(value?.teamStatuses || {})) {
+    const slot = clean(rawSlot).toUpperCase();
+    const status = clean(rawStatus).toLowerCase();
+    if (/^[ABCD][1-4]$/.test(slot) && allowed.has(status)) teamStatuses[slot] = status;
+  }
+  return { teamStatuses };
+}
+
 function optionalDivision(value) {
   if (value === null || value === undefined || clean(value) === "" || value === "all") return null;
   return requiredDivision(value);
@@ -5086,6 +5757,7 @@ export const __test = {
   TIMEZONE,
   adminRoundPreviewV2,
   adminRoundProcessV2,
+  adminOpenMarket,
   adminSyncApply,
   adminSyncPreview,
   adminValuationApply,
@@ -5098,6 +5770,7 @@ export const __test = {
   decodeBase64,
   hashObject,
   initialPrice,
+  ensureDraftSnapshotsForRound,
   mergeLiveOfficialContent,
   normalizeFormulaV2Round,
   normalizeOfficialSource,

@@ -8,6 +8,8 @@ const pages = ["fantasy/index.html", "fantasy/fantasy.html"];
 const script = fs.readFileSync(path.join(root, "fantasy/assets/fantasy.js"), "utf8");
 const styles = fs.readFileSync(path.join(root, "fantasy/assets/fantasy.css"), "utf8");
 const workerScript = fs.readFileSync(path.join(root, "worker/fantasy-worker.js"), "utf8");
+const adminHtml = fs.readFileSync(path.join(root, "worker/public/admin/index.html"), "utf8");
+const adminScript = fs.readFileSync(path.join(root, "worker/public/admin/admin.js"), "utf8");
 
 test("Fantasy opens on a separate, minimal Início view", () => {
   for (const relativePath of pages) {
@@ -32,6 +34,24 @@ test("Fantasy account action signs out instead of switching accounts", () => {
   assert.match(script, /apiFetch\("\/api\/fantasy\/auth\/logout",\s*\{\s*method: "POST"/);
   assert.match(script, /state\.userName \? "Sair" : "Entrar"/);
   assert.doesNotMatch(script, /state\.userName \? "Trocar"/);
+});
+
+test("Canal de contato aparece apenas para jogador logado no Mercado e chega ao painel", () => {
+  for (const relativePath of pages) {
+    const html = fs.readFileSync(path.join(root, relativePath), "utf8");
+    assert.match(html, /id="market-feedback-button"[^>]*hidden>Fale com a organização<\/button>/);
+    assert.match(html, /id="feedback-header-button"[^>]*hidden>Contato<\/button>/);
+    assert.match(html, /id="feedback-dialog"/);
+    assert.match(html, /Reportar um bug/);
+    assert.match(html, /visível somente para a administração/);
+  }
+  assert.match(script, /const loggedInMarket = Boolean\(state\.userName && state\.view === "market"\)/);
+  assert.match(script, /marketFeedbackButton\.hidden = !loggedInMarket \|\| !open/);
+  assert.match(script, /feedbackHeaderButton\.hidden = !loggedInMarket \|\| !marketKnown \|\| open/);
+  assert.match(script, /apiFetch\("\/api\/fantasy\/feedback"/);
+  assert.match(workerScript, /url\.pathname === "\/api\/fantasy\/feedback"/);
+  assert.match(adminHtml, /data-panel="feedback"/);
+  assert.match(adminScript, /async function loadFeedback\(\)/);
 });
 
 test("Login pelo Discord abre o mercado depois da autenticação", () => {
@@ -155,47 +175,47 @@ test("Controle do mercado fica oculto e depende da permissão Discord", () => {
   assert.match(workerScript, /Somente o administrador autorizado pode controlar o mercado/);
 });
 
-test("Aviso da Rodada 2 exige login e só fecha depois do aceite persistido", () => {
+test("Painel administrativo usa a conta Discord exclusiva e aparece somente para o administrador", () => {
   for (const relativePath of pages) {
     const html = fs.readFileSync(path.join(root, relativePath), "utf8");
-    assert.match(html, /id="round-two-notice"[^>]*hidden/);
-    assert.match(html, /id="round-two-notice-dialog"/);
-    assert.match(html, /id="acknowledge-round-two-notice"[^>]*>Entendido<\/button>/);
-    const dialog = html.match(/<dialog id="round-two-notice-dialog"[\s\S]*?<\/dialog>/)?.[0] || "";
-    assert.doesNotMatch(dialog, /dialog-close/);
+    assert.match(html, /id="admin-panel-link"[^>]*hidden/);
   }
-
-  const noticeLoader = script.match(/async function loadRoundTwoNotice\(\) \{[\s\S]*?\n  \}/)?.[0] || "";
-  const acknowledgment = script.match(/async function acknowledgeRoundTwoNotice\(\) \{[\s\S]*?\n  \}/)?.[0] || "";
-  assert.match(noticeLoader, /if \(!state\.userName \|\| config\.backendMode !== "cloud"\)/);
-  assert.match(noticeLoader, /\/api\/fantasy\/notices\/round-2-postponement/);
-  assert.match(acknowledgment, /\/api\/fantasy\/notices\/round-2-postponement\/ack/);
-  assert.ok(acknowledgment.indexOf("apiFetch") < acknowledgment.indexOf("roundTwoNoticeDialog.close()"));
-  assert.match(script, /roundTwoNoticeDialog\.addEventListener\("cancel", \(event\) => \{\s*event\.preventDefault\(\)/);
-  assert.doesNotMatch(script, /localStorage\.(?:setItem|getItem)\([^\n]*round-two-notice/);
-  assert.match(workerScript, /INSERT OR IGNORE INTO fantasy_user_notices/);
-  assert.match(styles, /\.round-two-notice\[hidden\] \{ display: none; \}/);
+  assert.match(script, /state\.isAdmin = Boolean\(response\.ok && payload\.authenticated && payload\.canAccessAdminPanel\)/);
+  assert.match(script, /adminPanelLink\.hidden = !state\.isAdmin/);
+  assert.match(workerScript, /ADMIN_PANEL_DISCORD_IDS/);
+  assert.match(adminHtml, /href="\/api\/fantasy\/auth\/login\?returnTo=admin"/);
+  assert.doesNotMatch(adminHtml, /type="password"|login-username/);
+  assert.match(adminScript, /\/api\/fantasy\/auth\/logout/);
 });
 
-test("Comunicado da Rodada 3 sobre CASH x NKZ fica no site sem popup", () => {
+test("Rodada 4 mostra somente o aviso com os fechamentos separados", () => {
   for (const relativePath of pages) {
     const html = fs.readFileSync(path.join(root, relativePath), "utf8");
-    const roundTwoPosition = html.indexOf('id="round-two-notice"');
-    const roundThreePosition = html.indexOf('id="round-three-nkz-notice"');
-    assert.ok(roundTwoPosition >= 0);
-    assert.ok(roundThreePosition > roundTwoPosition);
-    assert.match(html, /Aviso sobre a Rodada 3/);
-    assert.match(html, /NO KINGS ZONE \(NKZ\)[\s\S]*CASHOUT &amp; TRIMILIQUE LTDA \(CASH\)[\s\S]*não será contabilizado no Fantasy RK/);
-    assert.doesNotMatch(html, /<dialog[^>]*round-three-nkz-notice/);
+    assert.match(html, /id="round-four-market-schedule-notice"/);
+    assert.match(html, /Divisão Ascensão[\s\S]*13\/08\/2026 às 19h/);
+    assert.match(html, /Divisão Elite[\s\S]*15\/08\/2026 às 18h/);
+    assert.doesNotMatch(html, /round-two-notice|round-three-nkz-notice/);
   }
+  assert.doesNotMatch(script, /loadRoundTwoNotice|roundTwoNoticeDialog|roundTwoNoticeBusy/);
+  assert.match(styles, /\.market-deadline-list/);
 });
 
 test("Admin-only mode keeps the market closed for other players", () => {
   assert.match(script, /marketAccessMode: \{ elite: "public", ascension: "public" \}/);
   assert.match(script, /MERCADO ADMINISTRATIVO/);
   assert.match(script, /Acesso exclusivo da administração/);
-  assert.match(workerScript, /function isMarketOpenForUser\(marketState, user, env\)/);
+  assert.match(workerScript, /function isMarketOpenForUser\(marketState, user, env, round = null\)/);
   assert.match(workerScript, /access_mode \|\| "public"/);
   assert.match(workerScript, /temporariamente aberto apenas para a administração/);
-  assert.match(workerScript, /marketStateForUser\(marketState, user, env\)/);
+  assert.match(workerScript, /marketStateForUser\(marketState, user, env, round = null\)/);
+});
+
+test("Playoffs mantêm equipes não escaláveis visíveis no fim do mercado", () => {
+  assert.match(script, /selectable: item\.selectable !== false/);
+  assert.match(script, /Classificado para a rodada 5|availabilityLabel/);
+  assert.match(script, /Indisponível nesta rodada/);
+  assert.match(script, /Number\(a\.selectable === false\) - Number\(b\.selectable === false\)/);
+  assert.match(styles, /\.player-card\.unavailable/);
+  assert.match(workerScript, /function marketAssetAvailability\(round, teamSlot, roundMatches = \[\]\)/);
+  assert.match(workerScript, /não pode ser escalado/);
 });

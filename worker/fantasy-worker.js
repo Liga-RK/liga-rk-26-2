@@ -7,15 +7,19 @@ import {
   openMarketFromDiscordAdmin,
   publicMarketState,
   recordError,
+  scheduleMarketFromDiscordAdmin,
   setMarketAccessFromDiscordAdmin,
   serveAdminAsset
 } from "./fantasy-admin.js";
 import valuationV3 from "../src/fantasy/valuation-v3.cjs";
 import patrimonyV2 from "../src/fantasy/patrimony-v2.cjs";
+import draftPrediction from "../src/fantasy/draft-prediction.cjs";
+import championCatalog from "../src/fantasy/champion-catalog.cjs";
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 var COOKIE_NAME = "fantasy_session";
 var OAUTH_STATE_COOKIE = "fantasy_oauth_state";
+var OAUTH_RETURN_COOKIE = "fantasy_oauth_return";
 var ADMIN_COOKIE_NAME = "fantasy_admin_session";
 var SESSION_DAYS = 30;
 var ADMIN_SESSION_HOURS = 8;
@@ -33,6 +37,9 @@ var PATRIMONY_FORMULA_ID = patrimonyV2.PATRIMONY_FORMULA_ID;
 var summarizeParticipantPatrimony = patrimonyV2.summarizeParticipantPatrimony;
 var BUDGET_LIMIT = INITIAL_PATRIMONY;
 var MAX_PLAYERS_PER_REAL_TEAM = 2;
+var DRAFT_PREDICTION_CONFIG = draftPrediction.DRAFT_PREDICTION_CONFIG;
+var lockDraftPrediction = draftPrediction.lockDraftPrediction;
+var CHAMPION_CATALOG = championCatalog.CHAMPION_CATALOG;
 var ROUND_TWO_NOTICE = Object.freeze({
   key: "round2-elite-fvl-sdk-postponed-v1",
   title: "Aviso sobre a Rodada 2",
@@ -77,6 +84,7 @@ async function route(request, env, requestId) {
   if (url.pathname === "/api/fantasy/me" && request.method === "GET") return getMe(request, env);
   if (url.pathname === "/api/fantasy/config" && request.method === "GET") return getConfig(request, env);
   if (url.pathname === "/api/fantasy/market" && request.method === "GET") return getMarket(request, env);
+  if (url.pathname === "/api/fantasy/draft" && request.method === "GET") return getDraftPredictionData(request, env);
   if (url.pathname === "/api/fantasy/market/control/open" && request.method === "POST") {
     return controlMarketFromDiscord(request, env, requestId, "open");
   }
@@ -85,6 +93,9 @@ async function route(request, env, requestId) {
   }
   if (url.pathname === "/api/fantasy/market/control/access" && request.method === "POST") {
     return controlMarketFromDiscord(request, env, requestId, "access");
+  }
+  if (url.pathname === "/api/fantasy/market/control/schedule" && request.method === "POST") {
+    return controlMarketFromDiscord(request, env, requestId, "schedule");
   }
   if (url.pathname === "/api/fantasy/notices/round-2-postponement" && request.method === "GET") {
     return getRoundTwoPostponementNotice(request, env);
@@ -99,8 +110,13 @@ async function route(request, env, requestId) {
   if (url.pathname === "/api/fantasy/rounds" && request.method === "GET") return listRounds(request, env);
   if (url.pathname === "/api/fantasy/scores/me" && request.method === "GET") return getMyScores(request, env);
   if (url.pathname === "/api/fantasy/history/me" && request.method === "GET") return getMyHistory(request, env);
+  if (url.pathname === "/api/fantasy/feedback" && request.method === "POST") return submitFeedback(request, env);
   if (url.pathname.startsWith("/api/fantasy/admin/")) {
-    return handleAdminRequest(request, env, requestId);
+    const user = await optionalUser(request, env);
+    return handleAdminRequest(request, env, requestId, {
+      user,
+      authorized: Boolean(user && panelAdminIds(env).has(String(user.discordId)))
+    });
   }
   if (env.ASSETS && request.method === "GET" && !url.pathname.startsWith("/api/")) return env.ASSETS.fetch(request);
   return json({ error: "Rota n\xE3o encontrada." }, 404, request, env);
@@ -108,6 +124,7 @@ async function route(request, env, requestId) {
 __name(route, "route");
 async function authLogin(request, env) {
   requireEnv(env, ["DISCORD_CLIENT_ID", "DISCORD_REDIRECT_URI"]);
+  const returnTo = new URL(request.url).searchParams.get("returnTo") === "admin" ? "admin" : "market";
   const state = randomToken(24);
   const discord = new URL("https://discord.com/oauth2/authorize");
   discord.searchParams.set("client_id", env.DISCORD_CLIENT_ID);
@@ -117,6 +134,7 @@ async function authLogin(request, env) {
   discord.searchParams.set("state", state);
   const headers = new Headers({ Location: discord.toString() });
   headers.append("Set-Cookie", cookie(OAUTH_STATE_COOKIE, state, { maxAge: 600, httpOnly: true }));
+  headers.append("Set-Cookie", cookie(OAUTH_RETURN_COOKIE, returnTo, { maxAge: 600, httpOnly: true }));
   return new Response(null, { status: 302, headers });
 }
 __name(authLogin, "authLogin");
@@ -126,8 +144,9 @@ async function authCallback(request, env) {
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const cookies = parseCookies(request.headers.get("Cookie"));
+  const returnTo = cookies[OAUTH_RETURN_COOKIE] === "admin" ? "admin" : "market";
   if (!code || !state || !timingSafeEqual(state, cookies[OAUTH_STATE_COOKIE] || "")) {
-    return redirectWithError(env, "Falha ao validar o login do Discord.");
+    return redirectWithError(request, env, "Falha ao validar o login do Discord.", returnTo);
   }
   const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
     method: "POST",
@@ -141,12 +160,12 @@ async function authCallback(request, env) {
     })
   });
   const tokenData = await tokenResponse.json().catch(() => ({}));
-  if (!tokenResponse.ok || !tokenData.access_token) return redirectWithError(env, "O Discord recusou o login.");
+  if (!tokenResponse.ok || !tokenData.access_token) return redirectWithError(request, env, "O Discord recusou o login.", returnTo);
   const userResponse = await fetch("https://discord.com/api/users/@me", {
     headers: { Authorization: `Bearer ${tokenData.access_token}` }
   });
   const discordUser = await userResponse.json().catch(() => ({}));
-  if (!userResponse.ok || !discordUser.id) return redirectWithError(env, "N\xE3o foi poss\xEDvel consultar seu perfil do Discord.");
+  if (!userResponse.ok || !discordUser.id) return redirectWithError(request, env, "N\xE3o foi poss\xEDvel consultar seu perfil do Discord.", returnTo);
   const userId = `discord:${discordUser.id}`;
   const avatarUrl = discordUser.avatar ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png?size=128` : "";
   await env.DB.prepare(`
@@ -159,12 +178,20 @@ async function authCallback(request, env) {
     SELECT blocked, blocked_reason AS blockedReason FROM fantasy_users WHERE id = ?
   `).bind(userId).first();
   if (Number(account?.blocked) === 1) {
-    return redirectWithError(env, account.blockedReason || "Sua conta está bloqueada no Fantasy.");
+    return redirectWithError(request, env, account.blockedReason || "Sua conta está bloqueada no Fantasy.", returnTo);
   }
   const sessionToken2 = randomToken(40);
   const tokenHash = await sha256(sessionToken2);
   const expiresAt = new Date(Date.now() + SESSION_DAYS * 864e5).toISOString();
   await env.DB.prepare("INSERT INTO fantasy_sessions (token_hash, user_id, expires_at) VALUES (?, ?, ?)").bind(tokenHash, userId, expiresAt).run();
+  if (returnTo === "admin") {
+    const target = new URL("/admin", request.url);
+    const headers = new Headers({ Location: target.toString() });
+    headers.append("Set-Cookie", cookie(OAUTH_STATE_COOKIE, "", { maxAge: 0, httpOnly: true }));
+    headers.append("Set-Cookie", cookie(OAUTH_RETURN_COOKIE, "", { maxAge: 0, httpOnly: true }));
+    headers.append("Set-Cookie", cookie(COOKIE_NAME, sessionToken2, { maxAge: SESSION_DAYS * 86400, httpOnly: true, sameSite: "Lax" }));
+    return new Response(null, { status: 302, headers });
+  }
   const loginCode = randomToken(32);
   const loginCodeHash = await sha256(loginCode);
   const loginCodeExpiresAt = new Date(Date.now() + 2 * 6e4).toISOString();
@@ -175,6 +202,7 @@ async function authCallback(request, env) {
   target.hash = new URLSearchParams({ loginCode }).toString();
   const headers = new Headers({ Location: target.toString() });
   headers.append("Set-Cookie", cookie(OAUTH_STATE_COOKIE, "", { maxAge: 0, httpOnly: true }));
+  headers.append("Set-Cookie", cookie(OAUTH_RETURN_COOKIE, "", { maxAge: 0, httpOnly: true }));
   headers.append("Set-Cookie", cookie(COOKIE_NAME, sessionToken2, { maxAge: SESSION_DAYS * 86400, httpOnly: true, sameSite: "Lax" }));
   return new Response(null, { status: 302, headers });
 }
@@ -207,6 +235,7 @@ async function getMe(request, env) {
     user,
     patrimony,
     isAdmin: user ? adminIds(env).has(String(user.discordId)) : false,
+    canAccessAdminPanel: user ? panelAdminIds(env).has(String(user.discordId)) : false,
     canControlMarket: user ? marketControlIds(env).has(String(user.discordId)) : false
   }, 200, request, env);
 }
@@ -286,7 +315,9 @@ async function controlMarketFromDiscord(request, env, requestId, action) {
     ? await openMarketFromDiscordAdmin(request, env, requestId, actor)
     : action === "close"
       ? await closeMarketFromDiscordAdmin(request, env, requestId, actor)
-      : await setMarketAccessFromDiscordAdmin(request, env, requestId, actor);
+      : action === "schedule"
+        ? await scheduleMarketFromDiscordAdmin(request, env, requestId, actor)
+        : await setMarketAccessFromDiscordAdmin(request, env, requestId, actor);
   return cors(response, request, env);
 }
 __name(controlMarketFromDiscord, "controlMarketFromDiscord");
@@ -328,18 +359,77 @@ async function getMyHistory(request, env) {
   }, 200, request, env);
 }
 __name(getMyHistory, "getMyHistory");
+async function submitFeedback(request, env) {
+  const origin = request.headers.get("Origin") || "";
+  if (origin && !allowedOrigins(request, env).has(origin)) {
+    return json({ error: "Origem não autorizada para enviar mensagens." }, 403, request, env);
+  }
+  const user = await requireUser(request, env);
+  if (user.response) return user.response;
+  if (Number(user.blocked) === 1) {
+    return json({ error: "Sua conta está bloqueada para enviar mensagens ao Fantasy." }, 403, request, env);
+  }
+  const recent = await env.DB.prepare(`
+    SELECT COUNT(*) AS count
+    FROM fantasy_feedback
+    WHERE user_id = ? AND created_at >= datetime('now', '-10 minutes')
+  `).bind(user.id).first();
+  if (Number(recent?.count || 0) >= 5) {
+    return json({ error: "Você enviou várias mensagens em pouco tempo. Aguarde alguns minutos antes de tentar novamente." }, 429, request, env);
+  }
+  const body = await readJson(request);
+  const category = cleanText(body.category).toLowerCase();
+  const allowedCategories = new Set(["suggestion", "question", "complaint", "bug"]);
+  if (!allowedCategories.has(category)) {
+    return json({ error: "Escolha um tipo de mensagem válido." }, 400, request, env);
+  }
+  const subject = cleanText(body.subject);
+  if (subject.length < 5 || subject.length > 120) {
+    return json({ error: "O assunto deve ter entre 5 e 120 caracteres." }, 400, request, env);
+  }
+  const message = cleanText(body.message);
+  if (message.length < 10 || message.length > 2e3) {
+    return json({ error: "A mensagem deve ter entre 10 e 2.000 caracteres." }, 400, request, env);
+  }
+  const rawDivision = cleanText(body.division).toLowerCase();
+  const division = rawDivision ? validDivision(rawDivision) : null;
+  const rawRoundNumber = Number(body.roundNumber);
+  const roundNumber = Number.isInteger(rawRoundNumber) && rawRoundNumber > 0 ? rawRoundNumber : null;
+  const pageView = "market";
+  const id = crypto.randomUUID();
+  await env.DB.prepare(`
+    INSERT INTO fantasy_feedback
+      (id, user_id, category, subject, message, division, round_number, page_view)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `).bind(id, user.id, category, subject, message, division, roundNumber, pageView).run();
+  const created = await env.DB.prepare(`
+    SELECT id, category, subject, status, created_at AS createdAt
+    FROM fantasy_feedback WHERE id = ?
+  `).bind(id).first();
+  return json({
+    feedback: {
+      ...created,
+      protocol: feedbackProtocol(id)
+    }
+  }, 201, request, env);
+}
+__name(submitFeedback, "submitFeedback");
+function feedbackProtocol(id) {
+  return `RK-${String(id || "").replace(/-/g, "").slice(0, 8).toUpperCase()}`;
+}
+__name(feedbackProtocol, "feedbackProtocol");
 async function getConfig(request, env) {
   const division = validDivision(new URL(request.url).searchParams.get("division") || "elite");
   await ensureAutomaticMarketClose(env, new Date(), "request");
   const marketState = await getGlobalMarketState(env);
   const user = await optionalUser(request, env);
-  const visibleMarketState = marketStateForUser(marketState, user, env);
   const round = await currentRound(env, division, marketState?.lock_round_number);
+  const visibleMarketState = marketStateForUser(marketState, user, env, round);
   const compatibleRound = round ? {
     ...round,
     status: visibleMarketState.status === "open" ? "open" : "locked",
     opens_at: marketState?.opened_at || round.opens_at,
-    locks_at: marketState?.closes_at || round.locks_at
+    locks_at: round.locks_at || marketState?.closes_at
   } : null;
   const patrimony = user ? await participantPatrimonyProfile(env, user.id, division) : null;
   const budget = patrimony ? Number(patrimony.currentCents) / 100 : INITIAL_PATRIMONY;
@@ -352,6 +442,65 @@ async function getConfig(request, env) {
   }, 200, request, env);
 }
 __name(getConfig, "getConfig");
+async function getDraftPredictionData(request, env) {
+  const division = validDivision(new URL(request.url).searchParams.get("division") || "elite");
+  const marketState = await getGlobalMarketState(env);
+  const round = await currentRound(env, division, marketState?.lock_round_number);
+  const roundNumber = Math.trunc(Number(round?.round_number || 0));
+  if (!round || roundNumber < DRAFT_PREDICTION_CONFIG.enabledFromRound) {
+    return json({
+      division,
+      enabled: false,
+      enabledFromRound: DRAFT_PREDICTION_CONFIG.enabledFromRound,
+      roundNumber,
+      champions: []
+    }, 200, request, env);
+  }
+  const snapshotRow = await env.DB.prepare(`
+    SELECT round_id AS roundId, generated_from_rounds_json AS generatedFromRoundsJson,
+           generated_at AS generatedAt, source_hash AS sourceHash, totals_json AS totalsJson,
+           position_pick_rates_json AS positionPickRatesJson
+    FROM fantasy_draft_pick_rate_snapshots
+    WHERE round_id = ? AND division = ?
+  `).bind(round.id, division).first();
+  if (!snapshotRow) {
+    return json({ error: "O snapshot congelado do Pick Rate ainda não foi gerado para esta rodada." }, 503, request, env);
+  }
+  const matches = await env.DB.prepare(`
+    SELECT home_team_slot AS homeTeamSlot, away_team_slot AS awayTeamSlot,
+           source_payload_json AS sourcePayloadJson
+    FROM fantasy_matches
+    WHERE division = ? AND round_number = ?
+      AND status NOT IN ('cancelled', 'postponed')
+  `).bind(division, roundNumber).all();
+  const teamSeriesFormats = {};
+  for (const match of matches.results || []) {
+    const payload = parseJsonObject(match.sourcePayloadJson);
+    const format = String(payload.format || (/semi|final/i.test(String(payload.stage || "")) ? "MD5" : "MD3")).toUpperCase() === "MD5"
+      ? "MD5"
+      : "MD3";
+    if (match.homeTeamSlot) teamSeriesFormats[match.homeTeamSlot] = format;
+    if (match.awayTeamSlot) teamSeriesFormats[match.awayTeamSlot] = format;
+  }
+  return json({
+    division,
+    enabled: true,
+    enabledFromRound: DRAFT_PREDICTION_CONFIG.enabledFromRound,
+    roundNumber,
+    config: DRAFT_PREDICTION_CONFIG,
+    snapshot: {
+      roundId: snapshotRow.roundId,
+      generatedFromRounds: JSON.parse(snapshotRow.generatedFromRoundsJson || "[]"),
+      generatedAt: snapshotRow.generatedAt,
+      sourceHash: snapshotRow.sourceHash,
+      totals: JSON.parse(snapshotRow.totalsJson || "{}"),
+      positionPickRates: JSON.parse(snapshotRow.positionPickRatesJson || "{}")
+    },
+    champions: CHAMPION_CATALOG,
+    teamSeriesFormats
+  }, 200, request, env);
+}
+__name(getDraftPredictionData, "getDraftPredictionData");
 async function getMarket(request, env) {
   const division = validDivision(new URL(request.url).searchParams.get("division") || "elite");
   await ensureAutomaticMarketClose(env, new Date(), "request");
@@ -366,9 +515,25 @@ async function getMarket(request, env) {
            last_valuation_breakdown_json AS valuationDetailsJson
     FROM fantasy_market WHERE division = ? AND active = 1 ORDER BY role, price DESC, display_name
   `).bind(division).all();
+  const latestScoredRound = await env.DB.prepare(`
+    SELECT MAX(round_number) AS roundNumber
+    FROM fantasy_rounds
+    WHERE division = ? AND status = 'scored'
+  `).bind(division).first();
+  const roundMatchesResult = round ? await env.DB.prepare(`
+    SELECT home_team_slot AS homeTeamSlot, away_team_slot AS awayTeamSlot,
+           home_team_name AS homeTeamName, away_team_name AS awayTeamName
+    FROM fantasy_matches
+    WHERE division = ? AND round_number = ?
+      AND status NOT IN ('cancelled', 'postponed')
+    ORDER BY order_index, starts_at
+  `).bind(division, round.round_number).all() : { results: [] };
   const performanceRoundNumber = Math.max(
     0,
-    Math.trunc(Number(round?.round_number || marketState?.lock_round_number || 0)) - 1
+    Math.trunc(Number(
+      latestScoredRound?.roundNumber
+      || (Number(round?.round_number || marketState?.lock_round_number || 0) - 1)
+    ))
   );
   const recentResult = await env.DB.prepare(`
     SELECT s.asset_id AS id, ROUND(s.points, 2) AS points
@@ -383,11 +548,16 @@ async function getMarket(request, env) {
     if (!recent.has(id)) recent.set(id, [roundMoney(row.points)]);
   }
   const marketRows = result.results || [];
-  const matchups = buildRoundMatchups(marketRows, round);
+  const roundMatches = roundMatchesResult.results || [];
+  const matchups = buildRoundMatchups(marketRows, roundMatches);
   const market = marketRows.map((row) => {
     const opponent = matchups.get(String(row.teamSlot));
+    const availability = marketAssetAvailability(round, row.teamSlot, roundMatches);
     return {
       ...row,
+      selectable: availability.selectable,
+      availabilityStatus: availability.status,
+      availabilityLabel: availability.label,
       previousPrice: Number(row.previousPrice) || Number(row.price) || 0,
       priceDelta: roundMoney((Number(row.price) || 0) - (Number(row.previousPrice) || Number(row.price) || 0)),
       opponentName: opponent?.teamName || "",
@@ -408,32 +578,45 @@ async function getMarket(request, env) {
     division,
     performanceRoundNumber,
     market,
-    marketState: marketStateForUser(marketState, user, env)
+    marketState: marketStateForUser(marketState, user, env, round)
   }, 200, request, env);
 }
 __name(getMarket, "getMarket");
-function buildRoundMatchups(marketRows, round) {
+function buildRoundMatchups(marketRows, roundMatches = []) {
   const bySlot = /* @__PURE__ */ new Map();
   for (const row of marketRows) {
     if (!row.teamSlot || bySlot.has(String(row.teamSlot))) continue;
     bySlot.set(String(row.teamSlot), { teamSlot: String(row.teamSlot), teamName: row.teamName, teamTag: row.teamTag });
   }
-  const roundNumber = Math.max(1, Math.trunc(Number(round?.round_number || round?.roundNumber || 1)));
-  const groupPairs = roundNumber % 3 === 2 ? [["1", "3"], ["2", "4"]] : roundNumber % 3 === 0 ? [["2", "3"], ["4", "1"]] : [["1", "2"], ["3", "4"]];
   const matchups = /* @__PURE__ */ new Map();
-  for (const group of ["A", "B", "C", "D"]) {
-    for (const [left, right] of groupPairs) {
-      const home = `${group}${left}`;
-      const away = `${group}${right}`;
-      if (bySlot.has(home) && bySlot.has(away)) {
-        matchups.set(home, bySlot.get(away));
-        matchups.set(away, bySlot.get(home));
-      }
+  for (const match of roundMatches) {
+    const home = String(match.homeTeamSlot || "");
+    const away = String(match.awayTeamSlot || "");
+    if (bySlot.has(home) && bySlot.has(away)) {
+      matchups.set(home, bySlot.get(away));
+      matchups.set(away, bySlot.get(home));
     }
   }
   return matchups;
 }
 __name(buildRoundMatchups, "buildRoundMatchups");
+function marketAssetAvailability(round, teamSlot, roundMatches = []) {
+  const roundNumber = Math.trunc(Number(round?.round_number || round?.roundNumber || 0));
+  if (roundNumber < 4) return { selectable: true, status: "playing", label: "" };
+  const slot = String(teamSlot || "");
+  const statuses = parseJsonObject(round?.eligibility_json).teamStatuses || {};
+  const scheduled = roundMatches.some((match) =>
+    String(match.homeTeamSlot || "") === slot || String(match.awayTeamSlot || "") === slot
+  );
+  const status = scheduled ? "playing" : String(statuses[slot] || "unavailable");
+  if (status === "playing") return { selectable: true, status, label: "Joga a rodada 4" };
+  if (status === "qualified-next-round") {
+    return { selectable: false, status, label: "Classificado para a rodada 5" };
+  }
+  if (status === "eliminated") return { selectable: false, status, label: "Eliminado dos playoffs" };
+  return { selectable: false, status: "unavailable", label: "Não disputa a rodada 4" };
+}
+__name(marketAssetAvailability, "marketAssetAvailability");
 async function getPopularPicks(request, env) {
   const division = validDivision(new URL(request.url).searchParams.get("division") || "elite");
   const marketState = await getGlobalMarketState(env);
@@ -519,7 +702,22 @@ async function getCurrentLineup(request, env) {
   if (!lineup) return json({ division, round, patrimony, team, lineup: null }, 200, request, env);
   const picks = await env.DB.prepare("SELECT role, asset_id AS id, price_paid AS price, team_slot AS teamSlot FROM fantasy_lineup_picks WHERE lineup_id = ?").bind(lineup.id).all();
   const reserve = await env.DB.prepare("SELECT role, asset_id AS id, price_paid AS price, team_slot AS teamSlot FROM fantasy_lineup_reserves WHERE lineup_id = ?").bind(lineup.id).first();
-  return json({ division, round, patrimony, team, lineup: { ...lineup, picks: picks.results || [], reserve: reserve || null } }, 200, request, env);
+  const predictions = await env.DB.prepare(`
+    SELECT role, player_asset_id AS playerAssetId, mode, champion_id AS championId,
+           map_number AS mapNumber, pick_rate_position AS pickRatePosition,
+           pick_rate_at_lock AS pickRateAtLock, multiplier_at_lock AS multiplierAtLock,
+           base_reward AS baseReward, possible_reward AS possibleReward,
+           miss_penalty AS missPenalty, status, result_score AS resultScore
+    FROM fantasy_lineup_draft_predictions
+    WHERE lineup_id = ? ORDER BY role
+  `).bind(lineup.id).all();
+  return json({
+    division,
+    round,
+    patrimony,
+    team,
+    lineup: { ...lineup, picks: picks.results || [], reserve: reserve || null, draftPredictions: predictions.results || [] }
+  }, 200, request, env);
 }
 __name(getCurrentLineup, "getCurrentLineup");
 async function saveCurrentLineup(request, env) {
@@ -530,15 +728,18 @@ async function saveCurrentLineup(request, env) {
   const division = validDivision(body.division);
   await ensureAutomaticMarketClose(env, new Date(), "lineup-write");
   const marketState = await getGlobalMarketState(env);
-  if (!isGlobalMarketOpen(marketState)) return json({ error: "O mercado global está fechado para as duas divisões." }, 409, request, env);
-  if (!isMarketOpenForUser(marketState, user, env)) {
+  const round = await currentRound(env, division, marketState?.lock_round_number);
+  if (!round) return json({ error: "Nenhuma rodada disponível." }, 409, request, env);
+  if (!isDivisionMarketOpen(marketState, round)) {
+    return json({ error: `O mercado da Divisão ${division === "elite" ? "Elite" : "Ascensão"} está fechado.` }, 409, request, env);
+  }
+  if (!isMarketOpenForUser(marketState, user, env, round)) {
     return json({ error: "O mercado está temporariamente aberto apenas para a administração." }, 403, request, env);
   }
-  const round = await currentRound(env, division, marketState.lock_round_number);
-  if (!round) return json({ error: "Nenhuma rodada dispon\xEDvel." }, 409, request, env);
   const teamName = cleanText(body.teamName).slice(0, 32);
   const picks = Array.isArray(body.picks) ? body.picks : [];
   const reservePick = body.reserve && cleanText(body.reserve.id) ? body.reserve : null;
+  const draftInputs = Array.isArray(body.draftPredictions) ? body.draftPredictions : [];
   const captainId = cleanText(body.captainPlayerId);
   if (!teamName) return json({ error: "Informe o nome do seu time." }, 400, request, env);
   if (picks.length !== 6) return json({ error: "A escala\xE7\xE3o deve possuir exatamente seis escolhas." }, 400, request, env);
@@ -548,6 +749,8 @@ async function saveCurrentLineup(request, env) {
   for (const pick of picks) {
     const row = await env.DB.prepare("SELECT * FROM fantasy_market WHERE division = ? AND asset_id = ? AND active = 1").bind(division, cleanText(pick.id)).first();
     if (!row || row.role !== cleanText(pick.role).toUpperCase()) return json({ error: "Uma escolha n\xE3o est\xE1 dispon\xEDvel no mercado." }, 400, request, env);
+    const availability = marketAssetAvailability(round, row.team_slot);
+    if (!availability.selectable) return json({ error: `${row.display_name} não pode ser escalado: ${availability.label.toLowerCase()}.` }, 400, request, env);
     marketRows.push(row);
   }
   const playerTeamCounts = /* @__PURE__ */ new Map();
@@ -564,10 +767,55 @@ async function saveCurrentLineup(request, env) {
   if (reservePick) {
     reserveRow = await env.DB.prepare("SELECT * FROM fantasy_market WHERE division = ? AND asset_id = ? AND active = 1").bind(division, cleanText(reservePick.id)).first();
     if (!reserveRow || reserveRow.asset_type !== "player") return json({ error: "O reserva precisa ser um jogador dispon\xEDvel no mercado." }, 400, request, env);
+    const reserveAvailability = marketAssetAvailability(round, reserveRow.team_slot);
+    if (!reserveAvailability.selectable) return json({ error: `${reserveRow.display_name} não pode ser reserva: ${reserveAvailability.label.toLowerCase()}.` }, 400, request, env);
     if (marketRows.some((row) => row.asset_id === reserveRow.asset_id)) return json({ error: "O reserva n\xE3o pode ser um dos titulares." }, 400, request, env);
     const reserveBudget = reserveBudgetForPatrimony(marketRows, budget);
     if (Number(reserveRow.price) > reserveBudget + 1e-3) return json({ error: `Seu limite para reserva \xE9 RK$ ${formatMoney(reserveBudget)}.` }, 400, request, env);
     if ((playerTeamCounts.get(reserveRow.team_slot) || 0) >= MAX_PLAYERS_PER_REAL_TEAM) return json({ error: "Escolha um reserva de uma equipe com no m\xE1ximo um jogador titular no seu time." }, 400, request, env);
+  }
+  const lockedDraftPredictions = [];
+  if (Number(round.round_number) >= DRAFT_PREDICTION_CONFIG.enabledFromRound) {
+    const snapshotRow = await env.DB.prepare(`
+      SELECT position_pick_rates_json AS positionPickRatesJson
+      FROM fantasy_draft_pick_rate_snapshots
+      WHERE round_id = ? AND division = ?
+    `).bind(round.id, division).first();
+    if (!snapshotRow) return json({ error: "O snapshot do Palpite de Draft não está disponível para esta rodada." }, 409, request, env);
+    const snapshot = { positionPickRates: JSON.parse(snapshotRow.positionPickRatesJson || "{}") };
+    const matchRows = await env.DB.prepare(`
+      SELECT home_team_slot AS homeTeamSlot, away_team_slot AS awayTeamSlot,
+             source_payload_json AS sourcePayloadJson
+      FROM fantasy_matches
+      WHERE division = ? AND round_number = ?
+        AND status NOT IN ('cancelled', 'postponed')
+    `).bind(division, round.round_number).all();
+    const teamFormats = new Map();
+    for (const match of matchRows.results || []) {
+      const sourcePayload = parseJsonObject(match.sourcePayloadJson);
+      const format = String(sourcePayload.format || (/semi|final/i.test(String(sourcePayload.stage || "")) ? "MD5" : "MD3")).toUpperCase();
+      teamFormats.set(String(match.homeTeamSlot), format);
+      teamFormats.set(String(match.awayTeamSlot), format);
+    }
+    for (const row of marketRows.filter((item) => item.asset_type === "player")) {
+      const input = draftInputs.find((item) => cleanText(item.role).toUpperCase() === row.role && cleanText(item.playerAssetId || item.id) === row.asset_id);
+      if (!input) return json({ error: `Escolha o Palpite de Draft de ${row.display_name}.` }, 400, request, env);
+      try {
+        lockedDraftPredictions.push({
+          role: row.role,
+          playerAssetId: row.asset_id,
+          ...lockDraftPrediction({
+            input,
+            role: row.role,
+            seriesFormat: teamFormats.get(String(row.team_slot)) || "MD3",
+            snapshot,
+            catalog: CHAMPION_CATALOG
+          })
+        });
+      } catch (error) {
+        return json({ error: `${row.display_name}: ${error.message}` }, 400, request, env);
+      }
+    }
   }
   const fantasyTeamId = await ensureFantasyTeam(env, user.id, division, teamName);
   const existing = await env.DB.prepare("SELECT id FROM fantasy_lineups WHERE fantasy_team_id = ? AND round_id = ?").bind(fantasyTeamId, round.id).first();
@@ -579,13 +827,38 @@ async function saveCurrentLineup(request, env) {
       ON CONFLICT(fantasy_team_id, round_id) DO UPDATE SET captain_asset_id=excluded.captain_asset_id, total_cost=excluded.total_cost, updated_at=CURRENT_TIMESTAMP
     `).bind(lineupId, fantasyTeamId, round.id, captainId, totalCost),
     env.DB.prepare("DELETE FROM fantasy_lineup_picks WHERE lineup_id = ?").bind(lineupId),
-    env.DB.prepare("DELETE FROM fantasy_lineup_reserves WHERE lineup_id = ?").bind(lineupId)
+    env.DB.prepare("DELETE FROM fantasy_lineup_reserves WHERE lineup_id = ?").bind(lineupId),
+    env.DB.prepare("DELETE FROM fantasy_lineup_draft_predictions WHERE lineup_id = ?").bind(lineupId)
   ];
   for (const row of marketRows) {
     statements.push(env.DB.prepare("INSERT INTO fantasy_lineup_picks (lineup_id, role, asset_id, price_paid, team_slot) VALUES (?, ?, ?, ?, ?)").bind(lineupId, row.role, row.asset_id, row.price, row.team_slot));
   }
   if (reserveRow) {
     statements.push(env.DB.prepare("INSERT INTO fantasy_lineup_reserves (lineup_id, role, asset_id, price_paid, team_slot) VALUES (?, ?, ?, ?, ?)").bind(lineupId, reserveRow.role, reserveRow.asset_id, reserveRow.price, reserveRow.team_slot));
+  }
+  for (const prediction of lockedDraftPredictions) {
+    statements.push(env.DB.prepare(`
+      INSERT INTO fantasy_lineup_draft_predictions
+        (lineup_id, role, player_asset_id, mode, champion_id, map_number,
+         pick_rate_position, pick_rate_at_lock, multiplier_at_lock, base_reward,
+         possible_reward, miss_penalty, status, result_score, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+    `).bind(
+      lineupId,
+      prediction.role,
+      prediction.playerAssetId,
+      prediction.mode,
+      prediction.championId,
+      prediction.mapNumber,
+      prediction.pickRatePosition,
+      prediction.pickRateAtLock,
+      prediction.multiplierAtLock,
+      prediction.baseReward,
+      prediction.possibleReward,
+      prediction.missPenalty,
+      prediction.status,
+      prediction.resultScore
+    ));
   }
   await env.DB.batch(statements);
   return json({ ok: true, lineupId, roundId: round.id, patrimonyCents: Number(patrimony.current_cents), totalCost, reserveBudget: reserveBudgetForPatrimony(marketRows, budget), reserveCost: reserveRow ? Number(reserveRow.price) : 0 }, 200, request, env);
@@ -899,7 +1172,7 @@ async function currentRound(env, division, roundNumber = null) {
 __name(currentRound, "currentRound");
 function isRoundOpen(round) {
   const now = Date.now();
-  return round && round.status === "open" && now >= Date.parse(round.opens_at) && now < Date.parse(round.locks_at);
+  return round && round.status === "open" && now < Date.parse(round.locks_at);
 }
 __name(isRoundOpen, "isRoundOpen");
 function isGlobalMarketOpen(marketState) {
@@ -912,15 +1185,29 @@ function isGlobalMarketOpen(marketState) {
   );
 }
 __name(isGlobalMarketOpen, "isGlobalMarketOpen");
-function isMarketOpenForUser(marketState, user, env) {
-  if (!isGlobalMarketOpen(marketState)) return false;
+function isDivisionMarketOpen(marketState, round) {
+  return isGlobalMarketOpen(marketState) && isRoundOpen(round);
+}
+__name(isDivisionMarketOpen, "isDivisionMarketOpen");
+function isMarketOpenForUser(marketState, user, env, round = null) {
+  if (round ? !isDivisionMarketOpen(marketState, round) : !isGlobalMarketOpen(marketState)) return false;
   if (String(marketState?.access_mode || "public") !== "admin") return true;
   return Boolean(user && marketControlIds(env).has(String(user.discordId)));
 }
 __name(isMarketOpenForUser, "isMarketOpenForUser");
-function marketStateForUser(marketState, user, env) {
-  const visible = publicMarketState(marketState);
-  if (visible.accessMode !== "admin" || isMarketOpenForUser(marketState, user, env)) return visible;
+function marketStateForUser(marketState, user, env, round = null) {
+  const base = publicMarketState(marketState);
+  const divisionOpen = round ? isDivisionMarketOpen(marketState, round) : isGlobalMarketOpen(marketState);
+  const visible = round ? {
+    ...base,
+    status: divisionOpen ? "open" : "closed",
+    closesAt: round.locks_at || base.closesAt,
+    lockDivision: round.division || base.lockDivision,
+    closeReason: divisionOpen
+      ? base.closeReason
+      : `Mercado da Divisão ${round.division === "elite" ? "Elite" : "Ascensão"} fechado para esta rodada.`
+  } : base;
+  if (visible.accessMode !== "admin" || isMarketOpenForUser(marketState, user, env, round)) return visible;
   return {
     ...visible,
     status: "closed",
@@ -1025,6 +1312,13 @@ function adminIds(env) {
   return new Set(String(env.ADMIN_DISCORD_IDS || "").split(",").map((value) => value.trim()).filter(Boolean));
 }
 __name(adminIds, "adminIds");
+function panelAdminIds(env) {
+  const configured = String(env.ADMIN_PANEL_DISCORD_IDS || "").trim();
+  if (configured) return new Set(configured.split(",").map((value) => value.trim()).filter(Boolean));
+  const marketControllers = marketControlIds(env);
+  return marketControllers.size ? marketControllers : adminIds(env);
+}
+__name(panelAdminIds, "panelAdminIds");
 function marketControlIds(env) {
   return new Set(String(env.MARKET_CONTROL_DISCORD_IDS || "").split(",").map((value) => value.trim()).filter(Boolean));
 }
@@ -1139,10 +1433,14 @@ function initialPrice(id, role) {
   return roundMoney(base + Math.abs(hash >>> 0) % 800 / 100);
 }
 __name(initialPrice, "initialPrice");
-function redirectWithError(env, message) {
-  const target = siteEntryUrl(env);
-  target.hash = new URLSearchParams({ loginError: message }).toString();
-  return new Response(null, { status: 302, headers: { Location: target.toString(), "Set-Cookie": cookie(OAUTH_STATE_COOKIE, "", { maxAge: 0, httpOnly: true }) } });
+function redirectWithError(request, env, message, returnTo = "market") {
+  const target = returnTo === "admin" ? new URL("/admin", request.url) : siteEntryUrl(env);
+  if (returnTo === "admin") target.searchParams.set("authError", message);
+  else target.hash = new URLSearchParams({ loginError: message }).toString();
+  const headers = new Headers({ Location: target.toString() });
+  headers.append("Set-Cookie", cookie(OAUTH_STATE_COOKIE, "", { maxAge: 0, httpOnly: true }));
+  headers.append("Set-Cookie", cookie(OAUTH_RETURN_COOKIE, "", { maxAge: 0, httpOnly: true }));
+  return new Response(null, { status: 302, headers });
 }
 __name(redirectWithError, "redirectWithError");
 function siteEntryUrl(env) {

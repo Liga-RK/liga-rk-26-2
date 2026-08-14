@@ -2,24 +2,18 @@
 
 ## Configuração administrativa
 
-Gere o hash localmente, sem colocar a senha na linha de comando:
+O painel usa a mesma autenticação Discord do Fantasy. Defina no Worker:
 
-```powershell
-node .\scripts\generate-admin-password-hash.mjs
-```
-
-Defina no Worker:
-
-- `ADMIN_USERNAME`: `Cress Albane`;
-- `ADMIN_PASSWORD_HASH`: resultado completo do gerador;
-- `ADMIN_RATE_LIMIT_SALT`: segredo aleatório longo;
-- `DISCORD_CLIENT_ID` e `DISCORD_CLIENT_SECRET`: credenciais já usadas pelo
-  login público;
+- `ADMIN_PANEL_DISCORD_IDS`: IDs que podem acessar o painel (em produção,
+  somente o Discord de Cress Albane);
+- `DISCORD_CLIENT_ID` e `DISCORD_CLIENT_SECRET`: credenciais do login público;
 - `SITE_URL`, `ALLOWED_ORIGINS` e `FANTASY_SOURCE_URL`: definidos no
   `wrangler.toml`.
 
-`ADMIN_PASSWORD_HASH`, `ADMIN_RATE_LIMIT_SALT` e `DISCORD_CLIENT_SECRET` devem
-ser secrets do Worker. Não os coloque em `wrangler.toml`.
+`DISCORD_CLIENT_SECRET` deve permanecer como secret do Worker. O login antigo
+por usuário e senha fica desativado por padrão e só existe para compatibilidade
+controlada quando `ADMIN_PASSWORD_LOGIN_ENABLED=true` for definido
+explicitamente.
 
 ## Fluxo de uma nova rodada
 
