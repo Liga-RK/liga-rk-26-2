@@ -110,6 +110,7 @@ async function route(request, env, requestId) {
   if (url.pathname === "/api/fantasy/rounds" && request.method === "GET") return listRounds(request, env);
   if (url.pathname === "/api/fantasy/scores/me" && request.method === "GET") return getMyScores(request, env);
   if (url.pathname === "/api/fantasy/history/me" && request.method === "GET") return getMyHistory(request, env);
+  if (url.pathname === "/api/fantasy/feedback" && request.method === "POST") return submitFeedback(request, env);
   if (url.pathname.startsWith("/api/fantasy/admin/")) {
     const user = await optionalUser(request, env);
     return handleAdminRequest(request, env, requestId, {
@@ -358,6 +359,65 @@ async function getMyHistory(request, env) {
   }, 200, request, env);
 }
 __name(getMyHistory, "getMyHistory");
+async function submitFeedback(request, env) {
+  const origin = request.headers.get("Origin") || "";
+  if (origin && !allowedOrigins(request, env).has(origin)) {
+    return json({ error: "Origem não autorizada para enviar mensagens." }, 403, request, env);
+  }
+  const user = await requireUser(request, env);
+  if (user.response) return user.response;
+  if (Number(user.blocked) === 1) {
+    return json({ error: "Sua conta está bloqueada para enviar mensagens ao Fantasy." }, 403, request, env);
+  }
+  const recent = await env.DB.prepare(`
+    SELECT COUNT(*) AS count
+    FROM fantasy_feedback
+    WHERE user_id = ? AND created_at >= datetime('now', '-10 minutes')
+  `).bind(user.id).first();
+  if (Number(recent?.count || 0) >= 5) {
+    return json({ error: "Você enviou várias mensagens em pouco tempo. Aguarde alguns minutos antes de tentar novamente." }, 429, request, env);
+  }
+  const body = await readJson(request);
+  const category = cleanText(body.category).toLowerCase();
+  const allowedCategories = new Set(["suggestion", "question", "complaint", "bug"]);
+  if (!allowedCategories.has(category)) {
+    return json({ error: "Escolha um tipo de mensagem válido." }, 400, request, env);
+  }
+  const subject = cleanText(body.subject);
+  if (subject.length < 5 || subject.length > 120) {
+    return json({ error: "O assunto deve ter entre 5 e 120 caracteres." }, 400, request, env);
+  }
+  const message = cleanText(body.message);
+  if (message.length < 10 || message.length > 2e3) {
+    return json({ error: "A mensagem deve ter entre 10 e 2.000 caracteres." }, 400, request, env);
+  }
+  const rawDivision = cleanText(body.division).toLowerCase();
+  const division = rawDivision ? validDivision(rawDivision) : null;
+  const rawRoundNumber = Number(body.roundNumber);
+  const roundNumber = Number.isInteger(rawRoundNumber) && rawRoundNumber > 0 ? rawRoundNumber : null;
+  const pageView = "market";
+  const id = crypto.randomUUID();
+  await env.DB.prepare(`
+    INSERT INTO fantasy_feedback
+      (id, user_id, category, subject, message, division, round_number, page_view)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `).bind(id, user.id, category, subject, message, division, roundNumber, pageView).run();
+  const created = await env.DB.prepare(`
+    SELECT id, category, subject, status, created_at AS createdAt
+    FROM fantasy_feedback WHERE id = ?
+  `).bind(id).first();
+  return json({
+    feedback: {
+      ...created,
+      protocol: feedbackProtocol(id)
+    }
+  }, 201, request, env);
+}
+__name(submitFeedback, "submitFeedback");
+function feedbackProtocol(id) {
+  return `RK-${String(id || "").replace(/-/g, "").slice(0, 8).toUpperCase()}`;
+}
+__name(feedbackProtocol, "feedbackProtocol");
 async function getConfig(request, env) {
   const division = validDivision(new URL(request.url).searchParams.get("division") || "elite");
   await ensureAutomaticMarketClose(env, new Date(), "request");

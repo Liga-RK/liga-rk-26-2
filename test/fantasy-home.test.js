@@ -36,6 +36,24 @@ test("Fantasy account action signs out instead of switching accounts", () => {
   assert.doesNotMatch(script, /state\.userName \? "Trocar"/);
 });
 
+test("Canal de contato aparece apenas para jogador logado no Mercado e chega ao painel", () => {
+  for (const relativePath of pages) {
+    const html = fs.readFileSync(path.join(root, relativePath), "utf8");
+    assert.match(html, /id="market-feedback-button"[^>]*hidden>Fale com a organização<\/button>/);
+    assert.match(html, /id="feedback-header-button"[^>]*hidden>Contato<\/button>/);
+    assert.match(html, /id="feedback-dialog"/);
+    assert.match(html, /Reportar um bug/);
+    assert.match(html, /visível somente para a administração/);
+  }
+  assert.match(script, /const loggedInMarket = Boolean\(state\.userName && state\.view === "market"\)/);
+  assert.match(script, /marketFeedbackButton\.hidden = !loggedInMarket \|\| !open/);
+  assert.match(script, /feedbackHeaderButton\.hidden = !loggedInMarket \|\| !marketKnown \|\| open/);
+  assert.match(script, /apiFetch\("\/api\/fantasy\/feedback"/);
+  assert.match(workerScript, /url\.pathname === "\/api\/fantasy\/feedback"/);
+  assert.match(adminHtml, /data-panel="feedback"/);
+  assert.match(adminScript, /async function loadFeedback\(\)/);
+});
+
 test("Login pelo Discord abre o mercado depois da autenticação", () => {
   const initSource = script.match(/async function init\(\) \{[\s\S]*?\n  \}/)?.[0] || "";
   const loginSource = script.match(/async function completeCloudLogin\(\) \{[\s\S]*?\n  \}/)?.[0] || "";

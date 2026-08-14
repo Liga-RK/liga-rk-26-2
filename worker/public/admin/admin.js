@@ -12,6 +12,7 @@
     players: "Jogadores",
     teams: "Equipes",
     users: "Usuários",
+    feedback: "Mensagens dos jogadores",
     lineups: "Escalações",
     operations: "Auditoria e backups"
   };
@@ -25,6 +26,7 @@
     simulations: [],
     scores: [],
     lineups: [],
+    feedback: [],
     edit: null
   };
   const initialAuthError = new URLSearchParams(location.search).get("authError") || "";
@@ -62,11 +64,12 @@
       el.scoreDivision, el.scoreRound,
       el.playerDivision, el.playerSearch,
       el.teamDivision, el.userSearch,
+      el.feedbackStatus, el.feedbackCategory, el.feedbackSearch,
       el.lineupDivision, el.lineupRound
     ].filter(Boolean).forEach((input) =>
       input.addEventListener("change", () => loadPanel(state.activePanel))
     );
-    [el.playerSearch, el.userSearch].filter(Boolean).forEach((input) =>
+    [el.playerSearch, el.userSearch, el.feedbackSearch].filter(Boolean).forEach((input) =>
       input.addEventListener("input", debounce(() => loadPanel(state.activePanel), 350))
     );
     document.addEventListener("click", handleActionClick);
@@ -145,6 +148,7 @@
       if (panel === "players") await loadPlayers();
       if (panel === "teams") await loadTeams();
       if (panel === "users") await loadUsers();
+      if (panel === "feedback") await loadFeedback();
       if (panel === "lineups") await loadLineups();
       if (panel === "operations") await Promise.all([loadBackups(), loadAudit(), loadErrors()]);
       setMessage(el.globalMessage, "");
@@ -167,11 +171,14 @@
       rounds: "Rodadas",
       imports: "Importações",
       errors: "Erros registrados",
-      backups: "Backups"
+      backups: "Backups",
+      feedback: "Mensagens recebidas",
+      newFeedback: "Mensagens novas"
     };
     el.overviewCards.innerHTML = Object.entries(data.counts || {}).map(([key, value]) =>
       `<article class="metric"><span>${escapeHtml(labels[key] || key)}</span><strong>${number(value)}</strong></article>`
     ).join("");
+    updateFeedbackNavCount(data.counts?.newFeedback || 0);
     el.overviewState.innerHTML = [
       detail("Mercado", marketLabel(data.market)),
       detail("Rodada global", data.market?.roundNumber || "—"),
@@ -706,6 +713,39 @@
     );
   }
 
+  async function loadFeedback() {
+    const query = queryString({
+      status: el.feedbackStatus.value,
+      category: el.feedbackCategory.value,
+      q: el.feedbackSearch.value,
+      limit: 500
+    });
+    const data = await api(`/feedback?${query}`);
+    state.feedback = data.feedback || [];
+    updateFeedbackNavCount(data.newCount || 0);
+    const statusLabels = { new: "Nova", reviewing: "Em análise", resolved: "Resolvida" };
+    const categoryLabels = { suggestion: "Sugestão", question: "Dúvida", complaint: "Reclamação", bug: "Bug" };
+    el.feedbackTable.innerHTML = table(
+      ["Status", "Tipo", "Jogador", "Mensagem", "Contexto", "Enviada", ""],
+      state.feedback.map((row) => [
+        `<span class="${row.status === "resolved" ? "positive" : row.status === "new" ? "negative" : "warning"}">${escapeHtml(statusLabels[row.status] || row.status)}</span>`,
+        escapeHtml(categoryLabels[row.category] || row.category),
+        `<strong>${escapeHtml(row.username)}</strong><br><code>${escapeHtml(row.discordId)}</code>`,
+        `<div class="feedback-message"><strong>${escapeHtml(row.subject)}</strong><p>${escapeHtml(row.message)}</p><small>Protocolo ${escapeHtml(row.protocol)}</small></div>`,
+        `<div class="feedback-context"><span>${escapeHtml(divisionAdminLabel(row.division))}${row.roundNumber ? ` · Rodada ${number(row.roundNumber)}` : ""}</span><small>${escapeHtml(row.pageView === "market" ? "Página do Mercado" : row.pageView)}</small></div>`,
+        dateTime(row.createdAt),
+        actionButton(row.status === "new" ? "Atender" : "Abrir", "edit-feedback", row.id)
+      ])
+    );
+  }
+
+  function updateFeedbackNavCount(count) {
+    if (!el.feedbackNavCount) return;
+    const value = Math.max(0, Number(count) || 0);
+    el.feedbackNavCount.textContent = value > 99 ? "99+" : String(value);
+    el.feedbackNavCount.hidden = value === 0;
+  }
+
   async function loadLineups() {
     const query = queryString({
       division: el.lineupDivision.value,
@@ -790,6 +830,7 @@
     if (name === "edit-score") return openScoreEdit(id);
     if (name === "edit-player") return openPlayerEdit(id);
     if (name === "edit-team") return openTeamEdit(id);
+    if (name === "edit-feedback") return openFeedbackEdit(id);
     if (name === "edit-lineup") return openLineupEdit(id);
     if (name === "toggle-user") return toggleUser(id);
     if (name === "reset-formula") return resetFormula();
@@ -864,6 +905,22 @@
       field("captainAssetId", "ID do capitão", "text", row.captainAssetId || ""),
       field("reserveAssetId", "ID do reserva (opcional)", "text", row.reserve?.assetId || ""),
       field("reason", "Motivo", "text", "Correção administrativa")
+    ]);
+  }
+
+  function openFeedbackEdit(id) {
+    const row = state.feedback.find((item) => item.id === id);
+    if (!row) return;
+    const categoryLabels = { suggestion: "Sugestão", question: "Dúvida", complaint: "Reclamação", bug: "Relato de bug" };
+    const context = `${categoryLabels[row.category] || row.category} · ${row.username} · ${row.protocol}\n\n${row.subject}\n${row.message}`;
+    openEdit("feedback", id, `Atender ${row.protocol}`, [
+      `<div class="feedback-dialog-context">${escapeHtml(context)}</div>`,
+      field("status", "Status", "select", row.status, [
+        { value: "new", label: "Nova" },
+        { value: "reviewing", label: "Em análise" },
+        { value: "resolved", label: "Resolvida" }
+      ]),
+      field("adminNote", "Anotação interna (não aparece para o jogador)", "textarea", row.adminNote || "")
     ]);
   }
 
@@ -970,7 +1027,7 @@
       if (edit.type === "score") {
         await api("/scores/correct", { method: "POST", body });
       } else {
-        const endpoint = edit.type === "match" ? "matches" : `${edit.type}s`;
+        const endpoint = edit.type === "match" ? "matches" : edit.type === "feedback" ? "feedback" : `${edit.type}s`;
         await api(`/${endpoint}/${encodeURIComponent(edit.id)}`, { method: "PUT", body });
       }
       await loadPanel(state.activePanel);
@@ -1039,8 +1096,15 @@
   function field(name, label, type, value, options = []) {
     if (type === "select") {
       return `<label>${escapeHtml(label)}<select name="${escapeAttr(name)}">${
-        options.map((option) => `<option value="${escapeAttr(option)}"${String(option) === String(value) ? " selected" : ""}>${escapeHtml(option)}</option>`).join("")
+        options.map((option) => {
+          const optionValue = typeof option === "object" ? option.value : option;
+          const optionLabel = typeof option === "object" ? option.label : option;
+          return `<option value="${escapeAttr(optionValue)}"${String(optionValue) === String(value) ? " selected" : ""}>${escapeHtml(optionLabel)}</option>`;
+        }).join("")
       }</select></label>`;
+    }
+    if (type === "textarea") {
+      return `<label>${escapeHtml(label)}<textarea name="${escapeAttr(name)}" rows="6" maxlength="2000">${escapeHtml(value)}</textarea></label>`;
     }
     const step = type === "number" ? ` step="0.01"` : "";
     return `<label>${escapeHtml(label)}<input name="${escapeAttr(name)}" type="${escapeAttr(type)}"${step} value="${escapeAttr(value)}"></label>`;
@@ -1066,6 +1130,12 @@
 
   function marketLabel(market) {
     return market?.status === "open" ? "ABERTO" : "FECHADO";
+  }
+
+  function divisionAdminLabel(division) {
+    if (division === "elite") return "Divisão Elite";
+    if (division === "ascension") return "Divisão Ascensão";
+    return "Divisão não informada";
   }
 
   function dateTime(value) {

@@ -70,6 +70,7 @@
     draftDialog: { item: null, mode: "NONE", championId: "", mapNumber: null, editing: false },
     autoLineup: { strategy: "balanced", preview: null },
     autoDraftReview: { active: false, roles: [], completed: 0, total: 0 },
+    feedbackBusy: false,
     loaded: false
   };
 
@@ -127,6 +128,7 @@
     fantasyTeamName: document.getElementById("fantasy-team-name"),
     accountButton: document.getElementById("account-button"),
     accountLabel: document.getElementById("account-label"),
+    feedbackHeaderButton: document.getElementById("feedback-header-button"),
     adminPanelLink: document.getElementById("admin-panel-link"),
     homeLoginButton: document.getElementById("home-login-button"),
     accountDialog: document.getElementById("account-dialog"),
@@ -142,6 +144,16 @@
     marketAdminControl: document.getElementById("market-admin-control"),
     marketAdminToggle: document.getElementById("market-admin-toggle"),
     marketAdminFeedback: document.getElementById("market-admin-feedback"),
+    marketFeedbackButton: document.getElementById("market-feedback-button"),
+    feedbackDialog: document.getElementById("feedback-dialog"),
+    feedbackForm: document.getElementById("feedback-form"),
+    closeFeedbackDialog: document.getElementById("close-feedback-dialog"),
+    feedbackCategory: document.getElementById("feedback-category"),
+    feedbackSubject: document.getElementById("feedback-subject"),
+    feedbackMessage: document.getElementById("feedback-message"),
+    feedbackContext: document.getElementById("feedback-context"),
+    feedbackFormStatus: document.getElementById("feedback-form-status"),
+    submitFeedback: document.getElementById("submit-feedback"),
     marketDashboard: document.getElementById("market-dashboard"),
     marketClosed: document.getElementById("market-closed"),
     closedMarketMessage: document.getElementById("closed-market-message"),
@@ -287,6 +299,13 @@
     el.accountButton.addEventListener("click", handleAccountAction);
     el.homeLoginButton.addEventListener("click", startDiscordLogin);
     if (el.marketAdminToggle) el.marketAdminToggle.addEventListener("click", toggleMarketFromFantasy);
+    [el.marketFeedbackButton, el.feedbackHeaderButton].filter(Boolean).forEach((button) => button.addEventListener("click", openFeedbackDialog));
+    if (el.closeFeedbackDialog) el.closeFeedbackDialog.addEventListener("click", closeFeedbackDialog);
+    if (el.feedbackDialog) el.feedbackDialog.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      closeFeedbackDialog();
+    });
+    if (el.feedbackForm) el.feedbackForm.addEventListener("submit", sendFeedback);
     el.confirmDemoUser.addEventListener("click", confirmDemoUser);
     if (el.backToTop) {
       el.backToTop.addEventListener("click", scrollBackToTop);
@@ -549,6 +568,7 @@
   function renderMarketShell() {
     updateMarketStatus();
     renderMarketAdminControl();
+    renderFeedbackAccess();
     const open = isMarketOpen();
     if (el.popularStrip) {
       el.popularStrip.hidden = !open;
@@ -1847,6 +1867,8 @@
     renderPatrimonyProfile();
     if (view === "market") {
       renderMarketShell();
+    } else {
+      renderFeedbackAccess();
     }
     if (view === "ranking") {
       updateRankingControls();
@@ -1930,6 +1952,7 @@
     state.isAdmin = false;
     state.canControlMarket = false;
     state.marketControlBusy = false;
+    state.feedbackBusy = false;
     state.teamName = "Meu Time RK";
     state.lineups = { elite: emptyLineup(), ascension: emptyLineup() };
     state.patrimony = { elite: null, ascension: null };
@@ -1957,6 +1980,76 @@
     el.accountButton.textContent = state.userName ? "Sair" : "Entrar";
     if (el.adminPanelLink) el.adminPanelLink.hidden = !state.isAdmin;
     renderMarketAdminControl();
+    renderFeedbackAccess();
+  }
+
+  function renderFeedbackAccess() {
+    const loggedInMarket = Boolean(state.userName && state.view === "market");
+    const marketKnown = config.backendMode !== "cloud" || Boolean(state.roundInfo[state.division]);
+    const open = marketKnown && isMarketOpen();
+    if (el.marketFeedbackButton) el.marketFeedbackButton.hidden = !loggedInMarket || !open;
+    if (el.feedbackHeaderButton) el.feedbackHeaderButton.hidden = !loggedInMarket || !marketKnown || open;
+  }
+
+  function openFeedbackDialog() {
+    if (!state.userName) return;
+    const round = state.roundInfo[state.division];
+    const roundNumber = Math.trunc(Number(round?.round_number || round?.roundNumber));
+    if (el.feedbackContext) {
+      el.feedbackContext.textContent = `${divisionLabel(state.division)}${roundNumber > 0 ? ` · Rodada ${roundNumber}` : ""} · enviado como ${state.userName}`;
+    }
+    setFeedbackStatus("");
+    el.feedbackDialog?.showModal();
+    window.setTimeout(() => el.feedbackCategory?.focus(), 0);
+  }
+
+  function closeFeedbackDialog() {
+    if (el.feedbackDialog?.open) el.feedbackDialog.close();
+  }
+
+  async function sendFeedback(event) {
+    event.preventDefault();
+    if (!state.userName || state.feedbackBusy || !el.feedbackForm?.reportValidity()) return;
+    const round = state.roundInfo[state.division];
+    const roundNumber = Math.trunc(Number(round?.round_number || round?.roundNumber));
+    const body = {
+      category: el.feedbackCategory.value,
+      subject: cleanText(el.feedbackSubject.value),
+      message: cleanText(el.feedbackMessage.value),
+      division: state.division,
+      roundNumber: roundNumber > 0 ? roundNumber : null,
+      pageView: "market"
+    };
+    state.feedbackBusy = true;
+    el.submitFeedback.disabled = true;
+    el.submitFeedback.textContent = "Enviando...";
+    setFeedbackStatus("Enviando sua mensagem...");
+    try {
+      const response = await apiFetch("/api/fantasy/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        cache: "no-store"
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(apiErrorMessage(payload, "Não foi possível enviar sua mensagem."));
+      const feedback = payload.feedback || payload.data?.feedback || {};
+      el.feedbackForm.reset();
+      setFeedbackStatus(`Mensagem enviada com sucesso. Protocolo ${feedback.protocol || "registrado"}. Ela já está disponível no painel da organização.`, false, true);
+    } catch (error) {
+      setFeedbackStatus(error.message || "Não foi possível enviar sua mensagem.", true);
+    } finally {
+      state.feedbackBusy = false;
+      el.submitFeedback.disabled = false;
+      el.submitFeedback.textContent = "Enviar mensagem";
+    }
+  }
+
+  function setFeedbackStatus(message, isError = false, isSuccess = false) {
+    if (!el.feedbackFormStatus) return;
+    el.feedbackFormStatus.textContent = message || "";
+    el.feedbackFormStatus.classList.toggle("error", Boolean(isError));
+    el.feedbackFormStatus.classList.toggle("success", Boolean(isSuccess));
   }
 
   function renderMarketAdminControl() {

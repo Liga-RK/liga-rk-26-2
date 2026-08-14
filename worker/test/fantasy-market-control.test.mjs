@@ -272,6 +272,7 @@ sqliteTest("painel administrativo cria sessão somente para o Discord exclusivo 
   assert.equal(session.payload.data.authMethod, "discord");
   assert.equal(session.payload.data.username, "Cress Albane");
   const adminCookie = session.response.headers.get("set-cookie").split(";")[0];
+  const csrf = session.payload.data.csrfToken;
   assert.match(adminCookie, /^fantasy_admin_session=/);
 
   const overview = await call(env, "/api/fantasy/admin/overview", {
@@ -279,6 +280,50 @@ sqliteTest("painel administrativo cria sessão somente para o Discord exclusivo 
     cookie: adminCookie
   });
   assert.equal(overview.response.status, 200);
+
+  const anonymousFeedback = await call(env, "/api/fantasy/feedback", {
+    method: "POST",
+    body: { category: "question", subject: "Dúvida de teste", message: "Esta mensagem não deve ser aceita." }
+  });
+  assert.equal(anonymousFeedback.response.status, 401);
+
+  const submittedFeedback = await call(env, "/api/fantasy/feedback", {
+    method: "POST",
+    token: otherAdminToken,
+    body: {
+      category: "bug",
+      subject: "Preço não atualizou",
+      message: "O valor exibido no card continua diferente depois de recarregar a página.",
+      division: "elite",
+      roundNumber: 4,
+      pageView: "market"
+    }
+  });
+  assert.equal(submittedFeedback.response.status, 201);
+  assert.match(submittedFeedback.payload.feedback.protocol, /^RK-[A-F0-9]{8}$/);
+
+  const feedbackList = await call(env, "/api/fantasy/admin/feedback?status=new", {
+    token: controllerToken,
+    cookie: adminCookie
+  });
+  assert.equal(feedbackList.response.status, 200);
+  assert.equal(feedbackList.payload.data.newCount, 1);
+  assert.equal(feedbackList.payload.data.feedback[0].username, "Marí");
+  assert.equal(feedbackList.payload.data.feedback[0].category, "bug");
+
+  const updatedFeedback = await call(env, `/api/fantasy/admin/feedback/${submittedFeedback.payload.feedback.id}`, {
+    method: "PUT",
+    token: controllerToken,
+    cookie: adminCookie,
+    csrf,
+    origin: "https://fantasy-rk.example",
+    body: { status: "resolved", adminNote: "Conferido pela administração." }
+  });
+  assert.equal(updatedFeedback.response.status, 200);
+  assert.equal(updatedFeedback.payload.data.feedback.status, "resolved");
+  assert.ok(updatedFeedback.payload.data.feedback.resolvedAt);
+  assert.equal(database.prepare("SELECT COUNT(*) AS count FROM fantasy_feedback WHERE status='resolved'").get().count, 1);
+  assert.equal(database.prepare("SELECT COUNT(*) AS count FROM fantasy_audit_log WHERE action='feedback.update'").get().count, 1);
 
   const passwordLogin = await call(env, "/api/fantasy/admin/auth/login", {
     method: "POST",
@@ -628,7 +673,8 @@ function createDatabase() {
     "0012_fantasy_market_access_mode.sql",
     "0013_fantasy_round3_reserve_budget.sql",
     "0014_fantasy_round_eligibility.sql",
-    "0015_fantasy_draft_predictions.sql"
+    "0015_fantasy_draft_predictions.sql",
+    "0016_fantasy_feedback.sql"
   ]) {
     database.exec(fs.readFileSync(path.join(WORKER_ROOT, "migrations", file), "utf8"));
     database.prepare("INSERT INTO d1_migrations(name) VALUES(?)").run(file);

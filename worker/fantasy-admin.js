@@ -54,6 +54,7 @@ const BACKUP_TABLES = Object.freeze([
   "fantasy_sessions",
   "fantasy_login_codes",
   "fantasy_user_notices",
+  "fantasy_feedback",
   "fantasy_rounds",
   "fantasy_market",
   "fantasy_market_state",
@@ -99,6 +100,7 @@ const RESTORE_TABLES = Object.freeze([
   "fantasy_sessions",
   "fantasy_login_codes",
   "fantasy_user_notices",
+  "fantasy_feedback",
   "fantasy_lineups",
   "fantasy_lineup_picks",
   "fantasy_lineup_reserves",
@@ -171,6 +173,7 @@ export async function handleAdminRequest(request, env, requestId, discordAuth = 
     ["GET", "/api/fantasy/admin/players", adminListPlayers],
     ["GET", "/api/fantasy/admin/teams", adminListTeams],
     ["GET", "/api/fantasy/admin/users", adminListUsers],
+    ["GET", "/api/fantasy/admin/feedback", adminListFeedback],
     ["GET", "/api/fantasy/admin/lineups", adminListLineups],
     ["GET", "/api/fantasy/admin/matches/all", adminListMatches],
     ["GET", "/api/fantasy/admin/rounds", adminListRounds],
@@ -197,6 +200,9 @@ export async function handleAdminRequest(request, env, requestId, discordAuth = 
   }
   if (request.method === "PUT" && path.startsWith("/api/fantasy/admin/users/")) {
     return adminUpdateUser(request, env, requestId, auth);
+  }
+  if (request.method === "PUT" && path.startsWith("/api/fantasy/admin/feedback/")) {
+    return adminUpdateFeedback(request, env, requestId, auth);
   }
   if (request.method === "PUT" && path.startsWith("/api/fantasy/admin/matches/")) {
     return adminUpdateMatch(request, env, requestId, auth);
@@ -4046,12 +4052,16 @@ async function adminOverview(_request, env) {
     rounds: "fantasy_rounds",
     imports: "fantasy_imports",
     errors: "fantasy_error_log",
-    backups: "fantasy_backups"
+    backups: "fantasy_backups",
+    feedback: "fantasy_feedback"
   };
   const counts = {};
   for (const [key, table] of Object.entries(countTables)) {
     counts[key] = Number((await env.DB.prepare(`SELECT COUNT(*) AS count FROM ${table}`).first())?.count || 0);
   }
+  counts.newFeedback = Number((await env.DB.prepare(
+    "SELECT COUNT(*) AS count FROM fantasy_feedback WHERE status = 'new'"
+  ).first())?.count || 0);
   const latest = {
     sync: await env.DB.prepare(`
       SELECT id, status, created_at AS createdAt
@@ -4431,6 +4441,93 @@ async function adminUpdateUser(request, env, requestId, auth) {
     requestId
   });
   return success({ user: after });
+}
+
+async function adminListFeedback(request, env) {
+  const url = new URL(request.url);
+  const status = clean(url.searchParams.get("status")).toLowerCase();
+  const category = clean(url.searchParams.get("category")).toLowerCase();
+  const query = clean(url.searchParams.get("q"));
+  const statuses = new Set(["new", "reviewing", "resolved"]);
+  const categories = new Set(["suggestion", "question", "complaint", "bug"]);
+  if (status && !statuses.has(status)) return failure("FEEDBACK_STATUS_INVALID", "Status de mensagem inválido.", 400);
+  if (category && !categories.has(category)) return failure("FEEDBACK_CATEGORY_INVALID", "Tipo de mensagem inválido.", 400);
+  const clauses = [];
+  const bindings = [];
+  if (status) {
+    clauses.push("f.status = ?");
+    bindings.push(status);
+  }
+  if (category) {
+    clauses.push("f.category = ?");
+    bindings.push(category);
+  }
+  if (query) {
+    const like = `%${escapeLike(query)}%`;
+    clauses.push("(f.subject LIKE ? ESCAPE '\\' OR f.message LIKE ? ESCAPE '\\' OR u.username LIKE ? ESCAPE '\\' OR u.discord_id LIKE ? ESCAPE '\\')");
+    bindings.push(like, like, like, like);
+  }
+  const rows = await dbAll(env, `
+    SELECT f.id, f.category, f.subject, f.message, f.division,
+           f.round_number AS roundNumber, f.page_view AS pageView,
+           f.status, f.admin_note AS adminNote,
+           f.created_at AS createdAt, f.updated_at AS updatedAt,
+           f.resolved_at AS resolvedAt,
+           u.id AS userId, u.discord_id AS discordId, u.username,
+           u.avatar_url AS avatarUrl
+    FROM fantasy_feedback f
+    JOIN fantasy_users u ON u.id = f.user_id
+    ${clauses.length ? `WHERE ${clauses.join(" AND ")}` : ""}
+    ORDER BY CASE f.status WHEN 'new' THEN 0 WHEN 'reviewing' THEN 1 ELSE 2 END,
+             f.created_at DESC
+    LIMIT ?
+  `, [...bindings, queryLimit(request, 500)]);
+  const newCount = Number((await env.DB.prepare(
+    "SELECT COUNT(*) AS count FROM fantasy_feedback WHERE status = 'new'"
+  ).first())?.count || 0);
+  return success({
+    newCount,
+    feedback: rows.map((row) => ({
+      ...row,
+      protocol: `RK-${String(row.id || "").replace(/-/g, "").slice(0, 8).toUpperCase()}`
+    }))
+  });
+}
+
+async function adminUpdateFeedback(request, env, requestId, auth) {
+  const id = decodePathId(request, "/api/fantasy/admin/feedback/");
+  const before = await env.DB.prepare(`
+    SELECT id, status, admin_note AS adminNote, resolved_at AS resolvedAt
+    FROM fantasy_feedback WHERE id = ?
+  `).bind(id).first();
+  if (!before) return failure("FEEDBACK_NOT_FOUND", "Mensagem não encontrada.", 404);
+  const body = await readJson(request);
+  const status = clean(body.status || before.status).toLowerCase();
+  if (!["new", "reviewing", "resolved"].includes(status)) {
+    return failure("FEEDBACK_STATUS_INVALID", "Status de mensagem inválido.", 400);
+  }
+  const adminNote = clean(body.adminNote ?? before.adminNote).slice(0, 2e3);
+  await env.DB.prepare(`
+    UPDATE fantasy_feedback
+    SET status = ?, admin_note = ?, updated_at = CURRENT_TIMESTAMP,
+        resolved_at = CASE WHEN ? = 'resolved' THEN COALESCE(resolved_at, CURRENT_TIMESTAMP) ELSE NULL END
+    WHERE id = ?
+  `).bind(status, adminNote, status, id).run();
+  const after = await env.DB.prepare(`
+    SELECT id, status, admin_note AS adminNote, updated_at AS updatedAt,
+           resolved_at AS resolvedAt
+    FROM fantasy_feedback WHERE id = ?
+  `).bind(id).first();
+  await audit(env, {
+    actor: auth.username,
+    action: "feedback.update",
+    targetType: "feedback",
+    targetId: id,
+    before,
+    after,
+    requestId
+  });
+  return success({ feedback: after });
 }
 
 async function adminListLineups(request, env) {

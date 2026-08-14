@@ -533,7 +533,8 @@ function createDatabase() {
     "0012_fantasy_market_access_mode.sql",
     "0013_fantasy_round3_reserve_budget.sql",
     "0014_fantasy_round_eligibility.sql",
-    "0015_fantasy_draft_predictions.sql"
+    "0015_fantasy_draft_predictions.sql",
+    "0016_fantasy_feedback.sql"
   ]) {
     database.exec(fs.readFileSync(path.join(ROOT, "migrations", file), "utf8"));
     database.prepare("INSERT INTO d1_migrations(name) VALUES(?)").run(file);
