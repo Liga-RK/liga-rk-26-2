@@ -2056,6 +2056,10 @@ async function normalizeFormulaV2Round(source, roundNumber, division) {
   const roster = rosterPlayersForStats(source, division);
   const stats = divisionSource.stats || {};
   const statsPlayers = arrayValues(stats.players);
+  const scheduledMatches = arrayValues(scheduledRound.matches);
+  const seriesIdForMatch = (match) => clean(match.statsSeriesId) ||
+    `${clean(match.stage) || "groups"}-${clean(match.sourceId || match.id)}`;
+  const scheduledSeriesIds = new Set(scheduledMatches.map(seriesIdForMatch));
   const identityBySourceId = new Map();
   for (const player of statsPlayers) {
     const rating = arrayValues(player.roundRatings)
@@ -2068,7 +2072,7 @@ async function normalizeFormulaV2Round(source, roundNumber, division) {
     .filter((match) => {
       const parsedRound = Number(match.roundNumber) ||
         Number(String(match.round || "").match(/RODADA\s*(\d+)/i)?.[1]);
-      return parsedRound === roundNumber;
+      return parsedRound === roundNumber || scheduledSeriesIds.has(clean(match.seriesId));
     });
   const grouped = new Map();
   for (const rawMap of rawMaps) {
@@ -2128,9 +2132,6 @@ async function normalizeFormulaV2Round(source, roundNumber, division) {
       equipes
     };
   });
-  const scheduledMatches = arrayValues(scheduledRound.matches);
-  const seriesIdForMatch = (match) => clean(match.statsSeriesId) ||
-    `${clean(match.stage) || "groups"}-${clean(match.sourceId || match.id)}`;
   const terminalStatuses = new Set(["completed", "postponed", "cancelled"]);
   const excludedMatches = scheduledMatches.filter((match) =>
     Boolean(match.excludedFromScoring || match.isWalkover) ||
@@ -2139,7 +2140,6 @@ async function normalizeFormulaV2Round(source, roundNumber, division) {
   const excludedSeriesIds = new Set(excludedMatches.map(seriesIdForMatch));
   const playableMatches = scheduledMatches.filter((match) => !excludedSeriesIds.has(seriesIdForMatch(match)));
   const playableSeriesIds = new Set(playableMatches.map(seriesIdForMatch));
-  const scheduledSeriesIds = new Set(scheduledMatches.map(seriesIdForMatch));
   const series = allSeries.filter((item) => playableSeriesIds.has(item.id));
   const completedPlayableSeries = new Set(
     series.filter((item) => item.concluida).map((item) => item.id)

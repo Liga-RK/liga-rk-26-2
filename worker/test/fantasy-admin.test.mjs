@@ -335,6 +335,55 @@ test("30ab rodada fecha com série jogada, WO e partida adiada sem inventar mapa
   assert.equal(normalized.series[0].mapas.length, 2);
 });
 
+test("30ac playoffs usam o vínculo statsSeriesId mesmo sem número no nome da rodada", async () => {
+  const source = sampleSource();
+  source.divisions.elite.rounds.push({
+    id: "elite-r4",
+    roundNumber: 4,
+    name: "RODADA 4 · OITAVAS",
+    matches: [{
+      id: "schedule:elite:p1m1",
+      sourceId: "p1m1",
+      statsSeriesId: "playoffs-p1m1",
+      stage: "playoffs-round-of-16",
+      homeTeamSlot: "A1",
+      awayTeamSlot: "A2",
+      status: "completed",
+      homeScore: 2,
+      awayScore: 0
+    }]
+  });
+  source.divisions.elite.stats.matches = [1, 2].map((gameNumber) => ({
+    id: `playoffs-p1m1-j${gameNumber}`,
+    seriesId: "playoffs-p1m1",
+    stage: "oitavas",
+    round: "OITAVAS 1",
+    roundNumber: null,
+    gameNumber,
+    format: "MD3",
+    blueTeamSlot: "A1",
+    redTeamSlot: "A2",
+    winnerSlot: "A1",
+    mvpPlayerId: "p-elite",
+    participants: [{
+      playerId: "p-elite",
+      teamSlot: "A1",
+      position: "TOP",
+      score: 85,
+      won: true,
+      deaths: 1
+    }]
+  }));
+
+  const normalized = await __test.normalizeFormulaV2Round(source, 4, "elite");
+  assert.equal(normalized.ready, true);
+  assert.equal(normalized.expectedSeries, 1);
+  assert.equal(normalized.completedSeries, 1);
+  assert.equal(normalized.playedSeries, 1);
+  assert.equal(normalized.series[0].id, "playoffs-p1m1");
+  assert.equal(normalized.series[0].mapas.length, 2);
+});
+
 test("30b estatística histórica é reconciliada com o jogador atual pelo Riot ID", async () => {
   const source = sampleSource();
   source.divisions.elite.teams[0].players = [{

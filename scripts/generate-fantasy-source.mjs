@@ -15,6 +15,12 @@ const generatedYear = new Date(stats.generatedAt || Date.now()).getUTCFullYear()
 const FANTASY_STARTER_OVERRIDES = Object.freeze({
   elite: Object.freeze({
     D1: Object.freeze({ TOP: "ee09cf39-13a1-4268-a363-dbd28955437b" })
+  }),
+  ascension: Object.freeze({
+    C2: Object.freeze({
+      ADC: "2594034c-9394-4b79-8b59-dedbf66482e5",
+      SUP: "745a0ee6-ebda-4170-a095-68565c5f425b"
+    })
   })
 });
 
