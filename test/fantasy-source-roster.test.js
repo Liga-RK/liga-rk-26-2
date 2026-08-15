@@ -27,3 +27,24 @@ test("escala NIHIL como TOP do Favelão e mantém TUTU como reserva", () => {
   );
   assert.equal(new Set(team.players.map((player) => player.id)).size, team.players.length);
 });
+
+test("escala KAISER e BURRAXA na rota inferior da Favelinha", () => {
+  const team = source.divisions.ascension.teams.find((item) => item.slot === "C2");
+  assert.ok(team, "Favelinha precisa existir na fonte do Fantasy");
+
+  const adc = team.players.find((player) => player.role === "ADC");
+  assert.deepEqual(
+    { id: adc?.id, name: adc?.name },
+    { id: "2594034c-9394-4b79-8b59-dedbf66482e5", name: "KAISER" }
+  );
+
+  const support = team.players.find((player) => player.role === "SUP");
+  assert.deepEqual(
+    { id: support?.id, name: support?.name },
+    { id: "745a0ee6-ebda-4170-a095-68565c5f425b", name: "BURRAXA" }
+  );
+
+  assert.equal(team.players.some((player) => player.name === "TAKOPI"), false);
+  assert.equal(team.players.some((player) => player.name === "PEN DRIVE"), false);
+  assert.equal(new Set(team.players.map((player) => player.id)).size, team.players.length);
+});
