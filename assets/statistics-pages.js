@@ -1,6 +1,8 @@
 (function () {
   const root = document.getElementById("statistics-app");
   const payload = window.LIGA_RK_STATS || { divisions: {} };
+  const fixedData = window.LIGA_RK_DATA || {};
+  const groupStandings = window.LIGA_RK_GROUP_STANDINGS || null;
   const localContent = window.LIGA_RK_CONTENT || null;
   const contentApiUrl = window.LIGA_RK_CONTENT_API || "https://liga-rk-api.suporteinhouserk.workers.dev/api/content";
   const params = new URLSearchParams(window.location.search);
@@ -247,7 +249,7 @@
     ));
     const champions = (data.champions || []).filter((champion) => (champion.teams || []).includes(team.slot));
     const matches = (data.matches || []).filter((match) => match.blueTeamSlot === team.slot || match.redTeamSlot === team.slot);
-    const group = teamGroupContext(data, team);
+    const group = teamGroupContext(data, team, division);
     const teamStanding = group.entries.find((entry) => entry.slot === team.slot) || emptyGroupEntry(team);
     return `
       ${detailBack(division)}
@@ -285,9 +287,53 @@
     `;
   }
 
-  function teamGroupContext(data, team) {
+  function teamGroupContext(data, team, division) {
     const letter = String(team.slot || "A").charAt(0).toUpperCase();
     const teams = (data.teams || []).filter((entry) => String(entry.slot || "").charAt(0).toUpperCase() === letter);
+    const officialGroup = officialTeamGroupContext(data, team, division, letter);
+    if (officialGroup) return officialGroup;
+    return replayTeamGroupContext(data, team, letter, teams);
+  }
+
+  function officialTeamGroupContext(data, team, division, letter) {
+    const schedule = fixedData[division];
+    if (!groupStandings || typeof groupStandings.compute !== "function" || !schedule || !Array.isArray(schedule.rounds)) return null;
+
+    const current = officialContent && officialContent.divisions && officialContent.divisions[division]
+      || localContent && localContent.divisions && localContent.divisions[division]
+      || {};
+    const teamsBySlot = new Map((data.teams || []).map((entry) => [String(entry.slot), entry]));
+    const standings = groupStandings.compute({
+      rounds: schedule.rounds,
+      resolveTeam: (slot) => teamsBySlot.get(slot) || zeroTeam(slot),
+      resolveResult: (roundIndex, gameIndex, game) => {
+        const key = `r${roundIndex + 1}g${gameIndex + 1}`;
+        const stored = current.results && current.results[key] || {};
+        if (stored.manualOverride) return stored;
+        const automatic = teamGroupReplayScore(data.matches, `groups-${key}`, game.home, game.away);
+        return automatic ? { ...stored, homeScore: automatic.homeScore, awayScore: automatic.awayScore } : stored;
+      }
+    });
+    const entries = (standings[letter] || []).map((entry) => ({
+      ...entry,
+      avgWinTime: entry.team.avgWinTime || "00:00",
+      winRate: entry.games ? entry.wins / entry.games * 100 : 0
+    }));
+    return { letter, entries, position: Math.max(1, entries.findIndex((entry) => entry.slot === team.slot) + 1) };
+  }
+
+  function teamGroupReplayScore(matches, seriesId, homeSlot, awaySlot) {
+    const seriesMatches = (matches || [])
+      .filter((match) => match && match.seriesId === seriesId)
+      .sort((left, right) => numeric(left.gameNumber) - numeric(right.gameNumber));
+    if (!seriesMatches.length || !homeSlot || !awaySlot || homeSlot === awaySlot) return null;
+    return {
+      homeScore: Math.min(2, seriesMatches.filter((match) => match.winnerSlot === homeSlot).length),
+      awayScore: Math.min(2, seriesMatches.filter((match) => match.winnerSlot === awaySlot).length)
+    };
+  }
+
+  function replayTeamGroupContext(data, team, letter, teams) {
     const entriesBySlot = Object.fromEntries(teams.map((entry, fallbackSeed) => [entry.slot, {
       slot: entry.slot,
       seed: slotSeed(entry.slot, fallbackSeed),

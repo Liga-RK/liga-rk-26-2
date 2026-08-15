@@ -23,6 +23,32 @@ test("fase de grupos MD3 conta series e saldo de jogos", () => {
   );
 });
 
+test("classificacao compartilhada conta W.O. publicado sem replay", () => {
+  const results = [
+    { homeScore: 0, awayScore: 2 },
+    { homeScore: 2, awayScore: 1 }
+  ];
+  const computed = standings.compute({
+    rounds: [{ games: [
+      { home: "C1", away: "C2" },
+      { home: "C1", away: "C3" }
+    ] }],
+    resolveResult: (_round, game) => results[game],
+    resolveTeam: (slot) => ({ slot, avgWinTime: "20:00" })
+  });
+
+  const c1 = computed.C.find((entry) => entry.slot === "C1");
+  const c2 = computed.C.find((entry) => entry.slot === "C2");
+  assert.deepEqual(
+    { wins: c1.wins, losses: c1.losses, gameDiff: c1.gameDiff, games: c1.games },
+    { wins: 1, losses: 1, gameDiff: -1, games: 2 }
+  );
+  assert.deepEqual(
+    { wins: c2.wins, losses: c2.losses, gameDiff: c2.gameDiff, games: c2.games },
+    { wins: 1, losses: 0, gameDiff: 2, games: 1 }
+  );
+});
+
 test("serie incompleta atualiza apenas o saldo de mapas e desempates seguem a ordem oficial", () => {
   const entries = [
     { wins: 2, losses: 1, gameDiff: 1, seed: 0, team: { avgWinTime: "20:00" } },
