@@ -112,6 +112,42 @@ test("seleciona para a semana somente jogadores com dois jogos e uma serie venci
   assert.equal(teamOfWeek.highlightPlayerId, "top-elegivel");
 });
 
+test("seleciona para a semana todos os vencedores das oitavas", () => {
+  const teams = {
+    C2: { slot: "C2", name: "Oitavas", tag: "OIT", logo: "" }
+  };
+  const player = (id, averageScore, seriesWins) => ({
+    id,
+    displayName: id,
+    riotId: `${id}#BR1`,
+    kda: averageScore / 10,
+    roundRatings: [{
+      round: 0,
+      stage: "OITAVAS",
+      position: "TOP",
+      teamSlot: "C2",
+      averageScore,
+      games: 3,
+      wins: 2,
+      losses: 1,
+      seriesWins,
+      series: ["playoffs-p1m1"],
+      matches: ["j1", "j2", "j3"]
+    }]
+  });
+
+  const teamOfWeek = buildTeamOfWeek(
+    [player("top-vencedor", 91, 1), player("top-derrotado", 99, 0)],
+    teams,
+    { stage: "OITAVAS", label: "OITAVAS DE FINAL" }
+  );
+
+  assert.equal(teamOfWeek.round, 0);
+  assert.equal(teamOfWeek.stage, "OITAVAS");
+  assert.equal(teamOfWeek.label, "OITAVAS DE FINAL");
+  assert.deepEqual(teamOfWeek.selection.map((entry) => entry.playerId), ["top-vencedor"]);
+});
+
 test("publica jogadores inscritos sem partidas com estatisticas zeradas", () => {
   const content = {
     divisions: {

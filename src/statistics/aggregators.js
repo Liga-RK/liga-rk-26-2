@@ -4,7 +4,10 @@ const { normalizeRiotId, parseOpggRiotId } = require("./player-identity");
 
 const DIVISIONS = ["elite", "ascension"];
 const MVP_MODEL_VERSION = "role-impact-v5";
-const ACTIVE_TEAM_OF_WEEK_ROUND = 3;
+const ACTIVE_TEAM_OF_WEEK = Object.freeze({
+  elite: Object.freeze({ round: 3, label: "RODADA 3" }),
+  ascension: Object.freeze({ stage: "OITAVAS", label: "OITAVAS DE FINAL" })
+});
 const MIN_TEAM_OF_WEEK_GAMES = 2;
 const COMPETITIVE_LANES = ["TOP", "JG", "MID", "ADC", "SUP"];
 const PLAYER_IDENTITY_MERGES = Object.freeze({
@@ -167,6 +170,7 @@ function aggregateDivision(divisionDatabase, content, fixedData, division, roste
           matchId: game.id,
           seriesId: game.seriesId || "",
           round: gameRoundNumber(game),
+          ...(gameRoundNumber(game) ? {} : { stage: teamOfWeekStage(game) }),
           position: normalizePosition(participant.position),
           teamSlot,
           score: performance.performanceScore,
@@ -214,7 +218,7 @@ function aggregateDivision(divisionDatabase, content, fixedData, division, roste
     a.displayName.localeCompare(b.displayName, "pt-BR")
   ));
   const champions = Array.from(championAggregates.values()).map(summarizeChampion).sort((a, b) => b.picks - a.picks || b.wins - a.wins);
-  const teamOfWeek = buildTeamOfWeek(players, teams, ACTIVE_TEAM_OF_WEEK_ROUND);
+  const teamOfWeek = buildTeamOfWeek(players, teams, ACTIVE_TEAM_OF_WEEK[division]);
 
   return {
     hasData: matches.length > 0,
@@ -863,6 +867,10 @@ function gameRoundNumber(game) {
   return seriesMatch ? Number(seriesMatch[1]) : 0;
 }
 
+function teamOfWeekStage(game) {
+  return String(game && game.stage || "").trim().toUpperCase();
+}
+
 function buildSeriesWinners(games) {
   const series = new Map();
 
@@ -921,12 +929,15 @@ function summarizeRoundRatings(ratings) {
   const groups = new Map();
   for (const rating of ratings || []) {
     const roundNumber = Number(rating.round || 0);
+    const stage = String(rating.stage || "").trim().toUpperCase();
     const position = normalizePosition(rating.position);
     const teamSlot = String(rating.teamSlot || "");
-    if (!roundNumber || !COMPETITIVE_LANES.includes(position)) continue;
-    const key = `${roundNumber}:${position}:${teamSlot}`;
+    if ((!roundNumber && !stage) || !COMPETITIVE_LANES.includes(position)) continue;
+    const periodKey = roundNumber ? `round:${roundNumber}` : `stage:${stage}`;
+    const key = `${periodKey}:${position}:${teamSlot}`;
     const current = groups.get(key) || {
       round: roundNumber,
+      stage,
       position,
       teamSlot,
       scoreSum: 0,
@@ -947,6 +958,7 @@ function summarizeRoundRatings(ratings) {
 
   return Array.from(groups.values()).map((entry) => ({
     round: entry.round,
+    ...(entry.stage ? { stage: entry.stage } : {}),
     position: entry.position,
     teamSlot: entry.teamSlot,
     averageScore: round(entry.scoreSum / Math.max(1, entry.games)),
@@ -957,19 +969,21 @@ function summarizeRoundRatings(ratings) {
     seriesWins: entry.seriesWins.size,
     matches: entry.matches
   })).sort((left, right) => (
-    left.round - right.round ||
+    Number(left.round || Number.MAX_SAFE_INTEGER) - Number(right.round || Number.MAX_SAFE_INTEGER) ||
+    String(left.stage || "").localeCompare(String(right.stage || ""), "pt-BR") ||
     COMPETITIVE_LANES.indexOf(left.position) - COMPETITIVE_LANES.indexOf(right.position) ||
     right.averageScore - left.averageScore
   ));
 }
 
-function buildTeamOfWeek(players, teams, roundNumber) {
+function buildTeamOfWeek(players, teams, activePeriod) {
+  const period = normalizeTeamOfWeekPeriod(activePeriod);
   const selection = COMPETITIVE_LANES.map((role) => {
     const candidates = [];
     for (const player of players || []) {
       for (const rating of player.roundRatings || []) {
         if (
-          Number(rating.round) !== Number(roundNumber) ||
+          !matchesTeamOfWeekPeriod(rating, period) ||
           rating.position !== role ||
           Number(rating.games) < MIN_TEAM_OF_WEEK_GAMES ||
           Number(rating.seriesWins) < 1
@@ -1015,14 +1029,34 @@ function buildTeamOfWeek(players, teams, roundNumber) {
   ))[0] || null;
 
   return {
-    round: Number(roundNumber),
-    label: `RODADA ${Number(roundNumber)}`,
+    round: period.round,
+    stage: period.stage,
+    label: period.label,
     minimumGames: MIN_TEAM_OF_WEEK_GAMES,
     selection,
     highlightPlayerId: highlight ? highlight.playerId : "",
     highlightRole: highlight ? highlight.role : "",
     highlightScore: highlight ? highlight.averageScore : 0
   };
+}
+
+function normalizeTeamOfWeekPeriod(input) {
+  if (input && typeof input === "object") {
+    const roundNumber = Number(input.round || 0);
+    const stage = String(input.stage || "").trim().toUpperCase();
+    return {
+      round: roundNumber,
+      stage,
+      label: String(input.label || (roundNumber ? `RODADA ${roundNumber}` : stage)).trim()
+    };
+  }
+  const roundNumber = Number(input || 0);
+  return { round: roundNumber, stage: "", label: `RODADA ${roundNumber}` };
+}
+
+function matchesTeamOfWeekPeriod(rating, period) {
+  if (period.stage) return String(rating.stage || "").trim().toUpperCase() === period.stage;
+  return Number(rating.round) === period.round;
 }
 
 function buildHeadlineStatistics(players, champions) {

@@ -337,7 +337,7 @@
         <div class="lineup">
           ${weeklySelection.map((player, index) => renderPlayer(player, index, index === highlightIndex)).join("")}
         </div>
-        ${hasAutomaticTeam ? `<p class="weekly-criteria">Maior nota média por posição na rodada · mínimo de 2 mapas · somente vencedores da série</p>` : ""}
+        ${hasAutomaticTeam ? `<p class="weekly-criteria">Maior nota média por posição ${automaticTeam.stage ? "nas oitavas de final" : "na rodada"} · mínimo de 2 mapas · somente vencedores da série</p>` : ""}
       </section>
     `;
   }

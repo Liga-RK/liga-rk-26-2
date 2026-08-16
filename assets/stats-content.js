@@ -1,6 +1,6 @@
 window.LIGA_RK_STATS = {
   "version": 2,
-  "generatedAt": "2026-08-16T02:58:45.616Z",
+  "generatedAt": "2026-08-16T03:41:55.362Z",
   "season": "Liga RK 26.2",
   "divisions": {
     "elite": {
@@ -3439,6 +3439,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "D4",
               "score": 87.69,
@@ -3449,6 +3450,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "D4",
               "score": 93.81,
@@ -3566,6 +3568,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g8-j1",
                 "groups-r3g8-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "TOP",
+              "teamSlot": "D4",
+              "averageScore": 90.75,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2"
               ]
             }
           ],
@@ -4160,6 +4180,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "D4",
               "score": 93.73,
@@ -4170,6 +4191,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "D4",
               "score": 73.66,
@@ -4177,7 +4199,26 @@ window.LIGA_RK_STATS = {
               "seriesWon": true
             }
           ],
-          "roundRatings": [],
+          "roundRatings": [
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "MID",
+              "teamSlot": "D4",
+              "averageScore": 83.7,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2"
+              ]
+            }
+          ],
           "positions": [
             {
               "position": "MID",
@@ -6624,6 +6665,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "D4",
               "score": 94.42,
@@ -6634,6 +6676,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "D4",
               "score": 83.12,
@@ -6677,6 +6720,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g8-j1",
                 "groups-r3g8-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "JG",
+              "teamSlot": "D4",
+              "averageScore": 88.77,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2"
               ]
             }
           ],
@@ -9286,6 +9347,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "D4",
               "score": 89.85,
@@ -9296,6 +9358,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "D4",
               "score": 100,
@@ -9413,6 +9476,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g8-j1",
                 "groups-r3g8-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "ADC",
+              "teamSlot": "D4",
+              "averageScore": 94.93,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2"
               ]
             }
           ],
@@ -9652,6 +9733,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "D4",
               "score": 79.56,
@@ -9662,6 +9744,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "D4",
               "score": 93.23,
@@ -9705,6 +9788,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "SUP",
+              "teamSlot": "D4",
+              "averageScore": 86.4,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2"
               ]
             }
           ],
@@ -13803,6 +13904,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "C3",
               "score": 65.86,
@@ -13813,6 +13915,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "C3",
               "score": 80.26,
@@ -13856,6 +13959,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r1g6-j1",
                 "groups-r1g6-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "JG",
+              "teamSlot": "C3",
+              "averageScore": 73.06,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2"
               ]
             }
           ],
@@ -13956,6 +14077,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "C3",
               "score": 77.5,
@@ -13966,6 +14088,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "C3",
               "score": 64.15,
@@ -14009,6 +14132,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r1g6-j1",
                 "groups-r1g6-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "SUP",
+              "teamSlot": "C3",
+              "averageScore": 70.83,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2"
               ]
             }
           ],
@@ -14258,6 +14399,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "C3",
               "score": 64.05,
@@ -14268,6 +14410,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "C3",
               "score": 71.3,
@@ -14311,6 +14454,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r1g6-j1",
                 "groups-r1g6-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "MID",
+              "teamSlot": "C3",
+              "averageScore": 67.68,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2"
               ]
             }
           ],
@@ -15041,6 +15202,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "C3",
               "score": 66.91,
@@ -15051,6 +15213,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "C3",
               "score": 66.39,
@@ -15094,6 +15257,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r1g6-j1",
                 "groups-r1g6-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "ADC",
+              "teamSlot": "C3",
+              "averageScore": 66.65,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2"
               ]
             }
           ],
@@ -15583,6 +15764,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "C3",
               "score": 54.62,
@@ -15593,6 +15775,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "C3",
               "score": 52.72,
@@ -15600,7 +15783,26 @@ window.LIGA_RK_STATS = {
               "seriesWon": false
             }
           ],
-          "roundRatings": [],
+          "roundRatings": [
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "TOP",
+              "teamSlot": "C3",
+              "averageScore": 53.67,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2"
+              ]
+            }
+          ],
           "positions": [
             {
               "position": "TOP",
@@ -48982,6 +49184,7 @@ window.LIGA_RK_STATS = {
       ],
       "teamOfWeek": {
         "round": 3,
+        "stage": "",
         "label": "RODADA 3",
         "minimumGames": 2,
         "selection": [
@@ -50362,6 +50565,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j2",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "D4",
               "score": 99.83,
@@ -50372,6 +50576,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j1",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "D4",
               "score": 89.64,
@@ -50452,6 +50657,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g8-j1",
                 "groups-r3g8-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "ADC",
+              "teamSlot": "D4",
+              "averageScore": 94.74,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "playoffs-p1m2"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m2-j1",
+                "playoffs-p1m2-j2"
               ]
             }
           ],
@@ -52651,6 +52874,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j2",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "B3",
               "score": 100,
@@ -52661,6 +52885,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j1",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "B3",
               "score": 100,
@@ -52778,6 +53003,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g3-j1",
                 "groups-r3g3-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "TOP",
+              "teamSlot": "B3",
+              "averageScore": 100,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "playoffs-p1m4"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m4-j1",
+                "playoffs-p1m4-j2"
               ]
             }
           ],
@@ -53117,6 +53360,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j3",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "A4",
               "score": 71.72,
@@ -53127,6 +53371,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j2",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "A4",
               "score": 100,
@@ -53137,6 +53382,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j1",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "A4",
               "score": 73.37,
@@ -53217,6 +53463,25 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g2-j1",
                 "groups-r3g2-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "ADC",
+              "teamSlot": "A4",
+              "averageScore": 81.7,
+              "games": 3,
+              "wins": 1,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m3"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m3-j1",
+                "playoffs-p1m3-j2",
+                "playoffs-p1m3-j3"
               ]
             }
           ],
@@ -53490,6 +53755,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j2",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "D4",
               "score": 94.35,
@@ -53500,6 +53766,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j1",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "D4",
               "score": 93.15,
@@ -53543,6 +53810,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r1g8-j1",
                 "groups-r1g8-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "MID",
+              "teamSlot": "D4",
+              "averageScore": 93.75,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "playoffs-p1m2"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m2-j1",
+                "playoffs-p1m2-j2"
               ]
             }
           ],
@@ -53647,6 +53932,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j2",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "B3",
               "score": 83.31,
@@ -53657,6 +53943,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j1",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "B3",
               "score": 84.08,
@@ -53774,6 +54061,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g3-j1",
                 "groups-r3g3-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "SUP",
+              "teamSlot": "B3",
+              "averageScore": 83.7,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "playoffs-p1m4"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m4-j1",
+                "playoffs-p1m4-j2"
               ]
             }
           ],
@@ -53902,6 +54207,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j3",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "B4",
               "score": 91.45,
@@ -53912,6 +54218,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j2",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "B4",
               "score": 77.28,
@@ -53922,6 +54229,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j1",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "B4",
               "score": 75.35,
@@ -53965,6 +54273,25 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "MID",
+              "teamSlot": "B4",
+              "averageScore": 81.36,
+              "games": 3,
+              "wins": 2,
+              "losses": 1,
+              "series": [
+                "playoffs-p1m3"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m3-j1",
+                "playoffs-p1m3-j2",
+                "playoffs-p1m3-j3"
               ]
             }
           ],
@@ -54181,6 +54508,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j3",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "C2",
               "score": 74.22,
@@ -54191,6 +54519,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "C2",
               "score": 95.55,
@@ -54201,6 +54530,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "C2",
               "score": 81.69,
@@ -54329,6 +54659,25 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g5-j1",
                 "groups-r3g5-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "ADC",
+              "teamSlot": "C2",
+              "averageScore": 83.82,
+              "games": 3,
+              "wins": 1,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2",
+                "playoffs-p1m1-j3"
               ]
             }
           ],
@@ -54493,6 +54842,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j2",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "C3",
               "score": 92.88,
@@ -54503,6 +54853,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j1",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "C3",
               "score": 78.85,
@@ -54620,6 +54971,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g5-j1",
                 "groups-r3g5-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "TOP",
+              "teamSlot": "C3",
+              "averageScore": 85.87,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m2"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m2-j1",
+                "playoffs-p1m2-j2"
               ]
             }
           ],
@@ -54748,6 +55117,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j3",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "B4",
               "score": 100,
@@ -54758,6 +55128,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j2",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "B4",
               "score": 72.58,
@@ -54768,6 +55139,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j1",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "B4",
               "score": 78.31,
@@ -54775,7 +55147,27 @@ window.LIGA_RK_STATS = {
               "seriesWon": true
             }
           ],
-          "roundRatings": [],
+          "roundRatings": [
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "ADC",
+              "teamSlot": "B4",
+              "averageScore": 83.63,
+              "games": 3,
+              "wins": 2,
+              "losses": 1,
+              "series": [
+                "playoffs-p1m3"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m3-j1",
+                "playoffs-p1m3-j2",
+                "playoffs-p1m3-j3"
+              ]
+            }
+          ],
           "positions": [
             {
               "position": "ADC",
@@ -55718,6 +56110,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j3",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "D2",
               "score": 88.85,
@@ -55728,6 +56121,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "D2",
               "score": 64.09,
@@ -55738,6 +56132,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "D2",
               "score": 98.27,
@@ -55855,6 +56250,25 @@ window.LIGA_RK_STATS = {
                 "groups-r3g7-j1",
                 "groups-r3g7-j2",
                 "groups-r3g7-j3"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "ADC",
+              "teamSlot": "D2",
+              "averageScore": 83.74,
+              "games": 3,
+              "wins": 2,
+              "losses": 1,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2",
+                "playoffs-p1m1-j3"
               ]
             }
           ],
@@ -56703,6 +57117,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j3",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "C2",
               "score": 51.61,
@@ -56713,6 +57128,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "C2",
               "score": 96.68,
@@ -56723,6 +57139,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "C2",
               "score": 81.1,
@@ -56840,6 +57257,25 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g5-j1",
                 "groups-r3g5-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "JG",
+              "teamSlot": "C2",
+              "averageScore": 76.46,
+              "games": 3,
+              "wins": 1,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2",
+                "playoffs-p1m1-j3"
               ]
             }
           ],
@@ -56961,6 +57397,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j2",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "B3",
               "score": 87.59,
@@ -56971,6 +57408,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j1",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "B3",
               "score": 84.45,
@@ -57088,6 +57526,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g3-j1",
                 "groups-r3g3-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "JG",
+              "teamSlot": "B3",
+              "averageScore": 86.02,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "playoffs-p1m4"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m4-j1",
+                "playoffs-p1m4-j2"
               ]
             }
           ],
@@ -57218,6 +57674,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j3",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "D2",
               "score": 91.59,
@@ -57228,6 +57685,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "D2",
               "score": 69.98,
@@ -57238,6 +57696,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "D2",
               "score": 83.08,
@@ -57340,6 +57799,25 @@ window.LIGA_RK_STATS = {
                 "groups-r3g7-j1",
                 "groups-r3g7-j2",
                 "groups-r3g7-j3"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "JG",
+              "teamSlot": "D2",
+              "averageScore": 81.55,
+              "games": 3,
+              "wins": 2,
+              "losses": 1,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2",
+                "playoffs-p1m1-j3"
               ]
             }
           ],
@@ -57568,6 +58046,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j3",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "B4",
               "score": 98.06,
@@ -57578,6 +58057,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j2",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "B4",
               "score": 84.86,
@@ -57588,6 +58068,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j1",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "B4",
               "score": 68.37,
@@ -57631,6 +58112,25 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "SUP",
+              "teamSlot": "B4",
+              "averageScore": 83.76,
+              "games": 3,
+              "wins": 2,
+              "losses": 1,
+              "series": [
+                "playoffs-p1m3"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m3-j1",
+                "playoffs-p1m3-j2",
+                "playoffs-p1m3-j3"
               ]
             }
           ],
@@ -57732,6 +58232,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j3",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "C2",
               "score": 71.68,
@@ -57742,6 +58243,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "C2",
               "score": 77.88,
@@ -57752,6 +58254,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "C2",
               "score": 85.75,
@@ -57869,6 +58372,25 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g5-j1",
                 "groups-r3g5-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "MID",
+              "teamSlot": "C2",
+              "averageScore": 78.44,
+              "games": 3,
+              "wins": 1,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2",
+                "playoffs-p1m1-j3"
               ]
             }
           ],
@@ -57990,6 +58512,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j2",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "A2",
               "score": 73.01,
@@ -58000,6 +58523,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j1",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "A2",
               "score": 91.34,
@@ -58080,6 +58604,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g1-j1",
                 "groups-r3g1-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "ADC",
+              "teamSlot": "A2",
+              "averageScore": 82.18,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m4"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m4-j1",
+                "playoffs-p1m4-j2"
               ]
             }
           ],
@@ -58424,6 +58966,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j2",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "B3",
               "score": 85.63,
@@ -58434,6 +58977,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j1",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "B3",
               "score": 100,
@@ -58551,6 +59095,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g3-j1",
                 "groups-r3g3-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "ADC",
+              "teamSlot": "B3",
+              "averageScore": 92.82,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "playoffs-p1m4"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m4-j1",
+                "playoffs-p1m4-j2"
               ]
             }
           ],
@@ -58818,6 +59380,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j2",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "A2",
               "score": 80.69,
@@ -58828,6 +59391,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j1",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "A2",
               "score": 80.61,
@@ -58945,6 +59509,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g1-j1",
                 "groups-r3g1-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "SUP",
+              "teamSlot": "A2",
+              "averageScore": 80.65,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m4"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m4-j1",
+                "playoffs-p1m4-j2"
               ]
             }
           ],
@@ -59065,6 +59647,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j3",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "D2",
               "score": 91.19,
@@ -59075,6 +59658,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "D2",
               "score": 70.95,
@@ -59085,6 +59669,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "D2",
               "score": 76.99,
@@ -59092,7 +59677,27 @@ window.LIGA_RK_STATS = {
               "seriesWon": true
             }
           ],
-          "roundRatings": [],
+          "roundRatings": [
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "SUP",
+              "teamSlot": "D2",
+              "averageScore": 79.71,
+              "games": 3,
+              "wins": 2,
+              "losses": 1,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2",
+                "playoffs-p1m1-j3"
+              ]
+            }
+          ],
           "positions": [
             {
               "position": "SUP",
@@ -59185,6 +59790,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j2",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "D4",
               "score": 79.29,
@@ -59195,6 +59801,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j1",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "D4",
               "score": 81.71,
@@ -59275,6 +59882,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r2g8-j1",
                 "groups-r2g8-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "TOP",
+              "teamSlot": "D4",
+              "averageScore": 80.5,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "playoffs-p1m2"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m2-j1",
+                "playoffs-p1m2-j2"
               ]
             }
           ],
@@ -59644,6 +60269,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j3",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "C2",
               "score": 75.84,
@@ -59654,6 +60280,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "C2",
               "score": 76.25,
@@ -59664,6 +60291,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "C2",
               "score": 70.97,
@@ -59792,6 +60420,25 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g5-j1",
                 "groups-r3g5-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "SUP",
+              "teamSlot": "C2",
+              "averageScore": 74.35,
+              "games": 3,
+              "wins": 1,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2",
+                "playoffs-p1m1-j3"
               ]
             }
           ],
@@ -59922,6 +60569,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j2",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "D4",
               "score": 80.77,
@@ -59932,6 +60580,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j1",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "D4",
               "score": 73.46,
@@ -60050,6 +60699,24 @@ window.LIGA_RK_STATS = {
                 "groups-r3g8-j1",
                 "groups-r3g8-j2"
               ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "SUP",
+              "teamSlot": "D4",
+              "averageScore": 77.11,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "playoffs-p1m2"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m2-j1",
+                "playoffs-p1m2-j2"
+              ]
             }
           ],
           "positions": [
@@ -60153,6 +60820,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j2",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "D4",
               "score": 90.81,
@@ -60163,6 +60831,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j1",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "D4",
               "score": 80.11,
@@ -60280,6 +60949,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g8-j1",
                 "groups-r3g8-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "JG",
+              "teamSlot": "D4",
+              "averageScore": 85.46,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "playoffs-p1m2"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m2-j1",
+                "playoffs-p1m2-j2"
               ]
             }
           ],
@@ -60797,6 +61484,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j3",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "A4",
               "score": 81.33,
@@ -60807,6 +61495,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j2",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "A4",
               "score": 74.16,
@@ -60817,6 +61506,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j1",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "A4",
               "score": 80.84,
@@ -60824,7 +61514,27 @@ window.LIGA_RK_STATS = {
               "seriesWon": false
             }
           ],
-          "roundRatings": [],
+          "roundRatings": [
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "TOP",
+              "teamSlot": "A4",
+              "averageScore": 78.78,
+              "games": 3,
+              "wins": 1,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m3"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m3-j1",
+                "playoffs-p1m3-j2",
+                "playoffs-p1m3-j3"
+              ]
+            }
+          ],
           "positions": [
             {
               "position": "TOP",
@@ -60913,6 +61623,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j3",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "D2",
               "score": 92.93,
@@ -60923,6 +61634,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "D2",
               "score": 88.2,
@@ -60933,6 +61645,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "D2",
               "score": 85.81,
@@ -61061,6 +61774,25 @@ window.LIGA_RK_STATS = {
                 "groups-r3g7-j1",
                 "groups-r3g7-j2",
                 "groups-r3g7-j3"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "MID",
+              "teamSlot": "D2",
+              "averageScore": 88.98,
+              "games": 3,
+              "wins": 2,
+              "losses": 1,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2",
+                "playoffs-p1m1-j3"
               ]
             }
           ],
@@ -61442,6 +62174,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j2",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "C3",
               "score": 73.16,
@@ -61452,6 +62185,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j1",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "C3",
               "score": 83.58,
@@ -61459,7 +62193,26 @@ window.LIGA_RK_STATS = {
               "seriesWon": false
             }
           ],
-          "roundRatings": [],
+          "roundRatings": [
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "SUP",
+              "teamSlot": "C3",
+              "averageScore": 78.37,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m2"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m2-j1",
+                "playoffs-p1m2-j2"
+              ]
+            }
+          ],
           "positions": [
             {
               "position": "SUP",
@@ -61539,6 +62292,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j3",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "C2",
               "score": 49.16,
@@ -61549,6 +62303,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "C2",
               "score": 100,
@@ -61559,6 +62314,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "C2",
               "score": 66.11,
@@ -61676,6 +62432,25 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g5-j1",
                 "groups-r3g5-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "TOP",
+              "teamSlot": "C2",
+              "averageScore": 71.76,
+              "games": 3,
+              "wins": 1,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2",
+                "playoffs-p1m1-j3"
               ]
             }
           ],
@@ -61805,6 +62580,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j3",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "A4",
               "score": 75.1,
@@ -61815,6 +62591,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j2",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "A4",
               "score": 79.16,
@@ -61825,6 +62602,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j1",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "SUP",
               "teamSlot": "A4",
               "score": 75.91,
@@ -61905,6 +62683,25 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g2-j1",
                 "groups-r3g2-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "SUP",
+              "teamSlot": "A4",
+              "averageScore": 76.72,
+              "games": 3,
+              "wins": 1,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m3"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m3-j1",
+                "playoffs-p1m3-j2",
+                "playoffs-p1m3-j3"
               ]
             }
           ],
@@ -62189,6 +62986,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j3",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "A4",
               "score": 71.51,
@@ -62199,6 +62997,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j2",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "A4",
               "score": 74.7,
@@ -62209,6 +63008,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j1",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "A4",
               "score": 77.02,
@@ -62252,6 +63052,25 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "JG",
+              "teamSlot": "A4",
+              "averageScore": 74.41,
+              "games": 3,
+              "wins": 1,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m3"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m3-j1",
+                "playoffs-p1m3-j2",
+                "playoffs-p1m3-j3"
               ]
             }
           ],
@@ -62724,6 +63543,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j2",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "A2",
               "score": 71.85,
@@ -62734,6 +63554,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j1",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "A2",
               "score": 87.75,
@@ -62851,6 +63672,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g1-j1",
                 "groups-r3g1-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "MID",
+              "teamSlot": "A2",
+              "averageScore": 79.8,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m4"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m4-j1",
+                "playoffs-p1m4-j2"
               ]
             }
           ],
@@ -63722,6 +64561,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j2",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "A2",
               "score": 75.95,
@@ -63732,6 +64572,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j1",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "A2",
               "score": 51.28,
@@ -63849,6 +64690,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g1-j1",
                 "groups-r3g1-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "TOP",
+              "teamSlot": "A2",
+              "averageScore": 63.62,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m4"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m4-j1",
+                "playoffs-p1m4-j2"
               ]
             }
           ],
@@ -64333,6 +65192,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j2",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "B3",
               "score": 78.87,
@@ -64343,6 +65203,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j1",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "B3",
               "score": 57.67,
@@ -64423,6 +65284,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r2g3-j1",
                 "groups-r2g3-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "MID",
+              "teamSlot": "B3",
+              "averageScore": 68.27,
+              "games": 2,
+              "wins": 2,
+              "losses": 0,
+              "series": [
+                "playoffs-p1m4"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m4-j1",
+                "playoffs-p1m4-j2"
               ]
             }
           ],
@@ -64525,6 +65404,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j3",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "D2",
               "score": 85.52,
@@ -64535,6 +65415,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j2",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "D2",
               "score": 49.45,
@@ -64545,6 +65426,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m1-j1",
               "seriesId": "playoffs-p1m1",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "D2",
               "score": 82.21,
@@ -64685,6 +65567,25 @@ window.LIGA_RK_STATS = {
                 "groups-r3g7-j2",
                 "groups-r3g7-j3"
               ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "TOP",
+              "teamSlot": "D2",
+              "averageScore": 72.39,
+              "games": 3,
+              "wins": 2,
+              "losses": 1,
+              "series": [
+                "playoffs-p1m1"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m1-j1",
+                "playoffs-p1m1-j2",
+                "playoffs-p1m1-j3"
+              ]
             }
           ],
           "positions": [
@@ -64817,6 +65718,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j2",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "C3",
               "score": 75.57,
@@ -64827,6 +65729,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j1",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "C3",
               "score": 61.33,
@@ -64944,6 +65847,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g5-j1",
                 "groups-r3g5-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "JG",
+              "teamSlot": "C3",
+              "averageScore": 68.45,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m2"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m2-j1",
+                "playoffs-p1m2-j2"
               ]
             }
           ],
@@ -65570,6 +66491,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j3",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "A4",
               "score": 69.72,
@@ -65580,6 +66502,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j2",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "A4",
               "score": 88.79,
@@ -65590,6 +66513,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j1",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "A4",
               "score": 71.67,
@@ -65670,6 +66594,25 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g2-j1",
                 "groups-r3g2-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "MID",
+              "teamSlot": "A4",
+              "averageScore": 76.73,
+              "games": 3,
+              "wins": 1,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m3"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m3-j1",
+                "playoffs-p1m3-j2",
+                "playoffs-p1m3-j3"
               ]
             }
           ],
@@ -66169,6 +67112,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j3",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "B4",
               "score": 70.94,
@@ -66179,6 +67123,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j2",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "B4",
               "score": 83.47,
@@ -66189,6 +67134,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j1",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "TOP",
               "teamSlot": "B4",
               "score": 85.09,
@@ -66232,6 +67178,25 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "TOP",
+              "teamSlot": "B4",
+              "averageScore": 79.83,
+              "games": 3,
+              "wins": 2,
+              "losses": 1,
+              "series": [
+                "playoffs-p1m3"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m3-j1",
+                "playoffs-p1m3-j2",
+                "playoffs-p1m3-j3"
               ]
             }
           ],
@@ -66333,6 +67298,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j2",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "A2",
               "score": 72.85,
@@ -66413,6 +67379,23 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r2g2-j1",
                 "groups-r2g2-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "JG",
+              "teamSlot": "A2",
+              "averageScore": 72.85,
+              "games": 1,
+              "wins": 0,
+              "losses": 1,
+              "series": [
+                "playoffs-p1m4"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m4-j2"
               ]
             }
           ],
@@ -66752,6 +67735,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j2",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "C3",
               "score": 52.84,
@@ -66762,6 +67746,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j1",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "MID",
               "teamSlot": "C3",
               "score": 64.53,
@@ -66868,6 +67853,24 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r3g5-j1",
                 "groups-r3g5-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "MID",
+              "teamSlot": "C3",
+              "averageScore": 58.69,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m2"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m2-j1",
+                "playoffs-p1m2-j2"
               ]
             }
           ],
@@ -67764,6 +68767,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j2",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "C3",
               "score": 59.19,
@@ -67774,6 +68778,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m2-j1",
               "seriesId": "playoffs-p1m2",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "ADC",
               "teamSlot": "C3",
               "score": 74.99,
@@ -67781,7 +68786,26 @@ window.LIGA_RK_STATS = {
               "seriesWon": false
             }
           ],
-          "roundRatings": [],
+          "roundRatings": [
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "ADC",
+              "teamSlot": "C3",
+              "averageScore": 67.09,
+              "games": 2,
+              "wins": 0,
+              "losses": 2,
+              "series": [
+                "playoffs-p1m2"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m2-j1",
+                "playoffs-p1m2-j2"
+              ]
+            }
+          ],
           "positions": [
             {
               "position": "ADC",
@@ -67861,6 +68885,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j3",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "B4",
               "score": 68.39,
@@ -67871,6 +68896,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j2",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "B4",
               "score": 65.83,
@@ -67881,6 +68907,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m3-j1",
               "seriesId": "playoffs-p1m3",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "B4",
               "score": 83.43,
@@ -67924,6 +68951,25 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r1g4-j1",
                 "groups-r1g4-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "JG",
+              "teamSlot": "B4",
+              "averageScore": 72.55,
+              "games": 3,
+              "wins": 2,
+              "losses": 1,
+              "series": [
+                "playoffs-p1m3"
+              ],
+              "seriesWins": 1,
+              "matches": [
+                "playoffs-p1m3-j1",
+                "playoffs-p1m3-j2",
+                "playoffs-p1m3-j3"
               ]
             }
           ],
@@ -68025,6 +69071,7 @@ window.LIGA_RK_STATS = {
               "matchId": "playoffs-p1m4-j1",
               "seriesId": "playoffs-p1m4",
               "round": 0,
+              "stage": "OITAVAS",
               "position": "JG",
               "teamSlot": "A2",
               "score": 69.72,
@@ -68068,6 +69115,23 @@ window.LIGA_RK_STATS = {
               "matches": [
                 "groups-r1g1-j1",
                 "groups-r1g1-j2"
+              ]
+            },
+            {
+              "round": 0,
+              "stage": "OITAVAS",
+              "position": "JG",
+              "teamSlot": "A2",
+              "averageScore": 69.72,
+              "games": 1,
+              "wins": 0,
+              "losses": 1,
+              "series": [
+                "playoffs-p1m4"
+              ],
+              "seriesWins": 0,
+              "matches": [
+                "playoffs-p1m4-j1"
               ]
             }
           ],
@@ -113799,129 +114863,131 @@ window.LIGA_RK_STATS = {
         }
       ],
       "teamOfWeek": {
-        "round": 3,
-        "label": "RODADA 3",
+        "round": 0,
+        "stage": "OITAVAS",
+        "label": "OITAVAS DE FINAL",
         "minimumGames": 2,
         "selection": [
           {
             "role": "TOP",
-            "playerId": "c49312d8-3672-4654-9790-a9cad7f59937",
-            "player": "KAUAN",
-            "riotId": "Red KauanMemes#BA1",
-            "image": "",
-            "team": "A1",
-            "teamName": "FAINA",
-            "teamTag": "FIN",
-            "teamLogo": "assets/uploads/equipes_ascensao/fin.png",
-            "averageScore": 94.99,
-            "games": 2,
-            "wins": 2,
-            "losses": 0,
-            "seriesWins": 1,
-            "series": [
-              "groups-r3g2"
-            ],
-            "matches": [
-              "groups-r3g2-j1",
-              "groups-r3g2-j2"
-            ]
-          },
-          {
-            "role": "JG",
-            "playerId": "eef5ea9b-a362-4baf-abac-2207d96b7e80",
-            "player": "DOGAR",
-            "riotId": "doG4R#br1",
-            "image": "",
-            "team": "A2",
-            "teamName": "SKYLINE",
-            "teamTag": "SKY",
-            "teamLogo": "assets/uploads/equipes_ascensao/sky.png",
-            "averageScore": 89.51,
-            "games": 2,
-            "wins": 2,
-            "losses": 0,
-            "seriesWins": 1,
-            "series": [
-              "groups-r3g1"
-            ],
-            "matches": [
-              "groups-r3g1-j1",
-              "groups-r3g1-j2"
-            ]
-          },
-          {
-            "role": "MID",
-            "playerId": "3deb513b-3b91-403a-91cd-6ef94bf3a285",
-            "player": "MARX",
-            "riotId": "marx#alone",
-            "image": "",
-            "team": "C2",
-            "teamName": "FAVELINHA REFORMED",
-            "teamTag": "FVLR",
-            "teamLogo": "assets/uploads/equipes_ascensao/fvlr.png",
-            "averageScore": 88.41,
-            "games": 2,
-            "wins": 2,
-            "losses": 0,
-            "seriesWins": 1,
-            "series": [
-              "groups-r3g5"
-            ],
-            "matches": [
-              "groups-r3g5-j1",
-              "groups-r3g5-j2"
-            ]
-          },
-          {
-            "role": "ADC",
-            "playerId": "c9245faa-3264-49d5-b6d3-15336567772b",
-            "player": "KYLLUA",
-            "riotId": "Kyllua#KOBE",
-            "image": "",
-            "team": "C4",
-            "teamName": "THE KILLERS T7",
-            "teamTag": "TKT7",
-            "teamLogo": "assets/uploads/equipes_ascensao/tkt7.png",
-            "averageScore": 97.77,
-            "games": 2,
-            "wins": 2,
-            "losses": 0,
-            "seriesWins": 1,
-            "series": [
-              "groups-r3g6"
-            ],
-            "matches": [
-              "groups-r3g6-j1",
-              "groups-r3g6-j2"
-            ]
-          },
-          {
-            "role": "SUP",
-            "playerId": "93504c7f-3a44-41d4-84ba-7fcdf9c4c202",
-            "player": "BOTAS",
-            "riotId": "FFLT Botas#caco",
+            "playerId": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
+            "player": "MITS",
+            "riotId": "Mits#KIM",
             "image": "",
             "team": "B3",
             "teamName": "FOFOLETES DO RICK",
             "teamTag": "FFLT",
             "teamLogo": "assets/uploads/equipes_ascensao/fflt.png",
-            "averageScore": 92.31,
+            "averageScore": 100,
             "games": 2,
             "wins": 2,
             "losses": 0,
             "seriesWins": 1,
             "series": [
-              "groups-r3g3"
+              "playoffs-p1m4"
             ],
             "matches": [
-              "groups-r3g3-j1",
-              "groups-r3g3-j2"
+              "playoffs-p1m4-j1",
+              "playoffs-p1m4-j2"
+            ]
+          },
+          {
+            "role": "JG",
+            "playerId": "d0570a3b-415e-4f1c-8e31-ef6a57884ac1",
+            "player": "RICK",
+            "riotId": "FFLT Rick#Rick",
+            "image": "",
+            "team": "B3",
+            "teamName": "FOFOLETES DO RICK",
+            "teamTag": "FFLT",
+            "teamLogo": "assets/uploads/equipes_ascensao/fflt.png",
+            "averageScore": 86.02,
+            "games": 2,
+            "wins": 2,
+            "losses": 0,
+            "seriesWins": 1,
+            "series": [
+              "playoffs-p1m4"
+            ],
+            "matches": [
+              "playoffs-p1m4-j1",
+              "playoffs-p1m4-j2"
+            ]
+          },
+          {
+            "role": "MID",
+            "playerId": "9ca85881-b3a9-4d35-b5a5-040d97360711",
+            "player": "JOSÉ3000",
+            "riotId": "josé 3000#zeze",
+            "image": "",
+            "team": "D4",
+            "teamName": "INAZUMA V",
+            "teamTag": "INZ",
+            "teamLogo": "assets/uploads/equipes_ascensao/inz.png",
+            "averageScore": 93.75,
+            "games": 2,
+            "wins": 2,
+            "losses": 0,
+            "seriesWins": 1,
+            "series": [
+              "playoffs-p1m2"
+            ],
+            "matches": [
+              "playoffs-p1m2-j1",
+              "playoffs-p1m2-j2"
+            ]
+          },
+          {
+            "role": "ADC",
+            "playerId": "51a488ff-00e3-4710-8289-3b87882f9946",
+            "player": "AKY",
+            "riotId": "Aky#2666",
+            "image": "",
+            "team": "D4",
+            "teamName": "INAZUMA V",
+            "teamTag": "INZ",
+            "teamLogo": "assets/uploads/equipes_ascensao/inz.png",
+            "averageScore": 94.74,
+            "games": 2,
+            "wins": 2,
+            "losses": 0,
+            "seriesWins": 1,
+            "series": [
+              "playoffs-p1m2"
+            ],
+            "matches": [
+              "playoffs-p1m2-j1",
+              "playoffs-p1m2-j2"
+            ]
+          },
+          {
+            "role": "SUP",
+            "playerId": "f4829fa0-4a8b-4bf0-b34d-fdaea5256536",
+            "player": "ALEEH",
+            "riotId": "Aleeht#BR1",
+            "image": "",
+            "team": "B4",
+            "teamName": "TENEBRA LEVIATHAN",
+            "teamTag": "TNL",
+            "teamLogo": "assets/uploads/equipes_ascensao/tnl.png",
+            "averageScore": 83.76,
+            "games": 3,
+            "wins": 2,
+            "losses": 1,
+            "seriesWins": 1,
+            "series": [
+              "playoffs-p1m3"
+            ],
+            "matches": [
+              "playoffs-p1m3-j1",
+              "playoffs-p1m3-j2",
+              "playoffs-p1m3-j3"
             ]
           }
         ],
-        "highlightPlayerId": "c9245faa-3264-49d5-b6d3-15336567772b",
-        "highlightRole": "ADC",
-        "highlightScore": 97.77
+        "highlightPlayerId": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
+        "highlightRole": "TOP",
+        "highlightScore": 100
       }
     }
   }
