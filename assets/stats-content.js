@@ -1,6 +1,6 @@
 window.LIGA_RK_STATS = {
   "version": 2,
-  "generatedAt": "2026-08-17T13:12:16.140Z",
+  "generatedAt": "2026-08-17T13:14:04.849Z",
   "season": "Liga RK 26.2",
   "divisions": {
     "elite": {
@@ -57032,131 +57032,130 @@ window.LIGA_RK_STATS = {
         }
       ],
       "teamOfWeek": {
-        "round": 3,
-        "stage": "",
-        "label": "RODADA 3",
+        "round": 0,
+        "stage": "OITAVAS",
+        "label": "OITAVAS DE FINAL",
         "minimumGames": 2,
         "selection": [
           {
             "role": "TOP",
-            "playerId": "ee09cf39-13a1-4268-a363-dbd28955437b",
-            "player": "NIHIL",
-            "riotId": "N I H I L メ#CDRP",
+            "playerId": "87b0b01b-0c1d-44ca-8154-ec59da7b80a3",
+            "player": "DAVI",
+            "riotId": "DeyraF#LDavi",
             "image": "",
-            "team": "D1",
-            "teamName": "FAVELÃO DO TECHY",
-            "teamTag": "FVL",
-            "teamLogo": "assets/uploads/equipes_elite/fvl.png",
-            "averageScore": 91.72,
+            "team": "D4",
+            "teamName": "M7 ESPORTS",
+            "teamTag": "M7",
+            "teamLogo": "assets/uploads/equipes_elite/m7.png",
+            "averageScore": 90.75,
             "games": 2,
             "wins": 2,
             "losses": 0,
             "seriesWins": 1,
             "series": [
-              "groups-r3g8"
+              "playoffs-p1m1"
             ],
             "matches": [
-              "groups-r3g8-j1",
-              "groups-r3g8-j2"
+              "playoffs-p1m1-j1",
+              "playoffs-p1m1-j2"
             ]
           },
           {
             "role": "JG",
-            "playerId": "adcf03a3-0794-4ec3-902e-c8894dfdbfc3",
-            "player": "SSS",
-            "riotId": "arima#εsεs",
+            "playerId": "d461d7bf-887a-4969-9e94-2af9389b2f2a",
+            "player": "BLACKZERA",
+            "riotId": "Blackzera#CBLOL",
             "image": "",
-            "team": "B3",
-            "teamName": "PHOENIX GAMING BLUE",
-            "teamTag": "PXB",
-            "teamLogo": "assets/uploads/equipes_elite/pxb.png",
-            "averageScore": 93.98,
+            "team": "D4",
+            "teamName": "M7 ESPORTS",
+            "teamTag": "M7",
+            "teamLogo": "assets/uploads/equipes_elite/m7.png",
+            "averageScore": 88.77,
             "games": 2,
             "wins": 2,
             "losses": 0,
             "seriesWins": 1,
             "series": [
-              "groups-r3g3"
+              "playoffs-p1m1"
             ],
             "matches": [
-              "groups-r3g3-j1",
-              "groups-r3g3-j2"
+              "playoffs-p1m1-j1",
+              "playoffs-p1m1-j2"
             ]
           },
           {
             "role": "MID",
-            "playerId": "85c29dba-efdf-44f0-9604-c743f96c49ce",
-            "player": "MEC",
-            "riotId": "sing 4 da moment#90210",
+            "playerId": "7ed025c3-c37e-40c9-ac97-d2ddb1419e85",
+            "player": "GUNGI",
+            "riotId": "Gungi#727",
             "image": "",
-            "team": "B4",
-            "teamName": "TOPEIRAS DO MAU",
-            "teamTag": "TOP",
-            "teamLogo": "assets/uploads/equipes_elite/top.png",
-            "averageScore": 88.17,
-            "games": 3,
+            "team": "D4",
+            "teamName": "M7 ESPORTS",
+            "teamTag": "M7",
+            "teamLogo": "assets/uploads/equipes_elite/m7.png",
+            "averageScore": 83.7,
+            "games": 2,
             "wins": 2,
-            "losses": 1,
+            "losses": 0,
             "seriesWins": 1,
             "series": [
-              "groups-r3g4"
+              "playoffs-p1m1"
             ],
             "matches": [
-              "groups-r3g4-j1",
-              "groups-r3g4-j2",
-              "groups-r3g4-j3"
+              "playoffs-p1m1-j1",
+              "playoffs-p1m1-j2"
             ]
           },
           {
             "role": "ADC",
-            "playerId": "df0e9d12-5f4f-4268-a80d-cefa44c76268",
-            "player": "EPI",
-            "riotId": "epilul#ROX",
+            "playerId": "c0252d66-bd2d-4f35-b210-c03943520a05",
+            "player": "PEWTZ",
+            "riotId": "Pewtz#Pewtz",
             "image": "",
-            "team": "D3",
-            "teamName": "SPACE DUCKS",
-            "teamTag": "SDK",
-            "teamLogo": "assets/uploads/equipes_elite/sdk.png",
-            "averageScore": 100,
+            "team": "D4",
+            "teamName": "M7 ESPORTS",
+            "teamTag": "M7",
+            "teamLogo": "assets/uploads/equipes_elite/m7.png",
+            "averageScore": 94.93,
             "games": 2,
             "wins": 2,
             "losses": 0,
             "seriesWins": 1,
             "series": [
-              "groups-r3g7"
+              "playoffs-p1m1"
             ],
             "matches": [
-              "groups-r3g7-j1",
-              "groups-r3g7-j2"
+              "playoffs-p1m1-j1",
+              "playoffs-p1m1-j2"
             ]
           },
           {
             "role": "SUP",
-            "playerId": "8827bd59-7836-4418-b5eb-d33dd8c3bee3",
-            "player": "VINI",
-            "riotId": "FVL Vini#SUP",
+            "playerId": "5217aacf-fac1-4c9c-b387-24344e34444e",
+            "player": "BLADE",
+            "riotId": "qzwq#sleep",
             "image": "",
-            "team": "D1",
-            "teamName": "FAVELÃO DO TECHY",
-            "teamTag": "FVL",
-            "teamLogo": "assets/uploads/equipes_elite/fvl.png",
-            "averageScore": 80.38,
+            "team": "A1",
+            "teamName": "CUPULA DO TRIPLE T",
+            "teamTag": "TTT",
+            "teamLogo": "assets/uploads/equipes_elite/ttt.png",
+            "averageScore": 93.73,
             "games": 2,
             "wins": 2,
             "losses": 0,
             "seriesWins": 1,
             "series": [
-              "groups-r3g8"
+              "playoffs-p1m4"
             ],
             "matches": [
-              "groups-r3g8-j1",
-              "groups-r3g8-j2"
+              "playoffs-p1m4-j1",
+              "playoffs-p1m4-j2"
             ]
           }
         ],
-        "highlightPlayerId": "df0e9d12-5f4f-4268-a80d-cefa44c76268",
+        "highlightPlayerId": "c0252d66-bd2d-4f35-b210-c03943520a05",
         "highlightRole": "ADC",
-        "highlightScore": 100
+        "highlightScore": 94.93
       }
     },
     "ascension": {

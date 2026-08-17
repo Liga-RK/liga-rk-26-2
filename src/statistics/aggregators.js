@@ -5,7 +5,7 @@ const { normalizeRiotId, parseOpggRiotId } = require("./player-identity");
 const DIVISIONS = ["elite", "ascension"];
 const MVP_MODEL_VERSION = "role-impact-v5";
 const ACTIVE_TEAM_OF_WEEK = Object.freeze({
-  elite: Object.freeze({ round: 3, label: "RODADA 3" }),
+  elite: Object.freeze({ stage: "OITAVAS", label: "OITAVAS DE FINAL" }),
   ascension: Object.freeze({ stage: "OITAVAS", label: "OITAVAS DE FINAL" })
 });
 const MIN_TEAM_OF_WEEK_GAMES = 2;
