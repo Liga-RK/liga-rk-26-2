@@ -69,6 +69,7 @@
   function scoredCandidates(market, role, strategy, random) {
     return market
       .filter((item) => item && item.selectable !== false && String(item.role).toUpperCase() === role)
+      .filter((item) => role === "TEAM" || item.type === "team" || item.isStarter !== false)
       .map((item) => ({ item, score: scoreItem(item, strategy, random), priceCents: toCents(item.price) }))
       .sort((left, right) => right.score - left.score || left.priceCents - right.priceCents || String(left.item.name).localeCompare(String(right.item.name), "pt-BR"));
   }
@@ -149,6 +150,7 @@
       const remainingCents = budgetCents - selected.costCents;
       const reserveCandidates = market
         .filter((item) => item && item.selectable !== false && item.type !== "team" && PLAYER_ROLES.includes(String(item.role).toUpperCase()))
+        .filter((item) => item.isStarter === false)
         .filter((item) => !selectedIds.has(String(item.id)) && toCents(item.price) <= remainingCents)
         .filter((item) => {
           const key = teamKey(item);

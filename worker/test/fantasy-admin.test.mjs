@@ -128,8 +128,9 @@ test("15 alteração depois do fechamento não contém caminho de reabertura", (
 test("16 mercado nunca reabre automaticamente", () => {
   const openAssignments = [...adminSource.matchAll(/SET status = 'open'/g)];
   const manualOpen = functionBody(adminSource, "adminOpenMarket");
-  assert.equal(openAssignments.length, 2);
-  assert.equal([...manualOpen.matchAll(/SET status = 'open'/g)].length, 2);
+  assert.equal(openAssignments.length, 1);
+  assert.equal([...manualOpen.matchAll(/SET status = 'open'/g)].length, 1);
+  assert.match(manualOpen, /SET status = CASE WHEN \? <= \? THEN 'locked' ELSE 'open' END/);
 });
 
 test("17 nova escalação é recusada após fechamento", () => {

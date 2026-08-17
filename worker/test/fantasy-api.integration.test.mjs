@@ -66,8 +66,13 @@ sqliteTest("API administrativa executa login, sync, mercado, importação e valo
   });
   assert.equal(opened.response.status, 200);
   assert.equal(opened.payload.data.market.status, "open");
-  assert.equal(opened.payload.data.market.lockDivision, "ascension");
-  assert.equal(opened.payload.data.market.closesAt, "2099-08-01T18:35:00.000Z");
+  assert.equal(opened.payload.data.market.lockDivision, null);
+  assert.equal(opened.payload.data.market.lockMatchId, "manual-schedule:r2");
+  assert.equal(opened.payload.data.market.closesAt, "2099-08-02T18:35:00.000Z");
+  assert.deepEqual(opened.payload.data.schedule.divisionClosesAt, {
+    ascension: "2099-08-01T18:35:00.000Z",
+    elite: "2099-08-02T18:35:00.000Z"
+  });
   assert.equal(database.prepare("SELECT COUNT(*) AS count FROM fantasy_rounds WHERE round_number=2 AND status='open'").get().count, 2);
   const duplicateOpen = await call(env, "/market/open", {
     method: "POST", body: { roundNumber: 2 }, cookie, csrf

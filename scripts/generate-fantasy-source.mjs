@@ -24,6 +24,21 @@ const FANTASY_STARTER_OVERRIDES = Object.freeze({
   })
 });
 
+const ROUND_FIVE_PARTICIPANT_OVERRIDES = Object.freeze({
+  elite: Object.freeze({
+    p2m1: Object.freeze({ home: "A2", away: "D4" }),
+    p2m2: Object.freeze({ home: "B3", away: "D3" }),
+    p2m3: Object.freeze({ home: "C4", away: "A3" }),
+    p2m4: Object.freeze({ home: "D1", away: "A1" })
+  }),
+  ascension: Object.freeze({
+    p2m1: Object.freeze({ home: "A1", away: "D2" }),
+    p2m2: Object.freeze({ home: "B1", away: "D4" }),
+    p2m3: Object.freeze({ home: "C4", away: "B4" }),
+    p2m4: Object.freeze({ home: "D3", away: "B3" })
+  })
+});
+
 const output = {
   version: 2,
   schema: "fantasy-rk-official-source-v2",
@@ -107,7 +122,7 @@ for (const division of ["elite", "ascension"]) {
       avgWinTime: (statsDivision.teams || []).find((team) => team.slot === slot)?.avgWinTime || "00:00"
     })
   });
-  const playoffRound = buildFirstPlayoffRound({
+  const playoffRounds = buildPlayoffRounds({
     division,
     dataDivision,
     contentDivision,
@@ -115,7 +130,7 @@ for (const division of ["elite", "ascension"]) {
     teamBySlot,
     standings
   });
-  const rounds = playoffRound ? [...groupRounds, playoffRound] : groupRounds;
+  const rounds = [...groupRounds, ...playoffRounds];
 
   output.divisions[division] = {
     teams,
@@ -248,6 +263,13 @@ function inferSeriesFormat(stage) {
   return /semi|final/i.test(String(stage || "")) ? "MD5" : "MD3";
 }
 
+function buildPlayoffRounds(context) {
+  const firstRound = buildFirstPlayoffRound(context);
+  if (!firstRound) return [];
+  const quarterfinals = buildQuarterfinalRound({ ...context, firstRound });
+  return quarterfinals ? [firstRound, quarterfinals] : [firstRound];
+}
+
 function buildFirstPlayoffRound({ division, dataDivision, contentDivision, statsDivision, teamBySlot, standings }) {
   const playoffMatches = dataDivision.playoffs?.[0] || [];
   if (!playoffMatches.length) return null;
@@ -307,6 +329,73 @@ function buildFirstPlayoffRound({ division, dataDivision, contentDivision, stats
     eligibility,
     matches
   };
+}
+
+function buildQuarterfinalRound({ division, dataDivision, contentDivision, statsDivision, teamBySlot, standings, firstRound }) {
+  const playoffMatches = dataDivision.playoffs?.[1] || [];
+  if (!playoffMatches.length) return null;
+  const matches = playoffMatches.map((match, matchIndex) => {
+    const sourceId = `p2m${matchIndex + 1}`;
+    const homeTeamSeed = String(match.teamA || "").toUpperCase();
+    const awayTeamSeed = String(match.teamB || "").toUpperCase();
+    const participantOverride = ROUND_FIVE_PARTICIPANT_OVERRIDES[division]?.[sourceId];
+    const homeTeamSlot = participantOverride?.home || resolvePlayoffParticipant(standings, firstRound, homeTeamSeed);
+    const awayTeamSlot = participantOverride?.away || resolvePlayoffParticipant(standings, firstRound, awayTeamSeed);
+    const liveSchedule = contentDivision.playoffResults?.[sourceId] || {};
+    const statMatches = (statsDivision.matches || [])
+      .filter((item) => item.seriesId === `playoffs-${sourceId}`);
+    const wins = new Map();
+    for (const statMatch of statMatches) {
+      if (statMatch.winnerSlot) wins.set(statMatch.winnerSlot, (wins.get(statMatch.winnerSlot) || 0) + 1);
+    }
+    const homeScore = statMatches.length ? wins.get(homeTeamSlot) || 0 : null;
+    const awayScore = statMatches.length ? wins.get(awayTeamSlot) || 0 : null;
+    const format = String(match.format || "MD5").toUpperCase();
+    const winTarget = format === "MD5" ? 3 : 2;
+    const completed = Math.max(homeScore || 0, awayScore || 0) >= winTarget;
+    const winnerSlot = completed && homeScore !== awayScore
+      ? (homeScore > awayScore ? homeTeamSlot : awayTeamSlot)
+      : "";
+    return {
+      id: `schedule:${division}:${sourceId}`,
+      sourceId,
+      statsSeriesId: `playoffs-${sourceId}`,
+      stage: "playoffs-quarterfinals",
+      orderIndex: matchIndex,
+      homeTeamSeed,
+      awayTeamSeed,
+      homeTeamSlot,
+      awayTeamSlot,
+      homeTeamName: teamBySlot.get(homeTeamSlot)?.name || "",
+      awayTeamName: teamBySlot.get(awayTeamSlot)?.name || "",
+      startsAt: brazilDateToIso(liveSchedule.date || match.date, liveSchedule.time || match.time, generatedYear),
+      status: completed ? "completed" : statMatches.length ? "live" : "scheduled",
+      format,
+      homeScore,
+      awayScore,
+      winnerTeamId: winnerSlot ? `team:${division}:${winnerSlot}` : null
+    };
+  });
+  const playing = new Set(matches.flatMap((match) => [match.homeTeamSlot, match.awayTeamSlot]).filter(Boolean));
+  const teamStatuses = Object.fromEntries(
+    Array.from(teamBySlot.keys()).map((slot) => [slot, playing.has(slot) ? "playing" : "eliminated"])
+  );
+  return {
+    id: `${division}-r5`,
+    roundNumber: 5,
+    name: "RODADA 5 · QUARTAS DE FINAL",
+    eligibility: { teamStatuses },
+    matches
+  };
+}
+
+function resolvePlayoffParticipant(standings, previousRound, descriptor) {
+  const standingSlot = resolveStandingSeed(standings, descriptor);
+  if (standingSlot) return standingSlot;
+  const winnerMatch = /VENCEDOR\s+OITAVAS\s+(\d+)/i.exec(String(descriptor || ""));
+  if (!winnerMatch) return "";
+  const previousMatch = previousRound.matches[Number(winnerMatch[1]) - 1];
+  return String(previousMatch?.winnerTeamId || "").split(":").pop() || "";
 }
 
 function resolveStandingSeed(standings, seed) {

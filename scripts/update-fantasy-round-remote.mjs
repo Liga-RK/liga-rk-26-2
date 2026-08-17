@@ -12,6 +12,37 @@ const roundNumber = Math.trunc(Number(process.argv[3] || 2));
 const previewId = String(process.argv[4] || "").trim();
 const backupReference = String(process.argv[5] || "").trim();
 
+const ROUND_FIVE_RESERVES = Object.freeze([
+  { division: "elite", teamSlot: "A2", id: "715bf93f-f2ea-4097-a5d2-c8ce630e8575", name: "LINK", priceCents: 1300 },
+  { division: "elite", teamSlot: "B3", id: "60a4e735-2da3-4fcd-a4d7-9f2d30deb0da", name: "GUSTA", priceCents: 1500 },
+  { division: "elite", teamSlot: "B3", id: "29ed2283-7326-46fc-b3a6-532a344eee90", name: "VANFY", priceCents: 1500 },
+  { division: "elite", teamSlot: "B3", id: "461313aa-b1c2-4b5d-9d02-098acdc32472", name: "WEEDU", priceCents: 1500 },
+  { division: "elite", teamSlot: "C4", id: "e2f08c9f-414d-4591-8d2d-4a17a817d9ae", name: "BOLOTA", priceCents: 1200 },
+  { division: "elite", teamSlot: "D1", id: "7c61ddca-8673-4050-96ab-a2abef4c5826", name: "FELTRINI", priceCents: 1600 },
+  { division: "elite", teamSlot: "D1", id: "6de36187-98dc-49a9-8700-aa44830377a1", name: "CROSS", priceCents: 1600 },
+  { division: "elite", teamSlot: "D3", id: "c2b79abc-0122-4930-9127-9a977db71ca6", name: "THOMINHAS", priceCents: 1500 },
+  { division: "elite", teamSlot: "A3", id: "80165c7c-806c-4cb3-90f2-a4a969000bfd", name: "ROD", priceCents: 1300 },
+  { division: "elite", teamSlot: "A3", id: "7cafc4a2-71a8-4540-8631-b7acc45f65dc", name: "COGNATU", priceCents: 1300 },
+  { division: "elite", teamSlot: "A1", id: "92a2c7bf-4ebe-42da-bb50-8f991ad2369f", name: "XK", priceCents: 1300 },
+  { division: "elite", teamSlot: "A1", id: "148a9ecf-28de-4d29-b8d8-e1b637aa7f50", name: "KAYIA", priceCents: 1300 },
+  { division: "ascension", teamSlot: "A1", id: "8b0bb211-5bfd-46c2-819f-161c22c494d6", name: "YELLOW", priceCents: 1300 },
+  { division: "ascension", teamSlot: "A1", id: "dce34e4e-90b8-4cf4-a792-432678ad9e16", name: "HERBERTH", priceCents: 1300 },
+  { division: "ascension", teamSlot: "B1", id: "5e286312-66d1-4f61-ac27-0a743414cd91", name: "MISS HOLES", priceCents: 1500 },
+  { division: "ascension", teamSlot: "C4", id: "6e072291-7183-4aa7-a2f0-2894dc026fe0", name: "COALA", priceCents: 1500 },
+  { division: "ascension", teamSlot: "C4", id: "aef666a4-d7c9-4b54-9d66-6f5dc97bb700", name: "LELEO", priceCents: 1500 },
+  { division: "ascension", teamSlot: "D3", id: "08a56d11-f689-4c41-8a2e-1abe6d890eb1", name: "MARCÃO", priceCents: 1500 },
+  { division: "ascension", teamSlot: "D3", id: "0e8df0ab-8545-4c2b-814c-97bce3d71b0f", name: "OVER", priceCents: 1500 },
+  { division: "ascension", teamSlot: "D3", id: "fa619765-50ba-4fa2-bd9c-e319bcb8c02c", name: "DRAX", priceCents: 1500 },
+  { division: "ascension", teamSlot: "D2", id: "3302e62f-4af0-4455-b401-81cf58a86828", name: "ZILIN", priceCents: 1500 },
+  { division: "ascension", teamSlot: "D2", id: "e8fa5df2-47ee-4ff4-9f29-80f95ee99aad", name: "POLLO", priceCents: 1500 },
+  { division: "ascension", teamSlot: "D4", id: "d74532ef-f354-4326-89d9-74c9cc45b1c4", name: "GUOLHERME", priceCents: 1300 },
+  { division: "ascension", teamSlot: "D4", id: "1d401693-8cd1-4dd1-ac42-f8e2f6a6d698", name: "JOSÉ3000", priceCents: 1300 },
+  { division: "ascension", teamSlot: "D4", id: "fa30f17a-58a3-4652-af23-d988903bff29", name: "TRJACK", priceCents: 1300 },
+  { division: "ascension", teamSlot: "B3", id: "455a9db1-b576-4202-8098-9cdac67d5cdf", name: "PROVÉRBIOS", priceCents: 1400 },
+  { division: "ascension", teamSlot: "B3", id: "c2e3a850-d035-470b-8d42-288132b0019e", name: "TIMOR LESTE", priceCents: 1400 },
+  { division: "ascension", teamSlot: "B3", id: "cb2737be-8473-4a8f-b365-412524ebf599", name: "PARANOIA", priceCents: 1400 }
+]);
+
 if (!Number.isInteger(roundNumber) || roundNumber < 2) {
   throw new TypeError("Informe uma rodada válida a partir da rodada 2.");
 }
@@ -164,6 +195,7 @@ if (mode === "open-admin") {
   }
   await assertMarketClosed();
   const sync = await invoke(__test.adminSyncApply, { previewId });
+  const reserves = roundNumber === 5 ? await upsertRoundFiveReserves() : null;
   const prepared = await prepareMarketRound(roundNumber);
   console.log(JSON.stringify({
     mode,
@@ -175,6 +207,7 @@ if (mode === "open-admin") {
       pricesPreserved: sync.pricesPreserved,
       warnings: sync.warnings
     },
+    reserves,
     prepared
   }, null, 2));
 } else if (mode === "process") {
@@ -483,6 +516,112 @@ async function scoringAudit() {
   };
 }
 
+async function upsertRoundFiveReserves() {
+  const statements = [];
+  const resolved = [];
+  for (const reserve of ROUND_FIVE_RESERVES) {
+    const player = await DB.prepare(`
+      SELECT p.id, p.division, p.team_slot AS teamSlot, p.display_name AS displayName,
+             p.role, p.roster_status AS rosterStatus, p.source_hash AS sourceHash,
+             t.name AS teamName, t.tag AS teamTag, t.logo
+      FROM fantasy_official_players p
+      JOIN fantasy_official_teams t ON t.id = p.team_id AND t.division = p.division
+      WHERE p.id = ? AND p.division = ?
+    `).bind(reserve.id, reserve.division).first();
+    if (!player) throw new Error(`Reserva oficial não encontrado: ${reserve.division}/${reserve.name}/${reserve.id}.`);
+    if (normalizeReserveName(player.displayName) !== normalizeReserveName(reserve.name)) {
+      throw new Error(`Nome divergente para ${reserve.id}: esperado ${reserve.name}, recebido ${player.displayName}.`);
+    }
+    if (String(player.teamSlot) !== reserve.teamSlot || String(player.rosterStatus) !== "reserve") {
+      throw new Error(`Vínculo divergente para ${reserve.name}: ${player.teamSlot}/${player.rosterStatus}.`);
+    }
+    const price = reserve.priceCents / 100;
+    statements.push(DB.prepare(`
+      UPDATE fantasy_official_players
+      SET roster_status = 'reserve', active = 1, synced_at = CURRENT_TIMESTAMP
+      WHERE id = ? AND division = ?
+    `).bind(reserve.id, reserve.division));
+    statements.push(DB.prepare(`
+      INSERT INTO fantasy_market
+        (division, asset_id, asset_type, role, display_name, team_slot,
+         team_name, team_tag, logo, price, previous_price, average_points,
+         active, updated_at, price_cents, previous_price_cents,
+         official_status, is_starter, source_hash, manual_override)
+      VALUES (?, ?, 'player', ?, ?, ?, ?, ?, ?, ?, ?, 0, 1,
+              CURRENT_TIMESTAMP, ?, ?, 'active', 0, ?, 1)
+      ON CONFLICT(division, asset_id) DO UPDATE SET
+        role = excluded.role, display_name = excluded.display_name,
+        team_slot = excluded.team_slot, team_name = excluded.team_name,
+        team_tag = excluded.team_tag, logo = excluded.logo,
+        price = excluded.price, previous_price = excluded.previous_price,
+        price_cents = excluded.price_cents,
+        previous_price_cents = excluded.previous_price_cents,
+        active = 1, official_status = 'active', is_starter = 0,
+        source_hash = excluded.source_hash, manual_override = 1,
+        updated_at = CURRENT_TIMESTAMP
+    `).bind(
+      reserve.division,
+      reserve.id,
+      player.role,
+      reserve.name,
+      reserve.teamSlot,
+      player.teamName,
+      player.teamTag,
+      player.logo,
+      price,
+      price,
+      reserve.priceCents,
+      reserve.priceCents,
+      player.sourceHash
+    ));
+    resolved.push({ ...reserve, role: player.role, teamName: player.teamName, teamTag: player.teamTag });
+  }
+  statements.push(DB.prepare(`
+    INSERT INTO fantasy_audit_log
+      (id, actor_user_id, action, target_type, target_id, metadata_json,
+       actor_admin_username, before_json, after_json, result, error_json, request_id)
+    VALUES (?, NULL, 'market.round5.reserves.upsert', 'fantasy_round', '5', ?, ?, '{}', ?, 'success', '{}', NULL)
+  `).bind(
+    crypto.randomUUID(),
+    JSON.stringify({ count: resolved.length, divisions: { elite: 12, ascension: 16 } }),
+    ACTOR,
+    JSON.stringify({ reserves: resolved })
+  ));
+  await DB.batch(statements);
+
+  const placeholders = ROUND_FIVE_RESERVES.map(() => "?").join(", ");
+  const rows = await DB.prepare(`
+    SELECT division, asset_id AS id, display_name AS name, team_slot AS teamSlot,
+           price_cents AS priceCents, active, is_starter AS isStarter
+    FROM fantasy_market WHERE asset_id IN (${placeholders})
+    ORDER BY division, team_slot, display_name
+  `).bind(...ROUND_FIVE_RESERVES.map((reserve) => reserve.id)).all();
+  if ((rows.results || []).length !== ROUND_FIVE_RESERVES.length) {
+    throw new Error(`Foram gravados ${(rows.results || []).length} de ${ROUND_FIVE_RESERVES.length} reservas.`);
+  }
+  for (const row of rows.results || []) {
+    const expected = ROUND_FIVE_RESERVES.find((reserve) => reserve.id === row.id);
+    if (!expected || Number(row.active) !== 1 || Number(row.isStarter) !== 0 || Number(row.priceCents) !== expected.priceCents) {
+      throw new Error(`Auditoria do reserva falhou: ${row.division}/${row.name}.`);
+    }
+  }
+  return {
+    count: resolved.length,
+    byDivision: { elite: 12, ascension: 16 },
+    prices: resolved.map((reserve) => ({
+      division: reserve.division,
+      teamSlot: reserve.teamSlot,
+      teamName: reserve.teamName,
+      name: reserve.name,
+      price: reserve.priceCents / 100
+    }))
+  };
+}
+
+function normalizeReserveName(value) {
+  return String(value || "").normalize("NFKD").replace(/\p{M}/gu, "").trim().toUpperCase();
+}
+
 async function prepareMarketRound(targetRoundNumber) {
   const rounds = await DB.prepare(`
     SELECT id, division, round_number AS roundNumber, name, status,
@@ -510,7 +649,10 @@ async function prepareMarketRound(targetRoundNumber) {
       summary[status] = (summary[status] || 0) + 1;
       return summary;
     }, {});
-    if (counts.playing !== 8 || counts["qualified-next-round"] !== 4 || counts.eliminated !== 4) {
+    const eligibilityValid = targetRoundNumber === 4
+      ? counts.playing === 8 && counts["qualified-next-round"] === 4 && counts.eliminated === 4
+      : counts.playing === 8 && !counts["qualified-next-round"] && counts.eliminated === 8;
+    if (!eligibilityValid) {
       throw new Error(`A elegibilidade dos playoffs não confere em ${division}.`);
     }
   }
@@ -518,7 +660,11 @@ async function prepareMarketRound(targetRoundNumber) {
   if (!firstMatch || !Number.isFinite(Date.parse(firstMatch.startsAt))) {
     throw new Error("A primeira partida da rodada não possui horário válido.");
   }
-  const closesAt = new Date(Date.parse(firstMatch.startsAt) - 25 * 60 * 1000).toISOString();
+  const divisionClosesAt = Object.fromEntries(["ascension", "elite"].map((division) => {
+    const divisionFirstMatch = (matches.results || []).find((match) => match.division === division);
+    return [division, new Date(Date.parse(divisionFirstMatch.startsAt) - 25 * 60 * 1000).toISOString()];
+  }));
+  const closesAt = new Date(Math.max(...Object.values(divisionClosesAt).map(Date.parse))).toISOString();
   const lineupCount = await DB.prepare(`
     SELECT COUNT(*) AS count
     FROM fantasy_lineups l
@@ -531,21 +677,21 @@ async function prepareMarketRound(targetRoundNumber) {
   await DB.prepare(`
     UPDATE fantasy_market_state
     SET status = 'closed', access_mode = 'public', closes_at = ?,
-        close_reason = ?, lock_match_id = ?, lock_division = ?,
+        close_reason = ?, lock_match_id = ?, lock_division = NULL,
         lock_round_number = ?, version = version + 1,
         updated_at = CURRENT_TIMESTAMP
     WHERE id = 'global' AND status = 'closed'
   `).bind(
     closesAt,
     `Rodada ${targetRoundNumber} preparada; aguardando abertura manual.`,
-    firstMatch.id,
-    firstMatch.division,
+    `manual-schedule:r${targetRoundNumber}`,
     targetRoundNumber
   ).run();
   return {
     marketStatus: "closed",
     roundNumber: targetRoundNumber,
     closesAt,
+    divisionClosesAt,
     firstMatch,
     rounds: (rounds.results || []).map((round) => ({
       division: round.division,

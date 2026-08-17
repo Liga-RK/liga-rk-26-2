@@ -21,6 +21,7 @@ function asset(id, role, price, average, recent, teamSlot, extra = {}) {
     teamTag: teamSlot,
     type: role === "TEAM" ? "team" : "player",
     selectable: extra.selectable !== false,
+    isStarter: role === "TEAM" ? true : extra.isStarter !== false,
     ...extra
   };
 }
@@ -59,7 +60,7 @@ test("limite de dois jogadores da mesma equipe também é respeitado pelo reserv
     asset("adc-d", "ADC", 10, 60, 60, "D"), asset("adc-e", "ADC", 11, 50, 50, "E"),
     asset("sup-f", "SUP", 10, 60, 60, "F"), asset("sup-g", "SUP", 11, 50, 50, "G"),
     asset("team-a", "TEAM", 8, 60, 60, "A"), asset("team-h", "TEAM", 9, 50, 50, "H"),
-    asset("reserve-a", "SUP", 5, 80, 80, "A"), asset("reserve-h", "TOP", 5, 30, 30, "H")
+    asset("reserve-a", "SUP", 5, 80, 80, "A", { isStarter: false }), asset("reserve-h", "TOP", 5, 30, 30, "H", { isStarter: false })
   ];
   const result = autoLineup.buildAutomaticLineup({ market, budget: 90, maxPlayersPerTeam: 2, strategy: "average", includeReserve: true });
   const players = Object.values(result.slots).filter((item) => item.type === "player");
@@ -68,7 +69,20 @@ test("limite de dois jogadores da mesma equipe também é respeitado pelo reserv
 
   assert.equal(result.ok, true);
   assert.ok([...teamCounts.values()].every((count) => count <= 2));
-  if (result.reserve) assert.ok((teamCounts.get(result.reserve.teamSlot) || 0) < 2);
+  assert.equal(result.reserve?.isStarter, false);
+  assert.ok((teamCounts.get(result.reserve.teamSlot) || 0) < 2);
+});
+
+test("reservas reais nunca ocupam as seis vagas titulares automáticas", () => {
+  const market = sampleMarket();
+  market.push(asset("reserve-super", "TOP", 4, 999, 999, "R1", { isStarter: false }));
+  market.push(asset("reserve-flex", "SUP", 7, 70, 70, "R2", { isStarter: false }));
+  const result = autoLineup.buildAutomaticLineup({ market, budget: 120, strategy: "average", includeReserve: true });
+
+  assert.equal(result.ok, true);
+  assert.ok(Object.values(result.slots).every((item) => item.type === "team" || item.isStarter !== false));
+  assert.equal(result.reserve?.id, "reserve-super");
+  assert.equal(result.reserve?.isStarter, false);
 });
 
 test("estratégia econômica gasta menos do que a estratégia de maior média", () => {
@@ -90,6 +104,9 @@ test("interface oferece sete estratégias, prévia e fluxo seguro de Palpite de 
   assert.match(script, /for \(const role of PLAYER_ROLES\) lineup\.draftPredictions\[role\] = noDraftPrediction/);
   assert.match(script, /function startAutomaticDraftReview\(\)/);
   assert.match(script, /Palpite \$\{state\.autoDraftReview\.completed \+ 1\} de \$\{state\.autoDraftReview\.total\}/);
+  assert.match(script, /RESERVA DO ELENCO/);
+  assert.match(script, /Somente como reserva/);
+  assert.match(css, /\.roster-status-badge\.reserve/);
 });
 
 test("modal automático mantém ações visíveis e vira tela inteira no celular", () => {

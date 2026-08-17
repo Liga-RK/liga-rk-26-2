@@ -511,6 +511,7 @@ async function getMarket(request, env) {
     SELECT asset_id AS id, asset_type AS type, role, display_name AS name, team_slot AS teamSlot,
            team_name AS teamName, team_tag AS teamTag, logo, price, previous_price AS previousPrice,
            average_points AS average,
+           is_starter AS isStarter,
            last_score_breakdown_json AS scoreDetailsJson,
            last_valuation_breakdown_json AS valuationDetailsJson
     FROM fantasy_market WHERE division = ? AND active = 1 ORDER BY role, price DESC, display_name
@@ -555,6 +556,8 @@ async function getMarket(request, env) {
     const availability = marketAssetAvailability(round, row.teamSlot, roundMatches);
     return {
       ...row,
+      isStarter: row.type === "team" ? true : Number(row.isStarter) === 1,
+      rosterStatus: row.type === "team" ? "team" : (Number(row.isStarter) === 1 ? "starter" : "reserve"),
       selectable: availability.selectable,
       availabilityStatus: availability.status,
       availabilityLabel: availability.label,
@@ -609,12 +612,12 @@ function marketAssetAvailability(round, teamSlot, roundMatches = []) {
     String(match.homeTeamSlot || "") === slot || String(match.awayTeamSlot || "") === slot
   );
   const status = scheduled ? "playing" : String(statuses[slot] || "unavailable");
-  if (status === "playing") return { selectable: true, status, label: "Joga a rodada 4" };
+  if (status === "playing") return { selectable: true, status, label: `Joga a rodada ${roundNumber}` };
   if (status === "qualified-next-round") {
-    return { selectable: false, status, label: "Classificado para a rodada 5" };
+    return { selectable: false, status, label: `Classificado para a rodada ${roundNumber + 1}` };
   }
   if (status === "eliminated") return { selectable: false, status, label: "Eliminado dos playoffs" };
-  return { selectable: false, status: "unavailable", label: "Não disputa a rodada 4" };
+  return { selectable: false, status: "unavailable", label: `Não disputa a rodada ${roundNumber}` };
 }
 __name(marketAssetAvailability, "marketAssetAvailability");
 async function getPopularPicks(request, env) {
@@ -749,6 +752,9 @@ async function saveCurrentLineup(request, env) {
   for (const pick of picks) {
     const row = await env.DB.prepare("SELECT * FROM fantasy_market WHERE division = ? AND asset_id = ? AND active = 1").bind(division, cleanText(pick.id)).first();
     if (!row || row.role !== cleanText(pick.role).toUpperCase()) return json({ error: "Uma escolha n\xE3o est\xE1 dispon\xEDvel no mercado." }, 400, request, env);
+    if (row.asset_type === "player" && Number(row.is_starter) !== 1) {
+      return json({ error: `${row.display_name} é reserva do elenco real e só pode ocupar a vaga de reserva do Fantasy.` }, 400, request, env);
+    }
     const availability = marketAssetAvailability(round, row.team_slot);
     if (!availability.selectable) return json({ error: `${row.display_name} não pode ser escalado: ${availability.label.toLowerCase()}.` }, 400, request, env);
     marketRows.push(row);
@@ -767,6 +773,9 @@ async function saveCurrentLineup(request, env) {
   if (reservePick) {
     reserveRow = await env.DB.prepare("SELECT * FROM fantasy_market WHERE division = ? AND asset_id = ? AND active = 1").bind(division, cleanText(reservePick.id)).first();
     if (!reserveRow || reserveRow.asset_type !== "player") return json({ error: "O reserva precisa ser um jogador dispon\xEDvel no mercado." }, 400, request, env);
+    if (Number(round.round_number) >= 5 && Number(reserveRow.is_starter) !== 0) {
+      return json({ error: "A partir da Rodada 5, a vaga de reserva aceita somente atletas sinalizados como RESERVA no elenco real." }, 400, request, env);
+    }
     const reserveAvailability = marketAssetAvailability(round, reserveRow.team_slot);
     if (!reserveAvailability.selectable) return json({ error: `${reserveRow.display_name} não pode ser reserva: ${reserveAvailability.label.toLowerCase()}.` }, 400, request, env);
     if (marketRows.some((row) => row.asset_id === reserveRow.asset_id)) return json({ error: "O reserva n\xE3o pode ser um dos titulares." }, 400, request, env);

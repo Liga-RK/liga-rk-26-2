@@ -764,12 +764,19 @@ async function adminOpenMarket(request, env, requestId, auth) {
       warnings: window.warnings
     });
   }
-  if (Date.now() >= Date.parse(window.closesAt)) {
+  const divisionClosesAt = Object.fromEntries(DIVISIONS.map((division) => {
+    const firstMatch = window.matches
+      .filter((match) => match.division === division)
+      .sort((left, right) => Date.parse(left.starts_at) - Date.parse(right.starts_at))[0];
+    return [division, new Date(Date.parse(firstMatch.starts_at) - LOCK_MINUTES * 60 * 1000).toISOString()];
+  }));
+  const globalClosesAt = new Date(Math.max(...Object.values(divisionClosesAt).map(Date.parse))).toISOString();
+  if (Date.now() >= Date.parse(globalClosesAt)) {
     return failure(
       "LOCK_WINDOW_REACHED",
       `A janela de fechamento (${LOCK_MINUTES} minutos antes) já foi atingida.`,
       409,
-      { closesAt: window.closesAt, match: window.match }
+      { closesAt: globalClosesAt, match: window.match, divisionClosesAt }
     );
   }
   const draft = await ensureDraftSnapshotsForRound(env, roundNumber);
@@ -778,24 +785,30 @@ async function adminOpenMarket(request, env, requestId, auth) {
       UPDATE fantasy_market_state
       SET status = 'open', access_mode = ?, opened_at = ?, closes_at = ?, closed_at = NULL,
           opened_by = ?, closed_by = NULL, close_reason = NULL,
-          lock_match_id = ?, lock_division = ?, lock_round_number = ?,
+          lock_match_id = ?, lock_division = NULL, lock_round_number = ?,
           version = version + 1, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `).bind(
       accessMode,
       new Date().toISOString(),
-      window.closesAt,
+      globalClosesAt,
       auth.username,
-      window.match.id,
-      window.match.division,
+      `manual-schedule:r${roundNumber}`,
       roundNumber,
       GLOBAL_MARKET_ID
     ),
     ...DIVISIONS.map((division) => env.DB.prepare(`
       UPDATE fantasy_rounds
-      SET status = 'open', opens_at = ?, locks_at = ?
+      SET status = CASE WHEN ? <= ? THEN 'locked' ELSE 'open' END, opens_at = ?, locks_at = ?
       WHERE division = ? AND round_number = ?
-    `).bind(new Date().toISOString(), window.closesAt, division, roundNumber))
+    `).bind(
+      divisionClosesAt[division],
+      new Date().toISOString(),
+      new Date().toISOString(),
+      divisionClosesAt[division],
+      division,
+      roundNumber
+    ))
   ]);
   const after = await getGlobalMarketState(env);
   await audit(env, {
@@ -807,7 +820,7 @@ async function adminOpenMarket(request, env, requestId, auth) {
     after,
     requestId
   });
-  return success({ market: publicMarketState(after), schedule: window, draft });
+  return success({ market: publicMarketState(after), schedule: { ...window, closesAt: globalClosesAt, divisionClosesAt }, draft });
 }
 
 async function adminCloseMarket(request, env, requestId, auth) {
@@ -1408,25 +1421,20 @@ function mergeLiveOfficialContent(source, liveContent, updatedAt = null) {
     const liveResults = liveDivision.results || {};
     const livePlayoffResults = liveDivision.playoffResults || {};
     const playoffStandings = officialGroupStandings(sourceDivision, effectiveTeams, liveResults);
-    const rounds = arrayValues(sourceDivision.rounds).map((round) => {
+    const rounds = [];
+    for (const round of arrayValues(sourceDivision.rounds)) {
       const roundNumber = Math.trunc(Number(round.roundNumber || round.number));
-      const playoffRound = roundNumber === 4;
-      const eligibility = playoffRound
-        ? playoffEligibility(playoffStandings)
-        : (round.eligibility || {});
-      return {
-      ...round,
-      eligibility,
-      matches: arrayValues(round.matches).map((match) => {
+      const playoffRound = roundNumber >= 4;
+      const matches = arrayValues(round.matches).map((match) => {
         const sourceId = clean(match.sourceId || match.id);
         const stage = clean(match.stage) || "groups";
         const statsSeriesId = clean(match.statsSeriesId) || `${stage}-${sourceId}`;
         const liveResult = playoffRound ? livePlayoffResults[sourceId] : liveResults[sourceId];
         const homeSlot = playoffRound
-          ? resolvePlayoffSeed(playoffStandings, match.homeTeamSeed) || clean(match.homeTeamSlot || match.homeSlot).toUpperCase()
+          ? resolvePlayoffParticipantFromRounds(playoffStandings, rounds, match.homeTeamSeed) || clean(match.homeTeamSlot || match.homeSlot).toUpperCase()
           : clean(match.homeTeamSlot || match.homeSlot).toUpperCase();
         const awaySlot = playoffRound
-          ? resolvePlayoffSeed(playoffStandings, match.awayTeamSeed) || clean(match.awayTeamSlot || match.awaySlot).toUpperCase()
+          ? resolvePlayoffParticipantFromRounds(playoffStandings, rounds, match.awayTeamSeed) || clean(match.awayTeamSlot || match.awaySlot).toUpperCase()
           : clean(match.awayTeamSlot || match.awaySlot).toUpperCase();
         const homeScore = nullableInteger(liveResult?.homeScore ?? liveResult?.teamAScore);
         const awayScore = nullableInteger(liveResult?.awayScore ?? liveResult?.teamBScore);
@@ -1464,9 +1472,14 @@ function mergeLiveOfficialContent(source, liveContent, updatedAt = null) {
             updatedAt: isoDate(updatedAt) || clean(updatedAt) || null
           } : null
         };
-      })
-    };
-    });
+      });
+      const eligibility = roundNumber === 4
+        ? playoffEligibility(playoffStandings)
+        : roundNumber > 4
+          ? scheduledPlayoffEligibility(effectiveTeams, matches)
+          : (round.eligibility || {});
+      rounds.push({ ...round, eligibility, matches });
+    }
     merged.divisions[division] = {
       ...sourceDivision,
       teams: effectiveTeams,
@@ -1545,6 +1558,28 @@ function playoffEligibility(standings) {
 function resolvePlayoffSeed(standings, rawSeed) {
   const match = /^([ABCD])([1-4])$/.exec(clean(rawSeed).toUpperCase());
   return match ? standings[match[1]]?.[Number(match[2]) - 1]?.slot || "" : "";
+}
+
+function resolvePlayoffParticipantFromRounds(standings, previousRounds, rawSeed) {
+  const seedSlot = resolvePlayoffSeed(standings, rawSeed);
+  if (seedSlot) return seedSlot;
+  const winner = /^VENCEDOR\s+OITAVAS\s+(\d+)$/i.exec(clean(rawSeed));
+  if (!winner) return "";
+  const firstPlayoffRound = previousRounds.find((round) => Number(round.roundNumber || round.number) === 4);
+  const match = arrayValues(firstPlayoffRound?.matches)[Number(winner[1]) - 1];
+  return clean(match?.winnerTeamId).split(":").pop() || "";
+}
+
+function scheduledPlayoffEligibility(teams, matches) {
+  const playing = new Set(arrayValues(matches)
+    .flatMap((match) => [clean(match.homeTeamSlot).toUpperCase(), clean(match.awayTeamSlot).toUpperCase()])
+    .filter(Boolean));
+  const teamStatuses = {};
+  for (const team of arrayValues(teams)) {
+    const slot = clean(team.slot).toUpperCase();
+    if (slot) teamStatuses[slot] = playing.has(slot) ? "playing" : "eliminated";
+  }
+  return { teamStatuses };
 }
 
 function brazilPlayoffDateToIso(rawDate, rawTime, fallback) {
