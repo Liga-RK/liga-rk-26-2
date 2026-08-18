@@ -251,6 +251,50 @@ test("30a elenco ao vivo substitui equipe e jogadores do arquivo estático", () 
   assert.equal(merged.contentUpdatedAt, "2026-07-29T18:33:06.155Z");
 });
 
+test("30a1 Fantasy mantém NIHIL como TOP titular e rebaixa TUTU para reserva", () => {
+  const source = sampleSource();
+  source.divisions.elite.teams = [{
+    id: "team:elite:D1",
+    slot: "D1",
+    name: "FAVELÃO DO TECHY",
+    tag: "FVL",
+    players: [{
+      id: "ee09cf39-13a1-4268-a363-dbd28955437b",
+      name: "NIHIL",
+      role: "TOP"
+    }, {
+      id: "e9f77ada-22dd-4407-8030-c7abf4ebeb23",
+      name: "TUTU",
+      role: "SUB",
+      mainRole: "TOP"
+    }]
+  }];
+  const merged = __test.mergeLiveOfficialContent(source, {
+    divisions: {
+      elite: { teams: { D1: {
+        name: "FAVELÃO DO TECHY",
+        tag: "FVL",
+        players: [{
+          playerId: "e9f77ada-22dd-4407-8030-c7abf4ebeb23",
+          player: "TUTU",
+          lane: "TOP"
+        }, {
+          playerId: "ee09cf39-13a1-4268-a363-dbd28955437b",
+          player: "NIHIL",
+          lane: "SUB"
+        }]
+      } } },
+      ascension: { teams: {} }
+    }
+  });
+  const roster = merged.divisions.elite.teams[0].players;
+  const nihil = roster.find((player) => player.name === "NIHIL");
+  const tutu = roster.find((player) => player.name === "TUTU");
+  assert.equal(nihil.role, "TOP");
+  assert.equal(tutu.role, "SUB");
+  assert.equal(tutu.mainRole, "TOP");
+});
+
 test("30aa resultados ao vivo distinguem WO e adiamento da rodada 2", () => {
   const source = sampleSource();
   source.divisions.elite.rounds[0].matches.push({

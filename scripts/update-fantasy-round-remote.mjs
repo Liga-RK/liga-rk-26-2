@@ -18,6 +18,7 @@ const ROUND_FIVE_RESERVES = Object.freeze([
   { division: "elite", teamSlot: "B3", id: "29ed2283-7326-46fc-b3a6-532a344eee90", name: "VANFY", priceCents: 1500 },
   { division: "elite", teamSlot: "B3", id: "461313aa-b1c2-4b5d-9d02-098acdc32472", name: "WEEDU", priceCents: 1500 },
   { division: "elite", teamSlot: "C4", id: "e2f08c9f-414d-4591-8d2d-4a17a817d9ae", name: "BOLOTA", priceCents: 1200 },
+  { division: "elite", teamSlot: "D1", id: "e9f77ada-22dd-4407-8030-c7abf4ebeb23", name: "TUTU", priceCents: 1600 },
   { division: "elite", teamSlot: "D1", id: "7c61ddca-8673-4050-96ab-a2abef4c5826", name: "FELTRINI", priceCents: 1600 },
   { division: "elite", teamSlot: "D1", id: "6de36187-98dc-49a9-8700-aa44830377a1", name: "CROSS", priceCents: 1600 },
   { division: "elite", teamSlot: "D3", id: "c2b79abc-0122-4930-9127-9a977db71ca6", name: "THOMINHAS", priceCents: 1500 },
@@ -77,9 +78,15 @@ env = {
       : null
 };
 
-if (mode === "open-admin") {
+if (mode === "close") {
+  const closed = await invoke(__test.adminCloseMarket, {
+    reason: `Fechamento operacional antes da atualização da Rodada ${roundNumber}.`
+  });
+  console.log(JSON.stringify({ mode, roundNumber, market: closed.market }, null, 2));
+} else if (mode === "open-admin" || mode === "open-public") {
   await assertMarketClosed();
-  const opened = await invoke(__test.adminOpenMarket, { roundNumber, accessMode: "admin" });
+  const accessMode = mode === "open-admin" ? "admin" : "public";
+  const opened = await invoke(__test.adminOpenMarket, { roundNumber, accessMode });
   console.log(JSON.stringify({
     mode,
     roundNumber,
@@ -583,7 +590,7 @@ async function upsertRoundFiveReserves() {
     VALUES (?, NULL, 'market.round5.reserves.upsert', 'fantasy_round', '5', ?, ?, '{}', ?, 'success', '{}', NULL)
   `).bind(
     crypto.randomUUID(),
-    JSON.stringify({ count: resolved.length, divisions: { elite: 12, ascension: 16 } }),
+    JSON.stringify({ count: resolved.length, divisions: { elite: 13, ascension: 16 } }),
     ACTOR,
     JSON.stringify({ reserves: resolved })
   ));
@@ -607,7 +614,7 @@ async function upsertRoundFiveReserves() {
   }
   return {
     count: resolved.length,
-    byDivision: { elite: 12, ascension: 16 },
+    byDivision: { elite: 13, ascension: 16 },
     prices: resolved.map((reserve) => ({
       division: reserve.division,
       teamSlot: reserve.teamSlot,

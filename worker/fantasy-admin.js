@@ -26,6 +26,17 @@ const OFFICIAL_MATCH_OVERRIDES = Object.freeze({
     reason: "FVL x SDK foi adiado após o fechamento do mercado da rodada 2."
   })
 });
+const FANTASY_LIVE_STARTER_OVERRIDES = Object.freeze({
+  elite: Object.freeze({
+    D1: Object.freeze({ TOP: "ee09cf39-13a1-4268-a363-dbd28955437b" })
+  }),
+  ascension: Object.freeze({
+    C2: Object.freeze({
+      ADC: "2594034c-9394-4b79-8b59-dedbf66482e5",
+      SUP: "745a0ee6-ebda-4170-a095-68565c5f425b"
+    })
+  })
+});
 const DEFAULT_FORMULA_SETTINGS = valuationV3.DEFAULT_VALUATION_SETTINGS;
 const {
   FORMULA_ID,
@@ -1393,24 +1404,40 @@ function mergeLiveOfficialContent(source, liveContent, updatedAt = null) {
     const liveTeams = liveDivision.teams || {};
     const teams = Object.entries(liveTeams).map(([rawSlot, rawTeam]) => {
       const slot = clean(rawSlot).toUpperCase();
+      const sourceTeam = arrayValues(sourceDivision.teams)
+        .find((team) => clean(team.slot).toUpperCase() === slot);
+      const sourcePlayers = arrayValues(sourceTeam?.players);
+      const sourcePlayersById = new Map(sourcePlayers
+        .map((player) => [clean(player.id || player.playerId), player]));
+      const livePlayers = arrayValues(rawTeam?.players)
+        .filter((player) => clean(player?.playerId || player?.id))
+        .map((player) => {
+          const id = clean(player.playerId || player.id);
+          const sourcePlayer = sourcePlayersById.get(id);
+          return {
+            id,
+            playerId: id,
+            name: clean(player.player || player.name),
+            role: clean(player.lane || player.role).toUpperCase(),
+            mainRole: clean(player.mainRole || sourcePlayer?.mainRole).toUpperCase(),
+            riotId: clean(player.riotId),
+            riotIdAliases: arrayValues(player.riotIdAliases).map(clean).filter(Boolean),
+            opgg: clean(player.opgg),
+            captain: Boolean(player.captain)
+          };
+        });
       return {
         id: `team:${division}:${slot}`,
         slot,
         name: clean(rawTeam?.name),
         tag: clean(rawTeam?.tag) || clean(rawTeam?.name).slice(0, 5).toUpperCase(),
         logo: normalizeAssetPath(rawTeam?.logo),
-        players: arrayValues(rawTeam?.players)
-          .filter((player) => clean(player?.playerId || player?.id))
-          .map((player) => ({
-            id: clean(player.playerId || player.id),
-            playerId: clean(player.playerId || player.id),
-            name: clean(player.player || player.name),
-            role: clean(player.lane || player.role).toUpperCase(),
-            riotId: clean(player.riotId),
-            riotIdAliases: arrayValues(player.riotIdAliases).map(clean).filter(Boolean),
-            opgg: clean(player.opgg),
-            captain: Boolean(player.captain)
-        }))
+        players: applyFantasyLiveStarterOverrides({
+          division,
+          slot,
+          players: livePlayers,
+          sourcePlayers
+        })
       };
     });
     const effectiveTeams = teams.length ? teams : arrayValues(sourceDivision.teams);
@@ -1487,6 +1514,35 @@ function mergeLiveOfficialContent(source, liveContent, updatedAt = null) {
     };
   }
   return merged;
+}
+
+function applyFantasyLiveStarterOverrides({ division, slot, players, sourcePlayers }) {
+  const roster = arrayValues(players).map((player) => ({ ...player }));
+  const overrides = FANTASY_LIVE_STARTER_OVERRIDES[division]?.[slot] || {};
+  for (const [role, playerId] of Object.entries(overrides)) {
+    let target = roster.find((player) => clean(player.id || player.playerId) === playerId);
+    if (!target) {
+      const sourcePlayer = arrayValues(sourcePlayers)
+        .find((player) => clean(player.id || player.playerId) === playerId);
+      if (!sourcePlayer) continue;
+      target = {
+        ...sourcePlayer,
+        id: playerId,
+        playerId,
+        name: clean(sourcePlayer.name || sourcePlayer.player)
+      };
+      roster.push(target);
+    }
+    for (const player of roster) {
+      if (player !== target && clean(player.role).toUpperCase() === role) {
+        player.role = "SUB";
+        player.mainRole = role;
+      }
+    }
+    target.role = role;
+    target.mainRole = "";
+  }
+  return roster;
 }
 
 function officialGroupStandings(sourceDivision, teams, liveResults) {
@@ -5792,6 +5848,7 @@ export const __test = {
   TIMEZONE,
   adminRoundPreviewV2,
   adminRoundProcessV2,
+  adminCloseMarket,
   adminOpenMarket,
   adminSyncApply,
   adminSyncPreview,

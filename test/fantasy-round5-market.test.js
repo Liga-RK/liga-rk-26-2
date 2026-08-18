@@ -44,10 +44,17 @@ test("abertura usa os dois horários por divisão e fechamento independente", ()
   assert.match(admin, /preserveRoundLocks: true/);
 });
 
-test("preparação remota cadastra exatamente os 28 reservas aprovados", () => {
+test("preparação remota cadastra os 29 reservas confirmados, incluindo TUTU", () => {
   const entries = maintenance.match(/division: "(?:elite|ascension)", teamSlot:/g) || [];
-  assert.equal(entries.length, 28);
-  assert.match(maintenance, /byDivision: \{ elite: 12, ascension: 16 \}/);
+  assert.equal(entries.length, 29);
+  assert.match(maintenance, /name: "TUTU", priceCents: 1600/);
+  assert.match(maintenance, /byDivision: \{ elite: 13, ascension: 16 \}/);
   assert.match(maintenance, /official_status = 'active', is_starter = 0/);
   assert.match(maintenance, /market\.round5\.reserves\.upsert/);
+});
+
+test("manutenção oferece fechamento auditado e abertura pública", () => {
+  assert.match(maintenance, /mode === "close"/);
+  assert.match(maintenance, /mode === "open-admin" \|\| mode === "open-public"/);
+  assert.match(maintenance, /const accessMode = mode === "open-admin" \? "admin" : "public"/);
 });
