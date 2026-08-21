@@ -5850,6 +5850,7 @@ export const __test = {
   adminRoundProcessV2,
   adminCloseMarket,
   adminOpenMarket,
+  adminScheduleMarket,
   adminSyncApply,
   adminSyncPreview,
   adminValuationApply,

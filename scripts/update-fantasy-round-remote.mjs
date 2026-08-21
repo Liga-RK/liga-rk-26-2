@@ -97,6 +97,20 @@ if (mode === "close") {
       firstMatch: opened.schedule?.match
     }
   }, null, 2));
+} else if (mode === "schedule-close") {
+  const closesAt = new Date(previewId);
+  if (!Number.isFinite(closesAt.getTime())) {
+    throw new Error("Informe o fechamento em formato ISO no quarto argumento.");
+  }
+  const timestamp = closesAt.toISOString();
+  const scheduled = await invoke(__test.adminScheduleMarket, {
+    roundNumber,
+    divisionClosesAt: {
+      ascension: timestamp,
+      elite: timestamp
+    }
+  });
+  console.log(JSON.stringify({ mode, roundNumber, ...scheduled }, null, 2));
 } else if (mode === "preview") {
   const sync = await invoke(__test.adminSyncPreview, {});
   const round = await invoke(__test.adminRoundPreviewV2, { roundNumber });
@@ -352,7 +366,7 @@ if (mode === "close") {
   const audit = await finalAudit();
   console.log(JSON.stringify({ mode, roundNumber, rollbacks, applications, audit }, null, 2));
 } else {
-  throw new Error("Modo inválido. Use preview, process, apply ou revalue-teams.");
+  throw new Error("Modo inválido. Use preview, process, apply, schedule-close ou revalue-teams.");
 }
 }
 

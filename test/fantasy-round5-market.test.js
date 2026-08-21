@@ -57,4 +57,7 @@ test("manutenção oferece fechamento auditado e abertura pública", () => {
   assert.match(maintenance, /mode === "close"/);
   assert.match(maintenance, /mode === "open-admin" \|\| mode === "open-public"/);
   assert.match(maintenance, /const accessMode = mode === "open-admin" \? "admin" : "public"/);
+  assert.match(maintenance, /mode === "schedule-close"/);
+  assert.match(maintenance, /ascension: timestamp/);
+  assert.match(maintenance, /elite: timestamp/);
 });
