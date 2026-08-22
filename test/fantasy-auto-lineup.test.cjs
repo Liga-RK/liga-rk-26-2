@@ -69,7 +69,8 @@ test("limite de dois jogadores da mesma equipe também é respeitado pelo reserv
 
   assert.equal(result.ok, true);
   assert.ok([...teamCounts.values()].every((count) => count <= 2));
-  assert.equal(result.reserve?.isStarter, false);
+  assert.equal(result.reserve?.type, "player");
+  assert.equal(Object.values(result.slots).some((item) => item.id === result.reserve.id), false);
   assert.ok((teamCounts.get(result.reserve.teamSlot) || 0) < 2);
 });
 
@@ -83,6 +84,18 @@ test("reservas reais nunca ocupam as seis vagas titulares automáticas", () => {
   assert.ok(Object.values(result.slots).every((item) => item.type === "team" || item.isStarter !== false));
   assert.equal(result.reserve?.id, "reserve-super");
   assert.equal(result.reserve?.isStarter, false);
+});
+
+test("reserva automático também pode ser titular do elenco real quando cabe no saldo", () => {
+  const market = sampleMarket().filter((item) => item.isStarter !== false);
+  const result = autoLineup.buildAutomaticLineup({ market, budget: 100, strategy: "economic", includeReserve: true });
+  const titularIds = new Set(Object.values(result.slots || {}).map((item) => item.id));
+
+  assert.equal(result.ok, true);
+  assert.ok(result.reserve);
+  assert.equal(result.reserve.isStarter, true);
+  assert.equal(titularIds.has(result.reserve.id), false);
+  assert.ok(result.totalCost <= 100);
 });
 
 test("estratégia econômica gasta menos do que a estratégia de maior média", () => {
@@ -106,6 +119,7 @@ test("interface oferece sete estratégias, prévia e fluxo seguro de Palpite de 
   assert.match(script, /Palpite \$\{state\.autoDraftReview\.completed \+ 1\} de \$\{state\.autoDraftReview\.total\}/);
   assert.match(script, /RESERVA DO ELENCO/);
   assert.match(script, /Somente como reserva/);
+  assert.doesNotMatch(script, /escolha como reserva um atleta sinalizado como RESERVA DO ELENCO/);
   assert.match(css, /\.roster-status-badge\.reserve/);
 });
 

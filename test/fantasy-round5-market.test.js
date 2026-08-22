@@ -29,11 +29,13 @@ test("Rodada 5 contém as quartas corretas e oito equipes elegíveis por divisã
   }
 });
 
-test("mercado expõe o status do elenco e aplica a regra de reserva real no servidor", () => {
+test("mercado expõe o status do elenco sem limitar a reserva do Fantasy ao banco real", () => {
   assert.match(worker, /is_starter AS isStarter/);
   assert.match(worker, /rosterStatus: row\.type === "team" \? "team"/);
   assert.match(worker, /é reserva do elenco real e só pode ocupar a vaga de reserva do Fantasy/);
-  assert.match(worker, /A partir da Rodada 5, a vaga de reserva aceita somente atletas sinalizados como RESERVA/);
+  assert.doesNotMatch(worker, /reserveRow\.is_starter/);
+  assert.doesNotMatch(worker, /a vaga de reserva aceita somente atletas sinalizados como RESERVA/);
+  assert.match(worker, /reserveBudgetForPatrimony\(marketRows, budget\)/);
   assert.match(worker, /`Joga a rodada \$\{roundNumber\}`/);
 });
 

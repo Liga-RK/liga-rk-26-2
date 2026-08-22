@@ -721,7 +721,7 @@
         const player = document.createElement("strong");
         player.textContent = lineup.reserve.name;
         const team = document.createElement("small");
-        team.textContent = `${lineup.reserve.isStarter === false ? "RESERVA FLEX" : ROLE_LABELS[lineup.reserve.role]} · ${lineup.reserve.teamTag}`;
+        team.textContent = `RESERVA DO FANTASY · ${lineup.reserve.teamTag}`;
         reserve.append(roleLabel, player, team);
         list.appendChild(reserve);
       }
@@ -1094,7 +1094,7 @@
     strong.textContent = item ? item.name : "Escolha reserva";
     const detail = document.createElement("span");
     detail.textContent = item
-      ? `${item.isStarter === false ? "RESERVA FLEX" : ROLE_LABELS[item.role]} · ${item.teamTag} · RK$ ${formatMoney(item.price)}`
+      ? `RESERVA DO FANTASY · ${item.teamTag} · RK$ ${formatMoney(item.price)}`
       : selected === 6
         ? `Pode custar até RK$ ${formatMoney(budget)}`
         : "Complete os titulares para liberar";
@@ -1640,7 +1640,7 @@
           <div class="auto-preview-logo"><img src="${escapeHtml(source || ROLE_ASSETS[role])}" alt="" /></div>
           <div class="auto-preview-info">
             <strong>${escapeHtml(item.name)}${captain ? '<span class="auto-preview-tag">Capitão</span>' : ""}${reserve ? '<span class="auto-preview-tag">Reserva</span>' : ""}</strong>
-            <span>${reserve ? "RESERVA FLEX · " : `${escapeHtml(ROLE_LABELS[role] || role)} · `}${escapeHtml(item.teamTag || item.teamName)}</span>
+            <span>${reserve ? "RESERVA DO FANTASY · " : `${escapeHtml(ROLE_LABELS[role] || role)} · `}${escapeHtml(item.teamTag || item.teamName)}</span>
           </div>
           <span class="auto-preview-price">RK$ ${formatMoney(item.price)}</span>
         </article>`;
@@ -2746,7 +2746,6 @@
 
   function reserveValidationMessage(item, lineup) {
     if (!item || item.type !== "player" || item.role === "TEAM") return "A reserva precisa ser um jogador, não uma equipe.";
-    if (item.isStarter !== false) return "A partir da Rodada 5, escolha como reserva um atleta sinalizado como RESERVA DO ELENCO.";
     if (Object.values(lineup.slots).some((picked) => picked && picked.id === item.id)) return "Esse jogador já está como titular. O reserva precisa ser outro jogador.";
     if (Object.values(lineup.slots).filter(Boolean).length !== 6) return "Complete os seis titulares antes de escolher o reserva.";
     const budget = reserveBudget(lineup);

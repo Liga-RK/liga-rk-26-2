@@ -773,9 +773,6 @@ async function saveCurrentLineup(request, env) {
   if (reservePick) {
     reserveRow = await env.DB.prepare("SELECT * FROM fantasy_market WHERE division = ? AND asset_id = ? AND active = 1").bind(division, cleanText(reservePick.id)).first();
     if (!reserveRow || reserveRow.asset_type !== "player") return json({ error: "O reserva precisa ser um jogador dispon\xEDvel no mercado." }, 400, request, env);
-    if (Number(round.round_number) >= 5 && Number(reserveRow.is_starter) !== 0) {
-      return json({ error: "A partir da Rodada 5, a vaga de reserva aceita somente atletas sinalizados como RESERVA no elenco real." }, 400, request, env);
-    }
     const reserveAvailability = marketAssetAvailability(round, reserveRow.team_slot);
     if (!reserveAvailability.selectable) return json({ error: `${reserveRow.display_name} não pode ser reserva: ${reserveAvailability.label.toLowerCase()}.` }, 400, request, env);
     if (marketRows.some((row) => row.asset_id === reserveRow.asset_id)) return json({ error: "O reserva n\xE3o pode ser um dos titulares." }, 400, request, env);
