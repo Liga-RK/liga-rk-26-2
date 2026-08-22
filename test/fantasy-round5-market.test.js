@@ -44,10 +44,12 @@ test("abertura usa os dois horários por divisão e fechamento independente", ()
   assert.match(admin, /preserveRoundLocks: true/);
 });
 
-test("preparação remota cadastra os 29 reservas confirmados, incluindo TUTU", () => {
+test("preparação remota cadastra os 29 reservas confirmados, incluindo TUTU e YUTA", () => {
   const entries = maintenance.match(/division: "(?:elite|ascension)", teamSlot:/g) || [];
   assert.equal(entries.length, 29);
   assert.match(maintenance, /name: "TUTU", priceCents: 1600/);
+  assert.match(maintenance, /name: "YUTA", priceCents: 1331/);
+  assert.doesNotMatch(maintenance, /name: "GUOLHERME", priceCents: 1300/);
   assert.match(maintenance, /byDivision: \{ elite: 13, ascension: 16 \}/);
   assert.match(maintenance, /official_status = 'active', is_starter = 0/);
   assert.match(maintenance, /market\.round5\.reserves\.upsert/);
@@ -60,4 +62,7 @@ test("manutenção oferece fechamento auditado e abertura pública", () => {
   assert.match(maintenance, /mode === "schedule-close"/);
   assert.match(maintenance, /ascension: timestamp/);
   assert.match(maintenance, /elite: timestamp/);
+  assert.match(maintenance, /mode === "preview-inazuma-mid" \|\| mode === "apply-inazuma-mid"/);
+  assert.match(maintenance, /GUOLHERME substitui YUTA como MID titular/);
+  assert.match(maintenance, /pricesPreserved: true/);
 });

@@ -34,7 +34,8 @@ const FANTASY_LIVE_STARTER_OVERRIDES = Object.freeze({
     C2: Object.freeze({
       ADC: "2594034c-9394-4b79-8b59-dedbf66482e5",
       SUP: "745a0ee6-ebda-4170-a095-68565c5f425b"
-    })
+    }),
+    D4: Object.freeze({ MID: "d74532ef-f354-4326-89d9-74c9cc45b1c4" })
   })
 });
 const DEFAULT_FORMULA_SETTINGS = valuationV3.DEFAULT_VALUATION_SETTINGS;

@@ -295,6 +295,50 @@ test("30a1 Fantasy mantém NIHIL como TOP titular e rebaixa TUTU para reserva", 
   assert.equal(tutu.mainRole, "TOP");
 });
 
+test("30a2 Fantasy escala GUOLHERME como MID da Inazuma e rebaixa YUTA para reserva", () => {
+  const source = sampleSource();
+  source.divisions.ascension.teams = [{
+    id: "team:ascension:D4",
+    slot: "D4",
+    name: "INAZUMA V",
+    tag: "INZ",
+    players: [{
+      id: "f1dcbe4d-dd34-4451-8e6a-ad6b61a12b7e",
+      name: "YUTA",
+      role: "MID"
+    }, {
+      id: "d74532ef-f354-4326-89d9-74c9cc45b1c4",
+      name: "GUOLHERME",
+      role: "SUB",
+      mainRole: "MID"
+    }]
+  }];
+  const merged = __test.mergeLiveOfficialContent(source, {
+    divisions: {
+      elite: { teams: {} },
+      ascension: { teams: { D4: {
+        name: "INAZUMA V",
+        tag: "INZ",
+        players: [{
+          playerId: "f1dcbe4d-dd34-4451-8e6a-ad6b61a12b7e",
+          player: "YUTA",
+          lane: "MID"
+        }, {
+          playerId: "d74532ef-f354-4326-89d9-74c9cc45b1c4",
+          player: "GUOLHERME",
+          lane: "SUB"
+        }]
+      } } }
+    }
+  });
+  const roster = merged.divisions.ascension.teams[0].players;
+  const guolherme = roster.find((player) => player.name === "GUOLHERME");
+  const yuta = roster.find((player) => player.name === "YUTA");
+  assert.equal(guolherme.role, "MID");
+  assert.equal(yuta.role, "SUB");
+  assert.equal(yuta.mainRole, "MID");
+});
+
 test("30aa resultados ao vivo distinguem WO e adiamento da rodada 2", () => {
   const source = sampleSource();
   source.divisions.elite.rounds[0].matches.push({

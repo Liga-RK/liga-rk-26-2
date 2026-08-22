@@ -36,13 +36,24 @@ const ROUND_FIVE_RESERVES = Object.freeze([
   { division: "ascension", teamSlot: "D3", id: "fa619765-50ba-4fa2-bd9c-e319bcb8c02c", name: "DRAX", priceCents: 1500 },
   { division: "ascension", teamSlot: "D2", id: "3302e62f-4af0-4455-b401-81cf58a86828", name: "ZILIN", priceCents: 1500 },
   { division: "ascension", teamSlot: "D2", id: "e8fa5df2-47ee-4ff4-9f29-80f95ee99aad", name: "POLLO", priceCents: 1500 },
-  { division: "ascension", teamSlot: "D4", id: "d74532ef-f354-4326-89d9-74c9cc45b1c4", name: "GUOLHERME", priceCents: 1300 },
+  { division: "ascension", teamSlot: "D4", id: "f1dcbe4d-dd34-4451-8e6a-ad6b61a12b7e", name: "YUTA", priceCents: 1331 },
   { division: "ascension", teamSlot: "D4", id: "1d401693-8cd1-4dd1-ac42-f8e2f6a6d698", name: "JOSÉ3000", priceCents: 1300 },
   { division: "ascension", teamSlot: "D4", id: "fa30f17a-58a3-4652-af23-d988903bff29", name: "TRJACK", priceCents: 1300 },
   { division: "ascension", teamSlot: "B3", id: "455a9db1-b576-4202-8098-9cdac67d5cdf", name: "PROVÉRBIOS", priceCents: 1400 },
   { division: "ascension", teamSlot: "B3", id: "c2e3a850-d035-470b-8d42-288132b0019e", name: "TIMOR LESTE", priceCents: 1400 },
   { division: "ascension", teamSlot: "B3", id: "cb2737be-8473-4a8f-b365-412524ebf599", name: "PARANOIA", priceCents: 1400 }
 ]);
+const INAZUMA_MID_SWAP = Object.freeze({
+  division: "ascension",
+  teamSlot: "D4",
+  roundId: "ascension-r5",
+  auditId: "roster-fix-ascension-d4-mid-r5",
+  oldStarterId: "f1dcbe4d-dd34-4451-8e6a-ad6b61a12b7e",
+  oldStarterName: "YUTA",
+  newStarterId: "d74532ef-f354-4326-89d9-74c9cc45b1c4",
+  newStarterName: "GUOLHERME",
+  role: "MID"
+});
 
 if (!Number.isInteger(roundNumber) || roundNumber < 2) {
   throw new TypeError("Informe uma rodada válida a partir da rodada 2.");
@@ -111,6 +122,12 @@ if (mode === "close") {
     }
   });
   console.log(JSON.stringify({ mode, roundNumber, ...scheduled }, null, 2));
+} else if (mode === "preview-inazuma-mid" || mode === "apply-inazuma-mid") {
+  const result = await swapInazumaMid({
+    apply: mode === "apply-inazuma-mid",
+    backupId: backupReference || previewId
+  });
+  console.log(JSON.stringify({ mode, roundNumber, ...result }, null, 2));
 } else if (mode === "preview") {
   const sync = await invoke(__test.adminSyncPreview, {});
   const round = await invoke(__test.adminRoundPreviewV2, { roundNumber });
@@ -366,7 +383,7 @@ if (mode === "close") {
   const audit = await finalAudit();
   console.log(JSON.stringify({ mode, roundNumber, rollbacks, applications, audit }, null, 2));
 } else {
-  throw new Error("Modo inválido. Use preview, process, apply, schedule-close ou revalue-teams.");
+  throw new Error("Modo inválido. Use preview, process, apply, schedule-close, preview-inazuma-mid, apply-inazuma-mid ou revalue-teams.");
 }
 }
 
@@ -393,6 +410,217 @@ async function assertMarketClosed() {
   `).first();
   if (row?.status !== "closed") throw new Error("O mercado precisa permanecer fechado.");
   return row;
+}
+
+async function swapInazumaMid({ apply, backupId }) {
+  const before = await readInazumaMidState();
+  const swap = INAZUMA_MID_SWAP;
+  const yuta = before.market.find((row) => row.assetId === swap.oldStarterId);
+  const guolherme = before.market.find((row) => row.assetId === swap.newStarterId);
+  const alreadyApplied = yuta?.role === swap.role && yuta?.isStarter === 0 &&
+    guolherme?.role === swap.role && guolherme?.isStarter === 1 &&
+    !before.references.some((row) => row.assetId === swap.oldStarterId && row.ownershipType === "starter") &&
+    !before.references.some((row) => row.assetId === swap.newStarterId && row.ownershipType === "reserve");
+  const summary = {
+    alreadyApplied,
+    market: before.market,
+    affected: {
+      references: before.references,
+      draftPredictions: before.draftPredictions,
+      lineups: new Set(before.references.map((row) => row.lineupId)).size,
+      captains: before.references.filter((row) => row.isCaptain === 1).length
+    },
+    pricesPreserved: true,
+    backupId: backupId || null
+  };
+  if (!apply || alreadyApplied) return summary;
+  if (!String(backupId || "").startsWith("d1-time-travel:")) {
+    throw new Error("Informe um bookmark D1 Time Travel antes de aplicar a troca.");
+  }
+  if (!before.round || before.round.roundNumber !== 5 || !["open", "locked"].includes(before.round.status)) {
+    throw new Error("A Rodada 5 da Ascensão precisa existir e estar aberta ou fechada.");
+  }
+  if (!yuta || yuta.displayName !== swap.oldStarterName || yuta.role !== swap.role || yuta.isStarter !== 1) {
+    throw new Error("YUTA não corresponde ao MID titular esperado antes da troca.");
+  }
+  if (!guolherme || guolherme.displayName !== swap.newStarterName || guolherme.isStarter !== 0) {
+    throw new Error("GUOLHERME não corresponde ao reserva esperado antes da troca.");
+  }
+  const nowIso = new Date().toISOString();
+  const statements = [
+    DB.prepare(`
+      UPDATE fantasy_market
+      SET role = ?, is_starter = 0, active = 1, official_status = 'active',
+          manual_override = 1, updated_at = CURRENT_TIMESTAMP
+      WHERE division = ? AND asset_id = ?
+    `).bind(swap.role, swap.division, swap.oldStarterId),
+    DB.prepare(`
+      UPDATE fantasy_market
+      SET role = ?, is_starter = 1, active = 1, official_status = 'active',
+          manual_override = 1, updated_at = CURRENT_TIMESTAMP
+      WHERE division = ? AND asset_id = ?
+    `).bind(swap.role, swap.division, swap.newStarterId),
+    DB.prepare(`
+      UPDATE fantasy_official_players
+      SET role = ?, roster_status = 'reserve', active = 1, synced_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `).bind(swap.role, swap.oldStarterId),
+    DB.prepare(`
+      UPDATE fantasy_official_players
+      SET role = ?, roster_status = 'starter', active = 1, synced_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `).bind(swap.role, swap.newStarterId),
+    DB.prepare(`
+      UPDATE fantasy_lineup_picks
+      SET asset_id = ?, role = ?, team_slot = ?
+      WHERE asset_id = ? AND role = ?
+        AND lineup_id IN (SELECT id FROM fantasy_lineups WHERE round_id = ?)
+    `).bind(swap.newStarterId, swap.role, swap.teamSlot, swap.oldStarterId, swap.role, swap.roundId),
+    DB.prepare(`
+      UPDATE fantasy_lineup_reserves
+      SET asset_id = ?, role = ?, team_slot = ?
+      WHERE asset_id = ?
+        AND lineup_id IN (SELECT id FROM fantasy_lineups WHERE round_id = ?)
+    `).bind(swap.oldStarterId, swap.role, swap.teamSlot, swap.newStarterId, swap.roundId),
+    DB.prepare(`
+      UPDATE fantasy_lineups
+      SET captain_asset_id = CASE WHEN captain_asset_id = ? THEN ? ELSE captain_asset_id END,
+          updated_at = CURRENT_TIMESTAMP
+      WHERE round_id = ? AND (
+        captain_asset_id = ? OR id IN (
+          SELECT lineup_id FROM fantasy_lineup_picks WHERE asset_id = ?
+          UNION SELECT lineup_id FROM fantasy_lineup_reserves WHERE asset_id = ?
+        )
+      )
+    `).bind(
+      swap.oldStarterId,
+      swap.newStarterId,
+      swap.roundId,
+      swap.oldStarterId,
+      swap.newStarterId,
+      swap.oldStarterId
+    ),
+    DB.prepare(`
+      UPDATE fantasy_lineup_draft_predictions
+      SET player_asset_id = ?, role = ?, pick_rate_position = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE player_asset_id = ? AND role = ?
+        AND lineup_id IN (SELECT id FROM fantasy_lineups WHERE round_id = ?)
+    `).bind(swap.newStarterId, swap.role, swap.role, swap.oldStarterId, swap.role, swap.roundId),
+    DB.prepare(`
+      INSERT OR IGNORE INTO fantasy_market_snapshots
+        (round_id, division, asset_id, price_before_cents, formula_version, breakdown_json)
+      SELECT ?, division, asset_id, price_cents, 'fantasy-v2', '{}'
+      FROM fantasy_market
+      WHERE division = ? AND asset_id IN (?, ?)
+    `).bind(swap.roundId, swap.division, swap.oldStarterId, swap.newStarterId),
+    DB.prepare(`
+      INSERT INTO fantasy_audit_log
+        (id, actor_user_id, action, target_type, target_id, metadata_json,
+         actor_admin_username, before_json, after_json, result, error_json, request_id)
+      VALUES (?, NULL, 'lineup.roster_substitution', 'round', ?, ?, ?, ?, ?,
+              'success', '{}', ?)
+    `).bind(
+      swap.auditId,
+      swap.roundId,
+      JSON.stringify({
+        reason: "GUOLHERME substitui YUTA como MID titular da INAZUMA V na Rodada 5.",
+        backupId,
+        pricesPreserved: true,
+        transfersCaptain: true,
+        transfersDraftPrediction: true
+      }),
+      ACTOR,
+      JSON.stringify(before),
+      JSON.stringify({
+        starter: { id: swap.newStarterId, name: swap.newStarterName, role: swap.role },
+        reserve: { id: swap.oldStarterId, name: swap.oldStarterName, role: swap.role },
+        appliedAt: nowIso
+      }),
+      swap.auditId
+    )
+  ];
+  await DB.batch(statements);
+  const after = await readInazumaMidState();
+  const yutaAfter = after.market.find((row) => row.assetId === swap.oldStarterId);
+  const guolhermeAfter = after.market.find((row) => row.assetId === swap.newStarterId);
+  if (yutaAfter?.isStarter !== 0 || guolhermeAfter?.isStarter !== 1 ||
+      after.references.some((row) => row.assetId === swap.oldStarterId && row.ownershipType === "starter") ||
+      after.references.some((row) => row.assetId === swap.newStarterId && row.ownershipType === "reserve") ||
+      !after.audit) {
+    throw new Error("A verificação final da troca entre YUTA e GUOLHERME falhou.");
+  }
+  return { ...summary, applied: true, verified: after };
+}
+
+async function readInazumaMidState() {
+  const swap = INAZUMA_MID_SWAP;
+  const ids = [swap.oldStarterId, swap.newStarterId];
+  const [round, market, officialPlayers, references, draftPredictions, snapshots, audit] = await Promise.all([
+    DB.prepare(`
+      SELECT id, division, round_number AS roundNumber, status, locks_at AS locksAt
+      FROM fantasy_rounds WHERE id = ?
+    `).bind(swap.roundId).first(),
+    DB.prepare(`
+      SELECT asset_id AS assetId, display_name AS displayName, role,
+             team_slot AS teamSlot, price, previous_price AS previousPrice,
+             price_cents AS priceCents, previous_price_cents AS previousPriceCents,
+             active, official_status AS officialStatus, is_starter AS isStarter,
+             manual_override AS manualOverride
+      FROM fantasy_market WHERE division = ? AND asset_id IN (?, ?)
+      ORDER BY display_name
+    `).bind(swap.division, ...ids).all(),
+    DB.prepare(`
+      SELECT id, display_name AS displayName, role, team_slot AS teamSlot,
+             roster_status AS rosterStatus, active
+      FROM fantasy_official_players WHERE id IN (?, ?) ORDER BY display_name
+    `).bind(...ids).all(),
+    DB.prepare(`
+      SELECT l.id AS lineupId, u.username, p.asset_id AS assetId, p.role,
+             p.price_paid AS pricePaid, 'starter' AS ownershipType,
+             CASE WHEN l.captain_asset_id = p.asset_id THEN 1 ELSE 0 END AS isCaptain
+      FROM fantasy_lineups l
+      JOIN fantasy_teams t ON t.id = l.fantasy_team_id
+      JOIN fantasy_users u ON u.id = t.user_id
+      JOIN fantasy_lineup_picks p ON p.lineup_id = l.id
+      WHERE l.round_id = ? AND p.asset_id IN (?, ?)
+      UNION ALL
+      SELECT l.id, u.username, r.asset_id, r.role, r.price_paid,
+             'reserve', 0
+      FROM fantasy_lineups l
+      JOIN fantasy_teams t ON t.id = l.fantasy_team_id
+      JOIN fantasy_users u ON u.id = t.user_id
+      JOIN fantasy_lineup_reserves r ON r.lineup_id = l.id
+      WHERE l.round_id = ? AND r.asset_id IN (?, ?)
+      ORDER BY username, role
+    `).bind(swap.roundId, ...ids, swap.roundId, ...ids).all(),
+    DB.prepare(`
+      SELECT p.lineup_id AS lineupId, p.role, p.player_asset_id AS playerAssetId,
+             p.mode, p.champion_id AS championId, p.map_number AS mapNumber, p.status
+      FROM fantasy_lineup_draft_predictions p
+      JOIN fantasy_lineups l ON l.id = p.lineup_id
+      WHERE l.round_id = ? AND p.player_asset_id IN (?, ?)
+      ORDER BY p.lineup_id, p.role
+    `).bind(swap.roundId, ...ids).all(),
+    DB.prepare(`
+      SELECT round_id AS roundId, asset_id AS assetId,
+             price_before_cents AS priceBeforeCents, price_after_cents AS priceAfterCents
+      FROM fantasy_market_snapshots
+      WHERE round_id = ? AND asset_id IN (?, ?) ORDER BY asset_id
+    `).bind(swap.roundId, ...ids).all(),
+    DB.prepare(`
+      SELECT id, action, target_id AS targetId, result
+      FROM fantasy_audit_log WHERE id = ?
+    `).bind(swap.auditId).first()
+  ]);
+  return {
+    round,
+    market: market.results || [],
+    officialPlayers: officialPlayers.results || [],
+    references: references.results || [],
+    draftPredictions: draftPredictions.results || [],
+    snapshots: snapshots.results || [],
+    audit
+  };
 }
 
 function assertRoundPreview(preview) {
