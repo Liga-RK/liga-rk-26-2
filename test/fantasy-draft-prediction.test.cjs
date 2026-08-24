@@ -53,6 +53,20 @@ test("snapshot da Rodada 4 usa somente R1, R2 e R3 e calcula por posição", () 
   assert.equal(snapshot.positionPickRates.TOP.Ahri, 0);
 });
 
+test("snapshot da Rodada 5 reconhece as oitavas como Rodada 4", () => {
+  const source = officialSource();
+  for (const playoffMatch of source.divisions.elite.stats.matches.filter((match) => match.roundNumber === 4)) {
+    delete playoffMatch.roundNumber;
+    playoffMatch.stage = "oitavas";
+    playoffMatch.round = "OITAVAS 1";
+  }
+  const snapshot = buildDraftPickRateSnapshot({
+    source, division: "elite", roundNumber: 5, catalog: CHAMPION_CATALOG
+  });
+  assert.deepEqual(snapshot.generatedFromRounds, [1, 2, 3, 4]);
+  assert.equal(snapshot.totals.TOP, 40);
+});
+
 test("multiplicadores seguem todas as faixas e campeão sem histórico recebe 1,50x", () => {
   assert.equal(getDraftPickMultiplier(.28), .7);
   assert.equal(getDraftPickMultiplier(.20), .8);

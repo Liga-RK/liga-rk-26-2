@@ -92,7 +92,14 @@ function rewardForPrediction(mode, seriesFormat, multiplier) {
 function extractRoundNumber(match) {
   const direct = Math.trunc(Number(match?.roundNumber));
   if (direct > 0) return direct;
-  return Math.trunc(Number(String(match?.round || "").match(/RODADA\s*(\d+)/i)?.[1])) || 0;
+  const label = `${match?.stage || ""} ${match?.round || ""}`;
+  const numbered = Math.trunc(Number(label.match(/RODADA\s*(\d+)/i)?.[1]));
+  if (numbered > 0) return numbered;
+  if (/oitavas|round[\s-]*of[\s-]*16/i.test(label)) return 4;
+  if (/quartas|quarter[\s-]*final/i.test(label)) return 5;
+  if (/semi[\s-]*final/i.test(label)) return 6;
+  if (/final/i.test(label)) return 7;
+  return 0;
 }
 
 function buildDraftPickRateSnapshot({ source, division, roundNumber, catalog, generatedAt = new Date().toISOString() }) {

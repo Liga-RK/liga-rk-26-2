@@ -188,12 +188,13 @@ test("Painel administrativo usa a conta Discord exclusiva e aparece somente para
   assert.match(adminScript, /\/api\/fantasy\/auth\/logout/);
 });
 
-test("Rodada 4 mostra somente o aviso com os fechamentos separados", () => {
+test("Rodada 5 mostra somente o aviso do fechamento global", () => {
   for (const relativePath of pages) {
     const html = fs.readFileSync(path.join(root, relativePath), "utf8");
-    assert.match(html, /id="round-four-market-schedule-notice"/);
-    assert.match(html, /Divisão Ascensão[\s\S]*13\/08\/2026 às 19h/);
-    assert.match(html, /Divisão Elite[\s\S]*15\/08\/2026 às 18h/);
+    assert.match(html, /id="round-five-market-schedule-notice"/);
+    assert.match(html, /Fechamento global do mercado da Rodada 5/);
+    assert.match(html, /Elite e Ascensão[\s\S]*Hoje, 22\/08\/2026, às 12h \(Brasília\)/);
+    assert.doesNotMatch(html, /13h35|23\/08\/2026/);
     assert.doesNotMatch(html, /round-two-notice|round-three-nkz-notice/);
   }
   assert.doesNotMatch(script, /loadRoundTwoNotice|roundTwoNoticeDialog|roundTwoNoticeBusy/);

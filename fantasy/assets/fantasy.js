@@ -393,6 +393,8 @@
         : null,
       scoreDetails: objectValue(item.scoreDetails),
       valuationDetails: objectValue(item.valuationDetails),
+      isStarter: item.type === "team" ? true : item.isStarter !== false,
+      rosterStatus: cleanText(item.rosterStatus) || (item.type === "team" ? "team" : item.isStarter === false ? "reserve" : "starter"),
       selectable: item.selectable !== false,
       availabilityStatus: cleanText(item.availabilityStatus),
       availabilityLabel: cleanText(item.availabilityLabel)
@@ -487,7 +489,7 @@
     const reserveId = lineup.reserve ? lineup.reserve.id : "";
 
     let items = state.market[state.division]
-      .filter((item) => role === "ALL" || item.role === role)
+      .filter((item) => role === "ALL" || (item.isStarter !== false && item.role === role))
       .filter((item) => !query || `${item.name} ${item.teamName} ${item.teamTag}`.toLocaleLowerCase("pt-BR").includes(query))
       .sort(sortMarket(sort));
 
@@ -501,13 +503,15 @@
     }
 
     try {
-      const players = items.filter((item) => item.role !== "TEAM");
+      const players = items.filter((item) => item.role !== "TEAM" && item.isStarter !== false);
+      const reserves = items.filter((item) => item.role !== "TEAM" && item.isStarter === false);
       const teams = items.filter((item) => item.role === "TEAM");
       const sections = [];
       if (players.length) {
-        const title = role === "ALL" ? "Jogadores" : ROLE_LABELS[role];
+        const title = role === "ALL" ? "Titulares dos elencos" : ROLE_LABELS[role];
         sections.push(marketSection(title, role === "ALL" ? "TOP" : role, players, selectedIds, lineup, reserveId, false));
       }
+      if (reserves.length) sections.push(marketSection("Reservas dos elencos", "SUP", reserves, selectedIds, lineup, reserveId, false, true));
       if (teams.length) sections.push(marketSection("Equipes", "TEAM", teams, selectedIds, lineup, reserveId, true));
       el.marketGrid.replaceChildren(...sections);
     } catch (error) {
@@ -717,7 +721,7 @@
         const player = document.createElement("strong");
         player.textContent = lineup.reserve.name;
         const team = document.createElement("small");
-        team.textContent = `${ROLE_LABELS[lineup.reserve.role]} · ${lineup.reserve.teamTag}`;
+        team.textContent = `RESERVA DO FANTASY · ${lineup.reserve.teamTag}`;
         reserve.append(roleLabel, player, team);
         list.appendChild(reserve);
       }
@@ -726,9 +730,9 @@
     }));
   }
 
-  function marketSection(title, role, items, selectedIds, lineup, reserveId, teamSection) {
+  function marketSection(title, role, items, selectedIds, lineup, reserveId, teamSection, realReserveSection = false) {
     const section = document.createElement("section");
-    section.className = `market-section${teamSection ? " team-market-section" : ""}`;
+    section.className = `market-section${teamSection ? " team-market-section" : ""}${realReserveSection ? " reserve-market-section" : ""}`;
     const heading = document.createElement("h3");
     heading.className = "market-section-title";
     const icon = document.createElement("img");
@@ -751,22 +755,33 @@
       const roleComplete = el.roleFilter.value === "ALL" && Boolean(lineup.slots[item.role]) && !selected && !reserveEligible;
       return marketCard(item, selected, roleComplete, reserveSelected, reserveError, reserveEligible);
     }));
-    section.append(heading, cards);
+    section.append(heading);
+    if (realReserveSection) {
+      const explanation = document.createElement("p");
+      explanation.className = "reserve-market-help";
+      explanation.textContent = "Estes atletas integram o banco das equipes classificadas e podem ocupar somente a vaga de reserva do seu time no Fantasy.";
+      section.appendChild(explanation);
+    }
+    section.appendChild(cards);
     return section;
   }
 
   function marketCard(item, selected, roleComplete, reserveSelected, reserveError = "", reserveEligible = false) {
     const card = document.createElement("article");
     const unavailable = item.selectable === false;
-    card.className = `player-card${selected ? " selected" : ""}${roleComplete ? " role-complete" : ""}${reserveSelected ? " reserve-selected" : ""}${reserveEligible ? " reserve-eligible" : ""}${unavailable ? " unavailable" : ""}`;
+    const realReserve = item.type === "player" && item.isStarter === false;
+    card.className = `player-card${selected ? " selected" : ""}${roleComplete ? " role-complete" : ""}${reserveSelected ? " reserve-selected" : ""}${reserveEligible ? " reserve-eligible" : ""}${realReserve ? " real-roster-reserve" : ""}${unavailable ? " unavailable" : ""}`;
 
     const logo = createLogo(item);
     const meta = document.createElement("div");
     meta.className = "player-meta";
     const name = document.createElement("strong");
     name.textContent = item.name;
+    const rosterBadge = document.createElement("small");
+    rosterBadge.className = `roster-status-badge ${realReserve ? "reserve" : "starter"}`;
+    rosterBadge.textContent = realReserve ? "RESERVA DO ELENCO" : "TITULAR DO ELENCO";
     const team = document.createElement("span");
-    team.textContent = `${ROLE_LABELS[item.role]} · ${item.teamName || item.teamTag}`;
+    team.textContent = `${realReserve ? "RESERVA FLEX" : ROLE_LABELS[item.role]} · ${item.teamName || item.teamTag}`;
     const matchup = document.createElement("small");
     matchup.className = "matchup";
     matchup.textContent = unavailable ? item.availabilityLabel : matchupLabel(item);
@@ -777,7 +792,9 @@
       ? item.recentPoints.map((point) => formatNumber(point)).join(" · ")
       : "indisponível na última rodada";
     stats.innerHTML = `<span>Média: ${formatNumber(item.average)}</span><span>Performance recente: ${escapeHtml(recent)}</span>`;
-    meta.append(name, team, matchup, stats);
+    meta.append(name);
+    if (item.type === "player") meta.appendChild(rosterBadge);
+    meta.append(team, matchup, stats);
     const breakdown = fantasyBreakdown(item);
     if (breakdown) meta.appendChild(breakdown);
 
@@ -790,9 +807,9 @@
     const button = document.createElement("button");
     button.type = "button";
     button.className = "buy-button";
-    button.textContent = selected ? "Remover" : (unavailable ? "Indisponível nesta rodada" : "Escalar");
-    button.disabled = unavailable && !selected;
-    button.title = unavailable ? item.availabilityLabel : "Escalar";
+    button.textContent = selected ? "Remover" : (unavailable ? "Indisponível nesta rodada" : realReserve ? "Somente como reserva" : "Escalar");
+    button.disabled = (unavailable && !selected) || (realReserve && !selected);
+    button.title = unavailable ? item.availabilityLabel : realReserve ? "Este atleta só pode ocupar a vaga de reserva do Fantasy." : "Escalar";
     button.addEventListener("click", () => selected ? removeItem(item.role) : addItem(item));
 
     const actions = document.createElement("div");
@@ -1077,7 +1094,7 @@
     strong.textContent = item ? item.name : "Escolha reserva";
     const detail = document.createElement("span");
     detail.textContent = item
-      ? `${ROLE_LABELS[item.role]} · ${item.teamTag} · RK$ ${formatMoney(item.price)}`
+      ? `RESERVA DO FANTASY · ${item.teamTag} · RK$ ${formatMoney(item.price)}`
       : selected === 6
         ? `Pode custar até RK$ ${formatMoney(budget)}`
         : "Complete os titulares para liberar";
@@ -1102,6 +1119,10 @@
   function addItem(item) {
     if (item.selectable === false) {
       setMessage(item.availabilityLabel || "Este ativo não pode ser escalado nesta rodada.", true);
+      return;
+    }
+    if (item.type === "player" && item.isStarter === false) {
+      setMessage(`${item.name} é reserva do elenco real e só pode ocupar a vaga de reserva do Fantasy.`, true);
       return;
     }
     const lineup = currentLineup();
@@ -1619,7 +1640,7 @@
           <div class="auto-preview-logo"><img src="${escapeHtml(source || ROLE_ASSETS[role])}" alt="" /></div>
           <div class="auto-preview-info">
             <strong>${escapeHtml(item.name)}${captain ? '<span class="auto-preview-tag">Capitão</span>' : ""}${reserve ? '<span class="auto-preview-tag">Reserva</span>' : ""}</strong>
-            <span>${reserve ? "RES · " : ""}${escapeHtml(ROLE_LABELS[role] || role)} · ${escapeHtml(item.teamTag || item.teamName)}</span>
+            <span>${reserve ? "RESERVA DO FANTASY · " : `${escapeHtml(ROLE_LABELS[role] || role)} · `}${escapeHtml(item.teamTag || item.teamName)}</span>
           </div>
           <span class="auto-preview-price">RK$ ${formatMoney(item.price)}</span>
         </article>`;

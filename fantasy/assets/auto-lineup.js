@@ -69,6 +69,7 @@
   function scoredCandidates(market, role, strategy, random) {
     return market
       .filter((item) => item && item.selectable !== false && String(item.role).toUpperCase() === role)
+      .filter((item) => role === "TEAM" || item.type === "team" || item.isStarter !== false)
       .map((item) => ({ item, score: scoreItem(item, strategy, random), priceCents: toCents(item.price) }))
       .sort((left, right) => right.score - left.score || left.priceCents - right.priceCents || String(left.item.name).localeCompare(String(right.item.name), "pt-BR"));
   }

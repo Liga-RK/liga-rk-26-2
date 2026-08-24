@@ -643,6 +643,8 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .player-meta strong, .player-meta span { display: block; }
 .player-meta strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .98rem; }
 .player-meta > span { margin-top: .2rem; color: var(--muted); font-size: .74rem; }
+.roster-status-badge { display: inline-flex; width: fit-content; margin-top: .3rem; padding: .2rem .42rem; border: 1px solid rgba(84, 240, 168, .36); border-radius: 999px; color: #72f4b4; background: rgba(84, 240, 168, .08); font-size: .61rem; font-weight: 900; letter-spacing: .055em; line-height: 1; text-transform: uppercase; }
+.roster-status-badge.reserve { color: #ffe0a3; border-color: rgba(255, 194, 75, .42); background: rgba(255, 194, 75, .09); }
 .matchup { display: inline-flex; align-items: center; width: fit-content; max-width: 100%; margin-top: .36rem; padding: .18rem .4rem; border: 1px solid rgba(229, 38, 50, .34); border-radius: 999px; color: #ffb1b7; background: rgba(229, 38, 50, .08); font-size: .67rem; font-weight: 800; text-transform: uppercase; }
 .player-stats { display: flex; flex-wrap: wrap; gap: .28rem .55rem; margin-top: .38rem; }
 .player-stats span { color: #d8d1d3; font-size: .7rem; }
@@ -666,6 +668,11 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .reserve-button:disabled { cursor: not-allowed; opacity: .45; }
 .player-card.unavailable .reserve-button { cursor: not-allowed; color: #b5aeb2; border-color: var(--line); background: rgba(255, 255, 255, .035); box-shadow: none; opacity: .45; }
 .player-card.reserve-selected { border-color: rgba(255, 194, 75, .72); box-shadow: 0 0 24px rgba(255, 194, 75, .12); }
+.reserve-market-section { padding-top: .85rem; border-top: 1px solid rgba(255, 194, 75, .18); }
+.reserve-market-help { max-width: 850px; margin: -.2rem 0 .8rem; color: #cfc5b8; font-size: .8rem; line-height: 1.5; }
+.player-card.real-roster-reserve { border-color: rgba(255, 194, 75, .26); background: linear-gradient(145deg, rgba(255, 194, 75, .075), rgba(255, 255, 255, .018)); }
+.player-card.real-roster-reserve .buy-button:disabled { cursor: not-allowed; color: #b9afb3; border-color: var(--line); background: rgba(255, 255, 255, .035); box-shadow: none; opacity: .72; }
+.player-card.real-roster-reserve .reserve-button:not(:disabled) { color: #17100a; border-color: #ffc24b; background: #ffc24b; }
 .team-market-section .market-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .fantasy-breakdown {
   margin-top: .55rem;
