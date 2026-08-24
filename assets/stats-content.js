@@ -1,6 +1,6 @@
 window.LIGA_RK_STATS = {
   "version": 2,
-  "generatedAt": "2026-08-24T03:52:03.928Z",
+  "generatedAt": "2026-08-24T03:55:37.384Z",
   "season": "Liga RK 26.2",
   "divisions": {
     "elite": {
@@ -64808,100 +64808,108 @@ window.LIGA_RK_STATS = {
       ],
       "teamOfWeek": {
         "round": 0,
-        "stage": "OITAVAS",
-        "label": "OITAVAS DE FINAL",
+        "stage": "QUARTAS",
+        "label": "QUARTAS DE FINAL",
         "minimumGames": 2,
         "selection": [
           {
             "role": "TOP",
-            "playerId": "87b0b01b-0c1d-44ca-8154-ec59da7b80a3",
-            "player": "DAVI",
-            "riotId": "DeyraF#LDavi",
+            "playerId": "9e0676fc-f015-47a0-9981-0f4c4c8319b7",
+            "player": "CADU",
+            "riotId": "BIG XANTARES#TK1",
             "image": "",
-            "team": "D4",
-            "teamName": "M7 ESPORTS",
-            "teamTag": "M7",
-            "teamLogo": "assets/uploads/equipes_elite/m7.png",
-            "averageScore": 90.75,
-            "games": 2,
-            "wins": 2,
-            "losses": 0,
+            "team": "A1",
+            "teamName": "CUPULA DO TRIPLE T",
+            "teamTag": "TTT",
+            "teamLogo": "assets/uploads/equipes_elite/ttt.png",
+            "averageScore": 85.26,
+            "games": 4,
+            "wins": 3,
+            "losses": 1,
             "seriesWins": 1,
             "series": [
-              "playoffs-p1m1"
+              "playoffs-p2m4"
             ],
             "matches": [
-              "playoffs-p1m1-j1",
-              "playoffs-p1m1-j2"
+              "playoffs-p2m4-j1",
+              "playoffs-p2m4-j2",
+              "playoffs-p2m4-j3",
+              "playoffs-p2m4-j4"
             ]
           },
           {
             "role": "JG",
-            "playerId": "d461d7bf-887a-4969-9e94-2af9389b2f2a",
-            "player": "BLACKZERA",
-            "riotId": "Blackzera#CBLOL",
+            "playerId": "0764acf5-cf08-4b12-ae1a-7a5f3e6be6b8",
+            "player": "melare",
+            "riotId": "沒有敵人弧線#心安勝過一",
             "image": "",
-            "team": "D4",
-            "teamName": "M7 ESPORTS",
-            "teamTag": "M7",
-            "teamLogo": "assets/uploads/equipes_elite/m7.png",
-            "averageScore": 88.77,
-            "games": 2,
-            "wins": 2,
-            "losses": 0,
+            "team": "A1",
+            "teamName": "CUPULA DO TRIPLE T",
+            "teamTag": "TTT",
+            "teamLogo": "assets/uploads/equipes_elite/ttt.png",
+            "averageScore": 86.14,
+            "games": 4,
+            "wins": 3,
+            "losses": 1,
             "seriesWins": 1,
             "series": [
-              "playoffs-p1m1"
+              "playoffs-p2m4"
             ],
             "matches": [
-              "playoffs-p1m1-j1",
-              "playoffs-p1m1-j2"
+              "playoffs-p2m4-j1",
+              "playoffs-p2m4-j2",
+              "playoffs-p2m4-j3",
+              "playoffs-p2m4-j4"
             ]
           },
           {
             "role": "MID",
-            "playerId": "7ed025c3-c37e-40c9-ac97-d2ddb1419e85",
-            "player": "GUNGI",
-            "riotId": "Gungi#727",
+            "playerId": "9392f3eb-5e8b-4059-874e-905daba68b36",
+            "player": "RYUU",
+            "riotId": "Klein Moretti 小丑#Ryuu",
             "image": "",
-            "team": "D4",
-            "teamName": "M7 ESPORTS",
-            "teamTag": "M7",
-            "teamLogo": "assets/uploads/equipes_elite/m7.png",
-            "averageScore": 83.7,
-            "games": 2,
-            "wins": 2,
-            "losses": 0,
+            "team": "A2",
+            "teamName": "BANDO DO ROSA",
+            "teamTag": "BDR",
+            "teamLogo": "assets/uploads/equipes_elite/bdr.png",
+            "averageScore": 85.28,
+            "games": 4,
+            "wins": 3,
+            "losses": 1,
             "seriesWins": 1,
             "series": [
-              "playoffs-p1m1"
+              "playoffs-p2m1"
             ],
             "matches": [
-              "playoffs-p1m1-j1",
-              "playoffs-p1m1-j2"
+              "playoffs-p2m1-j1",
+              "playoffs-p2m1-j2",
+              "playoffs-p2m1-j3",
+              "playoffs-p2m1-j4"
             ]
           },
           {
             "role": "ADC",
-            "playerId": "c0252d66-bd2d-4f35-b210-c03943520a05",
-            "player": "PEWTZ",
-            "riotId": "Pewtz#Pewtz",
+            "playerId": "59ae6875-f951-418c-a2b4-209a84330869",
+            "player": "JPERSO",
+            "riotId": "peek m0NESY ssj2#jper",
             "image": "",
-            "team": "D4",
-            "teamName": "M7 ESPORTS",
-            "teamTag": "M7",
-            "teamLogo": "assets/uploads/equipes_elite/m7.png",
-            "averageScore": 94.93,
-            "games": 2,
-            "wins": 2,
-            "losses": 0,
+            "team": "A1",
+            "teamName": "CUPULA DO TRIPLE T",
+            "teamTag": "TTT",
+            "teamLogo": "assets/uploads/equipes_elite/ttt.png",
+            "averageScore": 80.64,
+            "games": 4,
+            "wins": 3,
+            "losses": 1,
             "seriesWins": 1,
             "series": [
-              "playoffs-p1m1"
+              "playoffs-p2m4"
             ],
             "matches": [
-              "playoffs-p1m1-j1",
-              "playoffs-p1m1-j2"
+              "playoffs-p2m4-j1",
+              "playoffs-p2m4-j2",
+              "playoffs-p2m4-j3",
+              "playoffs-p2m4-j4"
             ]
           },
           {
@@ -64914,23 +64922,25 @@ window.LIGA_RK_STATS = {
             "teamName": "CUPULA DO TRIPLE T",
             "teamTag": "TTT",
             "teamLogo": "assets/uploads/equipes_elite/ttt.png",
-            "averageScore": 93.73,
-            "games": 2,
-            "wins": 2,
-            "losses": 0,
+            "averageScore": 90.07,
+            "games": 4,
+            "wins": 3,
+            "losses": 1,
             "seriesWins": 1,
             "series": [
-              "playoffs-p1m4"
+              "playoffs-p2m4"
             ],
             "matches": [
-              "playoffs-p1m4-j1",
-              "playoffs-p1m4-j2"
+              "playoffs-p2m4-j1",
+              "playoffs-p2m4-j2",
+              "playoffs-p2m4-j3",
+              "playoffs-p2m4-j4"
             ]
           }
         ],
-        "highlightPlayerId": "c0252d66-bd2d-4f35-b210-c03943520a05",
-        "highlightRole": "ADC",
-        "highlightScore": 94.93
+        "highlightPlayerId": "5217aacf-fac1-4c9c-b387-24344e34444e",
+        "highlightRole": "SUP",
+        "highlightScore": 90.07
       }
     },
     "ascension": {

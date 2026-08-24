@@ -329,6 +329,9 @@
       )).filter(Boolean)
       : fallbackSelection;
     const highlightIndex = weeklyHighlightIndex(weeklySelection, automaticTeam);
+    const weeklyPeriod = automaticTeam.stage
+      ? `nas ${String(automaticTeam.label || automaticTeam.stage).toLocaleLowerCase("pt-BR")}`
+      : "na rodada";
 
     return `
       <section class="visual-section weekly-section" id="selecao">
@@ -337,7 +340,7 @@
         <div class="lineup">
           ${weeklySelection.map((player, index) => renderPlayer(player, index, index === highlightIndex)).join("")}
         </div>
-        ${hasAutomaticTeam ? `<p class="weekly-criteria">Maior nota média por posição ${automaticTeam.stage ? "nas oitavas de final" : "na rodada"} · mínimo de 2 mapas · somente vencedores da série</p>` : ""}
+        ${hasAutomaticTeam ? `<p class="weekly-criteria">Maior nota média por posição ${weeklyPeriod} · mínimo de 2 mapas · somente vencedores da série</p>` : ""}
       </section>
     `;
   }
