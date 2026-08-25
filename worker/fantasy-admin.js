@@ -11,7 +11,8 @@ const LOGIN_MAX_FAILURES = 5;
 const LOGIN_BLOCK_MS = 30 * 60 * 1000;
 const LOCK_MINUTES = 25;
 const BUDGET_LIMIT = 100;
-const MAX_PLAYERS_PER_REAL_TEAM = 2;
+const DEFAULT_MAX_PLAYERS_PER_REAL_TEAM = 2;
+const SEMIFINAL_MAX_PLAYERS_PER_REAL_TEAM = 3;
 const GLOBAL_MARKET_ID = "global";
 const TIMEZONE = "America/Sao_Paulo";
 const DIVISIONS = ["elite", "ascension"];
@@ -60,6 +61,13 @@ const {
   calculateFinalPlayerFantasyScore
 } = draftPrediction;
 const { CHAMPION_CATALOG } = championCatalog;
+
+function maxPlayersPerRealTeamForRound(roundNumber) {
+  return Math.trunc(Number(roundNumber || 0)) >= 6
+    ? SEMIFINAL_MAX_PLAYERS_PER_REAL_TEAM
+    : DEFAULT_MAX_PLAYERS_PER_REAL_TEAM;
+}
+
 const BACKUP_TABLES = Object.freeze([
   "d1_migrations",
   "fantasy_users",
@@ -4745,8 +4753,9 @@ async function adminUpdateLineup(request, env, requestId, auth) {
   for (const row of marketRows.filter((item) => item.asset_type === "player")) {
     teamCounts.set(row.team_slot, (teamCounts.get(row.team_slot) || 0) + 1);
   }
-  if ([...teamCounts.values()].some((count) => count > MAX_PLAYERS_PER_REAL_TEAM)) {
-    return failure("LINEUP_TEAM_LIMIT", "Use no máximo dois jogadores da mesma equipe real.", 400);
+  const maxPlayersPerRealTeam = maxPlayersPerRealTeamForRound(lineup.round_number);
+  if ([...teamCounts.values()].some((count) => count > maxPlayersPerRealTeam)) {
+    return failure("LINEUP_TEAM_LIMIT", `Use no máximo ${maxPlayersPerRealTeam} jogadores da mesma equipe real.`, 400);
   }
   const captainId = clean(body.captainAssetId || body.captainPlayerId);
   if (!marketRows.some((row) => row.asset_type === "player" && row.asset_id === captainId)) {
@@ -4780,7 +4789,7 @@ async function adminUpdateLineup(request, env, requestId, auth) {
     if (Number(reserveRow.price) > reserveBudget + 0.001) {
       return failure("LINEUP_RESERVE_BUDGET", `O limite do reserva é RK$ ${reserveBudget.toFixed(2)}.`, 400);
     }
-    if ((teamCounts.get(reserveRow.team_slot) || 0) >= MAX_PLAYERS_PER_REAL_TEAM) {
+    if ((teamCounts.get(reserveRow.team_slot) || 0) >= maxPlayersPerRealTeam) {
       return failure("LINEUP_RESERVE_TEAM_LIMIT", "O reserva excede o limite da equipe real.", 400);
     }
   }
@@ -4881,11 +4890,15 @@ function lineupValidationIssues(lineup, picks, reserve, budget = BUDGET_LIMIT) {
   for (const pick of picks.filter((item) => PLAYER_ROLES.includes(item.role))) {
     teamCounts.set(pick.teamSlot, (teamCounts.get(pick.teamSlot) || 0) + 1);
   }
-  if ([...teamCounts.values()].some((count) => count > MAX_PLAYERS_PER_REAL_TEAM)) {
+  const maxPlayersPerRealTeam = maxPlayersPerRealTeamForRound(lineup.roundNumber);
+  if ([...teamCounts.values()].some((count) => count > maxPlayersPerRealTeam)) {
     issues.push("limite por equipe excedido");
   }
   if (reserve && picks.some((pick) => pick.assetId === reserve.assetId)) {
     issues.push("reserva também é titular");
+  }
+  if (reserve && (teamCounts.get(reserve.teamSlot) || 0) >= maxPlayersPerRealTeam) {
+    issues.push("reserva excede o limite por equipe");
   }
   return issues;
 }

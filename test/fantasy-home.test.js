@@ -188,17 +188,27 @@ test("Painel administrativo usa a conta Discord exclusiva e aparece somente para
   assert.match(adminScript, /\/api\/fantasy\/auth\/logout/);
 });
 
-test("Rodada 5 mostra somente o aviso do fechamento global", () => {
+test("Rodada 6 mostra a nova regra e os fechamentos das semifinais", () => {
   for (const relativePath of pages) {
     const html = fs.readFileSync(path.join(root, relativePath), "utf8");
-    assert.match(html, /id="round-five-market-schedule-notice"/);
-    assert.match(html, /Fechamento global do mercado da Rodada 5/);
-    assert.match(html, /Elite e Ascensão[\s\S]*Hoje, 22\/08\/2026, às 12h \(Brasília\)/);
-    assert.doesNotMatch(html, /13h35|23\/08\/2026/);
+    assert.match(html, /id="round-six-market-schedule-notice"/);
+    assert.match(html, /Nova regra de escalação nos playoffs/);
+    assert.match(html, /até <strong>3 jogadores da mesma equipe real<\/strong>/);
+    assert.match(html, /Ascensão[\s\S]*29\/08\/2026, às 14h35 \(Brasília\)/);
+    assert.match(html, /Elite[\s\S]*30\/08\/2026, às 14h35 \(Brasília\)/);
+    assert.doesNotMatch(html, /round-five-market-schedule-notice/);
     assert.doesNotMatch(html, /round-two-notice|round-three-nkz-notice/);
   }
   assert.doesNotMatch(script, /loadRoundTwoNotice|roundTwoNoticeDialog|roundTwoNoticeBusy/);
   assert.match(styles, /\.market-deadline-list/);
+});
+
+test("limite por equipe passa de dois para três somente a partir da Rodada 6", () => {
+  assert.match(workerScript, /function|var maxPlayersPerRealTeamForRound/);
+  assert.match(workerScript, />= 6[\s\S]*SEMIFINAL_MAX_PLAYERS_PER_REAL_TEAM/);
+  assert.match(workerScript, /rules: \{ maxPlayersPerRealTeam: maxPlayersPerRealTeamForRound\(round\) \}/);
+  assert.match(script, /config\.maxPlayersPerRealTeam = maxPlayersPerRealTeam/);
+  assert.match(script, /Máximo de \$\{config\.maxPlayersPerRealTeam\} jogadores/);
 });
 
 test("Admin-only mode keeps the market closed for other players", () => {

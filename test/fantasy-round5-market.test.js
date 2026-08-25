@@ -16,6 +16,11 @@ const expected = {
   ascension: ["A1:D2", "B1:D4", "C4:B4", "D3:B3"]
 };
 
+const expectedSemifinals = {
+  elite: ["A2:B3", "C4:A1"],
+  ascension: ["A1:D4", "C4:D3"]
+};
+
 test("Rodada 5 contém as quartas corretas e oito equipes elegíveis por divisão", () => {
   for (const division of ["elite", "ascension"]) {
     const round = source.divisions[division].rounds.find((item) => item.roundNumber === 5);
@@ -26,6 +31,19 @@ test("Rodada 5 contém as quartas corretas e oito equipes elegíveis por divisã
     const statuses = Object.values(round.eligibility.teamStatuses);
     assert.equal(statuses.filter((status) => status === "playing").length, 8);
     assert.equal(statuses.filter((status) => status === "eliminated").length, 8);
+  }
+});
+
+test("Rodada 6 contém as semifinais corretas e quatro equipes elegíveis por divisão", () => {
+  for (const division of ["elite", "ascension"]) {
+    const round = source.divisions[division].rounds.find((item) => item.roundNumber === 6);
+    assert.ok(round, `Rodada 6 ausente em ${division}`);
+    assert.equal(round.name, "RODADA 6 · SEMIFINAIS");
+    assert.deepEqual(round.matches.map((match) => `${match.homeTeamSlot}:${match.awayTeamSlot}`), expectedSemifinals[division]);
+    assert.ok(round.matches.every((match) => match.format === "MD5" && match.stage === "playoffs-semifinals"));
+    const statuses = Object.values(round.eligibility.teamStatuses);
+    assert.equal(statuses.filter((status) => status === "playing").length, 4);
+    assert.equal(statuses.filter((status) => status === "eliminated").length, 12);
   }
 });
 
@@ -67,4 +85,10 @@ test("manutenção oferece fechamento auditado e abertura pública", () => {
   assert.match(maintenance, /mode === "preview-inazuma-mid" \|\| mode === "apply-inazuma-mid"/);
   assert.match(maintenance, /GUOLHERME substitui YUTA como MID titular/);
   assert.match(maintenance, /pricesPreserved: true/);
+});
+
+test("preparação remota reconhece duas semifinais e quatro equipes elegíveis", () => {
+  assert.match(maintenance, /6: \{ matchesPerDivision: 2, statuses: \{ playing: 4, eliminated: 12 \} \}/);
+  assert.match(maintenance, /expectation\.matchesPerDivision/);
+  assert.match(maintenance, /expectation\.statuses/);
 });
