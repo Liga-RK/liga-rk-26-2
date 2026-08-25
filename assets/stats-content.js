@@ -1,6 +1,6 @@
 window.LIGA_RK_STATS = {
   "version": 2,
-  "generatedAt": "2026-08-25T05:43:21.961Z",
+  "generatedAt": "2026-08-25T05:45:23.754Z",
   "season": "Liga RK 26.2",
   "divisions": {
     "elite": {
@@ -150568,77 +150568,82 @@ window.LIGA_RK_STATS = {
       ],
       "teamOfWeek": {
         "round": 0,
-        "stage": "OITAVAS",
-        "label": "OITAVAS DE FINAL",
+        "stage": "QUARTAS",
+        "label": "QUARTAS DE FINAL",
         "minimumGames": 2,
         "selection": [
           {
             "role": "TOP",
-            "playerId": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
-            "player": "MITS",
-            "riotId": "Mits#KIM",
+            "playerId": "b90cfd3f-be97-4c2a-97ff-669620611892",
+            "player": "ALLANZÃO",
+            "riotId": "CTG Brasil ILS#CTGBR",
             "image": "",
-            "team": "B3",
-            "teamName": "FOFOLETES DO RICK",
-            "teamTag": "FFLT",
-            "teamLogo": "assets/uploads/equipes_ascensao/fflt.png",
-            "averageScore": 100,
-            "games": 2,
-            "wins": 2,
-            "losses": 0,
+            "team": "C4",
+            "teamName": "THE KILLERS T7",
+            "teamTag": "TKT7",
+            "teamLogo": "assets/uploads/equipes_ascensao/tkt7.png",
+            "averageScore": 91.55,
+            "games": 4,
+            "wins": 3,
+            "losses": 1,
             "seriesWins": 1,
             "series": [
-              "playoffs-p1m4"
+              "playoffs-p2m3"
             ],
             "matches": [
-              "playoffs-p1m4-j1",
-              "playoffs-p1m4-j2"
+              "playoffs-p2m3-j1",
+              "playoffs-p2m3-j2",
+              "playoffs-p2m3-j3",
+              "playoffs-p2m3-j4"
             ]
           },
           {
             "role": "JG",
-            "playerId": "d0570a3b-415e-4f1c-8e31-ef6a57884ac1",
-            "player": "RICK",
-            "riotId": "FFLT Rick#Rick",
+            "playerId": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39",
+            "player": "SEMATARY",
+            "riotId": "qquq#yve",
             "image": "",
-            "team": "B3",
-            "teamName": "FOFOLETES DO RICK",
-            "teamTag": "FFLT",
-            "teamLogo": "assets/uploads/equipes_ascensao/fflt.png",
-            "averageScore": 86.02,
-            "games": 2,
-            "wins": 2,
+            "team": "A1",
+            "teamName": "FAINA",
+            "teamTag": "FIN",
+            "teamLogo": "assets/uploads/equipes_ascensao/fin.png",
+            "averageScore": 86.94,
+            "games": 3,
+            "wins": 3,
             "losses": 0,
             "seriesWins": 1,
             "series": [
-              "playoffs-p1m4"
+              "playoffs-p2m1"
             ],
             "matches": [
-              "playoffs-p1m4-j1",
-              "playoffs-p1m4-j2"
+              "playoffs-p2m1-j1",
+              "playoffs-p2m1-j2",
+              "playoffs-p2m1-j3"
             ]
           },
           {
             "role": "MID",
-            "playerId": "9ca85881-b3a9-4d35-b5a5-040d97360711",
-            "player": "JOSÉ3000",
-            "riotId": "josé 3000#zeze",
+            "playerId": "6aa73999-3861-4c5e-95a7-d629b6bc501f",
+            "player": "PEDRIN",
+            "riotId": "Pedrin UwU#br1",
             "image": "",
-            "team": "D4",
-            "teamName": "INAZUMA V",
-            "teamTag": "INZ",
-            "teamLogo": "assets/uploads/equipes_ascensao/inz.png",
-            "averageScore": 93.75,
-            "games": 2,
-            "wins": 2,
-            "losses": 0,
+            "team": "C4",
+            "teamName": "THE KILLERS T7",
+            "teamTag": "TKT7",
+            "teamLogo": "assets/uploads/equipes_ascensao/tkt7.png",
+            "averageScore": 88.04,
+            "games": 4,
+            "wins": 3,
+            "losses": 1,
             "seriesWins": 1,
             "series": [
-              "playoffs-p1m2"
+              "playoffs-p2m3"
             ],
             "matches": [
-              "playoffs-p1m2-j1",
-              "playoffs-p1m2-j2"
+              "playoffs-p2m3-j1",
+              "playoffs-p2m3-j2",
+              "playoffs-p2m3-j3",
+              "playoffs-p2m3-j4"
             ]
           },
           {
@@ -150651,47 +150656,49 @@ window.LIGA_RK_STATS = {
             "teamName": "INAZUMA V",
             "teamTag": "INZ",
             "teamLogo": "assets/uploads/equipes_ascensao/inz.png",
-            "averageScore": 94.74,
-            "games": 2,
-            "wins": 2,
-            "losses": 0,
+            "averageScore": 87.57,
+            "games": 4,
+            "wins": 3,
+            "losses": 1,
             "seriesWins": 1,
             "series": [
-              "playoffs-p1m2"
+              "playoffs-p2m2"
             ],
             "matches": [
-              "playoffs-p1m2-j1",
-              "playoffs-p1m2-j2"
+              "playoffs-p2m2-j1",
+              "playoffs-p2m2-j2",
+              "playoffs-p2m2-j3",
+              "playoffs-p2m2-j4"
             ]
           },
           {
             "role": "SUP",
-            "playerId": "f4829fa0-4a8b-4bf0-b34d-fdaea5256536",
-            "player": "ALEEH",
-            "riotId": "Aleeht#BR1",
+            "playerId": "013c58e9-130d-4c36-bbf3-1a2e4b8a82a2",
+            "player": "ZAHIR",
+            "riotId": "Zähir#keria",
             "image": "",
-            "team": "B4",
-            "teamName": "TENEBRA LEVIATHAN",
-            "teamTag": "TNL",
-            "teamLogo": "assets/uploads/equipes_ascensao/tnl.png",
-            "averageScore": 83.76,
+            "team": "A1",
+            "teamName": "FAINA",
+            "teamTag": "FIN",
+            "teamLogo": "assets/uploads/equipes_ascensao/fin.png",
+            "averageScore": 85.86,
             "games": 3,
-            "wins": 2,
-            "losses": 1,
+            "wins": 3,
+            "losses": 0,
             "seriesWins": 1,
             "series": [
-              "playoffs-p1m3"
+              "playoffs-p2m1"
             ],
             "matches": [
-              "playoffs-p1m3-j1",
-              "playoffs-p1m3-j2",
-              "playoffs-p1m3-j3"
+              "playoffs-p2m1-j1",
+              "playoffs-p2m1-j2",
+              "playoffs-p2m1-j3"
             ]
           }
         ],
-        "highlightPlayerId": "e9c85f1e-0b21-4a78-8113-4c7d873fb651",
+        "highlightPlayerId": "b90cfd3f-be97-4c2a-97ff-669620611892",
         "highlightRole": "TOP",
-        "highlightScore": 100
+        "highlightScore": 91.55
       }
     }
   }

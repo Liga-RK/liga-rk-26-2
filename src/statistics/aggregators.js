@@ -6,7 +6,7 @@ const DIVISIONS = ["elite", "ascension"];
 const MVP_MODEL_VERSION = "role-impact-v5";
 const ACTIVE_TEAM_OF_WEEK = Object.freeze({
   elite: Object.freeze({ stage: "QUARTAS", label: "QUARTAS DE FINAL" }),
-  ascension: Object.freeze({ stage: "OITAVAS", label: "OITAVAS DE FINAL" })
+  ascension: Object.freeze({ stage: "QUARTAS", label: "QUARTAS DE FINAL" })
 });
 const MIN_TEAM_OF_WEEK_GAMES = 2;
 const COMPETITIVE_LANES = ["TOP", "JG", "MID", "ADC", "SUP"];
