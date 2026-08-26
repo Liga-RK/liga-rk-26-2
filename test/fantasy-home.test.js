@@ -194,8 +194,8 @@ test("Rodada 6 mostra a nova regra e os fechamentos das semifinais", () => {
     assert.match(html, /id="round-six-market-schedule-notice"/);
     assert.match(html, /Nova regra de escalação nos playoffs/);
     assert.match(html, /até <strong>3 jogadores da mesma equipe real<\/strong>/);
-    assert.match(html, /Ascensão[\s\S]*29\/08\/2026, às 14h35 \(Brasília\)/);
-    assert.match(html, /Elite[\s\S]*30\/08\/2026, às 14h35 \(Brasília\)/);
+    assert.match(html, /Elite e Ascensão[\s\S]*29\/08\/2026, às 12h \(Brasília\)/);
+    assert.doesNotMatch(html, /14h35|30\/08\/2026/);
     assert.doesNotMatch(html, /round-five-market-schedule-notice/);
     assert.doesNotMatch(html, /round-two-notice|round-three-nkz-notice/);
   }
