@@ -64,5 +64,6 @@ test("escala YELLOW como MID titular da FAINA e mantém JUNINHO na reserva", () 
     { id: reserve?.id, role: reserve?.role, mainRole: reserve?.mainRole },
     { id: "c05b26b2-9b56-4689-8b19-39341aa01034", role: "SUB", mainRole: "MID" }
   );
+  assert.equal(team.players.filter((player) => player.name === "YELLOW").length, 1);
   assert.equal(new Set(team.players.map((player) => player.id)).size, team.players.length);
 });

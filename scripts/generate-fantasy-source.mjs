@@ -26,6 +26,13 @@ const FANTASY_STARTER_OVERRIDES = Object.freeze({
 });
 const PRESERVE_DISPLACED_STARTER_AS_RESERVE = new Set(["ascension:A1:MID"]);
 
+const FANTASY_ROSTER_EXCLUSIONS = Object.freeze({
+  ascension: Object.freeze({
+    // Cadastro legado da mesma identidade competitiva do YELLOW.
+    A1: Object.freeze(["069bc73a-9c08-4d27-9998-f4d3973a17ce"])
+  })
+});
+
 const ROUND_FIVE_PARTICIPANT_OVERRIDES = Object.freeze({
   elite: Object.freeze({
     p2m1: Object.freeze({ home: "A2", away: "D4" }),
@@ -255,7 +262,8 @@ function buildFantasyRoster({ division, slot, team, statsDivision }) {
       players.push({ ...displacedStarter, role: "SUB", mainRole: role });
     }
   }
-  return players;
+  const excludedPlayerIds = new Set(FANTASY_ROSTER_EXCLUSIONS[division]?.[slot] || []);
+  return players.filter((player) => !excludedPlayerIds.has(String(player.id)));
 }
 
 function brazilDateToIso(date, time, year) {
