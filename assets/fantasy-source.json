@@ -15502,11 +15502,11 @@
               "captain": false
             },
             {
-              "id": "c05b26b2-9b56-4689-8b19-39341aa01034",
-              "name": "JUNINHO",
+              "id": "8b0bb211-5bfd-46c2-819f-161c22c494d6",
+              "name": "YELLOW",
               "role": "MID",
-              "riotId": "JuninhoLegal#br1",
-              "opgg": "https://op.gg/pt/lol/summoners/br/JuninhoLegal-br1",
+              "riotId": "king of yellow#7178",
+              "opgg": "https://op.gg/pt/lol/summoners/br/king%20of%20yellow-7178",
               "captain": false
             },
             {
@@ -15526,15 +15526,6 @@
               "captain": true
             },
             {
-              "id": "8b0bb211-5bfd-46c2-819f-161c22c494d6",
-              "name": "PITISA",
-              "role": "SUB",
-              "mainRole": "MID",
-              "riotId": "Blue PitisaMemes#001",
-              "opgg": "https://op.gg/pt/lol/summoners/br/Blue%20PitisaMemes-001",
-              "captain": false
-            },
-            {
               "id": "dce34e4e-90b8-4cf4-a792-432678ad9e16",
               "name": "SAVE",
               "role": "SUB",
@@ -15551,6 +15542,15 @@
               "riotId": "king of yellow#7178",
               "opgg": "https://op.gg/pt/lol/summoners/br/king%20of%20yellow-7178",
               "captain": false
+            },
+            {
+              "id": "c05b26b2-9b56-4689-8b19-39341aa01034",
+              "name": "JUNINHO",
+              "role": "SUB",
+              "riotId": "JuninhoLegal#br1",
+              "opgg": "https://op.gg/pt/lol/summoners/br/JuninhoLegal-br1",
+              "captain": false,
+              "mainRole": "MID"
             }
           ]
         },

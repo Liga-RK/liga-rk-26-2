@@ -32,6 +32,7 @@ const FANTASY_LIVE_STARTER_OVERRIDES = Object.freeze({
     D1: Object.freeze({ TOP: "ee09cf39-13a1-4268-a363-dbd28955437b" })
   }),
   ascension: Object.freeze({
+    A1: Object.freeze({ MID: "8b0bb211-5bfd-46c2-819f-161c22c494d6" }),
     C2: Object.freeze({
       ADC: "2594034c-9394-4b79-8b59-dedbf66482e5",
       SUP: "745a0ee6-ebda-4170-a095-68565c5f425b"

@@ -17,12 +17,14 @@ const FANTASY_STARTER_OVERRIDES = Object.freeze({
     D1: Object.freeze({ TOP: "ee09cf39-13a1-4268-a363-dbd28955437b" })
   }),
   ascension: Object.freeze({
+    A1: Object.freeze({ MID: "8b0bb211-5bfd-46c2-819f-161c22c494d6" }),
     C2: Object.freeze({
       ADC: "2594034c-9394-4b79-8b59-dedbf66482e5",
       SUP: "745a0ee6-ebda-4170-a095-68565c5f425b"
     })
   })
 });
+const PRESERVE_DISPLACED_STARTER_AS_RESERVE = new Set(["ascension:A1:MID"]);
 
 const ROUND_FIVE_PARTICIPANT_OVERRIDES = Object.freeze({
   elite: Object.freeze({
@@ -233,15 +235,25 @@ function buildFantasyRoster({ division, slot, team, statsDivision }) {
     }
     const replacement = {
       id: playerId,
-      name: statsPlayer.displayName,
+      name: String(statsPlayer.displayName || "").toUpperCase(),
       role,
       riotId: statsPlayer.riotId || "",
       opgg: statsPlayer.opgg || "",
       captain: false
     };
-    const starterIndex = players.findIndex((player) => player.role === role);
+    let starterIndex = players.findIndex((player) => player.role === role);
+    const displacedStarter = starterIndex >= 0 ? { ...players[starterIndex] } : null;
+    const existingTargetIndex = players.findIndex((player) => String(player.id) === playerId);
+    if (existingTargetIndex >= 0 && existingTargetIndex !== starterIndex) {
+      players.splice(existingTargetIndex, 1);
+      if (existingTargetIndex < starterIndex) starterIndex -= 1;
+    }
     if (starterIndex >= 0) players.splice(starterIndex, 1, replacement);
     else players.unshift(replacement);
+    if (displacedStarter && displacedStarter.id !== playerId
+      && PRESERVE_DISPLACED_STARTER_AS_RESERVE.has(`${division}:${slot}:${role}`)) {
+      players.push({ ...displacedStarter, role: "SUB", mainRole: role });
+    }
   }
   return players;
 }
