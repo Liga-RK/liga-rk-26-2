@@ -114,6 +114,7 @@
     teamLimitDialog: document.getElementById("team-limit-dialog"),
     closeTeamLimitDialog: document.getElementById("close-team-limit-dialog"),
     confirmTeamLimitDialog: document.getElementById("confirm-team-limit-dialog"),
+    teamLimitTitle: document.getElementById("team-limit-title"),
     teamLimitMessage: document.getElementById("team-limit-message"),
     teamLimitPlayers: document.getElementById("team-limit-players"),
     calculationDialog: document.getElementById("calculation-dialog"),
@@ -1736,6 +1737,7 @@
 
   function openTeamLimitDialog(item, sameTeamPlayers) {
     const teamName = cleanText(item.teamName) || cleanText(item.teamTag) || "essa equipe";
+    el.teamLimitTitle.textContent = `Máximo de ${config.maxPlayersPerRealTeam} jogadores`;
     el.teamLimitMessage.textContent = `Você não pode escalar ${item.name}, pois o limite de ${config.maxPlayersPerRealTeam} jogadores da equipe ${teamName} já foi atingido.`;
     el.teamLimitPlayers.replaceChildren(...sameTeamPlayers.map((player) => {
       const entry = document.createElement("li");
@@ -2382,6 +2384,8 @@
       const payload = await response.json().catch(() => ({}));
       const rules = payload.rules || payload.data?.rules || {};
       const patrimony = payload.patrimony || payload.data?.patrimony || null;
+      const maxPlayersPerRealTeam = Math.trunc(Number(rules.maxPlayersPerRealTeam));
+      if (maxPlayersPerRealTeam >= 1) config.maxPlayersPerRealTeam = maxPlayersPerRealTeam;
       if (division === state.division && Number.isFinite(Number(rules.budget))) {
         config.budget = roundMoney(rules.budget);
       }

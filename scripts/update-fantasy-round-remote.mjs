@@ -872,6 +872,13 @@ function normalizeReserveName(value) {
 }
 
 async function prepareMarketRound(targetRoundNumber) {
+  const playoffRoundExpectations = {
+    4: { matchesPerDivision: 4, statuses: { playing: 8, "qualified-next-round": 4, eliminated: 4 } },
+    5: { matchesPerDivision: 4, statuses: { playing: 8, eliminated: 8 } },
+    6: { matchesPerDivision: 2, statuses: { playing: 4, eliminated: 12 } }
+  };
+  const expectation = playoffRoundExpectations[targetRoundNumber];
+  if (!expectation) throw new Error(`A preparação automática não está configurada para a rodada ${targetRoundNumber}.`);
   const rounds = await DB.prepare(`
     SELECT id, division, round_number AS roundNumber, name, status,
            eligibility_json AS eligibilityJson
@@ -891,16 +898,18 @@ async function prepareMarketRound(targetRoundNumber) {
   `).bind(targetRoundNumber).all();
   for (const division of ["ascension", "elite"]) {
     const divisionMatches = (matches.results || []).filter((match) => match.division === division);
-    if (divisionMatches.length !== 4) throw new Error(`${division} precisa ter quatro confrontos na rodada ${targetRoundNumber}.`);
+    if (divisionMatches.length !== expectation.matchesPerDivision) {
+      throw new Error(`${division} precisa ter ${expectation.matchesPerDivision} confrontos na rodada ${targetRoundNumber}.`);
+    }
     const round = (rounds.results || []).find((item) => item.division === division);
     const statuses = JSON.parse(round.eligibilityJson || "{}").teamStatuses || {};
     const counts = Object.values(statuses).reduce((summary, status) => {
       summary[status] = (summary[status] || 0) + 1;
       return summary;
     }, {});
-    const eligibilityValid = targetRoundNumber === 4
-      ? counts.playing === 8 && counts["qualified-next-round"] === 4 && counts.eliminated === 4
-      : counts.playing === 8 && !counts["qualified-next-round"] && counts.eliminated === 8;
+    const eligibilityValid = Object.entries(expectation.statuses)
+      .every(([status, count]) => Number(counts[status] || 0) === count)
+      && Object.keys(counts).every((status) => status in expectation.statuses);
     if (!eligibilityValid) {
       throw new Error(`A elegibilidade dos playoffs não confere em ${division}.`);
     }

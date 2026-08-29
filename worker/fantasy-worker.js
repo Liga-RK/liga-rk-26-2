@@ -36,7 +36,11 @@ var INITIAL_PATRIMONY = patrimonyV2.PATRIMONY_CONFIG.initialPatrimony;
 var PATRIMONY_FORMULA_ID = patrimonyV2.PATRIMONY_FORMULA_ID;
 var summarizeParticipantPatrimony = patrimonyV2.summarizeParticipantPatrimony;
 var BUDGET_LIMIT = INITIAL_PATRIMONY;
-var MAX_PLAYERS_PER_REAL_TEAM = 2;
+var DEFAULT_MAX_PLAYERS_PER_REAL_TEAM = 2;
+var SEMIFINAL_MAX_PLAYERS_PER_REAL_TEAM = 3;
+var maxPlayersPerRealTeamForRound = __name((round) => Math.trunc(Number(round?.round_number || round?.roundNumber || 0)) >= 6
+  ? SEMIFINAL_MAX_PLAYERS_PER_REAL_TEAM
+  : DEFAULT_MAX_PLAYERS_PER_REAL_TEAM, "maxPlayersPerRealTeamForRound");
 var DRAFT_PREDICTION_CONFIG = draftPrediction.DRAFT_PREDICTION_CONFIG;
 var lockDraftPrediction = draftPrediction.lockDraftPrediction;
 var CHAMPION_CATALOG = championCatalog.CHAMPION_CATALOG;
@@ -438,7 +442,7 @@ async function getConfig(request, env) {
     round: compatibleRound,
     market: visibleMarketState,
     patrimony,
-    rules: { budget, initialPatrimony: INITIAL_PATRIMONY, patrimonyFormulaVersion: PATRIMONY_FORMULA_ID, maxPlayersPerRealTeam: 2, captainMultiplier: 1.5, requiredRoles: ROLES }
+    rules: { budget, initialPatrimony: INITIAL_PATRIMONY, patrimonyFormulaVersion: PATRIMONY_FORMULA_ID, maxPlayersPerRealTeam: maxPlayersPerRealTeamForRound(round), captainMultiplier: 1.5, requiredRoles: ROLES }
   }, 200, request, env);
 }
 __name(getConfig, "getConfig");
@@ -581,7 +585,8 @@ async function getMarket(request, env) {
     division,
     performanceRoundNumber,
     market,
-    marketState: marketStateForUser(marketState, user, env, round)
+    marketState: marketStateForUser(marketState, user, env, round),
+    rules: { maxPlayersPerRealTeam: maxPlayersPerRealTeamForRound(round) }
   }, 200, request, env);
 }
 __name(getMarket, "getMarket");
@@ -763,7 +768,8 @@ async function saveCurrentLineup(request, env) {
   for (const row of marketRows.filter((item) => item.asset_type === "player")) {
     playerTeamCounts.set(row.team_slot, (playerTeamCounts.get(row.team_slot) || 0) + 1);
   }
-  if ([...playerTeamCounts.values()].some((count) => count > MAX_PLAYERS_PER_REAL_TEAM)) return json({ error: "Use no m\xE1ximo dois jogadores da mesma equipe real." }, 400, request, env);
+  const maxPlayersPerRealTeam = maxPlayersPerRealTeamForRound(round);
+  if ([...playerTeamCounts.values()].some((count) => count > maxPlayersPerRealTeam)) return json({ error: `Use no máximo ${maxPlayersPerRealTeam} jogadores da mesma equipe real.` }, 400, request, env);
   if (!marketRows.some((row) => row.asset_type === "player" && row.asset_id === captainId)) return json({ error: "O capit\xE3o deve ser um dos cinco jogadores." }, 400, request, env);
   const totalCost = roundMoney(marketRows.reduce((sum, row) => sum + Number(row.price), 0));
   const patrimony = await ensureParticipantPatrimony(env, user.id, division);
@@ -778,7 +784,7 @@ async function saveCurrentLineup(request, env) {
     if (marketRows.some((row) => row.asset_id === reserveRow.asset_id)) return json({ error: "O reserva n\xE3o pode ser um dos titulares." }, 400, request, env);
     const reserveBudget = reserveBudgetForPatrimony(marketRows, budget);
     if (Number(reserveRow.price) > reserveBudget + 1e-3) return json({ error: `Seu limite para reserva \xE9 RK$ ${formatMoney(reserveBudget)}.` }, 400, request, env);
-    if ((playerTeamCounts.get(reserveRow.team_slot) || 0) >= MAX_PLAYERS_PER_REAL_TEAM) return json({ error: "Escolha um reserva de uma equipe com no m\xE1ximo um jogador titular no seu time." }, 400, request, env);
+    if ((playerTeamCounts.get(reserveRow.team_slot) || 0) >= maxPlayersPerRealTeam) return json({ error: `Escolha um reserva de uma equipe com no máximo ${maxPlayersPerRealTeam - 1} jogadores titulares no seu time.` }, 400, request, env);
   }
   const lockedDraftPredictions = [];
   if (Number(round.round_number) >= DRAFT_PREDICTION_CONFIG.enabledFromRound) {

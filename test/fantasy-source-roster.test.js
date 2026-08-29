@@ -48,3 +48,22 @@ test("escala KAISER e BURRAXA na rota inferior da Favelinha", () => {
   assert.equal(team.players.some((player) => player.name === "PEN DRIVE"), false);
   assert.equal(new Set(team.players.map((player) => player.id)).size, team.players.length);
 });
+
+test("escala YELLOW como MID titular da FAINA e mantém JUNINHO na reserva", () => {
+  const team = source.divisions.ascension.teams.find((item) => item.slot === "A1");
+  assert.ok(team, "FAINA precisa existir na fonte do Fantasy");
+
+  const starter = team.players.find((player) => player.role === "MID");
+  assert.deepEqual(
+    { id: starter?.id, name: starter?.name },
+    { id: "8b0bb211-5bfd-46c2-819f-161c22c494d6", name: "YELLOW" }
+  );
+
+  const reserve = team.players.find((player) => player.name === "JUNINHO");
+  assert.deepEqual(
+    { id: reserve?.id, role: reserve?.role, mainRole: reserve?.mainRole },
+    { id: "c05b26b2-9b56-4689-8b19-39341aa01034", role: "SUB", mainRole: "MID" }
+  );
+  assert.equal(team.players.filter((player) => player.name === "YELLOW").length, 1);
+  assert.equal(new Set(team.players.map((player) => player.id)).size, team.players.length);
+});
