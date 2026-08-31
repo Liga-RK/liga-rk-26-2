@@ -1,6 +1,6 @@
 window.LIGA_RK_STATS = {
   "version": 2,
-  "generatedAt": "2026-08-31T00:33:31.979Z",
+  "generatedAt": "2026-08-31T00:37:53.656Z",
   "season": "Liga RK 26.2",
   "divisions": {
     "elite": {
@@ -76226,32 +76226,32 @@ window.LIGA_RK_STATS = {
       ],
       "teamOfWeek": {
         "round": 0,
-        "stage": "QUARTAS",
-        "label": "QUARTAS DE FINAL",
+        "stage": "SEMIFINAL",
+        "label": "SEMIFINAIS",
         "minimumGames": 2,
         "selection": [
           {
             "role": "TOP",
-            "playerId": "18387a0b-de6f-42d5-8030-e2d040259380",
-            "player": "BOLOTA",
-            "riotId": "Bolota#3057",
+            "playerId": "e716f2c0-24c9-4aac-a6ff-a3e14b8a61c0",
+            "player": "ROSA",
+            "riotId": "MACHINE GIRL#自我宽恕1",
             "image": "",
-            "team": "C4",
-            "teamName": "CASHOUT & TRIMILIQUE LTDA",
-            "teamTag": "CASH",
-            "teamLogo": "assets/uploads/equipes_elite/cash.png",
-            "averageScore": 91.79,
+            "team": "A2",
+            "teamName": "BANDO DO ROSA",
+            "teamTag": "BDR",
+            "teamLogo": "assets/uploads/equipes_elite/bdr.png",
+            "averageScore": 92.03,
             "games": 3,
             "wins": 3,
             "losses": 0,
             "seriesWins": 1,
             "series": [
-              "playoffs-p2m3"
+              "playoffs-p3m1"
             ],
             "matches": [
-              "playoffs-p2m3-j1",
-              "playoffs-p2m3-j2",
-              "playoffs-p2m3-j3"
+              "playoffs-p3m1-j1",
+              "playoffs-p3m1-j2",
+              "playoffs-p3m1-j3"
             ]
           },
           {
@@ -76264,43 +76264,42 @@ window.LIGA_RK_STATS = {
             "teamName": "CUPULA DO TRIPLE T",
             "teamTag": "TTT",
             "teamLogo": "assets/uploads/equipes_elite/ttt.png",
-            "averageScore": 86.14,
-            "games": 4,
-            "wins": 3,
-            "losses": 1,
-            "seriesWins": 1,
-            "series": [
-              "playoffs-p2m4"
-            ],
-            "matches": [
-              "playoffs-p2m4-j1",
-              "playoffs-p2m4-j2",
-              "playoffs-p2m4-j3",
-              "playoffs-p2m4-j4"
-            ]
-          },
-          {
-            "role": "MID",
-            "playerId": "a89f54a2-ff64-4647-8738-95c802959a50",
-            "player": "ESTRUPICIO",
-            "riotId": "estrupicio#원숭이",
-            "image": "",
-            "team": "C4",
-            "teamName": "CASHOUT & TRIMILIQUE LTDA",
-            "teamTag": "CASH",
-            "teamLogo": "assets/uploads/equipes_elite/cash.png",
-            "averageScore": 88.23,
+            "averageScore": 85.57,
             "games": 3,
             "wins": 3,
             "losses": 0,
             "seriesWins": 1,
             "series": [
-              "playoffs-p2m3"
+              "playoffs-p3m2"
             ],
             "matches": [
-              "playoffs-p2m3-j1",
-              "playoffs-p2m3-j2",
-              "playoffs-p2m3-j3"
+              "playoffs-p3m2-j1",
+              "playoffs-p3m2-j2",
+              "playoffs-p3m2-j3"
+            ]
+          },
+          {
+            "role": "MID",
+            "playerId": "9392f3eb-5e8b-4059-874e-905daba68b36",
+            "player": "RYUU",
+            "riotId": "Klein Moretti 小丑#Ryuu",
+            "image": "",
+            "team": "A2",
+            "teamName": "BANDO DO ROSA",
+            "teamTag": "BDR",
+            "teamLogo": "assets/uploads/equipes_elite/bdr.png",
+            "averageScore": 94.72,
+            "games": 3,
+            "wins": 3,
+            "losses": 0,
+            "seriesWins": 1,
+            "series": [
+              "playoffs-p3m1"
+            ],
+            "matches": [
+              "playoffs-p3m1-j1",
+              "playoffs-p3m1-j2",
+              "playoffs-p3m1-j3"
             ]
           },
           {
@@ -76313,19 +76312,18 @@ window.LIGA_RK_STATS = {
             "teamName": "CUPULA DO TRIPLE T",
             "teamTag": "TTT",
             "teamLogo": "assets/uploads/equipes_elite/ttt.png",
-            "averageScore": 80.64,
-            "games": 4,
+            "averageScore": 85.15,
+            "games": 3,
             "wins": 3,
-            "losses": 1,
+            "losses": 0,
             "seriesWins": 1,
             "series": [
-              "playoffs-p2m4"
+              "playoffs-p3m2"
             ],
             "matches": [
-              "playoffs-p2m4-j1",
-              "playoffs-p2m4-j2",
-              "playoffs-p2m4-j3",
-              "playoffs-p2m4-j4"
+              "playoffs-p3m2-j1",
+              "playoffs-p3m2-j2",
+              "playoffs-p3m2-j3"
             ]
           },
           {
@@ -76338,25 +76336,24 @@ window.LIGA_RK_STATS = {
             "teamName": "CUPULA DO TRIPLE T",
             "teamTag": "TTT",
             "teamLogo": "assets/uploads/equipes_elite/ttt.png",
-            "averageScore": 90.07,
-            "games": 4,
+            "averageScore": 89.25,
+            "games": 3,
             "wins": 3,
-            "losses": 1,
+            "losses": 0,
             "seriesWins": 1,
             "series": [
-              "playoffs-p2m4"
+              "playoffs-p3m2"
             ],
             "matches": [
-              "playoffs-p2m4-j1",
-              "playoffs-p2m4-j2",
-              "playoffs-p2m4-j3",
-              "playoffs-p2m4-j4"
+              "playoffs-p3m2-j1",
+              "playoffs-p3m2-j2",
+              "playoffs-p3m2-j3"
             ]
           }
         ],
-        "highlightPlayerId": "18387a0b-de6f-42d5-8030-e2d040259380",
-        "highlightRole": "TOP",
-        "highlightScore": 91.79
+        "highlightPlayerId": "9392f3eb-5e8b-4059-874e-905daba68b36",
+        "highlightRole": "MID",
+        "highlightScore": 94.72
       }
     },
     "ascension": {
@@ -164483,33 +164480,33 @@ window.LIGA_RK_STATS = {
       ],
       "teamOfWeek": {
         "round": 0,
-        "stage": "QUARTAS",
-        "label": "QUARTAS DE FINAL",
+        "stage": "SEMIFINAL",
+        "label": "SEMIFINAIS",
         "minimumGames": 2,
         "selection": [
           {
             "role": "TOP",
-            "playerId": "b90cfd3f-be97-4c2a-97ff-669620611892",
-            "player": "ALLANZÃO",
-            "riotId": "CTG Brasil ILS#CTGBR",
+            "playerId": "c49312d8-3672-4654-9790-a9cad7f59937",
+            "player": "KAUAN",
+            "riotId": "Red KauanMemes#BA1",
             "image": "",
-            "team": "C4",
-            "teamName": "THE KILLERS T7",
-            "teamTag": "TKT7",
-            "teamLogo": "assets/uploads/equipes_ascensao/tkt7.png",
-            "averageScore": 91.55,
+            "team": "A1",
+            "teamName": "FAINA",
+            "teamTag": "FIN",
+            "teamLogo": "assets/uploads/equipes_ascensao/fin.png",
+            "averageScore": 80.77,
             "games": 4,
             "wins": 3,
             "losses": 1,
             "seriesWins": 1,
             "series": [
-              "playoffs-p2m3"
+              "playoffs-p3m1"
             ],
             "matches": [
-              "playoffs-p2m3-j1",
-              "playoffs-p2m3-j2",
-              "playoffs-p2m3-j3",
-              "playoffs-p2m3-j4"
+              "playoffs-p3m1-j1",
+              "playoffs-p3m1-j2",
+              "playoffs-p3m1-j3",
+              "playoffs-p3m1-j4"
             ]
           },
           {
@@ -164522,98 +164519,101 @@ window.LIGA_RK_STATS = {
             "teamName": "FAINA",
             "teamTag": "FIN",
             "teamLogo": "assets/uploads/equipes_ascensao/fin.png",
-            "averageScore": 86.94,
-            "games": 3,
+            "averageScore": 85.04,
+            "games": 4,
             "wins": 3,
-            "losses": 0,
+            "losses": 1,
             "seriesWins": 1,
             "series": [
-              "playoffs-p2m1"
+              "playoffs-p3m1"
             ],
             "matches": [
-              "playoffs-p2m1-j1",
-              "playoffs-p2m1-j2",
-              "playoffs-p2m1-j3"
+              "playoffs-p3m1-j1",
+              "playoffs-p3m1-j2",
+              "playoffs-p3m1-j3",
+              "playoffs-p3m1-j4"
             ]
           },
           {
             "role": "MID",
-            "playerId": "6aa73999-3861-4c5e-95a7-d629b6bc501f",
-            "player": "PEDRIN",
-            "riotId": "Pedrin UwU#br1",
-            "image": "",
-            "team": "C4",
-            "teamName": "THE KILLERS T7",
-            "teamTag": "TKT7",
-            "teamLogo": "assets/uploads/equipes_ascensao/tkt7.png",
-            "averageScore": 88.04,
-            "games": 4,
-            "wins": 3,
-            "losses": 1,
-            "seriesWins": 1,
-            "series": [
-              "playoffs-p2m3"
-            ],
-            "matches": [
-              "playoffs-p2m3-j1",
-              "playoffs-p2m3-j2",
-              "playoffs-p2m3-j3",
-              "playoffs-p2m3-j4"
-            ]
-          },
-          {
-            "role": "ADC",
-            "playerId": "51a488ff-00e3-4710-8289-3b87882f9946",
-            "player": "AKY",
-            "riotId": "Aky#2666",
-            "image": "",
-            "team": "D4",
-            "teamName": "INAZUMA V",
-            "teamTag": "INZ",
-            "teamLogo": "assets/uploads/equipes_ascensao/inz.png",
-            "averageScore": 87.57,
-            "games": 4,
-            "wins": 3,
-            "losses": 1,
-            "seriesWins": 1,
-            "series": [
-              "playoffs-p2m2"
-            ],
-            "matches": [
-              "playoffs-p2m2-j1",
-              "playoffs-p2m2-j2",
-              "playoffs-p2m2-j3",
-              "playoffs-p2m2-j4"
-            ]
-          },
-          {
-            "role": "SUP",
-            "playerId": "013c58e9-130d-4c36-bbf3-1a2e4b8a82a2",
-            "player": "ZAHIR",
-            "riotId": "Zähir#keria",
+            "playerId": "069bc73a-9c08-4d27-9998-f4d3973a17ce",
+            "player": "YELLOW",
+            "riotId": "king of yellow#7178",
             "image": "",
             "team": "A1",
             "teamName": "FAINA",
             "teamTag": "FIN",
             "teamLogo": "assets/uploads/equipes_ascensao/fin.png",
-            "averageScore": 85.86,
+            "averageScore": 80.66,
             "games": 3,
-            "wins": 3,
-            "losses": 0,
+            "wins": 2,
+            "losses": 1,
             "seriesWins": 1,
             "series": [
-              "playoffs-p2m1"
+              "playoffs-p3m1"
             ],
             "matches": [
-              "playoffs-p2m1-j1",
-              "playoffs-p2m1-j2",
-              "playoffs-p2m1-j3"
+              "playoffs-p3m1-j1",
+              "playoffs-p3m1-j2",
+              "playoffs-p3m1-j3"
+            ]
+          },
+          {
+            "role": "ADC",
+            "playerId": "683b5d91-4778-4fb2-963d-5ff30dc2f763",
+            "player": "ERICK",
+            "riotId": "FVLR DA MORTE#PRET",
+            "image": "",
+            "team": "D3",
+            "teamName": "RAISING DRAGONS",
+            "teamTag": "RDG",
+            "teamLogo": "assets/uploads/equipes_ascensao/rdg.png",
+            "averageScore": 83.03,
+            "games": 5,
+            "wins": 3,
+            "losses": 2,
+            "seriesWins": 1,
+            "series": [
+              "playoffs-p3m2"
+            ],
+            "matches": [
+              "playoffs-p3m2-j1",
+              "playoffs-p3m2-j2",
+              "playoffs-p3m2-j3",
+              "playoffs-p3m2-j4",
+              "playoffs-p3m2-j5"
+            ]
+          },
+          {
+            "role": "SUP",
+            "playerId": "d9b48adc-0878-4579-9fdb-c6c2b45bdf04",
+            "player": "GABS MATTOS",
+            "riotId": "Gabs Mattos#GABS",
+            "image": "",
+            "team": "D3",
+            "teamName": "RAISING DRAGONS",
+            "teamTag": "RDG",
+            "teamLogo": "assets/uploads/equipes_ascensao/rdg.png",
+            "averageScore": 84.22,
+            "games": 5,
+            "wins": 3,
+            "losses": 2,
+            "seriesWins": 1,
+            "series": [
+              "playoffs-p3m2"
+            ],
+            "matches": [
+              "playoffs-p3m2-j1",
+              "playoffs-p3m2-j2",
+              "playoffs-p3m2-j3",
+              "playoffs-p3m2-j4",
+              "playoffs-p3m2-j5"
             ]
           }
         ],
-        "highlightPlayerId": "b90cfd3f-be97-4c2a-97ff-669620611892",
-        "highlightRole": "TOP",
-        "highlightScore": 91.55
+        "highlightPlayerId": "a64d4d3e-ec51-4b36-8570-8a5fd9124e39",
+        "highlightRole": "JG",
+        "highlightScore": 85.04
       }
     }
   }
