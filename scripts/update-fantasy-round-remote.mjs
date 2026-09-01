@@ -875,7 +875,8 @@ async function prepareMarketRound(targetRoundNumber) {
   const playoffRoundExpectations = {
     4: { matchesPerDivision: 4, statuses: { playing: 8, "qualified-next-round": 4, eliminated: 4 } },
     5: { matchesPerDivision: 4, statuses: { playing: 8, eliminated: 8 } },
-    6: { matchesPerDivision: 2, statuses: { playing: 4, eliminated: 12 } }
+    6: { matchesPerDivision: 2, statuses: { playing: 4, eliminated: 12 } },
+    7: { matchesPerDivision: 1, statuses: { playing: 2, eliminated: 14 } }
   };
   const expectation = playoffRoundExpectations[targetRoundNumber];
   if (!expectation) throw new Error(`A preparação automática não está configurada para a rodada ${targetRoundNumber}.`);

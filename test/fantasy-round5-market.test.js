@@ -21,6 +21,11 @@ const expectedSemifinals = {
   ascension: ["A1:D4", "C4:D3"]
 };
 
+const expectedFinals = {
+  elite: ["A2:A1"],
+  ascension: ["A1:D3"]
+};
+
 test("Rodada 5 contém as quartas corretas e oito equipes elegíveis por divisão", () => {
   for (const division of ["elite", "ascension"]) {
     const round = source.divisions[division].rounds.find((item) => item.roundNumber === 5);
@@ -44,6 +49,19 @@ test("Rodada 6 contém as semifinais corretas e quatro equipes elegíveis por di
     const statuses = Object.values(round.eligibility.teamStatuses);
     assert.equal(statuses.filter((status) => status === "playing").length, 4);
     assert.equal(statuses.filter((status) => status === "eliminated").length, 12);
+  }
+});
+
+test("Rodada 7 contém as finais corretas e duas equipes elegíveis por divisão", () => {
+  for (const division of ["elite", "ascension"]) {
+    const round = source.divisions[division].rounds.find((item) => item.roundNumber === 7);
+    assert.ok(round, `Rodada 7 ausente em ${division}`);
+    assert.equal(round.name, "RODADA 7 · GRANDE FINAL");
+    assert.deepEqual(round.matches.map((match) => `${match.homeTeamSlot}:${match.awayTeamSlot}`), expectedFinals[division]);
+    assert.ok(round.matches.every((match) => match.format === "MD5" && match.stage === "playoffs-final"));
+    const statuses = Object.values(round.eligibility.teamStatuses);
+    assert.equal(statuses.filter((status) => status === "playing").length, 2);
+    assert.equal(statuses.filter((status) => status === "eliminated").length, 14);
   }
 });
 
@@ -89,6 +107,7 @@ test("manutenção oferece fechamento auditado e abertura pública", () => {
 
 test("preparação remota reconhece duas semifinais e quatro equipes elegíveis", () => {
   assert.match(maintenance, /6: \{ matchesPerDivision: 2, statuses: \{ playing: 4, eliminated: 12 \} \}/);
+  assert.match(maintenance, /7: \{ matchesPerDivision: 1, statuses: \{ playing: 2, eliminated: 14 \} \}/);
   assert.match(maintenance, /expectation\.matchesPerDivision/);
   assert.match(maintenance, /expectation\.statuses/);
 });

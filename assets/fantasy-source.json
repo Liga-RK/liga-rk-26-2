@@ -1601,6 +1601,52 @@
               "winnerTeamId": "team:elite:A1"
             }
           ]
+        },
+        {
+          "id": "elite-r7",
+          "roundNumber": 7,
+          "name": "RODADA 7 · GRANDE FINAL",
+          "eligibility": {
+            "teamStatuses": {
+              "A1": "playing",
+              "A2": "playing",
+              "A3": "eliminated",
+              "A4": "eliminated",
+              "B1": "eliminated",
+              "B2": "eliminated",
+              "B3": "eliminated",
+              "B4": "eliminated",
+              "C1": "eliminated",
+              "C2": "eliminated",
+              "C3": "eliminated",
+              "C4": "eliminated",
+              "D1": "eliminated",
+              "D2": "eliminated",
+              "D3": "eliminated",
+              "D4": "eliminated"
+            }
+          },
+          "matches": [
+            {
+              "id": "schedule:elite:p4m1",
+              "sourceId": "p4m1",
+              "statsSeriesId": "playoffs-p4m1",
+              "stage": "playoffs-final",
+              "orderIndex": 0,
+              "homeTeamSeed": "VENCEDOR SEMI 1",
+              "awayTeamSeed": "VENCEDOR SEMI 2",
+              "homeTeamSlot": "A2",
+              "awayTeamSlot": "A1",
+              "homeTeamName": "BANDO DO ROSA",
+              "awayTeamName": "CUPULA DO TRIPLE T",
+              "startsAt": "2026-09-06T20:30:00.000Z",
+              "status": "scheduled",
+              "format": "MD5",
+              "homeScore": null,
+              "awayScore": null,
+              "winnerTeamId": null
+            }
+          ]
         }
       ],
       "stats": {
@@ -18219,6 +18265,52 @@
               "homeScore": 2,
               "awayScore": 3,
               "winnerTeamId": "team:ascension:D3"
+            }
+          ]
+        },
+        {
+          "id": "ascension-r7",
+          "roundNumber": 7,
+          "name": "RODADA 7 · GRANDE FINAL",
+          "eligibility": {
+            "teamStatuses": {
+              "A1": "playing",
+              "A2": "eliminated",
+              "A3": "eliminated",
+              "A4": "eliminated",
+              "B1": "eliminated",
+              "B2": "eliminated",
+              "B3": "eliminated",
+              "B4": "eliminated",
+              "C1": "eliminated",
+              "C2": "eliminated",
+              "C3": "eliminated",
+              "C4": "eliminated",
+              "D1": "eliminated",
+              "D2": "eliminated",
+              "D3": "playing",
+              "D4": "eliminated"
+            }
+          },
+          "matches": [
+            {
+              "id": "schedule:ascension:p4m1",
+              "sourceId": "p4m1",
+              "statsSeriesId": "playoffs-p4m1",
+              "stage": "playoffs-final",
+              "orderIndex": 0,
+              "homeTeamSeed": "VENCEDOR SEMI 1",
+              "awayTeamSeed": "VENCEDOR SEMI 2",
+              "homeTeamSlot": "A1",
+              "awayTeamSlot": "D3",
+              "homeTeamName": "FAINA",
+              "awayTeamName": "RAISING DRAGONS",
+              "startsAt": "2026-09-05T20:30:00.000Z",
+              "status": "scheduled",
+              "format": "MD5",
+              "homeScore": null,
+              "awayScore": null,
+              "winnerTeamId": null
             }
           ]
         }
