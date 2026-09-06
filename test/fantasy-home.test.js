@@ -188,19 +188,17 @@ test("Painel administrativo usa a conta Discord exclusiva e aparece somente para
   assert.match(adminScript, /\/api\/fantasy\/auth\/logout/);
 });
 
-test("Rodada 6 mostra a nova regra e os fechamentos das semifinais", () => {
+test("Rodada 7 não exibe avisos encerrados das semifinais", () => {
   for (const relativePath of pages) {
     const html = fs.readFileSync(path.join(root, relativePath), "utf8");
-    assert.match(html, /id="round-six-market-schedule-notice"/);
-    assert.match(html, /Nova regra de escalação nos playoffs/);
-    assert.match(html, /até <strong>3 jogadores da mesma equipe real<\/strong>/);
-    assert.match(html, /Elite e Ascensão[\s\S]*29\/08\/2026, às 12h \(Brasília\)/);
-    assert.doesNotMatch(html, /14h35|30\/08\/2026/);
+    assert.doesNotMatch(html, /round-six-market-schedule-notice|Rodada 6 · Semifinais/);
+    assert.doesNotMatch(html, /29\/08\/2026, às 12h \(Brasília\)/);
     assert.doesNotMatch(html, /round-five-market-schedule-notice/);
     assert.doesNotMatch(html, /round-two-notice|round-three-nkz-notice/);
+    assert.match(html, /A partir da Rodada 6, o limite passa a três jogadores/);
   }
   assert.doesNotMatch(script, /loadRoundTwoNotice|roundTwoNoticeDialog|roundTwoNoticeBusy/);
-  assert.match(styles, /\.market-deadline-list/);
+  assert.doesNotMatch(styles, /\.market-notice|\.market-deadline-list/);
 });
 
 test("limite por equipe passa de dois para três somente a partir da Rodada 6", () => {

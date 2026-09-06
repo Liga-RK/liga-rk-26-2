@@ -289,7 +289,11 @@ function buildPlayoffRounds(context) {
   const quarterfinals = buildQuarterfinalRound({ ...context, firstRound });
   if (!quarterfinals) return [firstRound];
   const semifinals = buildSemifinalRound({ ...context, quarterfinals });
-  return semifinals ? [firstRound, quarterfinals, semifinals] : [firstRound, quarterfinals];
+  if (!semifinals) return [firstRound, quarterfinals];
+  const final = buildFinalRound({ ...context, semifinals });
+  return final
+    ? [firstRound, quarterfinals, semifinals, final]
+    : [firstRound, quarterfinals, semifinals];
 }
 
 function buildFirstPlayoffRound({ division, dataDivision, contentDivision, statsDivision, teamBySlot, standings }) {
@@ -463,6 +467,63 @@ function buildSemifinalRound({ division, dataDivision, contentDivision, statsDiv
     id: `${division}-r6`,
     roundNumber: 6,
     name: "RODADA 6 · SEMIFINAIS",
+    eligibility: { teamStatuses },
+    matches
+  };
+}
+
+function buildFinalRound({ division, dataDivision, contentDivision, statsDivision, teamBySlot, standings, semifinals }) {
+  const playoffMatches = dataDivision.playoffs?.[3] || [];
+  if (!playoffMatches.length) return null;
+  const matches = playoffMatches.map((match, matchIndex) => {
+    const sourceId = `p4m${matchIndex + 1}`;
+    const homeTeamSeed = String(match.teamA || "").toUpperCase();
+    const awayTeamSeed = String(match.teamB || "").toUpperCase();
+    const homeTeamSlot = resolvePlayoffParticipant(standings, semifinals, homeTeamSeed, "SEMI");
+    const awayTeamSlot = resolvePlayoffParticipant(standings, semifinals, awayTeamSeed, "SEMI");
+    const liveSchedule = contentDivision.playoffResults?.[sourceId] || {};
+    const statMatches = (statsDivision.matches || [])
+      .filter((item) => item.seriesId === `playoffs-${sourceId}`);
+    const wins = new Map();
+    for (const statMatch of statMatches) {
+      if (statMatch.winnerSlot) wins.set(statMatch.winnerSlot, (wins.get(statMatch.winnerSlot) || 0) + 1);
+    }
+    const homeScore = statMatches.length ? wins.get(homeTeamSlot) || 0 : null;
+    const awayScore = statMatches.length ? wins.get(awayTeamSlot) || 0 : null;
+    const format = String(match.format || "MD5").toUpperCase();
+    const winTarget = format === "MD5" ? 3 : 2;
+    const completed = Math.max(homeScore || 0, awayScore || 0) >= winTarget;
+    const winnerSlot = completed && homeScore !== awayScore
+      ? (homeScore > awayScore ? homeTeamSlot : awayTeamSlot)
+      : "";
+    return {
+      id: `schedule:${division}:${sourceId}`,
+      sourceId,
+      statsSeriesId: `playoffs-${sourceId}`,
+      stage: "playoffs-final",
+      orderIndex: matchIndex,
+      homeTeamSeed,
+      awayTeamSeed,
+      homeTeamSlot,
+      awayTeamSlot,
+      homeTeamName: teamBySlot.get(homeTeamSlot)?.name || "",
+      awayTeamName: teamBySlot.get(awayTeamSlot)?.name || "",
+      startsAt: brazilDateToIso(liveSchedule.date || match.date, liveSchedule.time || match.time, generatedYear),
+      status: completed ? "completed" : statMatches.length ? "live" : "scheduled",
+      format,
+      homeScore,
+      awayScore,
+      winnerTeamId: winnerSlot ? `team:${division}:${winnerSlot}` : null
+    };
+  });
+  const playing = new Set(matches.flatMap((match) => [match.homeTeamSlot, match.awayTeamSlot]).filter(Boolean));
+  const teamStatuses = Object.fromEntries(
+    Array.from(teamBySlot.keys()).map((slot) => [slot, playing.has(slot) ? "playing" : "eliminated"])
+  );
+  return {
+    id: `${division}-r7`,
+    roundNumber: 7,
+    name: "RODADA 7 · GRANDE FINAL",
     eligibility: { teamStatuses },
     matches
   };
