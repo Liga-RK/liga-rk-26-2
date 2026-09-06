@@ -88,9 +88,11 @@
           image: "assets/champions/Aatrox.jpg"
         },
         mostWins: {
-          title: "MAIS VITÓRIAS",
+          title: "MAIS VITORIOSO",
           champion: "AATROX",
           value: 0,
+          unit: "%",
+          minimumPicks: 5,
           image: "assets/champions/Aatrox.jpg"
         },
         playerStats: [
@@ -710,7 +712,7 @@
         <div class="editor-logo-preview wide">${renderImagePreview(stat.image, stat.champion)}</div>
         ${field("Título", `divisions.${key}.statistics.${statKey}.title`, stat.title, "MAIS ESCOLHAS")}
         ${field("Campeão", `divisions.${key}.statistics.${statKey}.champion`, stat.champion, "AATROX")}
-        ${field("Valor", `divisions.${key}.statistics.${statKey}.value`, stat.value, "0", "number")}
+        ${field(statKey === "mostWins" ? "Win rate (%)" : "Valor", `divisions.${key}.statistics.${statKey}.value`, stat.value, "0", "number")}
         ${field("Splash", `divisions.${key}.statistics.${statKey}.image`, stat.image, "assets/champions/Aatrox.jpg")}
       </article>
     `;

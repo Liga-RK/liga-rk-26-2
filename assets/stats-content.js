@@ -1,6 +1,6 @@
 window.LIGA_RK_STATS = {
   "version": 2,
-  "generatedAt": "2026-09-06T01:34:59.124Z",
+  "generatedAt": "2026-09-06T01:51:25.644Z",
   "season": "Liga RK 26.2",
   "divisions": {
     "elite": {
@@ -19,10 +19,14 @@ window.LIGA_RK_STATS = {
           "image": "assets/champions/Nautilus.jpg"
         },
         "mostWins": {
-          "title": "MAIS VITORIAS",
-          "champion": "AATROX",
-          "value": 11,
-          "image": "assets/champions/Aatrox.jpg"
+          "title": "MAIS VITORIOSO",
+          "champion": "ZAAHEN",
+          "value": 100,
+          "image": "assets/champions/Zaahen.jpg",
+          "unit": "%",
+          "minimumPicks": 5,
+          "picks": 6,
+          "wins": 6
         },
         "playerStats": [
           {
@@ -76372,10 +76376,14 @@ window.LIGA_RK_STATS = {
           "image": "assets/champions/Viktor.jpg"
         },
         "mostWins": {
-          "title": "MAIS VITORIAS",
-          "champion": "VIKTOR",
-          "value": 14,
-          "image": "assets/champions/Viktor.jpg"
+          "title": "MAIS VITORIOSO",
+          "champion": "DRMUNDO",
+          "value": 87.5,
+          "image": "assets/champions/DrMundo.jpg",
+          "unit": "%",
+          "minimumPicks": 5,
+          "picks": 8,
+          "wins": 7
         },
         "playerStats": [
           {

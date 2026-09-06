@@ -24,9 +24,11 @@ function createPlaceholderStatistics() {
       image: LIGA_RK_DEFAULT_CHAMPION_IMAGE
     },
     mostWins: {
-      title: "MAIS VITÓRIAS",
+      title: "MAIS VITORIOSO",
       champion: "AATROX",
       value: 0,
+      unit: "%",
+      minimumPicks: 5,
       image: LIGA_RK_DEFAULT_CHAMPION_IMAGE
     },
     playerStats: [

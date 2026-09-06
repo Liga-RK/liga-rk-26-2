@@ -9,6 +9,7 @@ const ACTIVE_TEAM_OF_WEEK = Object.freeze({
   ascension: Object.freeze({ stage: "SEMIFINAL", label: "SEMIFINAIS" })
 });
 const MIN_TEAM_OF_WEEK_GAMES = 2;
+const MIN_MOST_VICTORIOUS_PICKS = 5;
 const COMPETITIVE_LANES = ["TOP", "JG", "MID", "ADC", "SUP"];
 const PLAYER_IDENTITY_MERGES = Object.freeze({
   elite: Object.freeze({
@@ -1062,7 +1063,15 @@ function matchesTeamOfWeekPeriod(rating, period) {
 function buildHeadlineStatistics(players, champions) {
   if (!players.length || !champions.length) return null;
   const mostPicked = maxBy(champions, (champion) => champion.picks);
-  const mostWins = maxBy(champions, (champion) => champion.wins);
+  const mostVictorious = champions
+    .filter((champion) => value(champion.picks) >= MIN_MOST_VICTORIOUS_PICKS)
+    .slice()
+    .sort((left, right) => (
+      championWinRatePercent(right) - championWinRatePercent(left) ||
+      value(right.picks) - value(left.picks) ||
+      value(right.wins) - value(left.wins) ||
+      String(left.name || "").localeCompare(String(right.name || ""), "pt-BR")
+    ))[0] || null;
   const bestKda = maxBy(players, (player) => player.kda);
   const bestKp = maxBy(players, (player) => player.kp);
   const bestDpm = maxBy(players, (player) => player.dpm);
@@ -1070,7 +1079,12 @@ function buildHeadlineStatistics(players, champions) {
   const bestVision = maxBy(players, (player) => player.visionScoreAvg);
   return {
     mostPicked: headlineChampion("MAIS ESCOLHAS", mostPicked, mostPicked.picks),
-    mostWins: headlineChampion("MAIS VITORIAS", mostWins, mostWins.wins),
+    mostWins: headlineChampion("MAIS VITORIOSO", mostVictorious, championWinRatePercent(mostVictorious), {
+      unit: "%",
+      minimumPicks: MIN_MOST_VICTORIOUS_PICKS,
+      picks: mostVictorious ? mostVictorious.picks : 0,
+      wins: mostVictorious ? mostVictorious.wins : 0
+    }),
     playerStats: [
       headlinePlayer("MELHOR KDA", bestKda, bestKda.kda),
       headlinePlayer("MELHOR KP", bestKp, `${bestKp.kp}%`),
@@ -1081,8 +1095,20 @@ function buildHeadlineStatistics(players, champions) {
   };
 }
 
-function headlineChampion(title, champion, valueNumber) {
-  return { title, champion: String(champion.name || "").toUpperCase(), value: valueNumber, image: champion.image };
+function championWinRatePercent(champion) {
+  if (!champion) return 0;
+  return round(winRate(value(champion.wins), value(champion.picks)) * 100);
+}
+
+function headlineChampion(title, champion, valueNumber, metadata = {}) {
+  const safeChampion = champion || {};
+  return {
+    title,
+    champion: String(safeChampion.name || "").toUpperCase(),
+    value: valueNumber,
+    image: safeChampion.image || "",
+    ...metadata
+  };
 }
 
 function headlinePlayer(label, player, metric) {

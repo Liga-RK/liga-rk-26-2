@@ -29,7 +29,7 @@
   let playoffState = {};
 
   const sectionLinks = [
-    ["selecao", "Seleção"],
+    [divisionKey === "ascension" ? "campeoes" : "selecao", divisionKey === "ascension" ? "Campeões" : "Seleção"],
     ["estatisticas", "Estatísticas"],
     ["calendario", "Calendário"],
     ["grupos", "Grupos"],
@@ -157,7 +157,7 @@
       </nav>
 
       <main class="division-page">
-        ${renderWeekly()}
+        ${divisionKey === "ascension" ? renderChampions() : renderWeekly()}
         ${renderStatistics()}
         ${renderCalendar()}
         ${renderGroups()}
@@ -315,6 +315,29 @@
         </div>
         <div class="locked-ribbon" role="note">${escapeHtml(message)}</div>
       </div>
+    `;
+  }
+
+  function renderChampions() {
+    const championTeam = Object.values(teamsBySlot).find((team) => normalizeTeamIdentity(team.tag) === "rdg") || teamsBySlot.D3 || {};
+    const championSlot = championTeam.slot || "D3";
+    const championName = championTeam.name || "RAISING DRAGONS";
+    const championUrl = `time.html?division=${divisionKey}&id=${encodeURIComponent(championSlot)}`;
+
+    return `
+      <section class="visual-section champions-section" id="campeoes">
+        ${sectionHeader("CAMPEÕES")}
+        <div class="champions-showcase">
+          <a class="champions-team-link" href="${escapeAttribute(championUrl)}" aria-label="Ver a equipe ${escapeAttribute(championName)}">
+            <span>CAMPEÃ DA ASCENSÃO</span>
+            <strong>${escapeHtml(championName)}</strong>
+            <span class="champions-team-link-arrow" aria-hidden="true">→</span>
+          </a>
+          <div class="champions-art-frame">
+            <img class="champions-art" src="assets/uploads/rdg-campeoes.png" alt="Raising Dragons, campeã da Divisão Ascensão da Liga RK 26.2" />
+          </div>
+        </div>
+      </section>
     `;
   }
 
@@ -888,7 +911,7 @@
           <div class="player-stat-list">
             ${(stats.playerStats || []).map(renderPlayerStat).join("")}
           </div>
-          ${renderChampionStat(stats.mostWins, "MAIS VITÓRIAS")}
+          ${renderChampionStat(stats.mostWins, "MAIS VITORIOSO")}
           </div>
         `)}
         <a class="statistics-more-link" href="estatisticas.html?division=${divisionKey}">Ver todas as estat&iacute;sticas</a>
@@ -897,15 +920,23 @@
   }
 
   function renderChampionStat(stat = {}, fallbackTitle) {
-    const championName = displayChampionName(stat.champion || "AATROX");
-    const value = stat.value ?? 0;
+    const championName = stat.champion ? displayChampionName(stat.champion) : "AGUARDANDO";
+    const rawValue = stat.value ?? 0;
+    const formattedValue = stat.unit === "%" && Number.isFinite(Number(rawValue))
+      ? Number(rawValue).toLocaleString("pt-BR", { maximumFractionDigits: 2 })
+      : rawValue;
+    const value = `${formattedValue}${stat.unit || ""}`;
+    const minimumPicks = Number(stat.minimumPicks || 0);
     const image = stat.image
       ? `<img src="${escapeAttribute(stat.image)}" alt="${escapeAttribute(championName)}" />`
       : `<span class="champion-image-placeholder" aria-hidden="true"></span>`;
 
     return `
       <article class="champion-stat-card">
-        <header>${escapeHtml(stat.title || fallbackTitle)}</header>
+        <header>
+          <span>${escapeHtml(stat.title || fallbackTitle)}</span>
+          ${minimumPicks ? `<small>MÍN. ${minimumPicks} ESCOLHAS</small>` : ""}
+        </header>
         <div class="champion-image">${image}</div>
         <footer>
           <span>${escapeHtml(championName)}</span>
@@ -919,6 +950,7 @@
     const key = String(value || "").trim().toLowerCase();
     if (key === "monkeyking") return "Wukong";
     if (key === "bard") return "Bardo";
+    if (key === "drmundo") return "Dr. Mundo";
     return String(value || "");
   }
 

@@ -356,7 +356,7 @@
   }
 
   function renderHeadlineChampion(stat) {
-    return `<article class="public-stat-card champion">${stat.image ? `<img src="${escapeAttribute(stat.image)}" alt="" />` : ""}<div><span>${escapeHtml(stat.title)}</span><strong>${escapeHtml(stat.champion)}</strong></div><b>${escapeHtml(stat.value)}</b></article>`;
+    return `<article class="public-stat-card champion">${stat.image ? `<img src="${escapeAttribute(stat.image)}" alt="" />` : ""}<div><span>${escapeHtml(stat.title)}</span><strong>${escapeHtml(stat.champion)}</strong></div><b>${escapeHtml(`${stat.value}${stat.unit || ""}`)}</b></article>`;
   }
 
   function renderMatchesDashboard(division, matches) {

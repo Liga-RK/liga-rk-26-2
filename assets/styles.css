@@ -399,6 +399,91 @@ a {
   justify-self: center;
 }
 
+.champions-section {
+  min-height: calc(100svh - 8rem);
+  padding: clamp(1rem, 2vw, 2rem);
+  background:
+    radial-gradient(circle at 50% 48%, rgba(184, 0, 12, 0.2), transparent 58%),
+    linear-gradient(120deg, rgba(0, 0, 0, 0.92), rgba(30, 0, 3, 0.74) 50%, rgba(0, 0, 0, 0.92));
+  border-color: rgba(229, 28, 41, 0.38);
+}
+
+.champions-section .section-titlebar {
+  width: min(100%, 104.5rem);
+  margin-bottom: 1rem;
+  background: linear-gradient(90deg, #160003, #b40713 50%, #160003);
+  border-color: rgba(255, 62, 72, 0.5);
+}
+
+.champions-showcase {
+  width: min(100%, 104.5rem);
+  margin: 0 auto;
+  background: #050000;
+  border: 1px solid rgba(255, 54, 67, 0.48);
+  box-shadow: 0 1.4rem 4rem rgba(0, 0, 0, 0.62), 0 0 2rem rgba(193, 0, 15, 0.2);
+}
+
+.champions-art-frame {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: #050000;
+}
+
+.champions-art-frame::before {
+  content: "";
+  position: absolute;
+  inset: -1.5rem;
+  z-index: -1;
+  background: url("uploads/rdg-campeoes.png") center / cover no-repeat;
+  filter: blur(1.1rem);
+  opacity: 0.42;
+  transform: scale(1.04);
+}
+
+.champions-art {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.champions-team-link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: clamp(0.7rem, 2vw, 1.5rem);
+  padding: clamp(0.85rem, 1.5vw, 1.25rem) clamp(1rem, 2.5vw, 2.4rem);
+  color: #fff;
+  background: linear-gradient(90deg, #090002, #9d0610 58%, #250003);
+  border-bottom: 1px solid rgba(255, 70, 80, 0.42);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background 150ms ease, box-shadow 150ms ease;
+}
+
+.champions-team-link span:first-child {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: clamp(0.9rem, 1.35vw, 1.3rem);
+  letter-spacing: 0.08em;
+}
+
+.champions-team-link strong {
+  font-size: clamp(1.7rem, 3.2vw, 3.15rem);
+  line-height: 0.95;
+}
+
+.champions-team-link-arrow {
+  font-size: clamp(1.8rem, 3vw, 3rem);
+  line-height: 1;
+}
+
+.champions-team-link:hover,
+.champions-team-link:focus-visible {
+  background: linear-gradient(90deg, #170003, #d10919 58%, #3c0005);
+  box-shadow: inset 0 0 1.5rem rgba(255, 255, 255, 0.08);
+  outline: none;
+}
+
 .update-strip {
   width: max-content;
   max-width: 100%;
@@ -1953,10 +2038,22 @@ a {
 }
 
 .champion-stat-card header {
+  display: grid;
+  align-content: center;
+  gap: 0.2rem;
   min-height: 4.3rem;
   padding: 0.65rem 0.75rem 0.42rem;
   font-size: clamp(1.9rem, 2.15vw, 2.35rem);
   line-height: 0.95;
+}
+
+.champion-stat-card header small {
+  color: rgba(255, 255, 255, 0.72);
+  font-family: Arial, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
 }
 
 .champion-image {
@@ -7432,6 +7529,10 @@ a.stats-postgame-team-logo:focus-visible {
     padding: 1.2rem;
   }
 
+  .champions-section {
+    min-height: auto;
+  }
+
   .section-titlebar {
     grid-template-columns: 4rem 1fr 4rem;
     width: 100%;
@@ -7677,6 +7778,34 @@ a.stats-postgame-team-logo:focus-visible {
   .section-logo {
     width: 2.6rem;
     height: 2.6rem;
+  }
+
+  .champions-section {
+    padding: 0.6rem;
+  }
+
+  .champions-section .section-titlebar {
+    margin-bottom: 0.6rem;
+  }
+
+  .champions-art-frame {
+    display: grid;
+    place-items: center;
+    min-height: 62svh;
+  }
+
+  .champions-art {
+    height: 62svh;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .champions-team-link {
+    grid-template-columns: 1fr auto;
+  }
+
+  .champions-team-link span:first-child {
+    grid-column: 1 / -1;
   }
 
   .update-strip {

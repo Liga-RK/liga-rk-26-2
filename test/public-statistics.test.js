@@ -3,7 +3,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const test = require("node:test");
 const { parseReplay } = require("../src/replay/parser-factory");
-const { aggregateDatabase, buildTeamOfWeek, scoreMatchParticipants, selectMvp } = require("../src/statistics/aggregators");
+const { aggregateDatabase, buildHeadlineStatistics, buildTeamOfWeek, scoreMatchParticipants, selectMvp } = require("../src/statistics/aggregators");
 const { assertPublicPayloadSafe, createPublicPayload } = require("../src/statistics/public-payload");
 
 const replayPath = path.resolve(__dirname, "..", "samples", "BR1-3262336523.rofl");
@@ -71,6 +71,32 @@ test("gera estado publico vazio sem inventar estatisticas", () => {
   assert.equal(publicPayload.divisions.ascension.hasData, false);
   assert.equal(publicPayload.divisions.elite.statistics, null);
   assert.deepEqual(publicPayload.divisions.elite.matches, []);
+});
+
+test("mais vitorioso usa o maior win rate entre campeoes com ao menos cinco escolhas", () => {
+  const player = {
+    id: "player-test",
+    displayName: "Teste",
+    kda: 2,
+    kp: 50,
+    dpm: 500,
+    gpm: 400,
+    visionScoreAvg: 30
+  };
+  const champion = (name, picks, wins) => ({ name, picks, wins, image: `assets/champions/${name}.jpg` });
+  const statistics = buildHeadlineStatistics([player], [
+    champion("AmostraPequena", 4, 4),
+    champion("ElegivelMenor", 5, 4),
+    champion("ElegivelMaior", 10, 8)
+  ]);
+
+  assert.equal(statistics.mostWins.title, "MAIS VITORIOSO");
+  assert.equal(statistics.mostWins.champion, "ELEGIVELMAIOR");
+  assert.equal(statistics.mostWins.value, 80);
+  assert.equal(statistics.mostWins.unit, "%");
+  assert.equal(statistics.mostWins.minimumPicks, 5);
+  assert.equal(statistics.mostWins.picks, 10);
+  assert.equal(statistics.mostWins.wins, 8);
 });
 
 test("seleciona para a semana somente jogadores com dois jogos e uma serie vencida na rodada", () => {

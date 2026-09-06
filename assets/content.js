@@ -1769,9 +1769,11 @@ window.LIGA_RK_CONTENT = {
           "image": "assets/champions/Aatrox.jpg"
         },
         "mostWins": {
-          "title": "MAIS VITÓRIAS",
+          "title": "MAIS VITORIOSO",
           "champion": "EZREAL",
           "value": 0,
+          "unit": "%",
+          "minimumPicks": 5,
           "image": "assets/champions/Aatrox.jpg"
         },
         "playerStats": [
@@ -3579,9 +3581,11 @@ window.LIGA_RK_CONTENT = {
           "image": "assets/champions/Fiora.jpg"
         },
         "mostWins": {
-          "title": "MAIS VITÓRIAS",
+          "title": "MAIS VITORIOSO",
           "champion": "EZREAL",
-          "value": 3,
+          "value": 0,
+          "unit": "%",
+          "minimumPicks": 5,
           "image": "assets/champions/Ezreal.jpg"
         },
         "playerStats": [
