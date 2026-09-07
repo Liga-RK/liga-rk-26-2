@@ -484,6 +484,42 @@ a {
   outline: none;
 }
 
+.champions-section-elite {
+  background:
+    radial-gradient(circle at 50% 46%, rgba(231, 176, 51, 0.2), transparent 58%),
+    linear-gradient(120deg, rgba(1, 6, 18, 0.94), rgba(9, 28, 59, 0.8) 50%, rgba(1, 6, 18, 0.94));
+  border-color: rgba(232, 181, 58, 0.42);
+}
+
+.champions-section-elite .section-titlebar {
+  background: linear-gradient(90deg, #071326, #ad7616 50%, #071326);
+  border-color: rgba(255, 210, 102, 0.58);
+}
+
+.champions-section-elite .champions-showcase {
+  background: #030711;
+  border-color: rgba(241, 193, 70, 0.54);
+  box-shadow: 0 1.4rem 4rem rgba(0, 0, 0, 0.62), 0 0 2rem rgba(205, 151, 31, 0.2);
+}
+
+.champions-section-elite .champions-art-frame {
+  background: #030711;
+}
+
+.champions-section-elite .champions-art-frame::before {
+  background-image: url("uploads/ttt-campeoes.png");
+}
+
+.champions-section-elite .champions-team-link {
+  background: linear-gradient(90deg, #071326, #a56f14 58%, #111f38);
+  border-bottom-color: rgba(255, 211, 105, 0.5);
+}
+
+.champions-section-elite .champions-team-link:hover,
+.champions-section-elite .champions-team-link:focus-visible {
+  background: linear-gradient(90deg, #0b203e, #d59a26 58%, #172e52);
+}
+
 .update-strip {
   width: max-content;
   max-width: 100%;

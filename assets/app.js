@@ -24,12 +24,28 @@
   const publicSectionLocks = {
     statistics: "Disponibilizado após o início das rodadas."
   };
+  const championCelebrations = Object.freeze({
+    elite: Object.freeze({
+      teamTag: "TTT",
+      fallbackSlot: "A1",
+      displayName: "CÚPULA DO TRIPLE T",
+      divisionLabel: "ELITE",
+      artwork: "assets/uploads/ttt-campeoes.png"
+    }),
+    ascension: Object.freeze({
+      teamTag: "RDG",
+      fallbackSlot: "D3",
+      displayName: "RAISING DRAGONS",
+      divisionLabel: "ASCENSÃO",
+      artwork: "assets/uploads/rdg-campeoes.png"
+    })
+  });
   let teamsBySlot = {};
   let standingsByGroup = {};
   let playoffState = {};
 
   const sectionLinks = [
-    [divisionKey === "ascension" ? "campeoes" : "selecao", divisionKey === "ascension" ? "Campeões" : "Seleção"],
+    ["campeoes", "Campeões"],
     ["estatisticas", "Estatísticas"],
     ["calendario", "Calendário"],
     ["grupos", "Grupos"],
@@ -157,7 +173,7 @@
       </nav>
 
       <main class="division-page">
-        ${divisionKey === "ascension" ? renderChampions() : renderWeekly()}
+        ${renderChampions()}
         ${renderStatistics()}
         ${renderCalendar()}
         ${renderGroups()}
@@ -319,22 +335,25 @@
   }
 
   function renderChampions() {
-    const championTeam = Object.values(teamsBySlot).find((team) => normalizeTeamIdentity(team.tag) === "rdg") || teamsBySlot.D3 || {};
-    const championSlot = championTeam.slot || "D3";
-    const championName = championTeam.name || "RAISING DRAGONS";
+    const celebration = championCelebrations[divisionKey];
+    const championTeam = Object.values(teamsBySlot).find((team) => (
+      normalizeTeamIdentity(team.tag) === normalizeTeamIdentity(celebration.teamTag)
+    )) || teamsBySlot[celebration.fallbackSlot] || {};
+    const championSlot = championTeam.slot || celebration.fallbackSlot;
+    const championName = celebration.displayName || championTeam.name;
     const championUrl = `time.html?division=${divisionKey}&id=${encodeURIComponent(championSlot)}`;
 
     return `
-      <section class="visual-section champions-section" id="campeoes">
+      <section class="visual-section champions-section champions-section-${escapeAttribute(divisionKey)}" id="campeoes">
         ${sectionHeader("CAMPEÕES")}
         <div class="champions-showcase">
           <a class="champions-team-link" href="${escapeAttribute(championUrl)}" aria-label="Ver a equipe ${escapeAttribute(championName)}">
-            <span>CAMPEÃ DA ASCENSÃO</span>
+            <span>CAMPEÃ DA ${escapeHtml(celebration.divisionLabel)}</span>
             <strong>${escapeHtml(championName)}</strong>
             <span class="champions-team-link-arrow" aria-hidden="true">→</span>
           </a>
           <div class="champions-art-frame">
-            <img class="champions-art" src="assets/uploads/rdg-campeoes.png" alt="Raising Dragons, campeã da Divisão Ascensão da Liga RK 26.2" />
+            <img class="champions-art" src="${escapeAttribute(celebration.artwork)}" alt="${escapeAttribute(championName)}, campeã da Divisão ${celebration.divisionLabel} da Liga RK 26.2" />
           </div>
         </div>
       </section>

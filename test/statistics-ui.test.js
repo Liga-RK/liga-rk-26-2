@@ -19,11 +19,28 @@ test("Ascensao abre com a arte da campea e um link para a Raising Dragons", () =
   const page = fs.readFileSync(path.join(root, "ascensao.html"), "utf8");
   const artwork = path.join(root, "assets", "uploads", "rdg-campeoes.png");
 
-  assert.match(script, /divisionKey === "ascension" \? renderChampions\(\) : renderWeekly\(\)/);
-  assert.match(script, /section class="visual-section champions-section" id="campeoes"/);
+  assert.match(script, /\["campeoes", "Campeões"\]/);
+  assert.match(script, /\$\{renderChampions\(\)\}/);
+  assert.match(script, /champions-section-\$\{escapeAttribute\(divisionKey\)\}/);
   assert.match(script, /time\.html\?division=\$\{divisionKey\}&id=\$\{encodeURIComponent\(championSlot\)\}/);
   assert.match(styles, /\.champions-art\s*\{[^}]*width:\s*100%/s);
   assert.match(page, /assets\/app\.js\?v=20260905-most-victorious/);
+  assert.equal(fs.existsSync(artwork), true);
+  assert.equal(fs.statSync(artwork).size > 2_000_000, true);
+});
+
+test("Elite abre com a arte da campea e um link para a Cupula do Triple T", () => {
+  const script = fs.readFileSync(path.join(root, "assets", "app.js"), "utf8");
+  const styles = fs.readFileSync(path.join(root, "assets", "styles.css"), "utf8");
+  const page = fs.readFileSync(path.join(root, "elite.html"), "utf8");
+  const artwork = path.join(root, "assets", "uploads", "ttt-campeoes.png");
+
+  assert.match(script, /teamTag: "TTT"/);
+  assert.match(script, /fallbackSlot: "A1"/);
+  assert.match(script, /displayName: "CÚPULA DO TRIPLE T"/);
+  assert.match(script, /artwork: "assets\/uploads\/ttt-campeoes\.png"/);
+  assert.match(styles, /\.champions-section-elite/);
+  assert.match(page, /assets\/app\.js\?v=20260906-elite-champions/);
   assert.equal(fs.existsSync(artwork), true);
   assert.equal(fs.statSync(artwork).size > 2_000_000, true);
 });
