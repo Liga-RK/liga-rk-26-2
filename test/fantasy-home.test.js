@@ -7,27 +7,31 @@ const root = path.resolve(__dirname, "..");
 const pages = ["fantasy/index.html", "fantasy/fantasy.html"];
 const script = fs.readFileSync(path.join(root, "fantasy/assets/fantasy.js"), "utf8");
 const styles = fs.readFileSync(path.join(root, "fantasy/assets/fantasy.css"), "utf8");
+const configScript = fs.readFileSync(path.join(root, "fantasy/assets/fantasy-config.js"), "utf8");
 const workerScript = fs.readFileSync(path.join(root, "worker/fantasy-worker.js"), "utf8");
 const adminHtml = fs.readFileSync(path.join(root, "worker/public/admin/index.html"), "utf8");
 const adminScript = fs.readFileSync(path.join(root, "worker/public/admin/admin.js"), "utf8");
 
-test("Fantasy opens on a separate, minimal Início view", () => {
+test("Fantasy encerrado abre diretamente nos resultados finais sem expor o mercado", () => {
   for (const relativePath of pages) {
     const html = fs.readFileSync(path.join(root, relativePath), "utf8");
-    const home = html.match(/<section id="home-view"[\s\S]*?<\/section>\s*<\/section>/)?.[0] || "";
 
     assert.match(html, /<title>Fantasy RK \| Liga RK 26\.2<\/title>/);
-    assert.match(html, /data-view="home">Início<\/button>/);
-    assert.match(home, /class="home-title-primary">ESCALE SEU TIME<\/span>/);
-    assert.match(home, /class="home-title-secondary">DISPUTE O TOPO DO RK FANTASY<\/span>/);
-    assert.match(home, /id="home-login-button"[^>]*>Entrar ou cadastrar-se<\/button>/);
-    assert.equal((home.match(/<button\b/g) || []).length, 1);
-    assert.doesNotMatch(html, /id="market-intro"/);
+    assert.match(html, /class="nav-button active"[^>]*data-view="ranking">Resultados finais<\/button>/);
+    assert.doesNotMatch(html, /data-view="market"/);
+    assert.doesNotMatch(html, /data-view="home"/);
+    assert.match(html, /id="ranking-view" class="app-view active"/);
+    assert.equal((html.match(/class="app-view active"/g) || []).length, 1);
+    assert.match(html, /class="season-complete-banner"/);
+    assert.match(html, /Estatísticas finais do Fantasy RK/);
+    assert.match(html, /<option value="overall" selected>Ranking geral<\/option>/);
   }
 
-  assert.match(styles, /\.home-title-primary\s*\{[\s\S]*?color: var\(--accent-bright\)/);
-  assert.match(styles, /\.home-title-secondary\s*\{[\s\S]*?color: #fff/);
-  assert.match(styles, /\.home-title-primary,\s*\.home-title-secondary\s*\{[\s\S]*?white-space: nowrap/);
+  assert.match(configScript, /seasonComplete: true/);
+  assert.match(script, /view: FINAL_SEASON_MODE \? "ranking" : "home"/);
+  assert.match(script, /rankingScope: FINAL_SEASON_MODE \? "overall" : "championship"/);
+  assert.match(script, /if \(FINAL_SEASON_MODE\) \{[\s\S]*?loadCloudRanking\(\)/);
+  assert.match(styles, /\.season-complete-banner\s*\{/);
 });
 
 test("Fantasy account action signs out instead of switching accounts", () => {
@@ -36,7 +40,7 @@ test("Fantasy account action signs out instead of switching accounts", () => {
   assert.doesNotMatch(script, /state\.userName \? "Trocar"/);
 });
 
-test("Canal de contato aparece apenas para jogador logado no Mercado e chega ao painel", () => {
+test("Canal de contato permanece disponível ao jogador logado após o encerramento", () => {
   for (const relativePath of pages) {
     const html = fs.readFileSync(path.join(root, relativePath), "utf8");
     assert.match(html, /id="market-feedback-button"[^>]*hidden>Fale com a organização<\/button>/);
@@ -45,25 +49,24 @@ test("Canal de contato aparece apenas para jogador logado no Mercado e chega ao 
     assert.match(html, /Reportar um bug/);
     assert.match(html, /visível somente para a administração/);
   }
-  assert.match(script, /const loggedInMarket = Boolean\(state\.userName && state\.view === "market"\)/);
-  assert.match(script, /marketFeedbackButton\.hidden = !loggedInMarket \|\| !open/);
-  assert.match(script, /feedbackHeaderButton\.hidden = !loggedInMarket \|\| !marketKnown \|\| open/);
+  assert.match(script, /if \(FINAL_SEASON_MODE\) \{[\s\S]*?feedbackHeaderButton\.hidden = !state\.userName/);
+  assert.match(script, /Encerramento da temporada/);
   assert.match(script, /apiFetch\("\/api\/fantasy\/feedback"/);
   assert.match(workerScript, /url\.pathname === "\/api\/fantasy\/feedback"/);
   assert.match(adminHtml, /data-panel="feedback"/);
   assert.match(adminScript, /async function loadFeedback\(\)/);
 });
 
-test("Login pelo Discord abre o mercado depois da autenticação", () => {
+test("Login pelo Discord retorna aos resultados finais depois da autenticação", () => {
   const initSource = script.match(/async function init\(\) \{[\s\S]*?\n  \}/)?.[0] || "";
   const loginSource = script.match(/async function completeCloudLogin\(\) \{[\s\S]*?\n  \}/)?.[0] || "";
 
   assert.match(script, /initialViewFromUrl\(\)/);
-  assert.match(script, /initialViewAfterLogin = "market"/);
+  assert.match(script, /initialViewAfterLogin = FINAL_SEASON_MODE \? "ranking" : "market"/);
   assert.match(script, /if \(initialViewAfterLogin\) setView\(initialViewAfterLogin\)/);
   assert.ok(initSource.indexOf("setView(initialViewAfterLogin)") < initSource.indexOf("loadCloudAccount()"));
-  assert.match(loginSource, /initialViewAfterLogin = "market";\s*setView\("market"\)/);
-  assert.match(workerScript, /target\.searchParams\.set\("view", "market"\)/);
+  assert.match(loginSource, /initialViewAfterLogin = FINAL_SEASON_MODE \? "ranking" : "market";\s*setView\(initialViewAfterLogin\)/);
+  assert.match(workerScript, /target\.searchParams\.set\("view", "ranking"\)/);
   assert.doesNotMatch(
     script.match(/if \(loginError\) \{[\s\S]*?\n    \}/)?.[0] || "",
     /initialViewAfterLogin/
@@ -91,10 +94,14 @@ test("Botão flutuante retorna às divisões no topo do mercado", () => {
   assert.match(styles, /\.division-tabs \{ scroll-margin-top: 152px; \}/);
 });
 
-test("Home, ranking and rules remain available while the market is closed", () => {
-  assert.match(script, /view: "home"/);
-  assert.doesNotMatch(script, /if \(!isMarketOpen\(\) && view !== "market"\)/);
-  assert.doesNotMatch(script, /button\.hidden = !open/);
+test("Somente resultados finais e regras ficam navegáveis após o encerramento", () => {
+  for (const relativePath of pages) {
+    const html = fs.readFileSync(path.join(root, relativePath), "utf8");
+    assert.match(html, /data-view="ranking">Resultados finais<\/button>/);
+    assert.match(html, /data-view="rules">Regras<\/button>/);
+    assert.doesNotMatch(html, /data-view="market"/);
+  }
+  assert.match(script, /const targetView = FINAL_SEASON_MODE && view !== "rules" \? "ranking" : view/);
 });
 
 test("Patrimônio é individual por divisão e o ranking geral não mostra patrimônio", () => {

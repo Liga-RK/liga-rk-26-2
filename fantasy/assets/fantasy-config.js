@@ -4,5 +4,6 @@ window.FANTASY_RK_CONFIG = {
   backendMode: "cloud",
   budget: 100,
   maxPlayersPerRealTeam: 2,
-  season: "Liga RK 26.2"
+  season: "Liga RK 26.2",
+  seasonComplete: true
 };

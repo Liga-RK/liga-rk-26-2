@@ -20,7 +20,7 @@
   <title>Fantasy RK | Liga RK 26.2</title>
   <link rel="icon" type="image/png" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
   <link rel="apple-touch-icon" href="assets/branding/favicon-rk-fantasy.png?v=20260723-sharefix" />
-  <link rel="stylesheet" href="assets/fantasy.css?v=20260814-feedback-v1" />
+  <link rel="stylesheet" href="assets/fantasy.css?v=20260907-final-v1" />
 </head>
 <body>
   <header class="site-header">
@@ -33,9 +33,7 @@
       </a>
     </div>
     <nav class="top-nav" aria-label="Navegação do Fantasy RK">
-      <button class="nav-button active" type="button" data-view="home">Início</button>
-      <button class="nav-button" type="button" data-view="market">Mercado</button>
-      <button class="nav-button" type="button" data-view="ranking">Ranking</button>
+      <button class="nav-button active" type="button" data-view="ranking">Resultados finais</button>
       <button class="nav-button" type="button" data-view="rules">Regras</button>
     </nav>
     <div class="account-box">
@@ -47,7 +45,7 @@
   </header>
 
   <main>
-    <section id="home-view" class="app-view active">
+    <section id="home-view" class="app-view">
       <section class="home-landing" aria-labelledby="home-title">
         <div class="home-landing-copy">
           <span class="eyebrow">Fantasy oficial da Liga RK</span>
@@ -269,20 +267,25 @@
       </div>
     </section>
 
-    <section id="ranking-view" class="app-view">
+    <section id="ranking-view" class="app-view active">
+      <section class="season-complete-banner" aria-labelledby="final-results-title">
+        <span class="eyebrow">Temporada concluída</span>
+        <h1 id="final-results-title">Estatísticas finais do Fantasy RK</h1>
+        <p>A última rodada foi processada. Consulte o ranking geral, as classificações de cada divisão, o desempenho da final e os patrimônios definitivos.</p>
+      </section>
       <div class="content-card">
         <div class="section-heading">
-          <div><span class="eyebrow">Classificação</span><h2>Ranking do Fantasy RK</h2></div>
+          <div><span class="eyebrow">Classificação oficial</span><h2>Resultados finais</h2></div>
           <div class="ranking-controls">
             <div class="ranking-division-tabs" aria-label="Escolha de divisão do ranking">
               <button class="ranking-division-tab active" type="button" data-ranking-division="elite">Divisão Elite</button>
               <button class="ranking-division-tab" type="button" data-ranking-division="ascension">Divisão Ascensão</button>
             </div>
             <select id="ranking-scope" aria-label="Escopo do ranking">
-              <option value="championship">Campeonato</option>
-              <option value="round">Rodada atual</option>
+              <option value="overall" selected>Ranking geral</option>
+              <option value="championship">Classificação da divisão</option>
+              <option value="round">Última rodada</option>
               <option value="wealth">Maior patrimônio</option>
-              <option value="overall">Ranking geral</option>
             </select>
           </div>
         </div>
@@ -295,8 +298,8 @@
                 <th>Time</th>
                 <th>Divisão</th>
                 <th>Jogador</th>
-                <th>Rodada</th>
-                <th>Total</th>
+                <th>Última rodada</th>
+                <th>Total final</th>
                 <th id="ranking-wealth-header">Patrimônio</th>
                 <th>Média</th>
                 <th>Melhor</th>
@@ -305,7 +308,7 @@
             <tbody id="ranking-body"></tbody>
           </table>
         </div>
-        <p id="ranking-helper" class="helper-text">O ranking é atualizado após o processamento dos resultados oficiais da rodada.</p>
+        <p id="ranking-helper" class="helper-text">Ranking geral definitivo: soma dos pontos da Elite e da Ascensão por jogador.</p>
       </div>
     </section>
 
@@ -590,9 +593,9 @@
   </dialog>
 
   <script src="assets/fantasy-config.js"></script>
-  <script src="assets/champion-list.js?v=20260814-feedback-v1"></script>
+  <script src="assets/champion-list.js?v=20260907-final-v1"></script>
   <script src="assets/auto-lineup.js?v=20260822-reserve-any-v1"></script>
-  <script src="assets/fantasy.js?v=20260822-reserve-any-v1"></script>
-  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260814-feedback-v1");</script>
+  <script src="assets/fantasy.js?v=20260907-final-v1"></script>
+  <script>if("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js?v=20260907-final-v1");</script>
 </body>
 </html>

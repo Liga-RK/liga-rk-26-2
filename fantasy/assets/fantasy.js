@@ -8,8 +8,10 @@
     budget: 100,
     maxPlayersPerRealTeam: 2,
     season: "Liga RK 26.2",
+    seasonComplete: false,
     ...(window.FANTASY_RK_CONFIG || {})
   };
+  const FINAL_SEASON_MODE = Boolean(config.seasonComplete);
   const AUTH_STORAGE_KEY = "rk-fantasy-session-v1";
   let authToken = readAuthToken();
   let initialAuthMessage = "";
@@ -49,8 +51,8 @@
   const state = {
     division: "elite",
     rankingDivision: "elite",
-    rankingScope: "championship",
-    view: "home",
+    rankingScope: FINAL_SEASON_MODE ? "overall" : "championship",
+    view: FINAL_SEASON_MODE ? "ranking" : "home",
     market: { elite: [], ascension: [] },
     popular: { elite: [], ascension: [] },
     popularHighlights: { elite: {}, ascension: {} },
@@ -197,11 +199,22 @@
     if (initialViewAfterLogin) setView(initialViewAfterLogin);
     restoreLocalState();
     bindEvents();
-    marketStatusTimer = window.setInterval(renderMarketShell, 30000);
+    if (!FINAL_SEASON_MODE) marketStatusTimer = window.setInterval(renderMarketShell, 30000);
     if (config.backendMode === "cloud") {
       await loadCloudAccount();
     }
     renderAccount();
+    if (FINAL_SEASON_MODE) {
+      updateRankingControls();
+      if (el.rankingBody) el.rankingBody.innerHTML = '<tr><td colspan="9">Carregando os resultados finais...</td></tr>';
+      if (config.backendMode === "cloud") {
+        await Promise.all([loadCloudRanking(), loadCloudPatrimonyHistory()]);
+      } else {
+        renderRanking();
+      }
+      renderPatrimonyProfile();
+      return;
+    }
     renderLineup();
     renderMarketShell();
     renderRanking();
@@ -221,6 +234,7 @@
   }
 
   function initialViewFromUrl() {
+    if (FINAL_SEASON_MODE) return "";
     return new URLSearchParams(String(location.search || "")).get("view") === "market" ? "market" : "";
   }
 
@@ -1884,16 +1898,17 @@
   }
 
   function setView(view) {
-    state.view = view;
-    el.navButtons.forEach((button) => button.classList.toggle("active", button.dataset.view === view));
-    el.views.forEach((section) => section.classList.toggle("active", section.id === `${view}-view`));
+    const targetView = FINAL_SEASON_MODE && view !== "rules" ? "ranking" : view;
+    state.view = targetView;
+    el.navButtons.forEach((button) => button.classList.toggle("active", button.dataset.view === targetView));
+    el.views.forEach((section) => section.classList.toggle("active", section.id === `${targetView}-view`));
     renderPatrimonyProfile();
-    if (view === "market") {
+    if (targetView === "market") {
       renderMarketShell();
     } else {
       renderFeedbackAccess();
     }
-    if (view === "ranking") {
+    if (targetView === "ranking") {
       updateRankingControls();
       if (config.backendMode === "cloud") loadCloudRanking();
       else renderRanking();
@@ -2007,6 +2022,11 @@
   }
 
   function renderFeedbackAccess() {
+    if (FINAL_SEASON_MODE) {
+      if (el.marketFeedbackButton) el.marketFeedbackButton.hidden = true;
+      if (el.feedbackHeaderButton) el.feedbackHeaderButton.hidden = !state.userName;
+      return;
+    }
     const loggedInMarket = Boolean(state.userName && state.view === "market");
     const marketKnown = config.backendMode !== "cloud" || Boolean(state.roundInfo[state.division]);
     const open = marketKnown && isMarketOpen();
@@ -2019,7 +2039,9 @@
     const round = state.roundInfo[state.division];
     const roundNumber = Math.trunc(Number(round?.round_number || round?.roundNumber));
     if (el.feedbackContext) {
-      el.feedbackContext.textContent = `${divisionLabel(state.division)}${roundNumber > 0 ? ` · Rodada ${roundNumber}` : ""} · enviado como ${state.userName}`;
+      el.feedbackContext.textContent = FINAL_SEASON_MODE
+        ? `Encerramento da temporada · enviado como ${state.userName}`
+        : `${divisionLabel(state.division)}${roundNumber > 0 ? ` · Rodada ${roundNumber}` : ""} · enviado como ${state.userName}`;
     }
     setFeedbackStatus("");
     el.feedbackDialog?.showModal();
@@ -2180,10 +2202,10 @@
       button.disabled = allDivisions;
     });
     if (el.rankingHelper) {
-      if (state.rankingScope === "overall") el.rankingHelper.textContent = "Ranking geral soma os pontos da Elite e da Ascensão por jogador.";
-      else if (state.rankingScope === "wealth") el.rankingHelper.textContent = `Maior patrimônio mostra quem tem mais RK$ acumulado na ${divisionLabel(state.rankingDivision)}.`;
-      else if (state.rankingScope === "round") el.rankingHelper.textContent = `Ranking da rodada atual da ${divisionLabel(state.rankingDivision)}.`;
-      else el.rankingHelper.textContent = `Ranking do campeonato da ${divisionLabel(state.rankingDivision)}.`;
+      if (state.rankingScope === "overall") el.rankingHelper.textContent = `${FINAL_SEASON_MODE ? "Ranking geral definitivo" : "Ranking geral"}: soma dos pontos da Elite e da Ascensão por jogador.`;
+      else if (state.rankingScope === "wealth") el.rankingHelper.textContent = `Patrimônio final acumulado na ${divisionLabel(state.rankingDivision)}.`;
+      else if (state.rankingScope === "round") el.rankingHelper.textContent = `${FINAL_SEASON_MODE ? "Pontuação da última rodada" : "Ranking da rodada atual"} da ${divisionLabel(state.rankingDivision)}.`;
+      else el.rankingHelper.textContent = `${FINAL_SEASON_MODE ? "Classificação final" : "Ranking do campeonato"} da ${divisionLabel(state.rankingDivision)}.`;
     }
   }
 
@@ -2238,7 +2260,8 @@
 
   function renderPatrimonyProfile() {
     if (!el.patrimonyProfile) return;
-    el.patrimonyProfile.hidden = !state.userName || state.view !== "market";
+    const profileView = FINAL_SEASON_MODE ? "ranking" : "market";
+    el.patrimonyProfile.hidden = !state.userName || state.view !== profileView;
     if (!state.userName || !el.patrimonySummaryBody) return;
     el.patrimonySummaryBody.innerHTML = ["elite", "ascension"].map((division) => {
       const profile = state.patrimony[division] || {
@@ -2552,8 +2575,8 @@
       if (!response.ok || !token) throw new Error(apiErrorMessage(payload, "Não foi possível concluir o login."));
       saveAuthToken(token);
       initialAuthMessage = "Login realizado com sucesso.";
-      initialViewAfterLogin = "market";
-      setView("market");
+      initialViewAfterLogin = FINAL_SEASON_MODE ? "ranking" : "market";
+      setView(initialViewAfterLogin);
     } catch (error) {
       clearAuthToken();
       initialAuthMessage = error.message || "Não foi possível concluir o login pelo Discord.";

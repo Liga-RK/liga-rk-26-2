@@ -477,7 +477,7 @@ sqliteTest("rodada 4 exibe todos os ativos mas aceita somente participantes das 
   assert.match(saveResult.payload.error.message, /eliminado dos playoffs/i);
 });
 
-sqliteTest("callback do Discord retorna diretamente para a tela do mercado", async () => {
+sqliteTest("callback do Discord retorna diretamente para os resultados finais", async () => {
   const database = createDatabase();
   const env = {
     DB: d1(database),
@@ -509,7 +509,7 @@ sqliteTest("callback do Discord retorna diretamente para a tela do mercado", asy
     assert.equal(response.status, 302);
     assert.equal(target.origin, SITE_ORIGIN);
     assert.equal(target.pathname, "/liga-rk-26-2/fantasy/");
-    assert.equal(target.searchParams.get("view"), "market");
+    assert.equal(target.searchParams.get("view"), "ranking");
     assert.ok(new URLSearchParams(target.hash.slice(1)).get("loginCode"));
     assert.equal(database.prepare("SELECT COUNT(*) AS count FROM fantasy_login_codes").get().count, 1);
   } finally {

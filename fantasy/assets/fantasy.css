@@ -709,6 +709,34 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
 .empty-state { padding: 4rem 1rem; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: .85rem; }
 
 .content-card { min-height: 460px; }
+.season-complete-banner {
+  position: relative;
+  isolation: isolate;
+  margin: clamp(1rem, 3vw, 2.4rem) 0 1rem;
+  padding: clamp(1.4rem, 4vw, 3rem);
+  overflow: hidden;
+  border: 1px solid rgba(229, 38, 50, .42);
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at 86% 12%, rgba(229, 38, 50, .24), transparent 32%),
+    linear-gradient(120deg, rgba(50, 7, 12, .94), rgba(8, 7, 10, .96) 62%);
+  box-shadow: var(--shadow);
+}
+.season-complete-banner::after {
+  content: "FINAL";
+  position: absolute;
+  z-index: -1;
+  right: clamp(1rem, 5vw, 4rem);
+  bottom: -1.2rem;
+  color: rgba(255, 255, 255, .035);
+  font-family: var(--title-font);
+  font-size: clamp(6rem, 17vw, 14rem);
+  line-height: .8;
+  letter-spacing: .04em;
+}
+.season-complete-banner h1 { margin: .35rem 0 .55rem; color: #fff; font-size: clamp(2.6rem, 7vw, 6rem); line-height: .94; text-transform: uppercase; }
+.season-complete-banner p { max-width: 840px; margin: 0; color: #eadde0; font-size: clamp(.95rem, 1.5vw, 1.12rem); line-height: 1.65; }
+.season-complete-banner + .content-card { min-height: 0; }
 .patrimony-profile { min-height: 0; margin-top: 1rem; }
 .patrimony-summary { margin-top: 1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: .85rem; background: rgba(5, 5, 8, .72); }
 .patrimony-summary-row { display: grid; grid-template-columns: minmax(150px, 1.15fr) repeat(6, minmax(135px, 1fr)); min-width: 1020px; align-items: stretch; }
@@ -872,6 +900,9 @@ dialog::backdrop { background: rgba(0, 0, 0, .78); backdrop-filter: blur(8px); }
   .top-nav { width: 100%; }
   .nav-button { flex: 1; padding: .58rem .5rem; }
   main { padding-inline: .75rem; }
+  .season-complete-banner { margin-top: .75rem; padding: 1.25rem 1rem; }
+  .season-complete-banner::after { right: -.5rem; bottom: -.3rem; font-size: 7rem; }
+  .season-complete-banner h1 { font-size: clamp(2.35rem, 13vw, 3.9rem); }
   .home-landing { min-height: calc(100vh - 128px); padding: 3rem .8rem; }
   .home-landing::before { inset: .75rem 0; }
   .home-title-primary { font-size: clamp(2.55rem, 12vw, 4.5rem); }
