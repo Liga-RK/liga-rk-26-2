@@ -734,7 +734,8 @@ main { width: min(1540px, 100%); margin: auto; padding: 0 clamp(1rem, 3.5vw, 3.5
   line-height: .8;
   letter-spacing: .04em;
 }
-.season-complete-banner h1 { margin: .35rem 0 .55rem; color: #fff; font-size: clamp(2.6rem, 7vw, 6rem); line-height: .94; text-transform: uppercase; }
+.season-complete-banner h1 { margin: .35rem 0 .55rem; color: #fff; font-size: clamp(3rem, 5.8vw, 6rem); line-height: .92; text-transform: uppercase; }
+.season-complete-banner h1 span { display: block; width: max-content; max-width: 100%; white-space: nowrap; }
 .season-complete-banner p { max-width: 840px; margin: 0; color: #eadde0; font-size: clamp(.95rem, 1.5vw, 1.12rem); line-height: 1.65; }
 .season-complete-banner + .content-card { min-height: 0; }
 .patrimony-profile { min-height: 0; margin-top: 1rem; }
@@ -902,7 +903,7 @@ dialog::backdrop { background: rgba(0, 0, 0, .78); backdrop-filter: blur(8px); }
   main { padding-inline: .75rem; }
   .season-complete-banner { margin-top: .75rem; padding: 1.25rem 1rem; }
   .season-complete-banner::after { right: -.5rem; bottom: -.3rem; font-size: 7rem; }
-  .season-complete-banner h1 { font-size: clamp(2.35rem, 13vw, 3.9rem); }
+  .season-complete-banner h1 { font-size: clamp(1.8rem, 7.7vw, 3rem); }
   .home-landing { min-height: calc(100vh - 128px); padding: 3rem .8rem; }
   .home-landing::before { inset: .75rem 0; }
   .home-title-primary { font-size: clamp(2.55rem, 12vw, 4.5rem); }

@@ -23,7 +23,7 @@ test("Fantasy encerrado abre diretamente nos resultados finais sem expor o merca
     assert.match(html, /id="ranking-view" class="app-view active"/);
     assert.equal((html.match(/class="app-view active"/g) || []).length, 1);
     assert.match(html, /class="season-complete-banner"/);
-    assert.match(html, /Estatísticas finais do Fantasy RK/);
+    assert.match(html, /<span>Estatísticas finais do<\/span>\s*<span>Fantasy RK<\/span>/);
     assert.match(html, /<option value="overall" selected>Ranking geral<\/option>/);
   }
 
@@ -32,6 +32,7 @@ test("Fantasy encerrado abre diretamente nos resultados finais sem expor o merca
   assert.match(script, /rankingScope: FINAL_SEASON_MODE \? "overall" : "championship"/);
   assert.match(script, /if \(FINAL_SEASON_MODE\) \{[\s\S]*?loadCloudRanking\(\)/);
   assert.match(styles, /\.season-complete-banner\s*\{/);
+  assert.match(styles, /\.season-complete-banner h1 span\s*\{[^}]*display: block;[^}]*white-space: nowrap;/);
 });
 
 test("Fantasy account action signs out instead of switching accounts", () => {
